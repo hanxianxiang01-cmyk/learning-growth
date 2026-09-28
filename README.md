@@ -61,6 +61,8 @@ releases/               机器可读版本历史
 7. 与任务相关的Spec
 ```
 
+> 前端开发者另有专项交接：见 **`ONBOARDING_FRONTEND.md`**（15 分钟跑起来 + 避坑清单）。
+
 ---
 
 ## Working Model
