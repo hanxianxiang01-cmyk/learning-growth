@@ -19,6 +19,47 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Fixed（Sprint 3 联调阶段修复，2026-09-28）
+
+> 以下 6 处修复在`前后端真实联调`中暴露，均为「mock 模式测不出、接真后端才会踩到」的契约/bug。
+> 事前已通过「前后端 API 对齐评审」+ 真实 RDS 端到端验证逐一确认。
+
+### F1. 前端 next_action 空值兜底
+- **文件**：`apps/child-web/src/features/learning/machine.ts`
+- **根因**：后端 `record_attempt` 答错时返回 `next_action`，答对时返回 `null`；前端 `getNextActionCode` 无条件读 `result.next_action.type`，答对时崩 `Cannot read properties of null (reading 'type')`。
+- **修复**：改为 `result.next_action?.type ?? "NEXT_TASK"`，加空值兜底。
+- **影响**：修复答对即崩溃。
+
+### F2. 前端提交防重入锁
+- **文件**：`apps/child-web/src/features/learning/useLearningSession.ts`
+- **根因**：快速连点「提交」/ 连按 Enter，导致同一 `(task_instance_id, attempt_no)` 提交两次，撞后端唯一约束 `attempt_task_instance_id_attempt_no_key` → 500。
+- **修复**：新增 `submittingRef`（`useRef`），提交中禁止再次触发，`try/finally` 保证解锁。
+- **影响**：修复重复提交导致的 500。
+
+### F3. 前端 response 契约对齐（object 而非 string）
+- **文件**：`apps/child-web/src/features/learning/useLearningSession.ts` + `apps/child-web/src/lib/api/contracts.ts` + `apps/child-web/src/lib/api/mock.ts`
+- **根因**：OpenAPI 明确 `AttemptRequest.response` 是 `object`，但前端传的是字符串 `state.answer`，后端 `response.get("answer")` 会取不到答案，http 模式判分失效。
+- **修复**：`response` 改为 `{ answer: state.answer }`；`contracts.ts` 类型收紧为 `Record<string, unknown>`；`mock.ts` 判分改为取 `.answer`。
+- **影响**：修复 http 模式判分失效。
+
+### F4. dev ui-kit 组件 prop 对齐
+- **文件**：`apps/child-web/app/dev/ui-kit/page.tsx`
+- **根因**：`AbilityGrowthCard` 在 V1.2 已把 prop 从 `level` 改为 `afterLevel`，但 ui-kit 仍用旧 `level`，导致 typecheck 报错。
+- **修复**：`level={2}` → `afterLevel={2}`。
+- **影响**：修复 typecheck 失败。
+
+### F5. 首页「今日目标」措辞与能力排序
+- **文件**：`apps/child-web/src/screens/MathHomeScreen.tsx` + `apps/learning-api/app/services/profile.py`
+- **根因**：后端 `profile` 的 `developing` 按数据库无序返回，导致「今日目标」误推链末环能力（如「检查验算」）给零基础孩子；措辞「继续练习」对从未开始的孩子不准确。
+- **修复**：后端 `developing` 按能力依赖链 `_CANONICAL_ORDER` 排序（读题理解→…→迁移变式）；前端 `level===0` 显示「开始练习」而非「继续练习」。
+- **影响**：首页推荐能力更符合教学顺序，零基础措辞准确。
+
+### F6. 后端提交幂等
+- **文件**：`apps/learning-api/app/services/turn_service.py`
+- **根因**：与 F2 同源，前端防重入是缓解，后端幂等才是根治。
+- **修复**：`record_attempt` 提交前查已有 `(task_instance_id, attempt_no)`，存在则直接返回第一次结果（不重复写 attempt/event/evidence）。
+- **影响**：即使前端漏防，同一 attempt 重复提交也返回 200 + 相同 attempt_id，不再 500。
+
 ---
 
 # [1.2.0] - 2026-09-28
