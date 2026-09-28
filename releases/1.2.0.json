@@ -1,0 +1,35 @@
+{
+  "version": "1.2.0",
+  "release_date": "2026-09-28",
+  "release_name": "Learning Result Closure",
+  "previous_version": "1.1.0",
+  "breaking_changes": [],
+  "added": [
+    "SessionResult canonical frontend contract",
+    "LearningApi.getSessionResult(sessionId)",
+    "HTTP Session Result adapter",
+    "Mock Session Result implementation",
+    "Session Result payload normalizer",
+    "Server-driven learning_behaviors",
+    "Server-driven next_recommendation",
+    "Server-driven ability_changes",
+    "Result loading/error/retry states",
+    "Explicit local snapshot fallback"
+  ],
+  "changed": [
+    "MathResultScreen no longer uses sessionStore as primary source",
+    "AbilityGrowthCard now displays before/after levels and evidence delta",
+    "SessionStats includes task count",
+    "sessionStore downgraded to fallback/temporary cache"
+  ],
+  "known_constraints": [
+    "Local frozen OpenAPI v1.3 does not yet include authoritative Session Result endpoint path; configured via NEXT_PUBLIC_SESSION_RESULT_PATH_TEMPLATE",
+    "Task Renderer and Manipulative Engine remain planned for V1.3"
+  ],
+  "source_of_truth": {
+    "version": "VERSION",
+    "npm_version": "package.json",
+    "history": "CHANGELOG.md",
+    "release_manifest": "releases/1.2.0.json"
+  }
+}

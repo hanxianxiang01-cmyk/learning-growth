@@ -1,0 +1,34 @@
+name: Contract Change
+description: OpenAPI / schema / shared contract change
+title: "[Contract] "
+labels: ["area:contract"]
+body:
+  - type: textarea
+    id: contract
+    attributes:
+      label: Contract change
+      description: Exact fields/endpoints/schema changes.
+    validations:
+      required: true
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Breaking?
+      options:
+        - "No"
+        - "Yes"
+        - "Unknown"
+    validations:
+      required: true
+  - type: textarea
+    id: consumers
+    attributes:
+      label: Consumers
+      description: Frontend, backend, mock, reports, tests.
+    validations:
+      required: true
+  - type: textarea
+    id: drift
+    attributes:
+      label: Contract Drift
+      description: Existing drift ID or new drift to register.

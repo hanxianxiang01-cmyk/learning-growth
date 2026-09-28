@@ -1,0 +1,715 @@
+openapi: 3.1.0
+info:
+  title: Child Learning Growth System API
+  version: 2.0.1+freeze.1.3.1
+  description: 'MVP contract for Child Apps, Parent Apps, Learning Engine and Agent
+    Gateway. Baseline: freeze-v1.3.1. Database naming follows DDL V1.3.1; system errors
+    and educational diagnoses are separate namespaces.'
+servers:
+- url: /api
+paths:
+  /v1/children/{child_id}/profile:
+    get:
+      summary: Get learner profile
+      parameters:
+      - in: path
+        name: child_id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Learner profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearnerProfile'
+  /v1/children/{child_id}/abilities:
+    get:
+      summary: List ability states
+      parameters:
+      - in: path
+        name: child_id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Ability state list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AbilityState'
+  /v1/learning/sessions:
+    post:
+      summary: Start a learning session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - child_id
+              - subject
+              properties:
+                child_id:
+                  type: string
+                  format: uuid
+                subject:
+                  type: string
+                  enum:
+                  - math
+                  - english
+                requested_minutes:
+                  type: integer
+                  minimum: 5
+                  maximum: 45
+                  default: 15
+                plan_id:
+                  type: string
+                  format: uuid
+                  description: Optional. If omitted, Curriculum Engine resolves or
+                    creates the active learning_plan.
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                    const: active
+                  plan_id:
+                    type: string
+                    format: uuid
+                required:
+                - session_id
+                - plan_id
+                - status
+  /v1/learning/tasks/next:
+    post:
+      summary: Get next task based on curriculum policy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - child_id
+              - session_id
+              - subject
+              properties:
+                child_id:
+                  type: string
+                  format: uuid
+                session_id:
+                  type: string
+                  format: uuid
+                subject:
+                  type: string
+                  enum:
+                  - math
+                  - english
+                requested_minutes:
+                  type: integer
+                  default: 15
+      responses:
+        '200':
+          description: Task instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskInstance'
+        '409':
+          description: Selected resource version is retired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: LE-4091
+                  message: Selected resource version is retired
+  /v1/learning/attempts:
+    post:
+      summary: Submit an attempt and get diagnosis + allowed next action
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttemptRequest'
+      responses:
+        '200':
+          description: Attempt result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttemptResult'
+        '409':
+          description: 'Task state conflict: task already completed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: LE-4001
+                  message: 'Task state conflict: task already completed'
+        '422':
+          description: Attempt response does not match resource ui_schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: LE-4221
+                  message: Attempt response does not match resource ui_schema
+        '500':
+          description: Diagnosis service failed; no long-term diagnosis is persisted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: LE-5001
+                  message: Diagnosis service failed; no long-term diagnosis is persisted
+        '503':
+          description: DeepTutor is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: AG-5031
+                  message: DeepTutor is unavailable
+  /v1/learning/hints:
+    post:
+      summary: Get a controlled hint for an attempt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - attempt_id
+              properties:
+                attempt_id:
+                  type: string
+                  format: uuid
+                requested_level:
+                  type: integer
+                  minimum: 1
+                  maximum: 4
+      responses:
+        '200':
+          description: Hint result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  policy_id:
+                    type: string
+                  hint_level:
+                    type: integer
+                  action_type:
+                    type: string
+                    enum:
+                    - QUESTION
+                    - STRUCTURE_HINT
+                    - STEP_HINT
+                    - TEACH
+                  text:
+                    type: string
+                  answer_revealed:
+                    type: boolean
+        '429':
+          description: Hint request rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: LE-4291
+                  message: Hint request rate limited
+        '503':
+          description: DeepTutor is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: AG-5031
+                  message: DeepTutor is unavailable
+  /v1/mastery/evaluate:
+    post:
+      summary: Evaluate mastery state from valid evidence
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - child_id
+              - ability_id
+              properties:
+                child_id:
+                  type: string
+                  format: uuid
+                ability_id:
+                  type: string
+                force_validation_task:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Mastery decision
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasteryDecision'
+  /v1/reports/monthly:
+    get:
+      summary: Get monthly growth report
+      parameters:
+      - in: query
+        name: child_id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: month
+        required: true
+        schema:
+          type: string
+          pattern: ^\\d{4}-\\d{2}$
+      responses:
+        '200':
+          description: Growth report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrowthReport'
+  /v1/admin/resources/{resource_id}/validate:
+    post:
+      summary: Validate a draft resource version
+      parameters:
+      - in: path
+        name: resource_id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Validation result
+  /v1/admin/resources/{resource_id}/publish:
+    post:
+      summary: Publish an approved resource version
+      parameters:
+      - in: path
+        name: resource_id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Publish result
+  /v1/children/{child_id}/learning-plans/active:
+    get:
+      summary: Get active learning plan for a subject
+      parameters:
+      - in: path
+        name: child_id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: subject
+        required: true
+        schema:
+          type: string
+          enum:
+          - math
+          - english
+      responses:
+        '200':
+          description: Active learning plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPlan'
+        '404':
+          description: No active learning plan
+components:
+  schemas:
+    AbilityState:
+      type: object
+      required:
+      - ability_id
+      - level
+      - confidence
+      - evidence_count
+      properties:
+        ability_id:
+          type: string
+        name:
+          type: string
+        level:
+          type: integer
+          minimum: 0
+          maximum: 4
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        fit_band:
+          type: object
+          properties:
+            min:
+              type: integer
+              minimum: 1
+              maximum: 5
+            max:
+              type: integer
+              minimum: 1
+              maximum: 5
+        evidence_count:
+          type: integer
+          minimum: 0
+        trend:
+          type: string
+          enum:
+          - up
+          - stable
+          - watch
+          - down_review
+    LearnerProfile:
+      type: object
+      properties:
+        child_id:
+          type: string
+          format: uuid
+        grade:
+          type: string
+        region_code:
+          type: string
+        active_abilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AbilityState'
+        strengths:
+          type: array
+          items:
+            type: string
+        developing:
+          type: array
+          items:
+            type: string
+        observations:
+          type: array
+          items:
+            type: string
+    TaskInstance:
+      type: object
+      required:
+      - task_instance_id
+      - ability_id
+      - difficulty
+      - ui_schema
+      - strategy_policy
+      properties:
+        task_instance_id:
+          type: string
+          format: uuid
+        ability_id:
+          type: string
+        resource_version_id:
+          type: string
+          format: uuid
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+        goal:
+          type: string
+        ui_schema:
+          type: object
+          additionalProperties: true
+        strategy_policy:
+          type: object
+          additionalProperties: true
+        plan_id:
+          type: string
+          format: uuid
+    AttemptRequest:
+      type: object
+      required:
+      - task_instance_id
+      - attempt_no
+      - response
+      properties:
+        task_instance_id:
+          type: string
+          format: uuid
+        attempt_no:
+          type: integer
+          minimum: 1
+        response:
+          type: object
+          additionalProperties: true
+        client_elapsed_ms:
+          type: integer
+          minimum: 0
+        used_hint_levels:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 4
+    AttemptResult:
+      type: object
+      properties:
+        attempt_id:
+          type: string
+          format: uuid
+        correct:
+          type: boolean
+        diagnosis:
+          $ref: '#/components/schemas/DiagnosisResult'
+        next_action:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - RETRY
+              - HINT
+              - TEACH
+              - COMPLETE
+              - NEXT_TASK
+            hint_level:
+              type: integer
+            policy_id:
+              type: string
+    MasteryDecision:
+      type: object
+      properties:
+        ability_id:
+          type: string
+        old_level:
+          type: integer
+        new_level:
+          type: integer
+        decision:
+          type: string
+          enum:
+          - unchanged
+          - candidate_upgrade
+          - upgraded
+          - review_required
+          - downgraded_after_review
+        evidence_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reason_codes:
+          type: array
+          items:
+            type: string
+    GrowthReport:
+      type: object
+      properties:
+        report_id:
+          type: string
+          format: uuid
+        period:
+          type: string
+        summary:
+          type: string
+        metrics:
+          type: object
+          additionalProperties: true
+        ability_changes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        evidence_refs:
+          type: array
+          items:
+            type: string
+        next_focus:
+          type: array
+          items:
+            type: string
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+              enum:
+              - LE-4001
+              - LE-4091
+              - LE-4221
+              - LE-4291
+              - LE-5001
+              - AG-5031
+            message:
+              type: string
+            request_id:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    DiagnosisResult:
+      type: object
+      required:
+      - code
+      - label
+      - confidence
+      - evidence_scope
+      properties:
+        code:
+          type: string
+          enum:
+          - E01
+          - E02
+          - E03
+          - E04
+          - E05
+          - E06
+          - E07
+        label:
+          type: string
+          enum:
+          - knowledge_gap
+          - reading_comprehension_gap
+          - math_language_gap
+          - modeling_gap
+          - strategy_selection_gap
+          - calculation_error
+          - checking_validation_gap
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        evidence_scope:
+          type: string
+          enum:
+          - attempt_only
+          - repeated_pattern
+    LearningPlan:
+      type: object
+      required:
+      - plan_id
+      - child_id
+      - subject
+      - status
+      - target_ability_ids
+      - fit_band
+      - rule_version
+      - valid_from
+      properties:
+        plan_id:
+          type: string
+          format: uuid
+        child_id:
+          type: string
+          format: uuid
+        subject:
+          type: string
+          enum:
+          - math
+          - english
+        status:
+          type: string
+          enum:
+          - draft
+          - active
+          - completed
+          - cancelled
+          - expired
+        target_ability_ids:
+          type: array
+          items:
+            type: string
+        fit_band:
+          type: object
+          additionalProperties: true
+        rationale:
+          type: object
+          additionalProperties: true
+        rule_version:
+          type: string
+        valid_from:
+          type: string
+          format: date-time
+        valid_until:
+          type:
+          - string
+          - 'null'
+          format: date-time
+x-baseline-version: freeze-v1.3
+x-architecture-gates:
+  GATE-R0-SPI:
+    status: pending_spike
+    blocking_scope: E3 Agent Integration
+    rule: DeepTutor Core Patch = 0 is an architecture target until the external Tool
+      + Capability SPI spike passes.
+  GRAY-01:
+    status: closed_v1.3
+    rule: learning_plan exists in DDL V1.3; learning_session uses child-safe composite
+      plan FK.
+  GRAY-02:
+    status: closed_v1.3
+    rule: historical design documents are formally superseded by HISTORICAL_DOCS_SUPERSEDED_V1.3.md.
+x-error-code-table-v1.3:
+  system_errors:
+    LE-4001: TASK_ALREADY_COMPLETED
+    LE-4091: RESOURCE_VERSION_RETIRED
+    LE-4221: ATTEMPT_UI_SCHEMA_MISMATCH
+    LE-4291: HINT_RATE_LIMITED
+    LE-5001: DIAGNOSIS_FAILED
+    AG-5031: DEEPTUTOR_UNAVAILABLE
+  education_diagnosis:
+    E01: knowledge_gap
+    E02: reading_comprehension_gap
+    E03: math_language_gap
+    E04: modeling_gap
+    E05: strategy_selection_gap
+    E06: calculation_error
+    E07: checking_validation_gap
+  rule: E01-E07 are successful educational diagnosis payloads and MUST NOT be returned
+    as HTTP system errors.

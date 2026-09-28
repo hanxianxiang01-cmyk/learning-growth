@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "release_date": "2026-09-28",
+  "release_name": "Runnable Learning Flow",
+  "previous_version": null,
+  "added": [
+    "Runnable Next.js/TypeScript project",
+    "18 core UI components",
+    "math home/session/result/growth routes",
+    "learning interaction state machine",
+    "Mock/HTTP Learning API adapters",
+    "healing and math-lab built-in skins",
+    "client-side session snapshot"
+  ],
+  "changed": [],
+  "breaking_changes": [],
+  "known_constraints": [
+    "Result page depended on local session snapshot",
+    "No formal Session Result API integration",
+    "No manipulative engine"
+  ]
+}

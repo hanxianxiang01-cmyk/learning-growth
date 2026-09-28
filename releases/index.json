@@ -1,0 +1,21 @@
+{
+  "project": "Math Sprint 3 Frontend",
+  "current": "1.2.0",
+  "releases": [
+    {
+      "version": "1.2.0",
+      "name": "Learning Result Closure",
+      "manifest": "releases/1.2.0.json"
+    },
+    {
+      "version": "1.1.0",
+      "name": "Handover & Project Governance",
+      "manifest": "releases/1.1.0.json"
+    },
+    {
+      "version": "1.0.0",
+      "name": "Runnable Learning Flow",
+      "manifest": "releases/1.0.0.json"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "learning-growth-system",
+  "version": "1.2.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "child:dev": "npm --workspace @learning/child-web run dev",
+    "child:typecheck": "npm --workspace @learning/child-web run typecheck",
+    "child:build": "npm --workspace @learning/child-web run build",
+    "release:check": "node scripts/check-release.mjs",
+    "governance:check": "node scripts/check-governance.mjs",
+    "check": "npm run governance:check && npm run release:check && npm run child:typecheck"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

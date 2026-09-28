@@ -1,0 +1,285 @@
+"""Learning 编排服务 —— 严格对齐冻结 OpenAPI /v1/learning/* 接口。
+
+接口签名以 02_openapi_v1.3.1.yaml 为准（前后端对齐评审 V1.0）：
+- sessions：body {child_id, subject, requested_minutes?, plan_id?}
+- tasks/next：body {child_id, session_id, subject, requested_minutes?}（无 ability_id，后端自选）
+- attempts：body {task_instance_id, attempt_no, response, ...}（无 child_id，后端反查）
+- hints：body {attempt_id, requested_level?}（attempt → 反查 task → 反查资源 hint_policy）
+"""
+from __future__ import annotations
+
+import uuid
+
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models import (
+    AbilityState,
+    Attempt,
+    LearningPlan,
+    LearningSession,
+    Resource,
+    ResourceVersion,
+    TaskInstance,
+)
+from app.services.fitband import compute_fit_band
+from app.services.turn_service import record_attempt
+
+# 一次学习 session 的目标任务数（MVP 约定，与前端 ProgressDots total=3 对齐）
+SESSION_TASK_GOAL = 3
+
+
+async def start_session(
+    db: AsyncSession,
+    *,
+    child_id: uuid.UUID,
+    subject: str,
+    requested_minutes: int | None = None,
+    plan_id: uuid.UUID | None = None,
+) -> dict:
+    """创建 learning_session，返回 OpenAPI 201 结构。"""
+    session = LearningSession(
+        child_id=child_id,
+        subject=subject,
+        plan_id=plan_id,
+    )
+    db.add(session)
+    await db.commit()
+    await db.refresh(session)
+    return {
+        "session_id": session.session_id,
+        "status": session.status,
+        "plan_id": session.plan_id,
+    }
+
+
+async def _candidate_abilities(
+    db: AsyncSession, *, child_id: uuid.UUID, session_id: uuid.UUID
+) -> list[str]:
+    """候选能力列表（有序）：优先 plan.target，兜底 child 按 level 升序的能力。"""
+    session = await db.get(LearningSession, session_id)
+    if session and session.plan_id:
+        plan = await db.get(LearningPlan, session.plan_id)
+        if plan and plan.target_ability_ids:
+            return [aid for aid in plan.target_ability_ids]
+
+    result = await db.execute(
+        select(AbilityState.ability_id)
+        .where(AbilityState.child_id == child_id)
+        .order_by(AbilityState.level.asc(), AbilityState.confidence.asc())
+    )
+    return [row[0] for row in result.all()]
+
+
+async def _pick_ability(db: AsyncSession, *, child_id: uuid.UUID, session_id: uuid.UUID) -> str | None:
+    """从候选能力里选「有已发布资源」的第一个（不考虑难度带，仅保证有题）。"""
+    candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
+    for aid in candidates:
+        has_published = (
+            await db.execute(
+                select(ResourceVersion.resource_version_id)
+                .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+                .where(
+                    Resource.ability_id == aid,
+                    ResourceVersion.review_status == "published",
+                )
+                .limit(1)
+            )
+        ).first()
+        if has_published:
+            return aid
+    return None
+
+
+async def assign_next_task(
+    db: AsyncSession,
+    *,
+    child_id: uuid.UUID,
+    session_id: uuid.UUID,
+    subject: str,
+    requested_minutes: int | None = None,
+) -> dict:
+    """取下一题并落 task_instance，返回 OpenAPI TaskInstance 结构。
+
+    无 ability_id 入参：后端从候选能力里找「fit_band 内有已发布资源」的第一个组合。
+    候选顺序 = 能力 level 升序（发展中优先），fit_band 由该能力等级+置信度推导。
+    """
+    candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
+
+    # 逐个候选能力，找带内已发布资源
+    selected_ability: str | None = None
+    rv: ResourceVersion | None = None
+    band_min = band_max = 1
+    for aid in candidates:
+        state = await db.get(AbilityState, {"child_id": child_id, "ability_id": aid})
+        level = state.level if state else 0
+        confidence = float(state.confidence) if state else 0.0
+        bmin, bmax = compute_fit_band(level=level, confidence=confidence)
+
+        row = (
+            await db.execute(
+                select(ResourceVersion)
+                .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+                .where(
+                    Resource.ability_id == aid,
+                    ResourceVersion.review_status == "published",
+                    ResourceVersion.difficulty >= bmin,
+                    ResourceVersion.difficulty <= bmax,
+                )
+                .order_by(ResourceVersion.published_at.desc())
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        if row is not None:
+            selected_ability = aid
+            rv = row
+            band_min, band_max = bmin, bmax
+            break
+
+    if selected_ability is None or rv is None:
+        return {
+            "task_instance_id": None,
+            "ability_id": None,
+            "difficulty": None,
+            "ui_schema": None,
+            "strategy_policy": None,
+            "reason": "no_published_resource_in_band",
+        }
+
+    task = TaskInstance(
+        session_id=session_id,
+        child_id=child_id,
+        ability_id=selected_ability,
+        resource_version_id=rv.resource_version_id,
+        assigned_difficulty=rv.difficulty,
+        strategy_policy={"hint_max_level": 4, "fit_band": [band_min, band_max]},
+    )
+    db.add(task)
+    await db.commit()
+    await db.refresh(task)
+
+    session = await db.get(LearningSession, session_id)
+
+    return {
+        "task_instance_id": task.task_instance_id,
+        "ability_id": selected_ability,
+        "difficulty": rv.difficulty,
+        "ui_schema": rv.ui_schema,
+        "strategy_policy": task.strategy_policy,
+        "resource_version_id": rv.resource_version_id,
+        "goal": rv.content.get("goal") if isinstance(rv.content, dict) else None,
+        "plan_id": session.plan_id if session else None,
+    }
+
+
+async def submit_attempt(
+    db: AsyncSession,
+    *,
+    task_instance_id: uuid.UUID,
+    attempt_no: int,
+    response: dict,
+    client_elapsed_ms: int | None = None,
+    used_hint_levels: list[int] | None = None,
+) -> dict:
+    """提交作答（无 child_id，从 task 反查），后端判分 → 诊断 → next_action。"""
+    task = await db.get(TaskInstance, task_instance_id)
+    if task is None:
+        raise ValueError(f"task_instance {task_instance_id} 不存在")
+
+    rv = await db.get(ResourceVersion, task.resource_version_id)
+    expected = rv.content.get("answer") if rv and isinstance(rv.content, dict) else None
+    user_answer = response.get("answer") if isinstance(response, dict) else None
+
+    if expected is None or user_answer is None:
+        correct = None
+    else:
+        correct = _judge(expected, user_answer)
+
+    error_model = None
+    if not correct and rv and rv.error_models:
+        error_model = rv.error_models[0].get("code") if isinstance(rv.error_models[0], dict) else None
+
+    max_hint_level = max(used_hint_levels) if used_hint_levels else 0
+
+    result = await record_attempt(
+        db,
+        child_id=task.child_id,
+        task_instance_id=task_instance_id,
+        attempt_no=attempt_no,
+        response=response,
+        correct=correct,
+        max_hint_level=max_hint_level,
+        client_elapsed_ms=client_elapsed_ms,
+        error_model=error_model,
+        used_hint_levels=used_hint_levels,
+    )
+
+    # 答对时补齐 next_action（record_attempt 仅在答错时生成 HINT）。
+    # 对齐 OpenAPI：答对 → NEXT_TASK（还有题）或 COMPLETE（本轮目标已达成）。
+    if result["correct"] and result["next_action"] is None:
+        # 该 session 下已答对（存在 correct=True attempt）的 task 去重计数
+        completed_count = (
+            await db.execute(
+                select(func.count(func.distinct(Attempt.task_instance_id))).where(
+                    Attempt.task_instance_id.in_(
+                        select(TaskInstance.task_instance_id).where(
+                            TaskInstance.session_id == task.session_id
+                        )
+                    ),
+                    Attempt.correct.is_(True),
+                )
+            )
+        ).scalar_one()
+        result["next_action"] = (
+            {"type": "COMPLETE", "policy_id": None}
+            if completed_count >= SESSION_TASK_GOAL
+            else {"type": "NEXT_TASK", "policy_id": None}
+        )
+
+    await db.commit()
+
+    return result
+
+
+async def request_hint(
+    db: AsyncSession,
+    *,
+    attempt_id: uuid.UUID,
+    requested_level: int | None = None,
+) -> dict:
+    """受控 Hint：由 attempt 反查 task → resource 的 hint_policy.ladder。
+
+    返回 OpenAPI hints 结构（action_type + text + answer_revealed）。
+    """
+    attempt = await db.get(Attempt, attempt_id)
+    if attempt is None:
+        raise ValueError(f"attempt {attempt_id} 不存在")
+
+    task = await db.get(TaskInstance, attempt.task_instance_id)
+    rv = await db.get(ResourceVersion, task.resource_version_id) if task else None
+
+    ladder: list[str] = []
+    if rv and isinstance(rv.hint_policy, dict):
+        ladder = rv.hint_policy.get("ladder", []) or []
+
+    # 阶梯级数 = 资源 hint 阶梯长度（无则默认 4）
+    max_level = len(ladder) if ladder else 4
+    level = max(1, min(requested_level if requested_level else attempt.attempt_no, max_level))
+
+    action_type = {1: "QUESTION", 2: "STRUCTURE_HINT", 3: "STEP_HINT"}.get(level, "TEACH")
+    text = ladder[level - 1] if ladder else f"第 {level} 步提示"
+
+    return {
+        "policy_id": f"hint-{level}",
+        "hint_level": level,
+        "action_type": action_type,
+        "text": text,
+        "answer_revealed": False,  # 红线：任何 Hint 不直接泄答案
+    }
+
+
+def _judge(expected: object, user_answer: object) -> bool:
+    try:
+        return float(expected) == float(user_answer)
+    except (TypeError, ValueError):
+        return str(expected).strip() == str(user_answer).strip()

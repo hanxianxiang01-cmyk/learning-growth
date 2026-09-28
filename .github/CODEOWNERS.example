@@ -1,0 +1,9 @@
+# Rename to .github/CODEOWNERS after replacing placeholders
+# with actual GitHub users/teams.
+
+# /apps/child-web/        @YOUR_ORG/frontend
+# /apps/learning-api/     @YOUR_ORG/backend
+# /packages/contracts/    @YOUR_ORG/frontend @YOUR_ORG/backend
+# /openapi/               @YOUR_ORG/backend @YOUR_ORG/frontend
+# /baselines/             @YOUR_ORG/architecture @YOUR_ORG/release
+# /docs/adr/              @YOUR_ORG/architecture

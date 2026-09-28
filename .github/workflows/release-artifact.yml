@@ -1,0 +1,35 @@
+name: Release Artifact
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run governance:check
+      - run: npm run release:check
+      - name: Validate tag
+        shell: bash
+        run: |
+          VERSION=$(cat VERSION)
+          if [ "v${VERSION}" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match VERSION v${VERSION}"
+            exit 1
+          fi
+      - name: Create ZIP
+        shell: bash
+        run: |
+          git archive --format=zip --output="Learning_Growth_System_${GITHUB_REF_NAME}.zip" HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "Learning_Growth_System_${{ github.ref_name }}"
+          path: "Learning_Growth_System_${{ github.ref_name }}.zip"

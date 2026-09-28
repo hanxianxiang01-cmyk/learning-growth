@@ -1,0 +1,23 @@
+{
+  "version": "1.1.0",
+  "release_date": "2026-09-28",
+  "release_name": "Handover & Project Governance",
+  "previous_version": "1.0.0",
+  "added": [
+    "frontend module map",
+    "next-development roadmap",
+    "handover guide",
+    "project status",
+    "CHANGELOG",
+    "documentation index",
+    "project manifest"
+  ],
+  "changed": [
+    "Documentation and handover governance improved"
+  ],
+  "breaking_changes": [],
+  "known_constraints": [
+    "Core runtime code unchanged from 1.0.0",
+    "Result page still used local session snapshot as primary source"
+  ]
+}
