@@ -52,7 +52,7 @@ export const initialLearningState: LearningState = {
 };
 
 export function getNextActionCode(result: AttemptResult): NextActionCode {
-  return result.next_action.type;
+  return result.next_action?.type ?? "NEXT_TASK";
 }
 
 export function learningReducer(

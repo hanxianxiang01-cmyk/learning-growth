@@ -58,7 +58,7 @@ export type TaskInstance = {
 export type AttemptRequest = {
   task_instance_id: string;
   attempt_no: number;
-  response: unknown;
+  response: Record<string, unknown>;
   client_elapsed_ms?: number;
   used_hint_levels?: number[];
 };

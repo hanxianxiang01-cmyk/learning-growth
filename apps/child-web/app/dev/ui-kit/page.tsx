@@ -50,7 +50,7 @@ function Gallery({ skin }: { skin: "healing" | "math-lab" }) {
         <Preview name="12 CoachPanel"><CoachPanel status="hint_available" hint={null} onHint={()=>{}} onRetry={()=>{}} onNext={()=>{}}/></Preview>
         <Preview name="13 CompletionHero"><CompletionHero subtitle="你完成了这次数学挑战。"/></Preview>
         <Preview name="14 LearningBehaviorChecklist"><LearningBehaviorChecklist items={[{label:"自己读懂题目",done:true},{label:"主动检查",done:false}]}/></Preview>
-        <Preview name="15 AbilityGrowthCard"><AbilityGrowthCard ability="数量关系" level={2} trend="up"/></Preview>
+        <Preview name="15 AbilityGrowthCard"><AbilityGrowthCard ability="数量关系" afterLevel={2} trend="up"/></Preview>
         <Preview name="16 SessionStats"><SessionStats duration="6分钟" hints={1} attempts={3}/></Preview>
         <Preview name="17 NextTaskCard"><NextTaskCard title="继续挑战" description="进入下一项数学任务" href="#"/></Preview>
         <Preview name="18 AbilityMap"><AbilityMap abilities={abilities}/></Preview>

@@ -215,8 +215,9 @@ export class MockLearningApi implements LearningApi {
       sessionStats.set(meta.sessionId, stats);
     }
 
+    const userAnswerRaw = (input.response as { answer?: unknown } | null)?.answer;
     const correct =
-      String(input.response).trim().toLowerCase() ===
+      String(userAnswerRaw ?? "").trim().toLowerCase() ===
       task.__answer.trim().toLowerCase();
 
     const attempt_id = uuid();

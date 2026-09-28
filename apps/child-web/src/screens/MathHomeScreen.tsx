@@ -71,7 +71,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
         <TodayGoalCard
           title={
             developing?.name
-              ? `继续练习「${developing.name}」`
+              ? `${developing.level === 0 ? "开始" : "继续"}练习「${developing.name}」`
               : "看懂数量之间的关系"
           }
           tip="先观察，再动手，再检查。"

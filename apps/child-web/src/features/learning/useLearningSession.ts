@@ -36,6 +36,7 @@ export function useLearningSession({
     initialLearningState
   );
   const startedAt = useRef(Date.now());
+  const submittingRef = useRef(false);
   const stats = useRef<SessionSnapshot>(
     loadSessionSnapshot(sessionId) ?? {
       childId,
@@ -79,14 +80,16 @@ export function useLearningSession({
   }, []);
 
   const submit = useCallback(async () => {
+    if (submittingRef.current) return; // 防重入：提交中禁止再次触发
     if (!state.task || !state.answer.trim()) return;
+    submittingRef.current = true;
     dispatch({ type: "SUBMIT" });
 
     try {
       const result = await api.submitAttempt({
         task_instance_id: state.task.task_instance_id,
         attempt_no: state.attemptNo,
-        response: state.answer,
+        response: { answer: state.answer },
         client_elapsed_ms: Date.now() - startedAt.current,
         used_hint_levels: state.usedHintLevels
       });
@@ -112,6 +115,8 @@ export function useLearningSession({
       dispatch({ type: "ATTEMPT_RESULT", result });
     } catch (err) {
       dispatch({ type: "ERROR", message: humanizeError(err) });
+    } finally {
+      submittingRef.current = false;
     }
   }, [api, persist, state]);
 
