@@ -24,17 +24,26 @@
 main
 ```
 
-短分支：
+业务分支（命名由 CI 强制校验，详见 `BRANCH_AND_PR_POLICY.md`）：
 
 ```text
-feat/*
-fix/*
-api/*
+fix/BUG-xxxx-*         Bug 修复
+hotfix/BUG-xxxx-*      紧急生产修复
+feat/FE-13xx-*         V1.3 功能
+```
+
+辅助分支：
+
+```text
 docs/*
 chore/*
 ```
 
-不引入长期 `develop`，除非团队规模显著扩大。
+核心原则：
+
+- **不引入长期「大开发分支」**（无 `develop`、无 `release/V1.3` 长跑分支）。
+- **一个 Issue = 一个 feature branch**，短生命周期，合入即删。
+- Bug 合入 main 后，所有活跃 V1.3 分支必须 merge 最新 main（或 rebase）并重新过 CI，防止修复漂移。
 
 ## Pull Request
 
