@@ -4,6 +4,9 @@
 > 适用：`hanxianxiang01-cmyk/learning-growth`（公开仓库）。
 > 前置：需要仓库 **Admin** 权限（仓库 Owner 天然具备）。
 
+> **状态（2026-09-28）**：本仓库的分支保护**已通过 API 配置完成**（ruleset `protect-main`，enforcement=active，含 require PR / 1 approval / 3 status checks / no-deletion / no-force-push）。
+> 下方保留手动配置步骤，供团队将它迁移到 UI 或调整规则时参考。
+
 ---
 
 ## 0. 三个关键坑（先读，别踩）
@@ -13,20 +16,56 @@
 | 1 | **status check 名必须和 CI job 名逐字一致** | 本仓库 CI（`.github/workflows/ci.yml`）的 job 名是 `governance`、`child-typecheck`、`child-build`，核对时不能多空格、改大小写。 |
 | 2 | **check 必须先在 main 上跑过一次** | 新拉的仓库，至少要有一个 PR 成功跑完 CI，`governance` 等名字才会出现在可选列表里。空仓库直接开，会出现「搜不到 check 名」的假象。 |
 | 3 | **先配规则，再让协作者 clone** | 否则协作者可能已经直接 push 到 main，防护形同虚设。 |
+| 4 | **界面路径已迁到 Rulesets** | GitHub 已把旧的「Branch protection rules」入口折叠，主推 **Rulesets**。当前准确入口是仓库页顶部 **Settings 标签页 → 左侧 Rules → Rulesets**，或直接访问 `/settings/rules`。旧「Branches」菜单里的 classic 入口很多账号已不显示。 |
 
 ---
 
 ## 1. 打开分支保护设置
 
+### 方法一：网页 UI（当前推荐）
+
 ```
-GitHub 仓库页面 → Settings（齿轮图标）
-  → 左侧 Code and automation 下的 Branches
-  → 或：Rules → Rulesets（新界面）
+仓库主页 → 顶部「Settings」标签页（不是侧边栏齿轮）
+  → 左侧栏「Code and automation」分组下找「Rules」
+    → Rulesets
+  → 点「New ruleset」→ 选「New branch ruleset」
 ```
 
-> 老界面是「Branch protection rules」，新界面是「Rulesets」。两者等效，选你看得到的那个，本文按老界面路径写。
+> 若左侧栏没有「Rules」分组，直接改 URL 访问：
+>
+> ```
+> https://github.com/<owner>/<repo>/settings/rules
+> ```
 
-在 **Branch protection rules** 区域点 **Add branch protection rule**（或 Add classic branch protection rule）。
+### 方法二：API（适合脚本化 / 一次性配置）
+
+用具备 `Administration: Write` 权限的 token，通过 `POST /repos/{owner}/{repo}/rulesets` 创建。
+参考 payload（正是本仓库当前生效的配置）：
+
+```json
+{
+  "name": "protect-main",
+  "enforcement": "active",
+  "target": "branch",
+  "conditions": { "ref_name": { "include": ["refs/heads/main"], "exclude": [] } },
+  "rules": [
+    { "type": "pull_request", "parameters": {
+        "required_approving_review_count": 1,
+        "dismiss_stale_reviews_on_push": true,
+        "require_code_owner_review": false,
+        "required_review_thread_resolution": true } },
+    { "type": "required_status_checks", "parameters": {
+        "strict_required_status_checks_policy": true,
+        "required_status_checks": [
+          { "context": "governance" },
+          { "context": "child-typecheck" },
+          { "context": "child-build" }
+        ] } },
+    { "type": "deletion" },
+    { "type": "non_fast_forward" }
+  ]
+}
+```
 
 ---
 
