@@ -88,6 +88,7 @@ export class HttpLearningApi implements LearningApi {
     session_id: string;
     subject: Subject;
     requested_minutes?: number;
+    ability_id?: string;
   }) {
     return this.request<TaskInstance>("/v1/learning/tasks/next", {
       method: "POST",

@@ -25,10 +25,12 @@ function humanizeError(err: unknown) {
 
 export function useLearningSession({
   childId,
-  sessionId
+  sessionId,
+  abilityId
 }: {
   childId: string;
   sessionId: string;
+  abilityId?: string;
 }) {
   const api = getLearningApi();
   const [state, dispatch] = useReducer(
@@ -61,7 +63,8 @@ export function useLearningSession({
         child_id: childId,
         session_id: sessionId,
         subject: "math",
-        requested_minutes: 15
+        requested_minutes: 15,
+        ability_id: abilityId
       });
       stats.current.lastAbilityId = task.ability_id;
       persist();
@@ -69,7 +72,7 @@ export function useLearningSession({
     } catch (err) {
       dispatch({ type: "ERROR", message: humanizeError(err) });
     }
-  }, [api, childId, sessionId, persist]);
+  }, [api, childId, sessionId, abilityId, persist]);
 
   useEffect(() => {
     if (state.status === "idle") void loadTask();

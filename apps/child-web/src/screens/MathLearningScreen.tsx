@@ -15,10 +15,12 @@ import type { MathTool } from "@/src/components/learning/ManipulativeToolbar";
 
 export function MathLearningScreen({
   childId,
-  sessionId
+  sessionId,
+  abilityId
 }: {
   childId: string;
   sessionId: string;
+  abilityId?: string;
 }) {
   const router = useRouter();
   const [tool, setTool] = useState<MathTool | undefined>();
@@ -30,7 +32,7 @@ export function MathLearningScreen({
     retry,
     loadTask,
     snapshot
-  } = useLearningSession({ childId, sessionId });
+  } = useLearningSession({ childId, sessionId, abilityId });
 
   useEffect(() => {
     if (state.status === "completed") {

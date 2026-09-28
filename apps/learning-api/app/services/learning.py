@@ -91,6 +91,47 @@ async def _pick_ability(db: AsyncSession, *, child_id: uuid.UUID, session_id: uu
     return None
 
 
+async def _published_resource_for_ability(
+    db: AsyncSession,
+    *,
+    ability_id: str,
+    band_min: int,
+    band_max: int,
+    fallback_to_lowest: bool,
+) -> ResourceVersion | None:
+    """取某能力「fit_band 内」的已发布资源；带内无题且 fallback_to_lowest 时，
+    退到该能力「最低难度」已发布资源（保证指定能力一定有题可练）。"""
+    row = (
+        await db.execute(
+            select(ResourceVersion)
+            .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+            .where(
+                Resource.ability_id == ability_id,
+                ResourceVersion.review_status == "published",
+                ResourceVersion.difficulty >= band_min,
+                ResourceVersion.difficulty <= band_max,
+            )
+            .order_by(ResourceVersion.difficulty.asc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if row is not None or not fallback_to_lowest:
+        return row
+
+    return (
+        await db.execute(
+            select(ResourceVersion)
+            .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+            .where(
+                Resource.ability_id == ability_id,
+                ResourceVersion.review_status == "published",
+            )
+            .order_by(ResourceVersion.difficulty.asc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+
+
 async def assign_next_task(
     db: AsyncSession,
     *,
@@ -98,43 +139,52 @@ async def assign_next_task(
     session_id: uuid.UUID,
     subject: str,
     requested_minutes: int | None = None,
+    ability_id: str | None = None,
 ) -> dict:
     """取下一题并落 task_instance，返回 OpenAPI TaskInstance 结构。
 
-    无 ability_id 入参：后端从候选能力里找「fit_band 内有已发布资源」的第一个组合。
-    候选顺序 = 能力 level 升序（发展中优先），fit_band 由该能力等级+置信度推导。
+    - 显式 ability_id（前端挑战卡片 → 能力映射）：优先 fit_band 内选题，
+      带内无题退到该能力最低难度（保证指定能力一定有题）。
+    - 未指定：候选能力 level 升序，取「fit_band 内有已发布资源」的第一个（原行为）。
     """
-    candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
-
-    # 逐个候选能力，找带内已发布资源
     selected_ability: str | None = None
     rv: ResourceVersion | None = None
     band_min = band_max = 1
-    for aid in candidates:
-        state = await db.get(AbilityState, {"child_id": child_id, "ability_id": aid})
+
+    if ability_id:
+        state = await db.get(AbilityState, {"child_id": child_id, "ability_id": ability_id})
         level = state.level if state else 0
         confidence = float(state.confidence) if state else 0.0
-        bmin, bmax = compute_fit_band(level=level, confidence=confidence)
+        band_min, band_max = compute_fit_band(level=level, confidence=confidence)
+        rv = await _published_resource_for_ability(
+            db,
+            ability_id=ability_id,
+            band_min=band_min,
+            band_max=band_max,
+            fallback_to_lowest=True,
+        )
+        if rv is not None:
+            selected_ability = ability_id
+    else:
+        candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
+        for aid in candidates:
+            state = await db.get(AbilityState, {"child_id": child_id, "ability_id": aid})
+            level = state.level if state else 0
+            confidence = float(state.confidence) if state else 0.0
+            bmin, bmax = compute_fit_band(level=level, confidence=confidence)
 
-        row = (
-            await db.execute(
-                select(ResourceVersion)
-                .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
-                .where(
-                    Resource.ability_id == aid,
-                    ResourceVersion.review_status == "published",
-                    ResourceVersion.difficulty >= bmin,
-                    ResourceVersion.difficulty <= bmax,
-                )
-                .order_by(ResourceVersion.published_at.desc())
-                .limit(1)
+            row = await _published_resource_for_ability(
+                db,
+                ability_id=aid,
+                band_min=bmin,
+                band_max=bmax,
+                fallback_to_lowest=False,
             )
-        ).scalar_one_or_none()
-        if row is not None:
-            selected_ability = aid
-            rv = row
-            band_min, band_max = bmin, bmax
-            break
+            if row is not None:
+                selected_ability = aid
+                rv = row
+                band_min, band_max = bmin, bmax
+                break
 
     if selected_ability is None or rv is None:
         return {
