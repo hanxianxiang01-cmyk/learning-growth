@@ -1,5 +1,8 @@
 # GitHub Setup
 
+> 本文件是仓库配置的**总览**。分支保护的**逐步点击操作**见专门的
+> [`GITHUB_BRANCH_PROTECTION_CHECKLIST.md`](./GITHUB_BRANCH_PROTECTION_CHECKLIST.md)。
+
 仓库创建后建议：
 
 ## main branch protection
@@ -11,13 +14,15 @@
 - Block force pushes
 - Block deletion
 
-建议至少要求：
+建议至少要求（**status check 名 = CI job 名，逐字一致**）：
 
 ```text
 governance
 child-typecheck
 child-build
 ```
+
+> 详细步骤、三个易踩的坑、配置后自测方法，见 `GITHUB_BRANCH_PROTECTION_CHECKLIST.md`。
 
 ## Merge
 推荐：
