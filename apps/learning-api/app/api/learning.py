@@ -50,13 +50,14 @@ async def next_task(
     payload: dict[str, Any] = Body(...),
     db: AsyncSession = Depends(get_db),
 ):
-    """取下一题（对齐 OpenAPI，无 ability_id，后端自选能力）。"""
+    """取下一题（对齐 OpenAPI；可选 ability_id：由前端挑战卡片显式指定能力，否则后端自选）。"""
     return await assign_next_task(
         db,
         child_id=payload["child_id"],
         session_id=payload["session_id"],
         subject=payload["subject"],
         requested_minutes=payload.get("requested_minutes"),
+        ability_id=payload.get("ability_id"),
     )
 
 

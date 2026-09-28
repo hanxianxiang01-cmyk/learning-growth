@@ -184,10 +184,20 @@ export class MockLearningApi implements LearningApi {
     session_id: string;
     subject: "math" | "english";
     requested_minutes?: number;
+    ability_id?: string;
   }): Promise<TaskInstance> {
     await wait();
     const idx = sessionIndex.get(input.session_id) ?? 0;
-    const task = taskBank[Math.min(idx, taskBank.length - 1)];
+
+    // 指定能力：优先取该能力的第一道题；否则维持原有「顺序轮换」行为。
+    let task: MockTask;
+    if (input.ability_id) {
+      const target = taskBank.find(t => t.ability_id === input.ability_id);
+      task = target ?? taskBank[Math.min(idx, taskBank.length - 1)];
+    } else {
+      task = taskBank[Math.min(idx, taskBank.length - 1)];
+    }
+
     const instanceId = `${task.task_instance_id}-${idx}`;
 
     sessionIndex.set(input.session_id, idx + 1);

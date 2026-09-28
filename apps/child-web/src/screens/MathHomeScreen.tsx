@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getLearningApi } from "@/src/lib/api";
+import { resolveAbilityId, type ChallengeKind } from "@/src/lib/challengeMapping";
 import type { AbilityState, LearnerProfile } from "@/src/lib/api/contracts";
 import {
   GrowthEntryCard,
@@ -29,7 +30,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
       .finally(() => setLoading(false));
   }, [api, childId]);
 
-  const start = async () => {
+  const start = async (challenge: ChallengeKind) => {
     setStarting(true);
     setError(null);
     try {
@@ -38,8 +39,14 @@ export function MathHomeScreen({ childId }: { childId: string }) {
         subject: "math",
         requested_minutes: 15
       });
+      const abilityId = resolveAbilityId(challenge, abilities);
+      const params = new URLSearchParams({
+        child_id: childId
+      });
+      if (abilityId) params.set("ability_id", abilityId);
+      if (challenge) params.set("challenge", challenge);
       router.push(
-        `/child/math/session/${session.session_id}?child_id=${encodeURIComponent(childId)}`
+        `/child/math/session/${session.session_id}?${params.toString()}`
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "创建学习会话失败");
@@ -96,7 +103,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
               minutes={8}
               difficulty={2}
               loading={starting}
-              onStart={start}
+              onStart={() => start("quantity")}
             />
             <MathTaskCard
               icon="🧩"
@@ -105,7 +112,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
               minutes={6}
               difficulty={2}
               loading={starting}
-              onStart={start}
+              onStart={() => start("strategy")}
             />
           </div>
         </section>

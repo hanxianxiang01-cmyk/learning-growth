@@ -166,6 +166,7 @@ export type LearningApi = {
     session_id: string;
     subject: Subject;
     requested_minutes?: number;
+    ability_id?: string;
   }): Promise<TaskInstance>;
   submitAttempt(input: AttemptRequest): Promise<AttemptResult>;
   requestHint(input: {

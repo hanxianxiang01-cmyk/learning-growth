@@ -30,6 +30,12 @@ dist/
 artifacts/
 *.tmp
 
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
 # local AI/work scratch
 .ai-work/
 .local-handoff/
