@@ -4,8 +4,8 @@
 > 适用：`hanxianxiang01-cmyk/learning-growth`（公开仓库）。
 > 前置：需要仓库 **Admin** 权限（仓库 Owner 天然具备）。
 
-> **状态（2026-09-28）**：本仓库的分支保护**已通过 API 配置完成**（ruleset `protect-main`，enforcement=active，含 require PR / **0 approval（单人阶段）** / 3 status checks / no-deletion / no-force-push）。
-> **Approval 门槛说明**：单人维护阶段 `required_approving_review_count` 暂设为 **0**（GitHub 禁止作者自审自批，设 1 会导致合入死锁）。待前端开发者等协作者进场后，改回 **1** 即可恢复「必须 1 人 approve」的严格流程。
+> **状态（2026-09-28）**：本仓库的分支保护**已通过 API 配置完成**（ruleset `protect-main`，enforcement=active，含 require PR / **0 approval** / 3 status checks / no-deletion / no-force-push）。
+> **Approval 门槛说明（长期策略）**：`required_approving_review_count` 恒为 **0**。因为本仓库长期由**单一账号**维护（前端与后端均为同一人 `hanxianxiang01-cmyk`，GitHub 禁止作者自审自批，设 1 会造成合入死锁）。对 `main` 的严谨性由「**必须走 PR + 3 个 CI check 全绿**」来兜底——不允许直推，任何改动都必须先开 PR 并跑通 CI 才能合入。若未来真有第二个独立账号加入，再考虑把该值改为 1。
 > 下方保留手动配置步骤，供团队将它迁移到 UI 或调整规则时参考。
 
 ---
@@ -85,7 +85,7 @@ main
 | 配置项 | 勾选 | 说明 |
 |---|---|---|
 | **Require a pull request before merging** | ✅ | 强制走 PR |
-| └ Require approvals | ✅ 当前 `0` | 单人阶段设 0（作者不能自审自批）；加协作者后改为 1 |
+| └ Require approvals | ✅ 当前 `0` | 长期单人账号维护，恒设 0（作者不能自审自批）；若新增独立第二账号再改 1 |
 | └ Dismiss stale approvals when new commits are pushed | ✅ | 新提交后旧 approval 失效 |
 | └ Require review from Code Owners | ⬜ 暂不勾 | 需要 CODEOWNERS 文件才有效（见 §5） |
 | **Require status checks to pass before merging** | ✅ | 强制 CI 绿 |
