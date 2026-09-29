@@ -14,8 +14,11 @@ class Settings(BaseSettings):
     # 数据库连接（postgresql+psycopg://），由环境变量 DATABASE_URL 注入
     database_url: str = "postgresql+psycopg://user:CHANGE_ME@localhost:5432/db"
 
-    # CORS
-    cors_origins: list[str] = ["http://localhost:3000"]
+    # CORS 白名单：同时允许 localhost 与 127.0.0.1（前端 dev server 两套地址都可能用）
+    cors_origins: list[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
 
 
 @lru_cache

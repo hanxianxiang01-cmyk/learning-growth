@@ -36,10 +36,14 @@ async def create_session(
     db: AsyncSession = Depends(get_db),
 ):
     """开始学习 session（对齐 OpenAPI，body 传参）。"""
+    child_id = payload.get("child_id")
+    subject = payload.get("subject")
+    if not child_id or not subject:
+        raise HTTPException(status_code=422, detail="child_id 和 subject 均为必填字段")
     return await start_session(
         db,
-        child_id=payload["child_id"],
-        subject=payload["subject"],
+        child_id=child_id,
+        subject=subject,
         requested_minutes=payload.get("requested_minutes"),
         plan_id=payload.get("plan_id"),
     )
