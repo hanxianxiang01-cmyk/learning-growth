@@ -31,110 +31,333 @@ type MockSessionStats = {
   completed: boolean;
 };
 
+// 与后端 ability_seed 一致的 7 能力（app_* 前缀），level 模拟一个正在成长中的孩子。
+// 依赖链顺序：app_rd → app_cond → app_rel → app_model → app_strat → app_check → app_transfer
 const abilities: AbilityState[] = [
-  { ability_id: "MATH-LANG", name: "理解题意", level: 3, confidence: 0.78, evidence_count: 8, trend: "stable", fit_band: { min: 2, max: 3 } },
-  { ability_id: "REL", name: "数量关系", level: 2, confidence: 0.72, evidence_count: 6, trend: "up", fit_band: { min: 2, max: 3 } },
-  { ability_id: "CALC", name: "计算能力", level: 3, confidence: 0.84, evidence_count: 12, trend: "stable", fit_band: { min: 2, max: 4 } },
-  { ability_id: "STRAT", name: "数学策略", level: 2, confidence: 0.64, evidence_count: 5, trend: "watch", fit_band: { min: 2, max: 3 } },
-  { ability_id: "CHECK", name: "检查验证", level: 2, confidence: 0.61, evidence_count: 5, trend: "up", fit_band: { min: 2, max: 3 } },
-  { ability_id: "TRANSFER", name: "迁移应用", level: 1, confidence: 0.42, evidence_count: 2, trend: "watch", fit_band: { min: 1, max: 2 } }
+  { ability_id: "app_rd", name: "读题理解", level: 3, confidence: 0.8, evidence_count: 10, trend: "stable", fit_band: { min: 2, max: 3 } },
+  { ability_id: "app_cond", name: "条件识别", level: 3, confidence: 0.76, evidence_count: 8, trend: "stable", fit_band: { min: 2, max: 3 } },
+  { ability_id: "app_rel", name: "数量关系", level: 2, confidence: 0.72, evidence_count: 6, trend: "up", fit_band: { min: 2, max: 3 } },
+  { ability_id: "app_model", name: "建模表征", level: 1, confidence: 0.55, evidence_count: 3, trend: "up", fit_band: { min: 1, max: 2 } },
+  { ability_id: "app_strat", name: "策略选择", level: 2, confidence: 0.64, evidence_count: 5, trend: "watch", fit_band: { min: 2, max: 3 } },
+  { ability_id: "app_check", name: "检查验算", level: 1, confidence: 0.5, evidence_count: 2, trend: "watch", fit_band: { min: 1, max: 2 } },
+  { ability_id: "app_transfer", name: "迁移变式", level: 0, confidence: 0.4, evidence_count: 1, trend: "watch", fit_band: { min: 1, max: 1 } }
 ];
 
-const responseSchema = {
+const structuredResponseSchema = {
   type: "structured" as const,
   answer_type: "number" as const,
   representation_required: true
 };
 
+const numberResponseSchema = {
+  type: "structured" as const,
+  answer_type: "number" as const,
+  representation_required: false
+};
+
+// mock 题库：精选覆盖三种交互工作台（objects / bar-model / number-line）+ 关键能力，
+// 与后端 50 题题库的题目同源（各取代表性变式），保证 mock 模式与 http 模式体验一致。
+// 能力 ID 统一用 app_*，与 challengeMapping（按名称「数量关系」/「策略」匹配）联动。
 const taskBank: MockTask[] = [
+  // ---- app_rel（数量关系）—— 首页「数量关系挑战」入口 ----
   {
-    task_instance_id: "mock-task-objects",
-    ability_id: "REL",
-    difficulty: 2,
-    goal: "理解“比……多/少”的数量关系",
+    task_instance_id: "mock-rel-objects-1",
+    ability_id: "app_rel",
+    difficulty: 1,
+    goal: "理解两个部分合成一个整体的数量关系",
     strategy_policy: { hint_max_level: 4 },
     ui_schema: {
       schema_version: "1.0",
       kind: "manipulative",
-      prompt: "小明有 8 个苹果，小红有 5 个苹果。小明比小红多几个苹果？",
-      answer_placeholder: "输入相差的数量",
+      prompt: "小雨有4个红气球，又拿来了3个蓝气球。现在一共有多少个气球？",
+      answer_placeholder: "输入数字",
       visual: {
         type: "objects",
         groups: [
-          { id: "ming", label: "小明", count: 8, symbol: "🍎" },
-          { id: "hong", label: "小红", count: 5, symbol: "🍎" }
+          { id: "g1", label: "第1组", count: 4, symbol: "🎈" },
+          { id: "g2", label: "第2组", count: 3, symbol: "🎈" }
         ]
       },
       tools: ["move", "align", "undo", "reset"],
-      response_schema: responseSchema
+      response_schema: structuredResponseSchema
     },
-    __answer: "3",
+    __answer: "7",
     __hints: [
-      "先别急着算。题目是在问“合起来”，还是在“比较”？",
-      "把小明和小红的苹果一一对齐，看看多出来几个。",
-      "可以先使用“一一对齐”，再数多出来的苹果。",
-      "8 − 5 = 3，所以小明比小红多 3 个苹果。"
+      "先看看，气球的数量是变多了还是变少了？",
+      "把两组气球放到一起数一数。",
+      "这是把4和3合在一起，可以用加法表示。",
+      "4 + 3 等于几？"
     ]
   },
   {
-    task_instance_id: "mock-task-bar",
-    ability_id: "STRAT",
+    task_instance_id: "mock-rel-bar-1",
+    ability_id: "app_rel",
     difficulty: 2,
-    goal: "用线段图表示总量和部分",
+    goal: "理解整体与部分之间的关系",
     strategy_policy: { hint_max_level: 4 },
     ui_schema: {
       schema_version: "1.0",
       kind: "manipulative",
-      prompt: "书架上原来有 12 本书，借走 4 本。现在还有几本？",
-      answer_placeholder: "输入剩下的本数",
+      prompt: "盒子里一共有12张贴纸，其中5张是星星贴纸，其余都是圆形贴纸。圆形贴纸有多少张？",
+      answer_placeholder: "输入数字",
       visual: {
         type: "bar-model",
         relationship: "part-whole",
-        max_value: 12,
+        max_value: 14,
         bars: [
-          { id: "total", label: "原来", value: 12, min: 0, max: 12 },
-          { id: "taken", label: "借走", value: 4, min: 0, max: 12 },
-          { id: "remain", label: "剩下", min: 0, max: 12, unknown: true }
+          { id: "total", label: "一共", value: 12, min: 0, max: 12 },
+          { id: "known", label: "已知部分", value: 5, min: 0, max: 12 },
+          { id: "unknown", label: "未知部分", min: 0, max: 12, unknown: true }
         ]
       },
       tools: ["resize", "undo", "reset"],
-      response_schema: responseSchema
+      response_schema: structuredResponseSchema
     },
-    __answer: "8",
+    __answer: "7",
     __hints: [
-      "“借走”以后，数量是变多了还是变少了？",
-      "在线段图里找一找：原来的总量和借走的部分分别在哪里？",
-      "试着调整“剩下”的线段，让三个量之间的关系更清楚。",
-      "12 − 4 = 8，所以还剩 8 本。"
+      "12表示整体，5表示其中一部分。现在要找的是哪一部分？",
+      "可以画一条表示12的长条，再标出其中5。",
+      "已知整体和一部分，要找另一部分，可以用减法。",
+      "12 - 5 等于几？"
     ]
   },
   {
-    task_instance_id: "mock-task-number-line",
-    ability_id: "CHECK",
-    difficulty: 2,
-    goal: "用数轴表示连续加法",
+    task_instance_id: "mock-rel-numberline-1",
+    ability_id: "app_rel",
+    difficulty: 1,
+    goal: "理解数量增加后的结果关系",
     strategy_policy: { hint_max_level: 4 },
     ui_schema: {
       schema_version: "1.0",
       kind: "manipulative",
-      prompt: "一盒彩笔有 6 支，两盒一共有多少支？试着从 6 开始在数轴上再跳 6。",
-      answer_placeholder: "输入最后到达的数字",
+      prompt: "树上原来有6只小鸟，又飞来了2只。现在树上一共有多少只小鸟？",
+      answer_placeholder: "输入数字",
       visual: {
         type: "number-line",
         min: 0,
-        max: 15,
+        max: 10,
         step: 1,
         start: 6
       },
       tools: ["jump", "undo", "reset"],
-      response_schema: responseSchema
+      response_schema: structuredResponseSchema
     },
-    __answer: "12",
+    __answer: "8",
     __hints: [
-      "题目里已经有一盒彩笔的 6 支，数轴可以从 6 开始。",
-      "看看数轴上的起点 6，再向右找更大的数。",
-      "从 6 跳到 12，相当于又增加了 6。",
-      "6 + 6 = 12。"
+      "“又飞来了”以后，小鸟是变多了还是变少了？",
+      "可以从6开始，再向更大的数走2步。",
+      "数量变多，可以用加法表示。",
+      "6 + 2 等于几？"
+    ]
+  },
+
+  // ---- app_strat（策略选择）—— 首页「策略挑战」入口 ----
+  {
+    task_instance_id: "mock-strat-numberline-1",
+    ability_id: "app_strat",
+    difficulty: 1,
+    goal: "理解数量增加后的结果关系",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "1.0",
+      kind: "manipulative",
+      prompt: "小明有5支铅笔，妈妈又给了他3支。现在小明有多少支铅笔？",
+      answer_placeholder: "输入数字",
+      visual: {
+        type: "number-line",
+        min: 0,
+        max: 10,
+        step: 1,
+        start: 5
+      },
+      tools: ["jump", "undo", "reset"],
+      response_schema: structuredResponseSchema
+    },
+    __answer: "8",
+    __hints: [
+      "“又给了”以后，铅笔是变多了还是变少了？",
+      "可以从5开始，向更大的数走3步。",
+      "增加的数量可以用加法算。",
+      "5 + 3 等于几？"
+    ]
+  },
+  {
+    task_instance_id: "mock-strat-bar-1",
+    ability_id: "app_strat",
+    difficulty: 2,
+    goal: "理解“比基准多多少”时较大数量的求法",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "1.0",
+      kind: "manipulative",
+      prompt: "小杰有7张卡片，小宁比小杰多4张。小宁有多少张卡片？",
+      answer_placeholder: "输入数字",
+      visual: {
+        type: "bar-model",
+        relationship: "compare",
+        max_value: 13,
+        bars: [
+          { id: "base", label: "已知", value: 7, min: 0, max: 13 },
+          { id: "unknown", label: "未知", min: 0, max: 13, unknown: true }
+        ]
+      },
+      tools: ["resize", "undo", "reset"],
+      response_schema: structuredResponseSchema
+    },
+    __answer: "11",
+    __hints: [
+      "小杰的7张是基准，小宁比这个基准多还是少？",
+      "先画出表示7的线段，再在小宁这一条上多出4。",
+      "求“比7多4”的数量，要把多出来的4加上去。",
+      "7 + 4 等于几？"
+    ]
+  },
+  {
+    task_instance_id: "mock-strat-objects-1",
+    ability_id: "app_strat",
+    difficulty: 1,
+    goal: "理解两个数量之间的差",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "1.0",
+      kind: "manipulative",
+      prompt: "小红有8朵花，小蓝有5朵花。小红比小蓝多几朵？",
+      answer_placeholder: "输入数字",
+      visual: {
+        type: "objects",
+        groups: [
+          { id: "g1", label: "第1组", count: 8, symbol: "🌸" },
+          { id: "g2", label: "第2组", count: 5, symbol: "🌸" }
+        ]
+      },
+      tools: ["move", "align", "undo", "reset"],
+      response_schema: structuredResponseSchema
+    },
+    __answer: "3",
+    __hints: [
+      "题目是在问一共，还是在问相差多少？",
+      "把8朵和5朵一一对齐看看。",
+      "求相差多少，可以用大的数减小的数。",
+      "8 - 5 等于几？"
+    ]
+  },
+
+  // ---- app_model（建模表征）—— 线段图 ----
+  {
+    task_instance_id: "mock-model-bar-1",
+    ability_id: "app_model",
+    difficulty: 2,
+    goal: "用线段图表征整体与部分",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "1.0",
+      kind: "manipulative",
+      prompt: "一盒彩纸有13张，其中红色5张，其余是黄色。黄色彩纸有多少张？",
+      answer_placeholder: "输入数字",
+      visual: {
+        type: "bar-model",
+        relationship: "part-whole",
+        max_value: 15,
+        bars: [
+          { id: "total", label: "一共", value: 13, min: 0, max: 13 },
+          { id: "known", label: "已知部分", value: 5, min: 0, max: 13 },
+          { id: "unknown", label: "未知部分", min: 0, max: 13, unknown: true }
+        ]
+      },
+      tools: ["resize", "undo", "reset"],
+      response_schema: structuredResponseSchema
+    },
+    __answer: "8",
+    __hints: [
+      "13是整体，5是其中一部分，要找另一部分。",
+      "用一条线段表示13，标出已知的5。",
+      "求另一部分，从整体去掉已知部分。",
+      "13 - 5 等于几？"
+    ]
+  },
+
+  // ---- app_check（检查验算）—— 数轴 ----
+  {
+    task_instance_id: "mock-check-numberline-1",
+    ability_id: "app_check",
+    difficulty: 2,
+    goal: "能发现结果是否合理",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "1.0",
+      kind: "manipulative",
+      prompt: "小林有8个苹果，吃掉3个。小华算“8 - 3 = 6”。请检查：小华的答案正确填1，错误填0。",
+      answer_placeholder: "输入1或0",
+      visual: {
+        type: "number-line",
+        min: 0,
+        max: 12,
+        step: 1,
+        start: 8
+      },
+      tools: ["jump", "undo", "reset"],
+      response_schema: structuredResponseSchema
+    },
+    __answer: "0",
+    __hints: [
+      "先自己算一算：8减3等于几？",
+      "在数轴上从8往左走3格，会到哪里？",
+      "小华算的是6，和你算的结果一样吗？",
+      "8 - 3 应该等于 5，所以小华错了吗？"
+    ]
+  },
+
+  // ---- app_rd（读题理解）—— 纯 number ----
+  {
+    task_instance_id: "mock-rd-number-1",
+    ability_id: "app_rd",
+    difficulty: 1,
+    goal: "能读清题目所问对象",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "1.0",
+      kind: "number",
+      prompt: "乐乐有5个橘子和2本书。题目问：乐乐有几本书？",
+      answer_placeholder: "输入数字",
+      response_schema: numberResponseSchema
+    },
+    __answer: "2",
+    __hints: [
+      "先圈出题目最后问的是什么。",
+      "题目问的是“书”，不是“橘子”。",
+      "找到和“书”放在一起的数字。",
+      "“2本书”里的数字是多少？"
+    ]
+  },
+
+  // ---- app_transfer（迁移变式）—— 数轴两步 ----
+  {
+    task_instance_id: "mock-transfer-numberline-1",
+    ability_id: "app_transfer",
+    difficulty: 5,
+    goal: "把“先增加后减少”的两步策略迁移到新情境",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "1.0",
+      kind: "manipulative",
+      prompt: "书架上原来有8本新书，老师又放上5本，后来同学借走4本。现在书架上有多少本书？",
+      answer_placeholder: "输入数字",
+      visual: {
+        type: "number-line",
+        min: 0,
+        max: 16,
+        step: 1,
+        start: 8
+      },
+      tools: ["jump", "undo", "reset"],
+      response_schema: structuredResponseSchema
+    },
+    __answer: "9",
+    __hints: [
+      "先判断两次变化分别是增加还是减少。",
+      "从8开始，先向前走5步，再向后走4步。",
+      "第一步加5，第二步减4。",
+      "先算8 + 5，再把结果减4。最后是多少？"
     ]
   }
 ];
@@ -143,6 +366,9 @@ const sessionIndex = new Map<string, number>();
 const sessionStats = new Map<string, MockSessionStats>();
 const taskInstanceMeta = new Map<string, { task: MockTask; sessionId: string }>();
 const attemptMeta = new Map<string, { task: MockTask; sessionId: string }>();
+
+// 一次 session 的目标任务数（与后端 SESSION_TASK_GOAL 对齐）
+const SESSION_TASK_GOAL = 3;
 
 function uuid() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -182,9 +408,9 @@ export class MockLearningApi implements LearningApi {
       child_id: childId,
       grade: "2",
       region_code: "CN-SH",
-      active_abilities: abilities.filter(a => ["REL", "STRAT", "CHECK"].includes(a.ability_id)),
-      strengths: ["CALC"],
-      developing: ["REL", "STRAT", "CHECK"],
+      active_abilities: abilities,
+      strengths: ["app_rd", "app_cond"],
+      developing: ["app_rel", "app_model", "app_strat", "app_check", "app_transfer"],
       observations: ["开始主动使用图示方法"]
     };
   }
@@ -230,10 +456,13 @@ export class MockLearningApi implements LearningApi {
     await wait();
     const idx = sessionIndex.get(input.session_id) ?? 0;
 
+    // 指定能力：优先取该能力的第一道题；否则按「已做过几题」轮换。
     let task: MockTask;
     if (input.ability_id) {
-      const target = taskBank.find(t => t.ability_id === input.ability_id);
-      task = target ?? taskBank[Math.min(idx, taskBank.length - 1)];
+      const candidates = taskBank.filter(t => t.ability_id === input.ability_id);
+      task = candidates.length
+        ? candidates[Math.min(idx, candidates.length - 1)]
+        : taskBank[Math.min(idx, taskBank.length - 1)];
     } else {
       task = taskBank[Math.min(idx, taskBank.length - 1)];
     }
@@ -262,20 +491,21 @@ export class MockLearningApi implements LearningApi {
     attemptMeta.set(attempt_id, meta);
 
     if (correct) {
-      const isLast = meta.task.task_instance_id === "mock-task-number-line";
+      // 答对：taskCount+1，达到 SESSION_TASK_GOAL 时完成
       if (stats) {
         stats.taskCount += 1;
-        if (isLast) {
+        if (stats.taskCount >= SESSION_TASK_GOAL) {
           stats.completed = true;
           stats.completedAt = Date.now();
         }
         sessionStats.set(meta.sessionId, stats);
       }
+      const isComplete = stats ? stats.taskCount >= SESSION_TASK_GOAL : false;
       return {
         attempt_id,
         correct: true,
         diagnosis: null,
-        next_action: { type: isLast ? "COMPLETE" : "NEXT_TASK" }
+        next_action: { type: isComplete ? "COMPLETE" : "NEXT_TASK" }
       };
     }
 
@@ -344,7 +574,7 @@ export class MockLearningApi implements LearningApi {
 
     const abilityChanges: AbilityChange[] = [
       {
-        ability_id: "REL",
+        ability_id: "app_rel",
         name: "数量关系",
         before_level: 2,
         after_level: 2,
@@ -358,7 +588,7 @@ export class MockLearningApi implements LearningApi {
       type: "CONTINUE_ABILITY",
       title: "继续练习数量关系",
       description: "下一轮继续尝试用物件、线段图和数轴表示题目关系。",
-      ability_id: "REL"
+      ability_id: "app_rel"
     };
 
     return {
