@@ -17,6 +17,43 @@ from app.core.config import get_settings
 from app.models import AbilityEdge, AbilityNode, Resource, ResourceVersion
 
 
+def _build_ui_schema_v1(r: dict) -> dict:
+    """把 GOLD_RESOURCES 的 visual/tools 组装为 TaskUISchema V1。
+
+    对齐前端 contracts.ts 的 ManipulativeTaskUiSchema / NumberTaskUiSchema：
+    - 有 visual → kind="manipulative"，携带 visual + tools + response_schema
+    - 无 visual → kind="number"，仅 prompt + response_schema
+    representation_required 由是否提供可视化操作区决定（manipulative 必填，number 免填）。
+    """
+    stem = r["content"]["stem"]
+    visual = r.get("visual")
+    if visual is not None:
+        return {
+            "schema_version": "1.0",
+            "kind": "manipulative",
+            "prompt": stem,
+            "answer_placeholder": "输入数字",
+            "visual": visual,
+            "tools": r.get("tools", []),
+            "response_schema": {
+                "type": "structured",
+                "answer_type": "number",
+                "representation_required": True,
+            },
+        }
+    return {
+        "schema_version": "1.0",
+        "kind": "number",
+        "prompt": stem,
+        "answer_placeholder": "输入数字",
+        "response_schema": {
+            "type": "structured",
+            "answer_type": "number",
+            "representation_required": False,
+        },
+    }
+
+
 async def seed(content_only: bool = True) -> dict:
     settings = get_settings()
     engine = create_async_engine(settings.database_url)
@@ -101,11 +138,7 @@ async def seed(content_only: bool = True) -> dict:
                     difficulty=r["difficulty"],
                     task_type=r["task_type"],
                     content=r["content"],
-                    ui_schema={
-                        "kind": "number",
-                        "prompt": r["content"]["stem"],
-                        "answer_placeholder": "输入数字",
-                    },
+                    ui_schema=_build_ui_schema_v1(r),
                     error_models=r["error_models"],
                     hint_policy={"ladder": r["hint_ladder"]},
                     mastery_rule=None,
