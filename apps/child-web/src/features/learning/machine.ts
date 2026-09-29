@@ -97,11 +97,15 @@ export function learningReducer(
     case "ATTEMPT_RESULT": {
       const code = getNextActionCode(action.result);
 
+      // 每次「提交」都消耗一个 attempt_no，提交完成后递增，
+      // 保证孩子改答案后直接再提交时得到新的 attempt_no，
+      // 否则后端幂等会一直返回第一次的结果。
       if (action.result.correct) {
         return {
           ...state,
           lastAttempt: action.result,
-          status: code === "COMPLETE" ? "completed" : "correct"
+          status: code === "COMPLETE" ? "completed" : "correct",
+          attemptNo: state.attemptNo + 1
         };
       }
 
@@ -109,14 +113,16 @@ export function learningReducer(
         return {
           ...state,
           lastAttempt: action.result,
-          status: "hint_available"
+          status: "hint_available",
+          attemptNo: state.attemptNo + 1
         };
       }
 
       return {
         ...state,
         lastAttempt: action.result,
-        status: "retry"
+        status: "retry",
+        attemptNo: state.attemptNo + 1
       };
     }
 
@@ -137,8 +143,7 @@ export function learningReducer(
       return {
         ...state,
         status: "answering",
-        response: { ...state.response, answer: "" },
-        attemptNo: state.attemptNo + 1
+        response: { ...state.response, answer: "" }
       };
 
     case "ERROR":
