@@ -299,7 +299,9 @@ async def request_hint(
 ) -> dict:
     """受控 Hint：由 attempt 反查 task → resource 的 hint_policy.ladder。
 
-    返回 OpenAPI hints 结构（action_type + text + answer_revealed）。
+    返回 OpenAPI hints 结构（action_type + text + answer_revealed + ui_action）。
+    ui_action 对齐前端 WorkspaceUiAction：根据 ui_schema.visual.type 驱动图示交互
+    （highlight / align_groups / show_bar_relation / show_number_line_start）。
     """
     attempt = await db.get(Attempt, attempt_id)
     if attempt is None:
@@ -325,7 +327,33 @@ async def request_hint(
         "action_type": action_type,
         "text": text,
         "answer_revealed": False,  # 红线：任何 Hint 不直接泄答案
+        "ui_action": _build_ui_action(rv, level),
     }
+
+
+def _build_ui_action(rv: ResourceVersion | None, level: int) -> dict | None:
+    """根据资源的 TaskUISchema V1 visual.type 生成对应的工作台 ui_action。"""
+    if rv is None or level < 2:
+        return None
+    ui_schema = rv.ui_schema if isinstance(rv.ui_schema, dict) else {}
+    if ui_schema.get("kind") != "manipulative":
+        return None
+    visual = ui_schema.get("visual")
+    if not isinstance(visual, dict):
+        return None
+
+    vtype = visual.get("type")
+    if vtype == "objects":
+        groups = visual.get("groups") or []
+        if level == 3:
+            return {"type": "align_groups"}
+        return {"type": "highlight", "targets": [g.get("id") for g in groups if isinstance(g, dict)]}
+    if vtype == "bar-model":
+        bars = visual.get("bars") or []
+        return {"type": "show_bar_relation", "targets": [b.get("id") for b in bars if isinstance(b, dict)]}
+    if vtype == "number-line":
+        return {"type": "show_number_line_start", "value": visual.get("start")}
+    return None
 
 
 def _judge(expected: object, user_answer: object) -> bool:
