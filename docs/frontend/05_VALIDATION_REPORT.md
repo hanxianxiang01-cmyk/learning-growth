@@ -3,52 +3,80 @@
 ## Version
 
 ```text
-1.2.0
+1.3.0 — Math Interaction Foundation
 ```
 
-## 已完成静态校验
-
-- 18 个核心 `.tsx` 组件文件存在
-- App Router 路由存在：
-  - `/child/math`
-  - `/child/math/session/[sessionId]`
-  - `/child/math/result/[sessionId]`
-  - `/child/math/growth`
-  - `/dev/ui-kit`
-- SessionResult类型存在
-- `LearningApi.getSessionResult` 存在
-- Http / Mock 两个 Adapter 均实现 `getSessionResult`
-- Result Screen 不再以 `sessionStore` 为主要数据源
-- learning_behaviors 驱动 checklist
-- ability_changes 驱动 AbilityGrowthCard
-- next_recommendation 驱动 NextTaskCard
-- Result loading / error / fallback / retry 状态存在
-- sessionStore仅在Result API失败时fallback
-- 版本文件一致性纳入发布规则
-
-## API基线注意
-
-本地冻结文件：
+## Issue Scope
 
 ```text
-儿童学习成长系统_V2.0_冻结基线_V1.3同步包/02_openapi_v1.3.yaml
+FE-1301～FE-1305
+API-1306～API-1308
+QA-1312
 ```
 
-当前尚未包含新 Session Result Endpoint 路径。
+## 已执行并通过
 
-因此使用：
+### 1. V1.3静态验收
+
+```bash
+npm run qa:v13
+```
+
+覆盖：
+- Task Renderer
+- Workspace State
+- Object Counter
+- Bar Model
+- Number Line
+- TaskUISchema V1
+- Structured Response
+- Workspace-aware Hint
+- QA route
+
+### 2. Release一致性
+
+```bash
+npm run release:check
+```
+
+通过：
+- VERSION = 1.3.0
+- package.json = 1.3.0
+- project_manifest = 1.3.0
+- releases/1.3.0.json
+- releases/index.json
+- CHANGELOG 1.3.0
+
+### 3. TypeScript内部严格校验
+
+由于当前执行环境无法下载 React / Next npm dependencies，本次使用临时外部模块类型shim执行 `strict` TypeScript项目级检查；项目自身类型关系通过。
+
+临时shim已在打包前删除，不进入项目。
+
+### 4. TS/TSX语法转译检查
 
 ```text
-NEXT_PUBLIC_SESSION_RESULT_PATH_TEMPLATE
+53 files
+Syntax transpile check OK
 ```
 
-作为临时路径适配。
+### 5. Onboarding规则复核
 
-这不是对后端路径的冻结定义。
+已修正：
 
-## 完整构建验证
+```text
+NEXT_PUBLIC_LEARNING_API_BASE_URL=http://localhost:8000
+```
 
-正式发布前仍应在安装依赖后执行：
+不带 `/api` 前缀。
+
+---
+
+## 当前环境未完成
+
+### npm install / next build
+
+当前执行环境访问外部 npm registry 超时，因此不能诚实声明以下命令已完整执行：
 
 ```bash
 npm install
@@ -56,4 +84,21 @@ npm run typecheck
 npm run build
 ```
 
-并使用实际 Session Result API 做Contract联调。
+正式接入仓库/有网络环境后，合并前必须补跑。
+
+---
+
+## HTTP联调外部依赖
+
+真实 Learning Engine 需要确认：
+
+1. Attempt endpoint 接受 Structured Response；
+2. Next Task 能提供 TaskUISchema V1 或可被 normalizer兼容的旧Schema；
+3. Hint可选提供 `ui_action`；
+4. Session Result endpoint继续可用。
+
+详见：
+
+```text
+docs/20_BACKEND_CONTRACT_DEPENDENCIES_V1.3.md
+```

@@ -44,13 +44,13 @@ function Gallery({ skin }: { skin: "healing" | "math-lab" }) {
         <Preview name="06 MathTaskCard"><MathTaskCard icon="🧪" title="数量关系实验" goal="摆一摆、画一画" minutes={8} difficulty={2}/></Preview>
         <Preview name="07 GrowthEntryCard"><GrowthEntryCard summary="本周又成长了一点" href="#"/></Preview>
         <Preview name="08 MathQuestionCard"><MathQuestionCard prompt="8个苹果比5个苹果多几个？" goal="数量关系"/></Preview>
-        <Preview name="09 MathWorkspace"><MathWorkspace uiSchema={{visual:{rows:[{label:"小明",count:8,symbol:"🍎"},{label:"小红",count:5,symbol:"🍎"}]}}}/></Preview>
+        <Preview name="09 MathWorkspace"><MathWorkspace uiSchema={{schema_version:"1.0",kind:"manipulative",prompt:"示例",visual:{type:"objects",groups:[{id:"ming",label:"小明",count:8,symbol:"🍎"},{id:"hong",label:"小红",count:5,symbol:"🍎"}]},tools:["move","align"],response_schema:{type:"structured",answer_type:"number",representation_required:true}}}/></Preview>
         <Preview name="10 ManipulativeToolbar"><ManipulativeToolbar/></Preview>
         <Preview name="11 AnswerComposer"><AnswerComposer value="" onChange={()=>{}} onSubmit={()=>{}} placeholder="输入答案"/></Preview>
         <Preview name="12 CoachPanel"><CoachPanel status="hint_available" hint={null} onHint={()=>{}} onRetry={()=>{}} onNext={()=>{}}/></Preview>
         <Preview name="13 CompletionHero"><CompletionHero subtitle="你完成了这次数学挑战。"/></Preview>
         <Preview name="14 LearningBehaviorChecklist"><LearningBehaviorChecklist items={[{label:"自己读懂题目",done:true},{label:"主动检查",done:false}]}/></Preview>
-        <Preview name="15 AbilityGrowthCard"><AbilityGrowthCard ability="数量关系" afterLevel={2} trend="up"/></Preview>
+        <Preview name="15 AbilityGrowthCard"><AbilityGrowthCard ability="数量关系" beforeLevel={2} afterLevel={2} trend="up"/></Preview>
         <Preview name="16 SessionStats"><SessionStats duration="6分钟" hints={1} attempts={3}/></Preview>
         <Preview name="17 NextTaskCard"><NextTaskCard title="继续挑战" description="进入下一项数学任务" href="#"/></Preview>
         <Preview name="18 AbilityMap"><AbilityMap abilities={abilities}/></Preview>
@@ -80,7 +80,8 @@ export default function Page() {
       <header>
         <span className="eyebrow">DEV ONLY</span>
         <h1>Built-in Skin UI Kit · 36个真实组件样例</h1>
-        <p className="muted">18个功能组件 × healing/math-lab 两套系统内置皮肤。</p>
+        <p className="muted">18个核心组件 × healing/math-lab 两套系统内置皮肤。V1.3新增数学交互组件在独立QA页验证。</p>
+        <a className="ui-kit-v13-link" href="/dev/v1.3-qa">打开 V1.3 Math Interaction QA →</a>
       </header>
       <div className="ui-kit-grid">
         <Gallery skin="healing"/>

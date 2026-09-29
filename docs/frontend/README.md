@@ -31,3 +31,10 @@ VERSION
 → ROADMAP
 → HANDOVER GUIDE
 ```
+
+| `17_RELEASE_NOTES_V1.3.md` | V1.3发布说明 |
+| `18_TASK_UI_SCHEMA_V1.md` | TaskUISchema V1规范 |
+| `19_V1.3_QA_ACCEPTANCE.md` | V1.3集成验收 |
+| `20_BACKEND_CONTRACT_DEPENDENCIES_V1.3.md` | V1.3后端Contract依赖 |
+| `21_MIGRATION_V1.2_TO_V1.3.md` | V1.2→V1.3迁移 |
+| `22_KNOWN_ISSUES_V1.3.md` | V1.3已知约束 |

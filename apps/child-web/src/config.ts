@@ -4,7 +4,7 @@ export const config = {
   apiMode:
     process.env.NEXT_PUBLIC_LEARNING_API_MODE === "http" ? "http" : "mock",
   apiBaseUrl:
-    process.env.NEXT_PUBLIC_LEARNING_API_BASE_URL ?? "http://localhost:8000/api",
+    process.env.NEXT_PUBLIC_LEARNING_API_BASE_URL ?? "http://localhost:8000",
 
   /**
    * Current frozen local OpenAPI v1.3 does not yet contain the newly-ready

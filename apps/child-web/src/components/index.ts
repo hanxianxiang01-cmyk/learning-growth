@@ -16,3 +16,6 @@ export * from "./result/AbilityGrowthCard";
 export * from "./result/SessionStats";
 export * from "./result/NextTaskCard";
 export * from "./growth/AbilityMap";
+export * from "./manipulatives/ObjectCounter";
+export * from "./manipulatives/BarModel";
+export * from "./manipulatives/NumberLine";

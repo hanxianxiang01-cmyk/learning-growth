@@ -1,3 +1,4 @@
+import type { ChangeEvent, KeyboardEvent } from "react";
 import { PrimaryButton } from "../ui/PrimaryButton";
 
 export function AnswerComposer({
@@ -21,8 +22,8 @@ export function AnswerComposer({
         value={value}
         disabled={disabled}
         placeholder={placeholder ?? "请输入答案"}
-        onChange={e => onChange(e.target.value)}
-        onKeyDown={e => {
+        onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
           if (e.key === "Enter" && value.trim() && !disabled) onSubmit();
         }}
       />

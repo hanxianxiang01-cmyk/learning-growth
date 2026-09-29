@@ -60,6 +60,27 @@ Major.Minor.Patch
 - **修复**：`record_attempt` 提交前查已有 `(task_instance_id, attempt_no)`，存在则直接返回第一次结果（不重复写 attempt/event/evidence）。
 - **影响**：即使前端漏防，同一 attempt 重复提交也返回 200 + 相同 attempt_id，不再 500。
 
+## Added（V1.3 Math Interaction Foundation，待正式发版）
+
+> 来自 `Math_Sprint3_Frontend_V1.3` 交付包的三方合并；开发期间不升版本号，仍保持 `1.2.0`。
+
+- FE-1301 Task Renderer V1：学习页改由 `TaskRenderer` 统一渲染（number / manipulative / unsupported 三分支）
+- FE-1302 隔离的 Workspace State：`math-workspace` 状态与学习状态机解耦（`WorkspaceProvider` + `workspaceReducer`）
+- FE-1303 交互式 Object Counter（一一对应摆一摆）
+- FE-1304 交互式 Bar Model（线段图）
+- FE-1305 交互式 Number Line（数轴跳跃）
+- API-1306 TaskUISchema V1：`contracts.ts` 引入判別联合 schema + `taskUiSchemaNormalizer` 兼容旧 schema
+- API-1307 Structured Response：attempt 提交 `TaskResponse { answer, representation }`
+- API-1308 Workspace-aware Hint：`HintResponse.ui_action` 驱动图示高亮/聚焦
+- QA-1312 `/dev/v1.3-qa` 双皮肤（healing / math-lab）QA 页
+
+## Changed（与 FE-1300 三方合并）
+
+- `math-workspace` / `task-renderer` 全新目录，`manipulatives` 3 个交互组件
+- `MathLearningScreen` 用 `TaskRenderer` 替代旧的 `MathQuestionCard + MathWorkspace`
+- `machine.ts`：`answer: string` → `response: TaskResponse`，`SET_ANSWER` → `SET_RESPONSE`
+- `config.ts`：`apiBaseUrl` 默认去掉 `/api` 后缀（对齐后端实际 `/v1/...` 前缀）
+
 ---
 
 # [1.2.0] - 2026-09-28
