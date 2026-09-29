@@ -2,8 +2,10 @@ import type {
   AttemptResult,
   HintResponse,
   NextActionCode,
-  TaskInstance
+  TaskInstance,
+  TaskResponse
 } from "@/src/lib/api/contracts";
+import { createEmptyTaskResponse } from "@/src/features/task-renderer";
 
 export type LearningStatus =
   | "idle"
@@ -21,7 +23,7 @@ export type LearningStatus =
 export type LearningState = {
   status: LearningStatus;
   task: TaskInstance | null;
-  answer: string;
+  response: TaskResponse;
   attemptNo: number;
   lastAttempt: AttemptResult | null;
   hint: HintResponse | null;
@@ -32,7 +34,7 @@ export type LearningState = {
 export type LearningAction =
   | { type: "LOAD_TASK" }
   | { type: "TASK_LOADED"; task: TaskInstance }
-  | { type: "SET_ANSWER"; answer: string }
+  | { type: "SET_RESPONSE"; response: TaskResponse }
   | { type: "SUBMIT" }
   | { type: "ATTEMPT_RESULT"; result: AttemptResult }
   | { type: "HINT_LOADING" }
@@ -43,7 +45,7 @@ export type LearningAction =
 export const initialLearningState: LearningState = {
   status: "idle",
   task: null,
-  answer: "",
+  response: createEmptyTaskResponse(),
   attemptNo: 1,
   lastAttempt: null,
   hint: null,
@@ -52,7 +54,7 @@ export const initialLearningState: LearningState = {
 };
 
 export function getNextActionCode(result: AttemptResult): NextActionCode {
-  return result.next_action?.type ?? "NEXT_TASK";
+  return result.next_action.type;
 }
 
 export function learningReducer(
@@ -65,7 +67,7 @@ export function learningReducer(
         ...state,
         status: "loading_task",
         task: null,
-        answer: "",
+        response: createEmptyTaskResponse(),
         attemptNo: 1,
         lastAttempt: null,
         hint: null,
@@ -78,7 +80,7 @@ export function learningReducer(
         ...state,
         status: "answering",
         task: action.task,
-        answer: "",
+        response: createEmptyTaskResponse(),
         attemptNo: 1,
         lastAttempt: null,
         hint: null,
@@ -86,8 +88,8 @@ export function learningReducer(
         error: null
       };
 
-    case "SET_ANSWER":
-      return { ...state, answer: action.answer };
+    case "SET_RESPONSE":
+      return { ...state, response: action.response };
 
     case "SUBMIT":
       return { ...state, status: "submitting", error: null };
@@ -135,7 +137,7 @@ export function learningReducer(
       return {
         ...state,
         status: "answering",
-        answer: "",
+        response: { ...state.response, answer: "" },
         attemptNo: state.attemptNo + 1
       };
 

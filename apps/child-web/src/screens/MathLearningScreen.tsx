@@ -1,17 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  AnswerComposer,
-  CoachPanel,
-  ManipulativeToolbar,
-  MathQuestionCard,
-  MathWorkspace,
-  ProgressDots
-} from "@/src/components";
+import { CoachPanel, ProgressDots } from "@/src/components";
+import { TaskRenderer } from "@/src/features/task-renderer";
 import { useLearningSession } from "@/src/features/learning/useLearningSession";
-import type { MathTool } from "@/src/components/learning/ManipulativeToolbar";
 
 export function MathLearningScreen({
   childId,
@@ -23,10 +16,9 @@ export function MathLearningScreen({
   abilityId?: string;
 }) {
   const router = useRouter();
-  const [tool, setTool] = useState<MathTool | undefined>();
   const {
     state,
-    setAnswer,
+    setResponse,
     submit,
     requestHint,
     retry,
@@ -74,32 +66,30 @@ export function MathLearningScreen({
         ) : (
           <div className="learning-layout">
             <div className="learning-main">
-              <MathQuestionCard
-                prompt={task.ui_schema.prompt ?? "请完成这道数学任务。"}
-                goal={task.goal}
-              />
-              <MathWorkspace uiSchema={task.ui_schema} />
-
-              <AnswerComposer
-                value={state.answer}
-                placeholder={task.ui_schema.answer_placeholder}
+              <TaskRenderer
+                task={task}
+                response={state.response}
                 disabled={state.status === "submitting"}
-                onChange={setAnswer}
+                hintAction={state.hint?.ui_action}
+                onResponseChange={setResponse}
                 onSubmit={submit}
               />
             </div>
 
             <aside className="learning-aside">
-              <ManipulativeToolbar
-                active={tool}
-                onSelect={setTool}
-              />
-              {tool && (
-                <div className="tool-note">
-                  已选择「{tool === "draw" ? "画一画" : tool === "blocks" ? "摆一摆" : "数一数"}」。
-                  试着用这个工具把题目里的数量关系表示出来。
-                </div>
-              )}
+              <div className="surface-card method-card">
+                <div className="eyebrow">数学方法</div>
+                <strong>
+                  {task.ui_schema.kind === "manipulative"
+                    ? task.ui_schema.visual.type === "objects"
+                      ? "摆一摆 · 一一对应"
+                      : task.ui_schema.visual.type === "bar-model"
+                        ? "线段图"
+                        : "数轴"
+                    : "直接作答"}
+                </strong>
+                <p className="muted">操作区记录的是你的数学表示方法，不会由前端直接判断能力等级。</p>
+              </div>
               <CoachPanel
                 status={state.status}
                 hint={state.hint}

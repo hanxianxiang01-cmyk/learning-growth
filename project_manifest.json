@@ -17,9 +17,10 @@
     "/dev/ui-kit"
   ],
   "next_priority": [
-    "Task Renderer V1",
-    "Math Manipulative Engine V1",
-    "Ability Detail",
+    "Interaction Events",
+    "Choice Renderer",
+    "Formula Renderer",
+    "Ability Evidence Detail",
     "Learning Plan",
     "Skin Resolver"
   ],
@@ -32,6 +33,7 @@
   ],
   "result_source_of_truth": "Session Result API",
   "session_store_role": "fallback_and_temporary_cache_only",
+  "note_v13_in_unreleased": "FE-1301..1305 / API-1306..1308 / QA-1312 merged into main; version stays 1.2.0 until milestone acceptance",
   "release_notes": "docs/10_RELEASE_NOTES_V1.2.md",
   "version_policy": "docs/12_VERSION_MANAGEMENT.md",
   "release_history": [

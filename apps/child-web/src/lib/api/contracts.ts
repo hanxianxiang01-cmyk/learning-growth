@@ -5,12 +5,9 @@ export type AbilityTrend = "up" | "stable" | "watch" | "down_review";
 export type AbilityState = {
   ability_id: string;
   name?: string;
-  level: number;              // 0–4
-  confidence: number;         // 0–1
-  fit_band?: {
-    min: number;              // 1–5
-    max: number;              // 1–5
-  };
+  level: number;
+  confidence: number;
+  fit_band?: { min: number; max: number };
   evidence_count: number;
   trend?: AbilityTrend;
 };
@@ -31,18 +28,156 @@ export type LearningSession = {
   plan_id: string;
 };
 
-export type TaskUiSchema = {
-  kind?: "number" | "single-choice" | "formula" | "drag";
-  prompt?: string;
-  story?: string;
-  options?: Array<{ label: string; value: string }>;
-  visual?: {
-    type?: "objects" | "bar-model" | "number-line" | "grid" | string;
-    rows?: Array<{ label: string; count: number; symbol?: string }>;
-  };
-  answer_placeholder?: string;
-  [key: string]: unknown;
+// ---------- V1.3 Task UI Schema ----------
+
+export type ResponseAnswerType = "number" | "text";
+
+export type TaskResponseSchema = {
+  type: "structured";
+  answer_type: ResponseAnswerType;
+  representation_required: boolean;
 };
+
+export type WorkspaceTool =
+  | "move"
+  | "align"
+  | "resize"
+  | "jump"
+  | "undo"
+  | "reset";
+
+export type ObjectCounterGroupSchema = {
+  id: string;
+  label: string;
+  count: number;
+  symbol?: string;
+};
+
+export type ObjectCounterVisualSchema = {
+  type: "objects";
+  groups: ObjectCounterGroupSchema[];
+};
+
+export type BarModelBarSchema = {
+  id: string;
+  label: string;
+  value?: number;
+  min?: number;
+  max?: number;
+  unknown?: boolean;
+};
+
+export type BarModelVisualSchema = {
+  type: "bar-model";
+  relationship: "compare" | "part-whole";
+  bars: BarModelBarSchema[];
+  max_value?: number;
+};
+
+export type NumberLineVisualSchema = {
+  type: "number-line";
+  min: number;
+  max: number;
+  step: number;
+  start?: number;
+};
+
+export type ManipulativeVisualSchema =
+  | ObjectCounterVisualSchema
+  | BarModelVisualSchema
+  | NumberLineVisualSchema;
+
+export type NumberTaskUiSchema = {
+  schema_version: "1.0";
+  kind: "number";
+  prompt: string;
+  story?: string;
+  answer_placeholder?: string;
+  response_schema: TaskResponseSchema;
+};
+
+export type ManipulativeTaskUiSchema = {
+  schema_version: "1.0";
+  kind: "manipulative";
+  prompt: string;
+  story?: string;
+  answer_placeholder?: string;
+  visual: ManipulativeVisualSchema;
+  tools: WorkspaceTool[];
+  response_schema: TaskResponseSchema;
+};
+
+export type UnsupportedTaskUiSchema = {
+  schema_version: "1.0";
+  kind: "unsupported";
+  prompt: string;
+  source_kind?: string;
+  response_schema: TaskResponseSchema;
+};
+
+export type TaskUiSchema =
+  | NumberTaskUiSchema
+  | ManipulativeTaskUiSchema
+  | UnsupportedTaskUiSchema;
+
+// ---------- V1.3 Structured Response ----------
+
+export type ObjectCounterItemPosition = {
+  id: string;
+  x: number; // 0..100 within its group lane
+};
+
+export type ObjectCounterRepresentation = {
+  type: "object-counter";
+  groups: Array<{
+    id: string;
+    label: string;
+    count: number;
+    items: ObjectCounterItemPosition[];
+  }>;
+  aligned: boolean;
+};
+
+export type BarModelRepresentation = {
+  type: "bar-model";
+  relationship: "compare" | "part-whole";
+  bars: Array<{
+    id: string;
+    label: string;
+    value: number;
+    unknown?: boolean;
+  }>;
+};
+
+export type NumberLineRepresentation = {
+  type: "number-line";
+  min: number;
+  max: number;
+  step: number;
+  start: number | null;
+  current: number | null;
+  jumps: number[];
+};
+
+export type WorkspaceRepresentation =
+  | ObjectCounterRepresentation
+  | BarModelRepresentation
+  | NumberLineRepresentation;
+
+export type TaskResponse = {
+  schema_version: "1.0";
+  answer: string;
+  representation?: WorkspaceRepresentation;
+};
+
+// ---------- Workspace-aware Hint ----------
+
+export type WorkspaceUiAction =
+  | { type: "highlight"; targets: string[] }
+  | { type: "align_groups" }
+  | { type: "focus"; target: string }
+  | { type: "show_bar_relation"; targets?: string[] }
+  | { type: "show_number_line_start"; value?: number };
 
 export type TaskInstance = {
   task_instance_id: string;
@@ -58,7 +193,7 @@ export type TaskInstance = {
 export type AttemptRequest = {
   task_instance_id: string;
   attempt_no: number;
-  response: Record<string, unknown>;
+  response: TaskResponse;
   client_elapsed_ms?: number;
   used_hint_levels?: number[];
 };
@@ -96,17 +231,11 @@ export type HintResponse = {
   action_type: "QUESTION" | "STRUCTURE_HINT" | "STEP_HINT" | "TEACH";
   text: string;
   answer_revealed: boolean;
+  ui_action?: WorkspaceUiAction | null;
 };
 
-/**
- * Session Result canonical frontend contract.
- *
- * Notes:
- * - Backend remains source of truth.
- * - Result page must not infer learning behavior from local attempt counts.
- * - learning_behaviors and next_recommendation drive child-visible result content.
- * - The HTTP adapter normalizes backend payload into this canonical shape.
- */
+// ---------- Session Result ----------
+
 export type LearningBehavior = {
   code: string;
   label: string;

@@ -1,4 +1,6 @@
-# 学习交互状态机
+# 学习状态与数学工作区状态
+
+## 1. Learning Flow State
 
 ```text
 idle
@@ -11,26 +13,66 @@ submitting
  ├─ correct + NEXT_TASK → correct → loading_task
  ├─ correct + COMPLETE  → completed → result
  ├─ wrong + HINT/TEACH  → hint_available
- │                         ↓ requestHint
+ │                         ↓
  │                       hint_loading
  │                         ↓
  │                       hint_active
  │                         ↓ retry
- │                       answering (attempt_no + 1)
+ │                       answering
  ├─ wrong + RETRY       → retry → answering
  └─ error               → error
 ```
 
-## 关键规则
+Learning State只负责：
+- Task
+- Structured Response
+- attemptNo
+- Hint
+- Learning status
 
-- 第一次错误不显示标准答案。
-- Hint 1–4 由 Learning Engine 返回/控制。
-- `E01~E07` 作为 2xx 教育诊断数据处理。
-- HTTP/系统错误使用冻结码：
-  - LE-4001
-  - LE-4091
-  - LE-4221
-  - LE-4291
-  - LE-5001
-  - AG-5031
-- 前端不计算 Mastery。
+## 2. Workspace State（V1.3）
+
+独立存在：
+
+```text
+initial
+present representation
+history
+highlightedTargets
+focusedTarget
+lastHintAction
+```
+
+Action：
+
+```text
+COMMIT
+UNDO
+RESET
+APPLY_HINT
+REINITIALIZE
+```
+
+## 3. 为什么分离
+
+禁止把：
+
+```text
+dragging
+object position
+bar value
+number-line jump
+selection
+```
+
+塞入 Learning State。
+
+后续新增 Sorting / Matching / Geometry 时，只扩 Workspace，不重构 Learning Flow。
+
+## 4. 教育规则
+
+- 第一次错误不揭答案；
+- Hint 1–4由 Learning Engine 控制；
+- E01~E07 是教育诊断业务载荷；
+- 前端不计算 Mastery；
+- Workspace representation 是过程证据，不是前端教育结论。

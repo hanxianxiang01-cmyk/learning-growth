@@ -47,3 +47,21 @@
 - [x] 不暴露 Sprint / Learning Engine / API / Mastery 等研发术语
 - [x] 两套皮肤共用中性内容语义，仅改变视觉
 - [x] 教育诊断码仅内部记录，不直接展示给儿童
+
+---
+
+# V1.3 Math Interaction Acceptance
+
+```text
+✅ FE-1301 Task Renderer V1
+✅ FE-1302 Workspace State
+✅ FE-1303 Object Counter
+✅ FE-1304 Bar Model
+✅ FE-1305 Number Line
+✅ API-1306 TaskUISchema V1
+✅ API-1307 Structured Response
+✅ API-1308 Workspace-aware Hint
+✅ QA-1312 Dual-skin QA page
+```
+
+HTTP真实联调需后端Contract满足 `docs/20_BACKEND_CONTRACT_DEPENDENCIES_V1.3.md`。

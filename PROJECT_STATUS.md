@@ -43,25 +43,23 @@
 | Local ID | Area | Work | Status | Owner | PR |
 |---|---|---|---|---|---|
 | DRIFT-001 | Contract | Session Result API尚未写入冻结OpenAPI | 🔴 BLOCKED | Backend/Contract | — |
-| FE-1201 | Math Workspace | Basic visual workspace only | 🟡 REVIEW | — | — |
-| FE-1202 | Task Renderer | Schema/Renderer registry未实现 | ⚪ TODO | — | — |
-| FE-1203 | Manipulative | Object Counter interactive | ⚪ TODO | — | — |
-| FE-1204 | Manipulative | Bar Model interactive | ⚪ TODO | — | — |
-| FE-1205 | Manipulative | Number Line interactive | ⚪ TODO | — | — |
-| API-1206 | Contract | Structured Response contract | ⚪ TODO | — | — |
-| API-1207 | Hint | Workspace-aware ui_action | ⚪ TODO | — | — |
+| FE-1301 | Task Renderer | V1（number/manipulative/unsupported） | 🟢 DONE | Frontend | — |
+| FE-1302 | Math Workspace | 隔离 Workspace State | 🟢 DONE | Frontend | — |
+| FE-1303 | Manipulative | Object Counter interactive | 🟢 DONE | Frontend | — |
+| FE-1304 | Manipulative | Bar Model interactive | 🟢 DONE | Frontend | — |
+| FE-1305 | Manipulative | Number Line interactive | 🟢 DONE | Frontend | — |
+| API-1306 | Contract | TaskUISchema V1 | 🟢 DONE | Frontend | — |
+| API-1307 | Contract | Structured Response | 🟢 DONE | Frontend | — |
+| API-1308 | Hint | Workspace-aware ui_action | 🟢 DONE | Frontend | — |
+| QA-1312 | QA | /dev/v1.3-qa 双皮肤页 | 🟢 DONE | Frontend | — |
 | EVT-1208 | Events | Interaction Event schema | ⚪ TODO | — | — |
 
 ## V1.3 Scope
 
-**尚未冻结。**
+功能已三方合入 `main`（来自 `Math_Sprint3_Frontend_V1.3` 交付包）；版本号仍保持 `1.2.0`，待里程碑验收后由 Release Owner 统一升 `1.3.0`。
 
-候选项在 `ROADMAP.md` 中。  
-冻结 V1.3 时必须：
+外部待办（后端对齐）：
 
-1. 建立 Milestone。
-2. 为每个功能建立 Issue。
-3. 指定单一 Owner。
-4. 确认 API/Schema 依赖。
-5. 更新此表状态。
-6. 在 `CHANGELOG.md [Unreleased]` 写入范围。
+- 🟡 Backend Structured Response acceptance
+- 🟡 Backend TaskUISchema V1 alignment
+- 🟡 Backend Hint ui_action alignment

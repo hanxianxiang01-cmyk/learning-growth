@@ -12,6 +12,7 @@ import type {
   TaskInstance
 } from "./contracts";
 import { normalizeSessionResult } from "./sessionResultNormalizer";
+import { normalizeTaskUiSchema } from "./taskUiSchemaNormalizer";
 
 export class LearningApiError extends Error {
   constructor(
@@ -23,6 +24,10 @@ export class LearningApiError extends Error {
     super(message);
   }
 }
+
+type RawTaskInstance = Omit<TaskInstance, "ui_schema"> & {
+  ui_schema: unknown;
+};
 
 export class HttpLearningApi implements LearningApi {
   constructor(
@@ -83,17 +88,22 @@ export class HttpLearningApi implements LearningApi {
     });
   }
 
-  getNextTask(input: {
+  async getNextTask(input: {
     child_id: string;
     session_id: string;
     subject: Subject;
     requested_minutes?: number;
     ability_id?: string;
-  }) {
-    return this.request<TaskInstance>("/v1/learning/tasks/next", {
+  }): Promise<TaskInstance> {
+    const raw = await this.request<RawTaskInstance>("/v1/learning/tasks/next", {
       method: "POST",
       body: JSON.stringify(input)
     });
+
+    return {
+      ...raw,
+      ui_schema: normalizeTaskUiSchema(raw.ui_schema)
+    };
   }
 
   submitAttempt(input: AttemptRequest) {

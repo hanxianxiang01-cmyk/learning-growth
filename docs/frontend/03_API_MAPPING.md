@@ -1,98 +1,95 @@
 # Learning Engine API Mapping
 
-Base URL：
+## Base URL
 
 ```text
-NEXT_PUBLIC_LEARNING_API_BASE_URL=http://localhost:8000/api
+NEXT_PUBLIC_LEARNING_API_BASE_URL=http://localhost:8000
 ```
 
-## 已按冻结 OpenAPI 接线
+> 不带 `/api`；请求路径直接以 `/v1/...` 开头。
 
-### Profile
+## Profile
+
 `GET /v1/children/{child_id}/profile`
 
-用于：
-- 首页儿童信息
-- 今日能力提示
+## Abilities
 
-### Abilities
 `GET /v1/children/{child_id}/abilities`
 
-用于：
-- 首页能力摘要
-- 结果页刷新
-- 成长地图
+## Create Session
 
-### Create Session
 `POST /v1/learning/sessions`
 
-请求：
-```json
-{
-  "child_id": "uuid",
-  "subject": "math",
-  "requested_minutes": 15
-}
-```
+## Next Task
 
-### Next Task
 `POST /v1/learning/tasks/next`
 
-请求：
+V1.3 起，HTTP Adapter 会通过：
+
+```text
+src/lib/api/taskUiSchemaNormalizer.ts
+```
+
+把后端 `ui_schema` 正规化成 `TaskUISchema V1`。
+
+### Canonical TaskUISchema V1
+
+支持：
+
+```text
+kind=number
+kind=manipulative + objects
+kind=manipulative + bar-model
+kind=manipulative + number-line
+```
+
+未知类型 → `kind=unsupported`，前端安全降级。
+
+## Submit Attempt
+
+`POST /v1/learning/attempts`
+
+V1.3 请求核心：
+
 ```json
 {
-  "child_id": "uuid",
-  "session_id": "uuid",
-  "subject": "math",
-  "requested_minutes": 15
+  "task_instance_id": "uuid",
+  "attempt_no": 1,
+  "response": {
+    "schema_version": "1.0",
+    "answer": "3",
+    "representation": {}
+  },
+  "client_elapsed_ms": 5000,
+  "used_hint_levels": [1]
 }
 ```
 
-响应核心：
-- task_instance_id
-- ability_id
-- difficulty
-- ui_schema
-- strategy_policy
-- goal
+`representation` 可为：
+- object-counter
+- bar-model
+- number-line
 
-### Submit Attempt
-`POST /v1/learning/attempts`
+前端仅采集/提交，不自行转化成 Mastery。
 
-请求：
-- task_instance_id
-- attempt_no
-- response
-- client_elapsed_ms
-- used_hint_levels
+## Hint
 
-响应：
-- attempt_id
-- correct
-- diagnosis
-- next_action
-
-支持：
-`RETRY | HINT | TEACH | COMPLETE | NEXT_TASK`
-
-### Hint
 `POST /v1/learning/hints`
 
-请求：
-- attempt_id
-- requested_level 1–4
+V1.3扩展：
 
-响应：
-- policy_id
-- hint_level
-- action_type (`QUESTION | STRUCTURE_HINT | STEP_HINT | TEACH`)
-- text（实际提示文本）
-- answer_revealed（是否已经揭示答案）
+```text
+ui_action?:
+- highlight
+- align_groups
+- focus
+- show_bar_relation
+- show_number_line_start
+```
 
+`ui_action` 是枚举化受控动作，不接受任意 UI command。
 
----
-
-## Session Result（V1.2新增）
+## Session Result
 
 前端接口：
 
@@ -100,38 +97,12 @@ NEXT_PUBLIC_LEARNING_API_BASE_URL=http://localhost:8000/api
 getSessionResult(sessionId: string): Promise<SessionResult>
 ```
 
-Canonical Result：
+Source of Truth 仍为服务端 Session Result。
 
-```text
-duration_ms
-task_count
-attempt_count
-hint_usage
-learning_behaviors
-ability_changes
-next_recommendation
-```
-
-### 当前路径策略
-
-本地冻结 `02_openapi_v1.3.yaml` 尚未找到新Result Endpoint，因此：
+路径通过：
 
 ```env
 NEXT_PUBLIC_SESSION_RESULT_PATH_TEMPLATE
 ```
 
-作为前端适配点。
-
-页面不直接拼URL。
-
-### Source of Truth
-
-V1.2开始：
-
-```text
-Session Result API
-```
-
-是结果页正式数据源。
-
-`sessionStore` 只做异常fallback。
+适配，页面不直接拼 URL。

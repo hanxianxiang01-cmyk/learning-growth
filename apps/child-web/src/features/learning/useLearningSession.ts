@@ -1,13 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { getLearningApi } from "@/src/lib/api";
 import { LearningApiError } from "@/src/lib/api/http";
+import { isTaskResponseReady } from "@/src/features/task-renderer";
 import {
   initialLearningState,
   learningReducer,
   getNextActionCode
 } from "./machine";
+import type { TaskResponse } from "@/src/lib/api/contracts";
 import {
   loadSessionSnapshot,
   saveSessionSnapshot,
@@ -32,13 +34,12 @@ export function useLearningSession({
   sessionId: string;
   abilityId?: string;
 }) {
-  const api = getLearningApi();
+  const api = useMemo(() => getLearningApi(), []);
   const [state, dispatch] = useReducer(
     learningReducer,
     initialLearningState
   );
   const startedAt = useRef(Date.now());
-  const submittingRef = useRef(false);
   const stats = useRef<SessionSnapshot>(
     loadSessionSnapshot(sessionId) ?? {
       childId,
@@ -78,21 +79,19 @@ export function useLearningSession({
     if (state.status === "idle") void loadTask();
   }, [state.status, loadTask]);
 
-  const setAnswer = useCallback((answer: string) => {
-    dispatch({ type: "SET_ANSWER", answer });
+  const setResponse = useCallback((response: TaskResponse) => {
+    dispatch({ type: "SET_RESPONSE", response });
   }, []);
 
   const submit = useCallback(async () => {
-    if (submittingRef.current) return; // 防重入：提交中禁止再次触发
-    if (!state.task || !state.answer.trim()) return;
-    submittingRef.current = true;
+    if (!state.task || !isTaskResponseReady(state.response, state.task)) return;
     dispatch({ type: "SUBMIT" });
 
     try {
       const result = await api.submitAttempt({
         task_instance_id: state.task.task_instance_id,
         attempt_no: state.attemptNo,
-        response: { answer: state.answer },
+        response: state.response,
         client_elapsed_ms: Date.now() - startedAt.current,
         used_hint_levels: state.usedHintLevels
       });
@@ -118,8 +117,6 @@ export function useLearningSession({
       dispatch({ type: "ATTEMPT_RESULT", result });
     } catch (err) {
       dispatch({ type: "ERROR", message: humanizeError(err) });
-    } finally {
-      submittingRef.current = false;
     }
   }, [api, persist, state]);
 
@@ -148,7 +145,7 @@ export function useLearningSession({
 
   return {
     state,
-    setAnswer,
+    setResponse,
     submit,
     requestHint,
     retry,
