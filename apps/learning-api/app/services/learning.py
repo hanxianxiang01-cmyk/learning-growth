@@ -332,8 +332,24 @@ async def request_hint(
 
 
 def _build_ui_action(rv: ResourceVersion | None, level: int) -> dict | None:
-    """根据资源的 TaskUISchema V1 visual.type 生成对应的工作台 ui_action。"""
-    if rv is None or level < 2:
+    """返回该 Hint 级别对应的工作台 ui_action。
+
+    优先取 hint_policy.ui_actions[level-1]（内容团队精确设计）；
+    缺失时按 visual.type 推导兜底（highlight/align/show_bar_relation/show_number_line_start）。
+    """
+    if rv is None or level < 1:
+        return None
+
+    # 1. 首选：hint_policy.ui_actions 里内容侧配置的值
+    if isinstance(rv.hint_policy, dict):
+        ui_actions = rv.hint_policy.get("ui_actions") or []
+        if isinstance(ui_actions, list) and level <= len(ui_actions):
+            raw = ui_actions[level - 1]
+            if isinstance(raw, str) and raw.strip():
+                return _ui_action_from_hint_type(raw)
+
+    # 2. 兜底：按 visual.type 推导
+    if level < 2:
         return None
     ui_schema = rv.ui_schema if isinstance(rv.ui_schema, dict) else {}
     if ui_schema.get("kind") != "manipulative":
@@ -354,6 +370,19 @@ def _build_ui_action(rv: ResourceVersion | None, level: int) -> dict | None:
     if vtype == "number-line":
         return {"type": "show_number_line_start", "value": visual.get("start")}
     return None
+
+
+def _ui_action_from_hint_type(hint_action: str) -> dict | None:
+    """把 Excel 里的 ui_action 字符串映射为 WorkspaceUiAction dict。"""
+    a = hint_action.strip().lower()
+    mapping = {
+        "highlight": {"type": "highlight"},
+        "align_groups": {"type": "align_groups"},
+        "focus": {"type": "focus"},
+        "show_bar_relation": {"type": "show_bar_relation"},
+        "show_number_line_start": {"type": "show_number_line_start"},
+    }
+    return mapping.get(a)
 
 
 def _judge(expected: object, user_answer: object) -> bool:
