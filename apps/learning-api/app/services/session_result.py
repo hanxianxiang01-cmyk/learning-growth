@@ -155,6 +155,7 @@ async def get_session_result(db: AsyncSession, *, session_id: uuid.UUID) -> dict
         "status": session.status,
         "duration_ms": elapsed_ms,
         "task_count": len(tasks),
+        "completed_count": completed_tasks,
         "attempt_count": attempt_count,
         "correct_count": correct_count,
         "hint_usage": hint_levels,

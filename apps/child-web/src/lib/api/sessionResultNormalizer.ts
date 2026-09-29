@@ -184,6 +184,15 @@ export function normalizeSessionResult(
       undefined,
     duration_ms: normalizeDurationMs(raw),
     task_count: asNumber(raw.task_count ?? raw.tasks_completed, 0),
+    completed_count:
+      raw.completed_count === undefined
+        ? undefined
+        : asNumber(
+            raw.completed_count ??
+              raw.completed_tasks ??
+              raw.correct_count,
+            0
+          ),
     attempt_count: asNumber(raw.attempt_count ?? raw.total_attempts, 0),
     hint_usage: normalizeHintUsage(raw.hint_usage ?? raw.hints_used),
     learning_behaviors: normalizeLearningBehaviors(raw.learning_behaviors),

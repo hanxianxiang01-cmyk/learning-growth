@@ -40,6 +40,7 @@ export function useLearningSession({
     initialLearningState
   );
   const startedAt = useRef(Date.now());
+  const loadingRef = useRef(false);
   const stats = useRef<SessionSnapshot>(
     loadSessionSnapshot(sessionId) ?? {
       childId,
@@ -58,6 +59,9 @@ export function useLearningSession({
   }, []);
 
   const loadTask = useCallback(async () => {
+    // 防重入：首屏 StrictMode 双跑 / 连续点「下一题」时，避免同一道题生成多个 task_instance。
+    if (loadingRef.current) return;
+    loadingRef.current = true;
     dispatch({ type: "LOAD_TASK" });
     try {
       const task = await api.getNextTask({
@@ -72,6 +76,8 @@ export function useLearningSession({
       dispatch({ type: "TASK_LOADED", task });
     } catch (err) {
       dispatch({ type: "ERROR", message: humanizeError(err) });
+    } finally {
+      loadingRef.current = false;
     }
   }, [api, childId, sessionId, abilityId, persist]);
 
