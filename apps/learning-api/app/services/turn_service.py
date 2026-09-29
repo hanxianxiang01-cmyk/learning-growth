@@ -20,6 +20,7 @@ from app.models import (
 )
 from app.services.diagnosis import diagnose
 from app.services.hint import decide_hint
+from app.services.mastery_db import persist_mastery_state
 
 
 async def record_attempt(
@@ -136,6 +137,9 @@ async def record_attempt(
         db.add(evidence)
         await db.flush()
         evidence_id = evidence.evidence_id
+
+        # 5.5 证据消化 → 能力升级：回写 AbilityState（学习闭环落点）。
+        await persist_mastery_state(db, child_id=child_id, ability_id=ability_id)
 
     await db.flush()
 

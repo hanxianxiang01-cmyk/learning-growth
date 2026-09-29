@@ -9,19 +9,20 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import uuid
+from datetime import datetime, timezone
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models import AbilityState, Attempt, MasteryEvidence, TaskInstance
 from app.services.mastery import Evidence, evaluate_mastery
 
 
-async def evaluate_mastery_from_db(
-    db: AsyncSession,
-    child_id: uuid.UUID,
-    ability_id: str,
-) -> dict:
-    """从 DB 加载有效证据（含 attempt 的 max_hint_level / task 的 resource_version），
-    组装为 Evidence 后走纯计算。"""
-
-    # 1. 有效证据
+async def _load_evidences(
+    db: AsyncSession, child_id: uuid.UUID, ability_id: str
+) -> list[Evidence]:
+    """从 DB 加载某能力全部有效原子证据，组装为纯计算用的 Evidence。"""
     ev_rows = (
         await db.execute(
             select(MasteryEvidence).where(
@@ -32,24 +33,13 @@ async def evaluate_mastery_from_db(
         )
     ).scalars().all()
 
-    # 2. 关联 attempt / task 补充 max_hint_level / resource_version_id
     attempt_ids = [e.attempt_id for e in ev_rows if e.attempt_id]
     hint_map: dict[uuid.UUID, int] = {}
-    rv_map: dict[uuid.UUID, uuid.UUID] = {}
     if attempt_ids:
         att_rows = (
             await db.execute(select(Attempt).where(Attempt.attempt_id.in_(attempt_ids)))
         ).scalars().all()
         hint_map = {a.attempt_id: a.max_hint_level for a in att_rows}
-
-        task_ids = [a.task_instance_id for a in att_rows]
-        if task_ids:
-            task_rows = (
-                await db.execute(
-                    select(TaskInstance).where(TaskInstance.task_instance_id.in_(task_ids))
-                )
-            ).scalars().all()
-            rv_map = {t.task_instance_id: t.resource_version_id for t in task_rows}
 
     evidences = [
         Evidence(
@@ -62,9 +52,76 @@ async def evaluate_mastery_from_db(
         )
         for e in ev_rows
     ]
+    return evidences
 
-    # 3. 当前能力等级
+
+def _derive_trend(old_level: int, new_level: int) -> str:
+    if new_level > old_level:
+        return "up"
+    if new_level < old_level:
+        return "down_review"
+    return "stable"
+
+
+async def evaluate_mastery_from_db(
+    db: AsyncSession,
+    child_id: uuid.UUID,
+    ability_id: str,
+) -> dict:
+    """从 DB 加载有效证据组装为 Evidence 后走纯计算（只读，不回写）。"""
+    evidences = await _load_evidences(db, child_id, ability_id)
+
     state = await db.get(AbilityState, {"child_id": child_id, "ability_id": ability_id})
     old_level = state.level if state else 0
 
     return evaluate_mastery(ability_id, old_level, evidences).to_dict()
+
+
+async def persist_mastery_state(
+    db: AsyncSession,
+    child_id: uuid.UUID,
+    ability_id: str,
+) -> dict:
+    """证据消化 → 能力升级：加载证据、评估、回写 AbilityState。
+
+    这是「学习闭环」的落点——孩子做完题后，把 mastery_evidence 汇总成
+    能力等级/置信度/证据数/趋势，写回 ability_state 供画像与选题使用。
+    """
+    evidences = await _load_evidences(db, child_id, ability_id)
+
+    state = await db.get(AbilityState, {"child_id": child_id, "ability_id": ability_id})
+    old_level = state.level if state else 0
+
+    ev = evaluate_mastery(ability_id, old_level, evidences)
+
+    evidence_count = len(evidences)
+
+    if state is None:
+        state = AbilityState(
+            child_id=child_id,
+            ability_id=ability_id,
+            level=ev.new_level,
+            confidence=round(ev.score, 4),
+            evidence_count=evidence_count,
+            trend=_derive_trend(old_level, ev.new_level),
+        )
+        db.add(state)
+    else:
+        state.level = ev.new_level
+        state.confidence = round(ev.score, 4)
+        state.evidence_count = evidence_count
+        state.trend = _derive_trend(old_level, ev.new_level)
+        state.last_evidence_at = (
+            datetime.now(timezone.utc) if evidence_count else state.last_evidence_at
+        )
+
+    await db.flush()
+
+    return {
+        "ability_id": ability_id,
+        "old_level": old_level,
+        "new_level": ev.new_level,
+        "score": round(ev.score, 4),
+        "evidence_count": evidence_count,
+        "trend": _derive_trend(old_level, ev.new_level),
+    }
