@@ -597,6 +597,7 @@ export class MockLearningApi implements LearningApi {
       status: stats.completed ? "completed" : "active",
       duration_ms: Math.max(0, (stats.completedAt ?? Date.now()) - stats.startedAt),
       task_count: stats.taskCount,
+      completed_count: stats.completed ? stats.taskCount : 0,
       attempt_count: stats.attemptCount,
       hint_usage: stats.hintLevels,
       learning_behaviors: behaviors,

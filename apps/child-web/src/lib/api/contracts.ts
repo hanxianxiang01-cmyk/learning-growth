@@ -267,6 +267,7 @@ export type SessionResult = {
   status?: string;
   duration_ms: number;
   task_count: number;
+  completed_count?: number;
   attempt_count: number;
   hint_usage: number[];
   learning_behaviors: LearningBehavior[];

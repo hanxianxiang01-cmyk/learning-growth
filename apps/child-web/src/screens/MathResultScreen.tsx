@@ -35,6 +35,7 @@ function buildFallbackResult(
     duration_ms:
       (snapshot.completedAt ?? Date.now()) - snapshot.startedAt,
     task_count: snapshot.tasksCompleted,
+    completed_count: snapshot.tasksCompleted,
     attempt_count: snapshot.totalAttempts,
     hint_usage: snapshot.hintsUsed,
     learning_behaviors: [
@@ -178,7 +179,7 @@ export function MathResultScreen({
 
         <SessionStats
           duration={formatDuration(result.duration_ms)}
-          tasks={result.task_count}
+          tasks={result.completed_count ?? result.task_count}
           hints={result.hint_usage.length}
           attempts={result.attempt_count}
         />
