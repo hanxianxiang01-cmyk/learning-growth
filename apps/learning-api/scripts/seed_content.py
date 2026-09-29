@@ -23,7 +23,6 @@ def _build_ui_schema_v1(r: dict) -> dict:
     对齐前端 contracts.ts 的 ManipulativeTaskUiSchema / NumberTaskUiSchema：
     - 有 visual → kind="manipulative"，携带 visual + tools + response_schema
     - 无 visual → kind="number"，仅 prompt + response_schema
-    representation_required 由是否提供可视化操作区决定（manipulative 必填，number 免填）。
     """
     stem = r["content"]["stem"]
     visual = r.get("visual")
@@ -52,6 +51,15 @@ def _build_ui_schema_v1(r: dict) -> dict:
             "representation_required": False,
         },
     }
+
+
+def _transfer_distance(r: dict) -> int | None:
+    """迁移题 transfer_distance=1，其余 None。"""
+    if r.get("is_transfer"):
+        return 1
+    if r["ability_id"] == "app_transfer":
+        return 1
+    return None
 
 
 async def seed(content_only: bool = True) -> dict:
@@ -136,13 +144,16 @@ async def seed(content_only: bool = True) -> dict:
                     resource_id=resource.resource_id,
                     version_no=1,
                     difficulty=r["difficulty"],
-                    task_type=r["task_type"],
+                    task_type=r.get("task_type") or "word_problem",
                     content=r["content"],
                     ui_schema=_build_ui_schema_v1(r),
                     error_models=r["error_models"],
-                    hint_policy={"ladder": r["hint_ladder"]},
+                    hint_policy={
+                        "ladder": r["hint_ladder"],
+                        "ui_actions": r.get("ui_actions", []),
+                    },
                     mastery_rule=None,
-                    transfer_distance=1 if r["ability_id"] == "app_transfer" else None,
+                    transfer_distance=_transfer_distance(r),
                     review_status="published",
                     published_at=None,
                 )
