@@ -98,20 +98,31 @@ async def _published_resource_for_ability(
     band_min: int,
     band_max: int,
     fallback_to_lowest: bool,
+    exclude_resource_version_ids: set | None = None,
 ) -> ResourceVersion | None:
     """取某能力「fit_band 内」的已发布资源；带内无题且 fallback_to_lowest 时，
-    退到该能力「最低难度」已发布资源（保证指定能力一定有题可练）。"""
+    退到该能力「最低难度」已发布资源（保证指定能力一定有题可练）。
+
+    exclude_resource_version_ids：本 session 已出过的题，取下一题时排除，
+    避免「答对后点下一题仍是同一道题」。"""
+    exclude = exclude_resource_version_ids or set()
+    base_where = [
+        Resource.ability_id == ability_id,
+        ResourceVersion.review_status == "published",
+    ]
+    if exclude:
+        base_where.append(ResourceVersion.resource_version_id.notin_(exclude))
+
     row = (
         await db.execute(
             select(ResourceVersion)
             .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
             .where(
-                Resource.ability_id == ability_id,
-                ResourceVersion.review_status == "published",
+                *base_where,
                 ResourceVersion.difficulty >= band_min,
                 ResourceVersion.difficulty <= band_max,
             )
-            .order_by(ResourceVersion.difficulty.asc())
+            .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
             .limit(1)
         )
     ).scalar_one_or_none()
@@ -122,11 +133,8 @@ async def _published_resource_for_ability(
         await db.execute(
             select(ResourceVersion)
             .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
-            .where(
-                Resource.ability_id == ability_id,
-                ResourceVersion.review_status == "published",
-            )
-            .order_by(ResourceVersion.difficulty.asc())
+            .where(*base_where)
+            .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
             .limit(1)
         )
     ).scalar_one_or_none()
@@ -151,6 +159,17 @@ async def assign_next_task(
     rv: ResourceVersion | None = None
     band_min = band_max = 1
 
+    # 本 session 已出过的资源版本：取下一题时排除，避免「答对后点下一题仍是同一道」。
+    assigned_rvs = set(
+        (
+            await db.execute(
+                select(TaskInstance.resource_version_id).where(
+                    TaskInstance.session_id == session_id
+                )
+            )
+        ).scalars().all()
+    )
+
     if ability_id:
         state = await db.get(AbilityState, {"child_id": child_id, "ability_id": ability_id})
         level = state.level if state else 0
@@ -162,7 +181,17 @@ async def assign_next_task(
             band_min=band_min,
             band_max=band_max,
             fallback_to_lowest=True,
+            exclude_resource_version_ids=assigned_rvs,
         )
+        # 该能力新题已耗尽（全部被排除）→ 解除排除，允许重复，避免死锁。
+        if rv is None:
+            rv = await _published_resource_for_ability(
+                db,
+                ability_id=ability_id,
+                band_min=band_min,
+                band_max=band_max,
+                fallback_to_lowest=True,
+            )
         if rv is not None:
             selected_ability = ability_id
     else:
@@ -179,6 +208,7 @@ async def assign_next_task(
                 band_min=bmin,
                 band_max=bmax,
                 fallback_to_lowest=False,
+                exclude_resource_version_ids=assigned_rvs,
             )
             if row is not None:
                 selected_ability = aid
