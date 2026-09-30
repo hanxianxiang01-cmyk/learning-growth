@@ -10,6 +10,7 @@
     "child:dev": "npm --workspace @learning/child-web run dev",
     "child:typecheck": "npm --workspace @learning/child-web run typecheck",
     "child:build": "npm --workspace @learning/child-web run build",
+    "backend:test": "cd apps/learning-api && PYTHONPATH=. python3 -m pytest tests/ -q",
     "release:check": "node scripts/check-release.mjs",
     "governance:check": "node scripts/check-governance.mjs",
     "branch:check": "node scripts/check-branch-name.mjs",
