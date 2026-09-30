@@ -13,6 +13,13 @@ MASTERY_WEIGHTS = {
 }
 RULE_VERSION = "mastery-v1.3.1"
 
+# ---- Session & Task Goal（Contract ①）----
+# 一次学习 session 的「默认」任务数。是默认值，不是产品规则；
+# 与 requested_minutes（时间预算）解耦，V1.4 才做「分钟 → 任务数」动态推导。
+SESSION_TASK_GOAL = 3
+# 一道任务对应的预估时长（分钟），仅作 V1.4 动态推导的换算锚点，当前不参与决策。
+MINUTES_PER_TASK = 5
+
 # Independence：由 max_hint_level 映射（0~4）
 HINT_LEVEL_TO_INDEPENDENCE = {0: 1.00, 1: 0.75, 2: 0.50, 3: 0.25, 4: 0.00}
 
