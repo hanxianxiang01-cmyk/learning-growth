@@ -22,6 +22,7 @@ from app.core.education_rules import (
     ATOMIC_EVIDENCE_TYPES,
     DEFAULT_EVIDENCE_ROLE,
     EVIDENCE_ROLE_TO_TYPE,
+    RULE_VERSION,
 )
 from app.services.diagnosis import diagnose
 from app.services.hint import decide_hint
@@ -154,7 +155,7 @@ async def record_attempt(
                 evidence_type=evidence_type,
                 correctness=1.0 if correct else 0.0,
                 independence=independence,
-                rule_version="mastery-v1.3",
+                rule_version=RULE_VERSION,
                 valid=True,
             )
             db.add(evidence)
