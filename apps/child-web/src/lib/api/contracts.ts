@@ -36,6 +36,7 @@ export type TaskResponseSchema = {
   type: "structured";
   answer_type: ResponseAnswerType;
   representation_required: boolean;
+  allowed_representation_types?: WorkspaceRepresentation["type"][];
 };
 
 export type WorkspaceTool =
@@ -87,9 +88,18 @@ export type ManipulativeVisualSchema =
   | BarModelVisualSchema
   | NumberLineVisualSchema;
 
+export type TaskRendererRef = {
+  renderer_id: string;
+  version: "1.0";
+  capability_ids?: string[];
+};
+
 export type NumberTaskUiSchema = {
   schema_version: "1.0";
   kind: "number";
+  renderer_id?: string;
+  interaction_capabilities?: string[];
+  renderer?: TaskRendererRef;
   prompt: string;
   story?: string;
   answer_placeholder?: string;
@@ -99,6 +109,9 @@ export type NumberTaskUiSchema = {
 export type ManipulativeTaskUiSchema = {
   schema_version: "1.0";
   kind: "manipulative";
+  renderer_id?: string;
+  interaction_capabilities?: string[];
+  renderer?: TaskRendererRef;
   prompt: string;
   story?: string;
   answer_placeholder?: string;
@@ -110,15 +123,15 @@ export type ManipulativeTaskUiSchema = {
 export type UnsupportedTaskUiSchema = {
   schema_version: "1.0";
   kind: "unsupported";
+  renderer_id?: string;
+  interaction_capabilities?: string[];
+  renderer?: TaskRendererRef;
   prompt: string;
   source_kind?: string;
   response_schema: TaskResponseSchema;
 };
 
-export type TaskUiSchema =
-  | NumberTaskUiSchema
-  | ManipulativeTaskUiSchema
-  | UnsupportedTaskUiSchema;
+export type TaskUiSchema = NumberTaskUiSchema | ManipulativeTaskUiSchema | UnsupportedTaskUiSchema;
 
 // ---------- V1.3 Structured Response ----------
 
@@ -164,10 +177,35 @@ export type WorkspaceRepresentation =
   | BarModelRepresentation
   | NumberLineRepresentation;
 
+export type InteractionEventType =
+  | "representation_changed"
+  | "answer_changed"
+  | "drag"
+  | "align"
+  | "resize"
+  | "jump"
+  | "undo"
+  | "reset"
+  | "highlight"
+  | "focus"
+  | "hint_applied";
+
+export type InteractionEvent = {
+  event_id: string;
+  event_type: InteractionEventType;
+  occurred_at: string;
+  task_instance_id?: string;
+  renderer_id?: string;
+  capability_id?: string;
+  target_id?: string;
+  payload?: Record<string, string | number | boolean | null>;
+};
+
 export type TaskResponse = {
   schema_version: "1.0";
   answer: string;
   representation?: WorkspaceRepresentation;
+  interaction_events?: InteractionEvent[];
 };
 
 // ---------- Workspace-aware Hint ----------
@@ -198,11 +236,20 @@ export type AttemptRequest = {
   used_hint_levels?: number[];
 };
 
+export type DiagnosisEvidence = {
+  type: string;
+  reference?: string;
+  detail?: string;
+};
+
 export type DiagnosisResult = {
+  schema_version?: "1.0";
   code: string;
   label: string;
   confidence: number;
   evidence_scope: unknown;
+  evidence?: DiagnosisEvidence[];
+  recommended_support?: string;
 };
 
 export type NextActionCode =

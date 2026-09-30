@@ -4,7 +4,7 @@ import type { NumberLineRepresentation } from "@/src/lib/api/contracts";
 import { useWorkspace } from "@/src/features/math-workspace";
 
 export function NumberLine() {
-  const { state, commit, undo, reset } = useWorkspace();
+  const { state, commit, undo, reset, can } = useWorkspace();
   const representation = state.present;
   if (representation.type !== "number-line") return null;
 
@@ -19,6 +19,7 @@ export function NumberLine() {
 
   const select = (value: number) => {
     let next: NumberLineRepresentation;
+    const jump = representation.current === null ? 0 : value - representation.current;
     if (representation.start === null || representation.current === null) {
       next = {
         ...representation,
@@ -35,7 +36,7 @@ export function NumberLine() {
         jumps: [...representation.jumps, jump]
       };
     }
-    commit(next);
+    commit(next, { event_type: "jump", capability_id: "jump", target_id: String(value), payload: { value, jump } });
   };
 
   return (
@@ -46,8 +47,8 @@ export function NumberLine() {
           <span>先找起点，再点一个数字完成一次跳步。</span>
         </div>
         <div className="workspace-actions">
-          <button type="button" onClick={undo}>撤销</button>
-          <button type="button" onClick={reset}>重置</button>
+          <button type="button" disabled={!can("undo")} onClick={undo}>撤销</button>
+          <button type="button" disabled={!can("reset")} onClick={reset}>重置</button>
         </div>
       </div>
 
@@ -59,6 +60,7 @@ export function NumberLine() {
             const isCurrent = representation.current === value;
             return (
               <button
+                disabled={!can("jump")}
                 key={value}
                 type="button"
                 className={`number-tick ${isStart ? "is-start" : ""} ${isCurrent ? "is-current" : ""}`}

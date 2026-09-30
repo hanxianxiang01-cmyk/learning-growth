@@ -5,7 +5,7 @@ import type { BarModelRepresentation, BarModelVisualSchema } from "@/src/lib/api
 import { useWorkspace } from "@/src/features/math-workspace";
 
 export function BarModel({ schema }: { schema: BarModelVisualSchema }) {
-  const { state, commit, undo, reset } = useWorkspace();
+  const { state, commit, undo, reset, can } = useWorkspace();
   const representation = state.present;
   if (representation.type !== "bar-model") return null;
 
@@ -23,7 +23,7 @@ export function BarModel({ schema }: { schema: BarModelVisualSchema }) {
         bar.id === id ? { ...bar, value } : bar
       )
     };
-    commit(next);
+    commit(next, { event_type: "resize", capability_id: "resize", target_id: id, payload: { value } });
   };
 
   return (
@@ -34,8 +34,8 @@ export function BarModel({ schema }: { schema: BarModelVisualSchema }) {
           <span>{representation.relationship === "part-whole" ? "看看总量和部分之间是什么关系。" : "把两条线段左边对齐，更容易看出相差多少。"}</span>
         </div>
         <div className="workspace-actions">
-          <button type="button" onClick={undo}>撤销</button>
-          <button type="button" onClick={reset}>重置</button>
+          <button type="button" disabled={!can("undo")} onClick={undo}>撤销</button>
+          <button type="button" disabled={!can("reset")} onClick={reset}>重置</button>
         </div>
       </div>
 
@@ -59,6 +59,7 @@ export function BarModel({ schema }: { schema: BarModelVisualSchema }) {
               <label className="bar-slider-label">
                 <span className="sr-only">调整{bar.label}</span>
                 <input
+                  disabled={!can("resize")}
                   type="range"
                   min={min}
                   max={Math.max(min + 1, barMax)}

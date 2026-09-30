@@ -8,7 +8,7 @@ const ALLOWED = [
   { re: /^main$/, label: "main" },
   { re: /^fix\/BUG-\d+(-[a-z0-9-]+)?$/, label: "fix/BUG-xxxx-*" },
   { re: /^hotfix\/BUG-\d+(-[a-z0-9-]+)?$/, label: "hotfix/BUG-xxxx-*" },
-  { re: /^feat\/FE-13\d{2}(-[a-z0-9-]+)?$/, label: "feat/FE-13xx-*" },
+  { re: /^feat\/FE-1[34]\d{2}(-[a-z0-9-]+)?$/, label: "feat/FE-13xx|14xx-*" },
   { re: /^docs\/[a-z0-9-]+$/, label: "docs/*" },
   { re: /^chore\/[a-z0-9-]+$/, label: "chore/*" },
   { re: /^dependabot\//, label: "dependabot/*" },
