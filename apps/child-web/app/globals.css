@@ -278,3 +278,33 @@ a{color:inherit}
   .v13-qa-grid{grid-template-columns:1fr}
   .object-lane{height:72px}
 }
+
+/* ===== V1.4 Contract QA ===== */
+.v14-qa-page{min-height:100vh;background:#F3F6F8;padding:28px}
+.v14-qa-wrap{max-width:1500px;margin:0 auto}
+.v14-qa-header{margin-bottom:24px}
+.v14-qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.v14-qa-skin{background:var(--cm-app);color:var(--cm-text);padding:20px;border-radius:24px;display:grid;gap:18px}
+.v14-qa-case{display:grid;gap:12px;padding-bottom:18px;border-bottom:1px dashed var(--cm-border)}
+.v14-qa-case:last-child{border-bottom:0}
+.v14-qa-meta{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.v14-qa-meta strong{font-size:17px}
+.v14-qa-meta span{color:var(--cm-text-2);font-size:12px;max-width:70%;text-align:right}
+.renderer-debug{display:block;margin-top:10px;color:var(--cm-text-2)}
+@media(max-width:860px){.v14-qa-grid{grid-template-columns:1fr}.v14-qa-meta{flex-direction:column}.v14-qa-meta span{max-width:100%;text-align:left}}
+
+/* ===== V1.4 Contract QA ===== */
+.v14-qa-page{min-height:100vh;background:#F3F6F8;padding:28px}
+.v14-qa-wrap{max-width:1500px;margin:0 auto}
+.v14-qa-header{margin-bottom:24px}
+.v14-qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.v14-qa-skin{background:var(--cm-app);color:var(--cm-text);padding:20px;border-radius:24px;display:grid;gap:18px}
+.v14-qa-case{display:grid;gap:12px;padding-bottom:18px;border-bottom:1px dashed var(--cm-border)}
+.v14-qa-case:last-child{border-bottom:0}
+.v14-qa-meta{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.v14-qa-meta strong{font-size:17px}
+.v14-qa-meta span{color:var(--cm-text-2);font-size:12px;max-width:70%;text-align:right}
+.renderer-debug{display:block;margin-top:10px;color:var(--cm-text-2)}
+@media(max-width:860px){.v14-qa-grid{grid-template-columns:1fr}.v14-qa-meta{flex-direction:column}.v14-qa-meta span{max-width:100%;text-align:left}}
+
+.workspace-actions button:disabled,.draggable-token:disabled,.number-tick:disabled{opacity:.45;cursor:not-allowed}

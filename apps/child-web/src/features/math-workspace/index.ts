@@ -1,3 +1,4 @@
 export * from "./WorkspaceProvider";
-export * from "./model";
+export * from "./workspaceApi";
 export * from "./types";
+export * from "./model";

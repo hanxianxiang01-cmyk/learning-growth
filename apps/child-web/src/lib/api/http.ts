@@ -13,6 +13,8 @@ import type {
 } from "./contracts";
 import { normalizeSessionResult } from "./sessionResultNormalizer";
 import { normalizeTaskUiSchema } from "./taskUiSchemaNormalizer";
+import { normalizeAttemptResult } from "./attemptResultNormalizer";
+import { normalizeHintResponse } from "./hintNormalizer";
 
 export class LearningApiError extends Error {
   constructor(
@@ -106,21 +108,23 @@ export class HttpLearningApi implements LearningApi {
     };
   }
 
-  submitAttempt(input: AttemptRequest) {
-    return this.request<AttemptResult>("/v1/learning/attempts", {
+  async submitAttempt(input: AttemptRequest): Promise<AttemptResult> {
+    const raw = await this.request<unknown>("/v1/learning/attempts", {
       method: "POST",
       body: JSON.stringify(input)
     });
+    return normalizeAttemptResult(raw);
   }
 
-  requestHint(input: {
+  async requestHint(input: {
     attempt_id: string;
     requested_level?: number;
-  }) {
-    return this.request<HintResponse>("/v1/learning/hints", {
+  }): Promise<HintResponse> {
+    const raw = await this.request<unknown>("/v1/learning/hints", {
       method: "POST",
       body: JSON.stringify(input)
     });
+    return normalizeHintResponse(raw);
   }
 
   async getSessionResult(sessionId: string): Promise<SessionResult> {

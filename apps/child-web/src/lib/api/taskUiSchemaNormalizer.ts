@@ -32,13 +32,19 @@ const defaultResponseSchema = {
 
 function normalizeResponseSchema(value: unknown, representationRequired: boolean) {
   const raw = asDict(value);
+  const allowed = Array.isArray(raw.allowed_representation_types)
+    ? raw.allowed_representation_types.filter((v): v is "object-counter" | "bar-model" | "number-line" =>
+        v === "object-counter" || v === "bar-model" || v === "number-line"
+      )
+    : undefined;
   return {
     type: "structured" as const,
     answer_type: raw.answer_type === "text" ? ("text" as const) : ("number" as const),
     representation_required:
       typeof raw.representation_required === "boolean"
         ? raw.representation_required
-        : representationRequired
+        : representationRequired,
+    allowed_representation_types: allowed
   };
 }
 
@@ -126,11 +132,18 @@ function manipulative(
   visual: ObjectCounterVisualSchema | BarModelVisualSchema | NumberLineVisualSchema,
   tools: WorkspaceTool[],
   rawTools?: unknown,
-  rawResponseSchema?: unknown
+  rawResponseSchema?: unknown,
+  rendererId?: string,
+  interactionCapabilities?: string[]
 ): ManipulativeTaskUiSchema {
   return {
     schema_version: "1.0",
     kind: "manipulative",
+    renderer_id: rendererId || undefined,
+    interaction_capabilities: interactionCapabilities,
+    renderer: rendererId
+      ? { renderer_id: rendererId, version: "1.0", capability_ids: interactionCapabilities }
+      : undefined,
     prompt,
     answer_placeholder: answerPlaceholder,
     visual,
@@ -145,6 +158,13 @@ export function normalizeTaskUiSchema(payload: unknown): TaskUiSchema {
   const answerPlaceholder = asString(raw.answer_placeholder, "输入答案");
   const visual = asDict(raw.visual);
   const visualType = asString(visual.type);
+  const rendererRaw = asDict(raw.renderer);
+  const rendererId = asString(raw.renderer_id) || asString(rendererRaw.renderer_id) || undefined;
+  const interactionCapabilities = Array.isArray(raw.interaction_capabilities)
+    ? raw.interaction_capabilities.filter((v): v is string => typeof v === "string")
+    : Array.isArray(rendererRaw.capability_ids)
+      ? rendererRaw.capability_ids.filter((v): v is string => typeof v === "string")
+      : undefined;
 
   if (visualType === "objects") {
     return manipulative(
@@ -153,7 +173,9 @@ export function normalizeTaskUiSchema(payload: unknown): TaskUiSchema {
       normalizeObjects(visual),
       ["move", "align", "undo", "reset"],
       raw.tools,
-      raw.response_schema
+      raw.response_schema,
+      rendererId,
+      interactionCapabilities
     );
   }
 
@@ -164,7 +186,9 @@ export function normalizeTaskUiSchema(payload: unknown): TaskUiSchema {
       normalizeBarModel(visual),
       ["resize", "undo", "reset"],
       raw.tools,
-      raw.response_schema
+      raw.response_schema,
+      rendererId,
+      interactionCapabilities
     );
   }
 
@@ -175,7 +199,9 @@ export function normalizeTaskUiSchema(payload: unknown): TaskUiSchema {
       normalizeNumberLine(visual),
       ["jump", "undo", "reset"],
       raw.tools,
-      raw.response_schema
+      raw.response_schema,
+      rendererId,
+      interactionCapabilities
     );
   }
 
@@ -183,6 +209,11 @@ export function normalizeTaskUiSchema(payload: unknown): TaskUiSchema {
     return {
       schema_version: "1.0",
       kind: "number",
+      renderer_id: rendererId,
+      interaction_capabilities: interactionCapabilities,
+      renderer: rendererId
+        ? { renderer_id: rendererId, version: "1.0", capability_ids: interactionCapabilities }
+        : undefined,
       prompt,
       answer_placeholder: answerPlaceholder,
       response_schema: normalizeResponseSchema(raw.response_schema, false)
@@ -192,6 +223,11 @@ export function normalizeTaskUiSchema(payload: unknown): TaskUiSchema {
   return {
     schema_version: "1.0",
     kind: "unsupported",
+    renderer_id: rendererId,
+    interaction_capabilities: interactionCapabilities,
+    renderer: rendererId
+      ? { renderer_id: rendererId, version: "1.0", capability_ids: interactionCapabilities }
+      : undefined,
     prompt,
     source_kind: asString(raw.kind, "unknown"),
     response_schema: normalizeResponseSchema(raw.response_schema, false)

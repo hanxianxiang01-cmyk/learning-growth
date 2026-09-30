@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "release:check": "node scripts/check-release.mjs"
+    "release:check": "node scripts/check-release.mjs",
+    "v1.4:check": "node scripts/check-v14.mjs"
   },
   "dependencies": {
     "next": "^14.2.0",

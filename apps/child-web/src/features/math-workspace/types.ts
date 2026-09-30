@@ -1,4 +1,5 @@
 import type {
+  InteractionEvent,
   ManipulativeTaskUiSchema,
   WorkspaceRepresentation,
   WorkspaceUiAction
@@ -14,8 +15,12 @@ export type WorkspaceState = {
 };
 
 export type WorkspaceAction =
-  | { type: "COMMIT"; representation: WorkspaceRepresentation }
-  | { type: "UNDO" }
-  | { type: "RESET" }
-  | { type: "APPLY_HINT"; action: WorkspaceUiAction }
+  | {
+      type: "COMMIT";
+      representation: WorkspaceRepresentation;
+      event?: InteractionEvent;
+    }
+  | { type: "UNDO"; event?: InteractionEvent }
+  | { type: "RESET"; event?: InteractionEvent }
+  | { type: "APPLY_HINT"; action: WorkspaceUiAction; event?: InteractionEvent }
   | { type: "REINITIALIZE"; schema: ManipulativeTaskUiSchema };

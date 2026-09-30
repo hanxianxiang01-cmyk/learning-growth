@@ -1,3 +1,13 @@
+## V1.4 Frontend P0
+
+- Renderer Registry：number / object-counter / bar-model / number-line / unsupported。
+- Workspace API：能力门控、撤销/重置、Hint 受控 action。
+- TaskUISchema：renderer_id / interaction_capabilities / renderer metadata。
+- Structured Response：新增 interaction_events。
+- HTTP Adapter：AttemptResult / HintResponse normalizer。
+- 新增 `/dev/v1.4-qa` 双皮肤契约验证页。
+- 合并验收（2026-09-30）：本地补跑 `next build` 通过（交付方执行环境无法装依赖，V14-07 由 REVIEW 转 DONE）；修复 QA 页 fixture 类型标注（TaskResponseSchema）与 check-v14.mjs 非 ASCII 路径解码问题（fileURLToPath）；tsc / check-v13 / check-v14 / governance / release 全过。
+
 # Changelog
 
 所有重要变更统一记录在本文件。

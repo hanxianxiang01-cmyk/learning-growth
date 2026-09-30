@@ -14,7 +14,8 @@
     "release:check": "node scripts/check-release.mjs",
     "governance:check": "node scripts/check-governance.mjs",
     "branch:check": "node scripts/check-branch-name.mjs",
-    "check": "npm run governance:check && npm run branch:check && npm run release:check && npm run child:typecheck"
+    "check": "npm run governance:check && npm run branch:check && npm run release:check && npm run child:typecheck && npm run child:v14:check",
+    "child:v14:check": "npm --workspace @learning/child-web run v1.4:check"
   },
   "engines": {
     "node": ">=22"

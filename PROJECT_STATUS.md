@@ -65,6 +65,18 @@
 | QA-1311 | QA | Mastery前端边界静态回归 | 🟢 DONE | Frontend | — |
 | EVT-1208 | Events | Interaction Event schema | ⚪ TODO | — | — |
 
+## V1.4 Frontend P0
+
+| Item | Capability | Status | Validation |
+|---|---|---|---|
+| V14-01 | Renderer Registry + safe fallback | 🟢 DONE | static contract check |
+| V14-02 | Workspace API + capability gate | 🟢 DONE | pure TypeScript check |
+| V14-03 | TaskUISchema renderer/capability metadata | 🟢 DONE | pure TypeScript check |
+| V14-04 | Structured Response interaction_events | 🟢 DONE | static contract check |
+| V14-05 | AttemptResult / HintResponse normalizer | 🟢 DONE | pure TypeScript check |
+| V14-06 | Dual-skin V1.4 QA route | 🟢 DONE | transpile/parse check |
+| V14-07 | Full Next production build | 🟢 DONE | `next build` 通过（2026-09-30 本地补验，9 routes 含 /dev/v1.4-qa）|
+
 ## V1.3 Scope
 
 功能已三方合入 `main`（来自 `Math_Sprint3_Frontend_V1.3` 交付包）；版本号仍保持 `1.2.0`，待里程碑验收后由 Release Owner 统一升 `1.3.0`。

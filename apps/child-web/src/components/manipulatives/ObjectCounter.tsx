@@ -9,7 +9,7 @@ const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
 export function ObjectCounter({ symbolByGroup }: { symbolByGroup: Record<string, string> }) {
-  const { state, commit, undo, reset } = useWorkspace();
+  const { state, commit, undo, reset, can } = useWorkspace();
   const representation = state.present;
   const dragRef = useRef<{
     pointerId: number;
@@ -37,7 +37,7 @@ export function ObjectCounter({ symbolByGroup }: { symbolByGroup: Record<string,
             }
       )
     };
-    commit(next);
+    commit(next, { event_type: "drag", capability_id: "drag", target_id: itemId, payload: { x } });
   };
 
   return (
@@ -48,9 +48,9 @@ export function ObjectCounter({ symbolByGroup }: { symbolByGroup: Record<string,
           <span>拖动小物件，让两组更容易比较。</span>
         </div>
         <div className="workspace-actions">
-          <button type="button" onClick={() => commit(alignObjectCounter(representation))}>一一对齐</button>
-          <button type="button" onClick={undo}>撤销</button>
-          <button type="button" onClick={reset}>重置</button>
+          <button type="button" disabled={!can("align")} onClick={() => { const next = alignObjectCounter(representation); commit(next, { event_type: "align", capability_id: "align" }); }}>一一对齐</button>
+          <button type="button" disabled={!can("undo")} onClick={undo}>撤销</button>
+          <button type="button" disabled={!can("reset")} onClick={reset}>重置</button>
         </div>
       </div>
 
@@ -70,6 +70,7 @@ export function ObjectCounter({ symbolByGroup }: { symbolByGroup: Record<string,
                     <button
                       key={`${group.id}-${item.id}`}
                       type="button"
+                      disabled={!can("drag")}
                       className="draggable-token"
                       style={{ left: `calc(${x}% - 19px)` }}
                       aria-label={`${group.label}的第${item.id.split("_item_")[1] ?? item.id}个物件`}

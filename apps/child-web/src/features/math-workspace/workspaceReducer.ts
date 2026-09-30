@@ -11,7 +11,9 @@ function pushHistory(
   return [...history, value].slice(-MAX_HISTORY);
 }
 
-export function createWorkspaceState(schema: Parameters<typeof createInitialRepresentation>[0]): WorkspaceState {
+export function createWorkspaceState(
+  schema: Parameters<typeof createInitialRepresentation>[0]
+): WorkspaceState {
   const representation = createInitialRepresentation(schema);
   return {
     initial: representation,
