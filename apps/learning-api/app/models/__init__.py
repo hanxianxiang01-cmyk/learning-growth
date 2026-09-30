@@ -297,7 +297,7 @@ class MasteryEvidence(Base):
     transfer: Mapped[float | None] = mapped_column(Numeric(5, 4))
     source_evidence_ids: Mapped[list] = mapped_column(ARRAY(UUID(as_uuid=True)), nullable=False, default=list)
     context_family: Mapped[str | None] = mapped_column(String(64))
-    rule_version: Mapped[str] = mapped_column(String(32), nullable=False, default="mastery-v1.3")
+    rule_version: Mapped[str] = mapped_column(String(32), nullable=False, default="mastery-v1.3.1")
     valid: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False, default=dict)
     occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())

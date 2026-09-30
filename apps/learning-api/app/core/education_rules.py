@@ -11,7 +11,7 @@ MASTERY_WEIGHTS = {
     "stability": 0.20,
     "transfer": 0.20,
 }
-RULE_VERSION = "mastery-v1.3"
+RULE_VERSION = "mastery-v1.3.1"
 
 # Independence：由 max_hint_level 映射（0~4）
 HINT_LEVEL_TO_INDEPENDENCE = {0: 1.00, 1: 0.75, 2: 0.50, 3: 0.25, 4: 0.00}
