@@ -226,13 +226,23 @@ async def assign_next_task(
             "reason": "no_published_resource_in_band",
         }
 
+    # evidence_role 属于 Task Assignment（不是 Resource 本身）：
+    # - 迁移题（transfer_distance 非 None）→ transfer
+    # - 其余默认 standard；retention/review 由 Curriculum（PR-D）后续按需分配
+    evidence_role = "transfer" if rv.transfer_distance is not None else "standard"
+
     task = TaskInstance(
         session_id=session_id,
         child_id=child_id,
         ability_id=selected_ability,
         resource_version_id=rv.resource_version_id,
         assigned_difficulty=rv.difficulty,
-        strategy_policy={"hint_max_level": 4, "fit_band": [band_min, band_max]},
+        strategy_policy={
+            "hint_max_level": 4,
+            "fit_band": [band_min, band_max],
+            "evidence_role": evidence_role,
+            "task_purpose": "normal",
+        },
     )
     db.add(task)
     await db.commit()

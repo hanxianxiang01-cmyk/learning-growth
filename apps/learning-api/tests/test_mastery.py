@@ -71,3 +71,70 @@ def test_stability_source_quality():
         _mk("attempt_standard", 1.0, hint_level=1),  # ind=0.75 -> q=0.75
     ]
     assert abs(derive_stability(evs) - (1.0 + 0.75) / 2) < 1e-9
+
+
+# ---- B1: L1→L2 真实 Gate ----
+
+def _mk_with_span(type_, correctness, hint_level, rv_idx, sess_idx):
+    """造带 resource_version_id / session_id 的证据，用于 L1→L2 多样性 Gate。"""
+    return Evidence(
+        evidence_id=uuid.uuid4(),
+        evidence_type=type_,
+        correctness=correctness,
+        max_hint_level=hint_level,
+        resource_version_id=uuid.UUID(int=rv_idx),
+        session_id=uuid.UUID(int=sess_idx),
+    )
+
+
+def test_l1_l2_not_enough_evidence():
+    # 只有 4 条标准证据（<5），不应升 L2
+    evs = [_mk_with_span("attempt_standard", 1.0, 0, i, 1) for i in range(4)]
+    ev = evaluate_mastery("a1", 1, evs)
+    assert ev.decision == "collect_evidence"
+    assert ev.new_level == 1
+
+
+def test_l1_l2_resource_diversity_insufficient():
+    # 5 条全对、但只来自 2 个 resource（<3），不升
+    evs = [_mk_with_span("attempt_standard", 1.0, 0, i % 2, 1) for i in range(5)]
+    ev = evaluate_mastery("a1", 1, evs)
+    assert ev.decision == "collect_evidence"
+    assert ev.new_level == 1
+    assert "l1_l2_resource_diversity_insufficient" in ev.reason_codes
+
+
+def test_l1_l2_session_diversity_insufficient():
+    # 5 条、3 资源、但全在同一个 session（<2），不升
+    evs = [_mk_with_span("attempt_standard", 1.0, 0, i % 3, 1) for i in range(5)]
+    ev = evaluate_mastery("a1", 1, evs)
+    assert ev.decision == "collect_evidence"
+    assert "l1_l2_session_diversity_insufficient" in ev.reason_codes
+
+
+def test_l1_l2_hint_threshold_not_met():
+    # 5 任务满足数量/多样性/C/I/S，但只有 3/5 任务 hint≤2（<0.8），不升
+    evs = [
+        _mk_with_span("attempt_standard", 1.0, 0, i % 3, i % 2) for i in range(5)
+    ]
+    # 前两个 hint=0（≤2），后三个 hint_level 需 >2 —— 但这里全部 hint=0，
+    # 需要单独构造：3 个 hint≤2，2 个 hint=4
+    evs = [
+        _mk_with_span("attempt_standard", 1.0, 0, i % 3, 1) for i in range(3)
+    ] + [
+        _mk_with_span("attempt_standard", 1.0, 4, (i + 1) % 3, 2) for i in range(2)
+    ]
+    # 3/5 hint≤2 → ratio 0.6 < 0.8
+    ev = evaluate_mastery("a1", 1, evs)
+    assert ev.decision == "unchanged"
+    assert "l1_l2_hint_threshold_not_met" in ev.reason_codes
+
+
+def test_l1_l2_gate_met():
+    # 满足全部：5 条标准证据、3 资源、2 session、hint≤2 占比≥0.8
+    evs = [
+        _mk_with_span("attempt_standard", 1.0, 0, i % 3, i % 2) for i in range(5)
+    ]
+    ev = evaluate_mastery("a1", 1, evs)
+    assert ev.decision == "upgraded"
+    assert ev.new_level == 2

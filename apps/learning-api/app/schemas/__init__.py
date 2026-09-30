@@ -194,7 +194,7 @@ class MasteryDecision(BaseModel):
     ability_id: str
     old_level: int
     new_level: int
-    decision: str = Field(pattern="^(unchanged|candidate_upgrade|upgraded|review_required|downgraded_after_review)$")
+    decision: str = Field(pattern="^(unchanged|candidate_upgrade|upgraded|review_required|downgraded_after_review|collect_evidence|recovering)$")
     evidence_ids: list[uuid.UUID] = Field(default_factory=list)
     reason_codes: list[str] = Field(default_factory=list)
 

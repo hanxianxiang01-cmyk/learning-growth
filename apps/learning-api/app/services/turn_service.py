@@ -18,6 +18,11 @@ from app.models import (
     MasteryEvidence,
     TaskInstance,
 )
+from app.core.education_rules import (
+    ATOMIC_EVIDENCE_TYPES,
+    DEFAULT_EVIDENCE_ROLE,
+    EVIDENCE_ROLE_TO_TYPE,
+)
 from app.services.diagnosis import diagnose
 from app.services.hint import decide_hint
 from app.services.mastery_db import persist_mastery_state
@@ -119,26 +124,45 @@ async def record_attempt(
     )
     db.add(event)
 
-    # 5. 若可评分，写原子 mastery_evidence
+    # 5. 单 Task 单证据（B3）：首个可评分 Attempt 是该 Task 唯一的 Mastery 原子证据。
+    #    后续 Retry 仍完整写 Attempt / LearningEvent（用于诊断、Hint、行为分析），
+    #    但不再产/覆盖这条能力测量证据——Mastery 测"这次是否已会"，Retry 测"经教学是否学会"。
     evidence_id = None
     if correct is not None:
-        independence = {0: 1.0, 1: 0.75, 2: 0.5, 3: 0.25, 4: 0.0}[max_hint_level]
-        evidence = MasteryEvidence(
-            child_id=child_id,
-            ability_id=ability_id,
-            task_instance_id=task_instance_id,
-            attempt_id=attempt.attempt_id,
-            evidence_type="attempt_standard",
-            correctness=1.0 if correct else 0.0,
-            independence=independence,
-            rule_version="mastery-v1.3",
-            valid=True,
-        )
-        db.add(evidence)
-        await db.flush()
-        evidence_id = evidence.evidence_id
+        existing_evidence = (
+            await db.execute(
+                select(MasteryEvidence).where(
+                    MasteryEvidence.task_instance_id == task_instance_id,
+                    MasteryEvidence.valid.is_(True),
+                    MasteryEvidence.evidence_type.in_(ATOMIC_EVIDENCE_TYPES),
+                )
+            )
+        ).scalar_one_or_none()
+
+        if existing_evidence is None:
+            # 证据角色（B2）：由 Task Assignment 决定，读 task.strategy_policy.evidence_role
+            sp = task.strategy_policy if isinstance(task.strategy_policy, dict) else {}
+            evidence_role = sp.get("evidence_role") or DEFAULT_EVIDENCE_ROLE
+            evidence_type = EVIDENCE_ROLE_TO_TYPE.get(evidence_role, EVIDENCE_ROLE_TO_TYPE[DEFAULT_EVIDENCE_ROLE])
+
+            independence = {0: 1.0, 1: 0.75, 2: 0.5, 3: 0.25, 4: 0.0}[max_hint_level]
+            evidence = MasteryEvidence(
+                child_id=child_id,
+                ability_id=ability_id,
+                task_instance_id=task_instance_id,
+                attempt_id=attempt.attempt_id,
+                evidence_type=evidence_type,
+                correctness=1.0 if correct else 0.0,
+                independence=independence,
+                rule_version="mastery-v1.3",
+                valid=True,
+            )
+            db.add(evidence)
+            await db.flush()
+            evidence_id = evidence.evidence_id
 
         # 5.5 证据消化 → 能力升级：回写 AbilityState（学习闭环落点）。
+        #     只有新写了证据才重算；retry 不产证据时仍可重算（幂等，成本可接受）。
         await persist_mastery_state(db, child_id=child_id, ability_id=ability_id)
 
     await db.flush()

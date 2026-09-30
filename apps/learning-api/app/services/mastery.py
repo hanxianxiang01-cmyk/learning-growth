@@ -9,6 +9,7 @@ import uuid
 from dataclasses import dataclass, field
 
 from app.core.education_rules import (
+    GATE_L1_L2,
     GATE_L2_L3,
     GATE_L3_L4,
     HINT_LEVEL_TO_INDEPENDENCE,
@@ -29,6 +30,8 @@ class Evidence:
     independence: float | None = None
     max_hint_level: int = 0
     context_family: str | None = None
+    resource_version_id: uuid.UUID | None = None
+    session_id: uuid.UUID | None = None
 
     @property
     def effective_independence(self) -> float:
@@ -143,7 +146,7 @@ def evaluate_mastery(
         if e.evidence_type in ("attempt_standard", "attempt_transfer", "retention_check", "explanation")
     )
 
-    new_level, decision, reasons = _decide(old_level, c, i, s, t, total_atomic)
+    new_level, decision, reasons = _decide(old_level, c, i, s, t, total_atomic, evidences)
 
     return MasteryEvaluation(
         ability_id=ability_id,
@@ -166,6 +169,7 @@ def _decide(
     s: float,
     t: float,
     total_atomic: int,
+    evidences: list[Evidence],
 ) -> tuple[int, str, list[str]]:
     # L0→L1：首次有效证据即升级，不用四维 masteryscore
     if old_level == 0:
@@ -173,9 +177,38 @@ def _decide(
             return 1, "upgraded", ["first_evidence"]
         return 0, "unchanged", ["insufficient_evidence"]
 
-    # L1→L2：Hint≤2 支持完成，不要求 transfer（规则引擎层默认"稳定完成"即升级判定）
+    # L1→L2：冻结基线「可在 Hint≤2 支持下稳定完成」的可执行 Gate。
+    # eligible = attempt_standard / retention_check（本档不要求 transfer）。
+    # 多样性：≥3 resource_version、≥2 session；非补偿门槛：≥4/5 任务 hint≤2。
     if old_level == 1:
-        return 2, "upgraded", ["l1_l2_stable"]
+        eligible = [
+            e for e in evidences
+            if e.evidence_type in ("attempt_standard", "retention_check")
+        ]
+        if len(eligible) < GATE_L1_L2["min_eligible_evidence"]:
+            return 1, "collect_evidence", ["l1_l2_not_enough_evidence"]
+
+        resource_versions = {e.resource_version_id for e in eligible if e.resource_version_id is not None}
+        if len(resource_versions) < GATE_L1_L2["min_resource_versions"]:
+            return 1, "collect_evidence", ["l1_l2_resource_diversity_insufficient"]
+
+        sessions = {e.session_id for e in eligible if e.session_id is not None}
+        if len(sessions) < GATE_L1_L2["min_sessions"]:
+            return 1, "collect_evidence", ["l1_l2_session_diversity_insufficient"]
+
+        if c < GATE_L1_L2["correctness"]:
+            return 1, "unchanged", ["l1_l2_correctness_not_met"]
+        if i < GATE_L1_L2["independence"]:
+            return 1, "unchanged", ["l1_l2_independence_not_met"]
+        if s < GATE_L1_L2["stability"]:
+            return 1, "unchanged", ["l1_l2_stability_not_met"]
+
+        # 非补偿门槛：≥4/5 有效任务 max_hint_level ≤ 2
+        low_hint = sum(1 for e in eligible if e.max_hint_level <= GATE_L1_L2["max_hint_level"])
+        if low_hint / max(1, len(eligible)) < GATE_L1_L2["min_low_hint_ratio"]:
+            return 1, "unchanged", ["l1_l2_hint_threshold_not_met"]
+
+        return 2, "upgraded", ["l1_l2_gate_met"]
 
     # L2→L3：四维 Gate 全部满足
     if old_level == 2:

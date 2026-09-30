@@ -22,7 +22,10 @@ from app.services.mastery import Evidence, evaluate_mastery
 async def _load_evidences(
     db: AsyncSession, child_id: uuid.UUID, ability_id: str
 ) -> list[Evidence]:
-    """从 DB 加载某能力全部有效原子证据，组装为纯计算用的 Evidence。"""
+    """从 DB 加载某能力全部有效原子证据，组装为纯计算用的 Evidence。
+
+    resource_version_id / session_id 用于 L1→L2 的跨资源/跨 Session 多样性 Gate。
+    """
     ev_rows = (
         await db.execute(
             select(MasteryEvidence).where(
@@ -35,11 +38,21 @@ async def _load_evidences(
 
     attempt_ids = [e.attempt_id for e in ev_rows if e.attempt_id]
     hint_map: dict[uuid.UUID, int] = {}
+    task_map: dict[uuid.UUID, TaskInstance] = {}
     if attempt_ids:
         att_rows = (
             await db.execute(select(Attempt).where(Attempt.attempt_id.in_(attempt_ids)))
         ).scalars().all()
         hint_map = {a.attempt_id: a.max_hint_level for a in att_rows}
+
+        task_ids = [a.task_instance_id for a in att_rows]
+        if task_ids:
+            task_rows = (
+                await db.execute(
+                    select(TaskInstance).where(TaskInstance.task_instance_id.in_(task_ids))
+                )
+            ).scalars().all()
+            task_map = {t.task_instance_id: t for t in task_rows}
 
     evidences = [
         Evidence(
@@ -49,6 +62,16 @@ async def _load_evidences(
             independence=float(e.independence) if e.independence is not None else None,
             max_hint_level=hint_map.get(e.attempt_id, 0) if e.attempt_id else 0,
             context_family=e.context_family,
+            resource_version_id=(
+                task_map[e.task_instance_id].resource_version_id
+                if e.task_instance_id in task_map
+                else None
+            ),
+            session_id=(
+                task_map[e.task_instance_id].session_id
+                if e.task_instance_id in task_map
+                else None
+            ),
         )
         for e in ev_rows
     ]
