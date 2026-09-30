@@ -75,6 +75,15 @@ EVIDENCE_ROLE_TO_TYPE = {
 # 默认 role：已有资源未配置时兜底 standard
 DEFAULT_EVIDENCE_ROLE = "standard"
 
+# Review / Downgrade 策略（B8）：单次失败不降级，近期质量走低先进入 review。
+# 阈值进入 rule config，不散落服务代码。
+REVIEW_POLICY = {
+    "recent_window": 3,          # 用最近 N 条可评分原子证据判定 review
+    "min_failures": 2,           # 触发 review 的最少失败次数（跨 N 窗口）
+    "downgrade_failures": 3,     # 窗口内 N 条全部失败才真正降 1 级
+    "quality_floor": 0.50,       # 低质 correctness 底线（备用判定口径）
+}
+
 # 诊断分类 E01~E07
 DIAGNOSIS_LABELS = {
     "E01": "knowledge_gap",

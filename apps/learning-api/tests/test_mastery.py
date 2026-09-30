@@ -4,6 +4,7 @@ import uuid
 from app.services.mastery import (
     Evidence,
     compute_mastery_score,
+    decide_review,
     derive_correctness,
     derive_independence,
     derive_stability,
@@ -252,3 +253,43 @@ def test_l3_l4_explanation_required_met():
     ev = evaluate_mastery("app_rel", 3, evs, node_policy=node_policy)
     assert ev.decision == "upgraded"
     assert ev.new_level == 4
+
+
+# ---- B8: Review / Downgrade 状态机 ----
+
+def test_review_ok_on_all_correct():
+    # 最近 3 条全对 → ok（不 review 不降级）
+    evs = [_mk_with_span("attempt_standard", 1.0, 0, i % 3, i % 2) for i in range(3)]
+    assert decide_review(evs, 2).status == "ok"
+
+
+def test_review_single_failure_no_review():
+    # 最近 3 条仅 1 错 → ok（单次失败不 review）
+    evs = [
+        _mk_with_span("attempt_standard", 0.0, 0, 0, 0),
+        _mk_with_span("attempt_standard", 1.0, 0, 1, 1),
+        _mk_with_span("attempt_standard", 1.0, 0, 2, 0),
+    ]
+    assert decide_review(evs, 2).status == "ok"
+
+
+def test_review_required_on_two_failures():
+    # 最近 3 条 2 错 → review_required（不降级）
+    evs = [
+        _mk_with_span("attempt_standard", 0.0, 0, 0, 0),
+        _mk_with_span("attempt_standard", 0.0, 0, 1, 1),
+        _mk_with_span("attempt_standard", 1.0, 0, 2, 0),
+    ]
+    assert decide_review(evs, 2).status == "review_required"
+
+
+def test_review_downgrade_on_all_failures():
+    # 最近 3 条全错 → downgrade（最多降 1 级）
+    evs = [_mk_with_span("attempt_standard", 0.0, 0, i % 3, i % 2) for i in range(3)]
+    assert decide_review(evs, 2).status == "downgrade"
+
+
+def test_review_ignored_at_level_zero():
+    # L0 不入 review（无级可降）
+    evs = [_mk_with_span("attempt_standard", 0.0, 0, i % 3, i % 2) for i in range(3)]
+    assert decide_review(evs, 0).status == "ok"

@@ -226,10 +226,17 @@ async def assign_next_task(
             "reason": "no_published_resource_in_band",
         }
 
-    # evidence_role 属于 Task Assignment（不是 Resource 本身）：
+    # evidence_role / task_purpose 属于 Task Assignment（不是 Resource 本身）：
     # - 迁移题（transfer_distance 非 None）→ transfer
-    # - 其余默认 standard；retention/review 由 Curriculum（PR-D）后续按需分配
+    # - 否则默认 standard；若该能力 trend 走低（review/巩固）→ retention + review purpose
+    state = await db.get(AbilityState, {"child_id": child_id, "ability_id": selected_ability})
+    trend = state.trend if state else None
+
     evidence_role = "transfer" if rv.transfer_distance is not None else "standard"
+    task_purpose = "normal"
+    if rv.transfer_distance is None and trend in ("down_review", "watch"):
+        evidence_role = "retention"
+        task_purpose = "review"
 
     task = TaskInstance(
         session_id=session_id,
@@ -241,7 +248,7 @@ async def assign_next_task(
             "hint_max_level": 4,
             "fit_band": [band_min, band_max],
             "evidence_role": evidence_role,
-            "task_purpose": "normal",
+            "task_purpose": task_purpose,
         },
     )
     db.add(task)

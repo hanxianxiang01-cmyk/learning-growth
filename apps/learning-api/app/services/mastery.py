@@ -17,6 +17,7 @@ from app.core.education_rules import (
     GATE_L3_L4,
     HINT_LEVEL_TO_INDEPENDENCE,
     MASTERY_WEIGHTS,
+    REVIEW_POLICY,
     STABILITY_MIN_RESOURCE_VERSIONS,
     STABILITY_MIN_SESSIONS,
     STABILITY_WINDOW,
@@ -368,3 +369,44 @@ def _decide(
         return 3, "unchanged", ["l3_l4_transfer_not_met"]
 
     return old_level, "unchanged", ["no_level_change"]
+
+
+@dataclass
+class ReviewDecision:
+    """Review / Downgrade 判定结果（B8）：单次失败不降级，只给信号。"""
+
+    status: str  # "ok" | "review_required" | "downgrade"
+    reason_codes: list[str] = field(default_factory=list)
+
+
+def decide_review(evidences: list[Evidence], current_level: int) -> ReviewDecision:
+    """近期质量走低判定（纯函数）。
+
+    - 用最近 REVIEW_POLICY.recent_window 条可评分证据；
+    - 单次/少量失败 → ok（Level 不变，trend 由上层标 down_review）；
+    - 窗口内 ≥ min_failures 失败 → review_required（安排 validation/retention）；
+    - 窗口内 ≥ downgrade_failures（且已达窗口上限）全失败 → downgrade（最多降 1 级）。
+    """
+    if current_level <= 0:
+        return ReviewDecision(status="ok")
+
+    scorable = [
+        e for e in evidences
+        if e.evidence_type in ("attempt_standard", "attempt_transfer", "retention_check")
+        and e.correctness is not None
+    ]
+    recent = scorable[-REVIEW_POLICY["recent_window"]:]
+    if not recent:
+        return ReviewDecision(status="ok")
+
+    failures = sum(1 for e in recent if e.correctness == 0.0)
+    min_fail = REVIEW_POLICY["min_failures"]
+    down_fail = REVIEW_POLICY["downgrade_failures"]
+
+    if failures >= down_fail and failures == len(recent):
+        return ReviewDecision(status="downgrade", reason_codes=["review_downgrade"])
+
+    if failures >= min_fail:
+        return ReviewDecision(status="review_required", reason_codes=["review_low_quality"])
+
+    return ReviewDecision(status="ok")
