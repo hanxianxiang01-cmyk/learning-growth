@@ -23,6 +23,7 @@
 | Default child skin | `math-lab` |
 | Learning result source | Session Result API |
 | Frozen learning-core baseline | `v1.3.1` |
+| Mastery rule version (active) | `mastery-v1.3.1` |
 | Governance | `1.0.0` |
 
 ## Current Completed Capabilities
@@ -37,12 +38,20 @@
 | Runtime | Mock / HTTP adapters | 🟢 DONE |
 | Governance | Git-ready repository structure | 🟢 DONE |
 | Governance | PR / Issue / CI / Release templates | 🟢 DONE |
+| Learning | Mastery L0→L4 全链路（evidence role / coverage / derived / review） | 🟢 DONE |
+| Learning | 证据消化→能力升级闭环（persist AbilityState） | 🟢 DONE |
 
 ## Current Partial / Gaps
 
 | Local ID | Area | Work | Status | Owner | PR |
 |---|---|---|---|---|---|
 | DRIFT-001 | Contract | Session Result API尚未写入冻结OpenAPI | 🔴 BLOCKED | Backend/Contract | — |
+| DRIFT-002 | Mastery | 运行实现 vs 冻结 v1.3.1 契约漂移（B1~B8） | 🟢 DONE | Backend | #15~#19 |
+| FE-1311 | Mastery | Atomic Evidence Truth（L1→L2 Gate + evidence_role + 单Task单证据） | 🟢 DONE | Backend | #15 |
+| FE-1312 | Mastery | Evidence Coverage（Optional 维度 + 多样性约束） | 🟢 DONE | Backend | #16 |
+| FE-1313 | Mastery | Derived Evidence + L4 Gate | 🟢 DONE | Backend | #17 |
+| FE-1314 | Mastery | Review 状态机 + Curriculum 选 role | 🟢 DONE | Backend | #18 |
+| FE-1315 | Mastery | QA replay 14/14 → 激活 mastery-v1.3.1 | 🟢 DONE | Backend | #19 |
 | FE-1301 | Task Renderer | V1（number/manipulative/unsupported） | 🟢 DONE | Frontend | — |
 | FE-1302 | Math Workspace | 隔离 Workspace State | 🟢 DONE | Frontend | — |
 | FE-1303 | Manipulative | Object Counter interactive | 🟢 DONE | Frontend | — |

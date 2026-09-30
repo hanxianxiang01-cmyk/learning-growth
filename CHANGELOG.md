@@ -19,6 +19,29 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Added（V1.3 Mastery Closure 后端收口，2026-09-30）
+
+> DRIFT-002 完整闭环：运行实现此前只接「半条链」（证据落库但从不消化成能力等级、L1→L2 空壳秒升、L2+ 因缺 transfer 证据不可达）。分四个 PR 收口后 QA replay 全绿，正式激活 `mastery-v1.3.1`。
+
+- **FE-1311（PR-A Atomic Evidence Truth，#15）**
+  - B1：L1→L2 补真实 Gate（非空壳）——eligible standard/retention ≥5、resource_version ≥3、session ≥2、C≥0.80/I≥0.50/S≥0.50，外加非补偿门槛「≥4/5 任务 hint≤2」；不足返回 `collect_evidence`。
+  - B2：`evidence_role` 落到 Task Assignment——`task_instance.strategy_policy` 写 `evidence_role`(standard/transfer/retention) + `task_purpose`；`turn_service` 按 role 决定 evidence_type，不再硬编码 `attempt_standard`。
+  - B3：单 Task 单证据——首个可评分 Attempt 为唯一 Mastery 原子证据，后续 Retry 仅写 Attempt/Event，不覆盖能力测量。
+- **FE-1312（PR-B Evidence Coverage Truth，#16）**
+  - B4：四维指标改 Optional——coverage 不足返回 `None` 而非 `0.0`（区分「没测」vs「测了不会」）；`mastery_score` 任一维度缺失 = `None`，不重归一化、不把缺当 0。
+  - B5：多样性约束严格执行——C/I 需 ≥3 resource + ≥2 session；S 需 ≥3 resource + ≥2 session；T 需 ≥2 rows + ≥2 context + ≥2 session。
+- **FE-1313（PR-C Derived Evidence + L4，#17）**
+  - B6：`stability_window`/`transfer_window` 派生证据落库，带 `source_evidence_ids` 可追溯 + `window_signature` sha1 幂等。
+  - B7：L3→L4 完整 Gate——T≥0.80 + transfer 证据≥3 + context≥3 + 节点级 `level_schema.l4_gate`（禁用 if-else 硬编码）。
+- **FE-1314（PR-D Mastery→Curriculum Closure，#18）**
+  - B8：review 状态机——`decide_review` 纯函数；单次失败不降级、窗口内 ≥2 失败 review_required、≥3 全失败最多降 1 级；trend 综合语义(up/down_review/watch/stable)；Curriculum 按 evidence need 选 role（儿童端仅见 NEXT_TASK）。
+- **FE-1315（激活，#19）**
+  - `scripts/qa_replay_mastery.py` 回放后端指南 §14 全部 14 条必测用例，14/14 通过。
+  - `RULE_VERSION` 由 `mastery-v1.3` 激活为 `mastery-v1.3.1`（models 默认值同步），消除 `turn_service` 硬编码 `rule_version`。
+  - 历史数据按 v1.3.1 重算回灌。
+
+相关文档新增：`docs/backend/01_V13_MASTERY_CLOSURE_IMPLEMENTATION.md`、`docs/frontend/23_MASTERY_CLOSURE_FRONTEND_CONTRACT.md`、`docs/frontend/24_MASTERY_FRONTEND_BACKEND_INTEGRATION.md`。
+
 ## Changed（V1.3 Mastery Closure 前端对齐，2026-09-30）
 
 - FE-1310：能力趋势统一转换为儿童可理解文案（有进步 / 很稳定 / 继续积累 / 正在巩固），不暴露 review/downgrade 内部术语。
