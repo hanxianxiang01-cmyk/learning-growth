@@ -215,8 +215,12 @@ def evaluate_mastery(
     ability_id: str,
     old_level: int,
     evidences: list[Evidence],
+    node_policy: dict | None = None,
 ) -> MasteryEvaluation:
-    """从证据推导四维（Optional，覆盖不足=missing）+ 决策（L0→L4 状态机，纯函数）。"""
+    """从证据推导四维（Optional，覆盖不足=missing）+ 决策（L0→L4 状态机，纯函数）。
+
+    node_policy：来自 ability_node.level_schema.l4_gate，供 L3→L4 的节点级 gate 使用。
+    """
     c_dim = derive_correctness(evidences)
     i_dim = derive_independence(evidences)
     s_dim = derive_stability(evidences)
@@ -240,8 +244,19 @@ def evaluate_mastery(
         if e.evidence_type in ("attempt_standard", "attempt_transfer", "retention_check", "explanation")
     )
 
+    # transfer 覆盖率（L3→L4 还需 ≥3 条 transfer、≥3 context 的节点级 gate）
+    transfer_evidences = [
+        e for e in evidences
+        if e.evidence_type == "attempt_transfer" and e.correctness is not None
+    ]
+    transfer_count = len(transfer_evidences)
+    transfer_contexts = len({e.context_family for e in transfer_evidences if e.context_family})
+
     new_level, decision, reasons = _decide(
-        old_level, c, i, s, t, total_atomic, evidences, missing, score
+        old_level, c, i, s, t, total_atomic, evidences, missing, score,
+        node_policy=node_policy,
+        transfer_count=transfer_count,
+        transfer_contexts=transfer_contexts,
     )
 
     return MasteryEvaluation(
@@ -269,6 +284,9 @@ def _decide(
     evidences: list[Evidence],
     missing: list[str],
     score: float | None,
+    node_policy: dict | None = None,
+    transfer_count: int = 0,
+    transfer_contexts: int = 0,
 ) -> tuple[int, str, list[str]]:
     # L0→L1：首次有效证据即升级，不用四维 masteryscore
     if old_level == 0:
@@ -324,10 +342,27 @@ def _decide(
             return 3, "upgraded", ["l2_l3_gate_met"]
         return 2, "unchanged", ["l2_l3_gate_not_met"]
 
-    # L3→L4：Transfer gate（含数量/context 约束，PR-C 会进一步补全 node gate）
+    # L3→L4：Transfer gate + 节点级验证（B7）
     if old_level == 3:
         if t is None:
             return 3, "collect_evidence", ["l3_l4_transfer_insufficient"]
+
+        # 数量/情境门槛（冻结基线）
+        l4_gate = node_policy or {}
+        min_transfer_contexts = l4_gate.get("min_transfer_contexts", GATE_L3_L4["min_context_families"])
+        requires_explanation = l4_gate.get("requires_explanation", False)
+
+        if transfer_count < GATE_L3_L4["min_transfer_evidence"]:
+            return 3, "collect_evidence", ["l3_l4_transfer_count_insufficient"]
+        if transfer_contexts < min_transfer_contexts:
+            return 3, "collect_evidence", ["l3_l4_context_diversity_insufficient"]
+        if requires_explanation:
+            has_explanation = any(
+                e.evidence_type == "explanation" for e in evidences
+            )
+            if not has_explanation:
+                return 3, "collect_evidence", ["l3_l4_explanation_missing"]
+
         if t >= GATE_L3_L4["transfer"]:
             return 4, "upgraded", ["l3_l4_transfer_met"]
         return 3, "unchanged", ["l3_l4_transfer_not_met"]

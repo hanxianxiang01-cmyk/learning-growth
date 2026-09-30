@@ -4,18 +4,24 @@
 """
 from __future__ import annotations
 
-import uuid
-
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
+import hashlib
 import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import AbilityState, Attempt, MasteryEvidence, TaskInstance
+from app.core.education_rules import (
+    RULE_VERSION,
+    STABILITY_MIN_RESOURCE_VERSIONS,
+    STABILITY_MIN_SESSIONS,
+    STABILITY_WINDOW,
+    TRANSFER_MIN_CONTEXT_FAMILIES,
+    TRANSFER_MIN_ROWS,
+    TRANSFER_MIN_SESSIONS,
+    TRANSFER_WINDOW_MAX,
+)
+from app.models import AbilityNode, AbilityState, Attempt, MasteryEvidence, TaskInstance
 from app.services.mastery import Evidence, evaluate_mastery
 
 
@@ -86,6 +92,100 @@ def _derive_trend(old_level: int, new_level: int) -> str:
     return "stable"
 
 
+def _window_signature(
+    ability_id: str, evidence_type: str, source_ids: list[uuid.UUID]
+) -> str:
+    """派生窗口的幂等签名：同 signature 不重复写（避免 evaluate 多次产生重复派生记录）。"""
+    canon = f"{ability_id}|{evidence_type}|" + ",".join(str(i) for i in sorted(source_ids))
+    return hashlib.sha1(canon.encode("utf-8")).hexdigest()
+
+
+async def _persist_derived_windows(
+    db: AsyncSession,
+    child_id: uuid.UUID,
+    ability_id: str,
+    evidences: list[Evidence],
+) -> None:
+    """B6：满足覆盖后写 stability_window / transfer_window 派生证据（幂等）。
+
+    派生证据带 source_evidence_ids（可追溯）+ metadata.window_signature（幂等）。
+    """
+    # Stability window：最近 STABILITY_WINDOW 条 standard/retention，需 ≥3 resource、≥2 session
+    stability_eligible = [
+        e for e in evidences
+        if e.evidence_type in ("attempt_standard", "retention_check")
+        and e.correctness is not None
+    ][:STABILITY_WINDOW]
+    if (
+        len(stability_eligible) >= STABILITY_WINDOW
+        and len({e.resource_version_id for e in stability_eligible if e.resource_version_id}) >= STABILITY_MIN_RESOURCE_VERSIONS
+        and len({e.session_id for e in stability_eligible if e.session_id}) >= STABILITY_MIN_SESSIONS
+    ):
+        src_ids = [e.evidence_id for e in stability_eligible]
+        sig = _window_signature(ability_id, "stability_window", src_ids)
+        stability_value = sum(e.correctness * e.effective_independence for e in stability_eligible) / len(stability_eligible)
+        exists = (
+            await db.execute(
+                select(MasteryEvidence).where(
+                    MasteryEvidence.ability_id == ability_id,
+                    MasteryEvidence.evidence_type == "stability_window",
+                    MasteryEvidence.metadata_["window_signature"].as_string() == sig,
+                    MasteryEvidence.valid.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+        if exists is None:
+            db.add(
+                MasteryEvidence(
+                    child_id=child_id,
+                    ability_id=ability_id,
+                    evidence_type="stability_window",
+                    stability=round(stability_value, 4),
+                    source_evidence_ids=src_ids,
+                    rule_version=RULE_VERSION,
+                    valid=True,
+                    metadata_={"window_signature": sig},
+                )
+            )
+
+    # Transfer window：最近最多 4 条 attempt_transfer，需 ≥2 条、≥2 context、≥2 session
+    transfer_eligible = [
+        e for e in evidences
+        if e.evidence_type == "attempt_transfer" and e.correctness is not None
+    ][:TRANSFER_WINDOW_MAX]
+    if (
+        len(transfer_eligible) >= TRANSFER_MIN_ROWS
+        and len({e.context_family for e in transfer_eligible if e.context_family}) >= TRANSFER_MIN_CONTEXT_FAMILIES
+        and len({e.session_id for e in transfer_eligible if e.session_id}) >= TRANSFER_MIN_SESSIONS
+    ):
+        src_ids = [e.evidence_id for e in transfer_eligible]
+        sig = _window_signature(ability_id, "transfer_window", src_ids)
+        transfer_value = sum(e.correctness * e.effective_independence for e in transfer_eligible) / len(transfer_eligible)
+        exists = (
+            await db.execute(
+                select(MasteryEvidence).where(
+                    MasteryEvidence.ability_id == ability_id,
+                    MasteryEvidence.evidence_type == "transfer_window",
+                    MasteryEvidence.metadata_["window_signature"].as_string() == sig,
+                    MasteryEvidence.valid.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+        if exists is None:
+            db.add(
+                MasteryEvidence(
+                    child_id=child_id,
+                    ability_id=ability_id,
+                    evidence_type="transfer_window",
+                    transfer=round(transfer_value, 4),
+                    source_evidence_ids=src_ids,
+                    rule_version=RULE_VERSION,
+                    valid=True,
+                    metadata_={"window_signature": sig},
+                )
+            )
+
+
 async def evaluate_mastery_from_db(
     db: AsyncSession,
     child_id: uuid.UUID,
@@ -115,7 +215,17 @@ async def persist_mastery_state(
     state = await db.get(AbilityState, {"child_id": child_id, "ability_id": ability_id})
     old_level = state.level if state else 0
 
-    ev = evaluate_mastery(ability_id, old_level, evidences)
+    # 节点级 L4 gate 策略（B7）
+    node = await db.get(AbilityNode, ability_id)
+    node_policy = None
+    if node and isinstance(node.level_schema, dict):
+        node_policy = node.level_schema.get("l4_gate")
+
+    ev = evaluate_mastery(ability_id, old_level, evidences, node_policy=node_policy)
+
+    # B6：满足覆盖后写派生窗口证据（幂等），先 flush 派生，再写能力状态
+    await _persist_derived_windows(db, child_id, ability_id, evidences)
+    await db.flush()
 
     evidence_count = len(evidences)
 

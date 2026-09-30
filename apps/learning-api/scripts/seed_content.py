@@ -82,7 +82,7 @@ async def seed(content_only: bool = True) -> dict:
                     domain_code=a["domain_code"],
                     name=a["name"],
                     definition=a["definition"],
-                    level_schema={
+                    level_schema=a.get("level_schema") or {
                         "levels": ["L0", "L1", "L2", "L3", "L4"],
                         "description": "应用题能力等级",
                     },
