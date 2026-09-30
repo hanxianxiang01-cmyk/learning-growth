@@ -85,12 +85,25 @@ function normalizeLearningBehaviors(value: unknown): LearningBehavior[] {
   });
 }
 
+
+function trendFromDecision(value: unknown): AbilityTrend | undefined {
+  const decision = asString(value);
+  if (["upgraded"].includes(decision)) return "up";
+  if (["review_required", "downgraded_after_review"].includes(decision)) return "down_review";
+  if (["collect_evidence", "candidate_upgrade", "recovering"].includes(decision)) return "watch";
+  if (decision === "unchanged") return "stable";
+  return undefined;
+}
+
 function normalizeAbilityChanges(value: unknown): AbilityChange[] {
   if (!Array.isArray(value)) return [];
 
   return value.map((entry, index) => {
     const row = asDict(entry);
     const trend = asString(row.trend) as AbilityTrend;
+    const normalizedTrend = ["up", "stable", "watch", "down_review"].includes(trend)
+      ? trend
+      : trendFromDecision(row.decision);
 
     return {
       ability_id:
@@ -99,21 +112,18 @@ function normalizeAbilityChanges(value: unknown): AbilityChange[] {
         `ABILITY_${index + 1}`,
       name: asString(row.name) || asString(row.ability_name) || undefined,
       before_level:
-        row.before_level === undefined
+        row.before_level === undefined && row.old_level === undefined
           ? undefined
-          : asNumber(row.before_level, 0),
+          : asNumber(row.before_level ?? row.old_level, 0),
       after_level: asNumber(
-        row.after_level ?? row.level ?? row.mastery_level,
+        row.after_level ?? row.new_level ?? row.level ?? row.mastery_level,
         0
       ),
       confidence:
         row.confidence === undefined
           ? undefined
           : asNumber(row.confidence, 0),
-      trend:
-        ["up", "stable", "watch", "down_review"].includes(trend)
-          ? trend
-          : undefined,
+      trend: normalizedTrend,
       evidence_delta:
         row.evidence_delta === undefined
           ? undefined

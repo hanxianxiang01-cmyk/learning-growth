@@ -39,7 +39,7 @@ const abilities: AbilityState[] = [
   { ability_id: "app_rel", name: "数量关系", level: 2, confidence: 0.72, evidence_count: 6, trend: "up", fit_band: { min: 2, max: 3 } },
   { ability_id: "app_model", name: "建模表征", level: 1, confidence: 0.55, evidence_count: 3, trend: "up", fit_band: { min: 1, max: 2 } },
   { ability_id: "app_strat", name: "策略选择", level: 2, confidence: 0.64, evidence_count: 5, trend: "watch", fit_band: { min: 2, max: 3 } },
-  { ability_id: "app_check", name: "检查验算", level: 1, confidence: 0.5, evidence_count: 2, trend: "watch", fit_band: { min: 1, max: 2 } },
+  { ability_id: "app_check", name: "检查验算", level: 2, confidence: 0.58, evidence_count: 5, trend: "down_review", fit_band: { min: 1, max: 2 } },
   { ability_id: "app_transfer", name: "迁移变式", level: 0, confidence: 0.4, evidence_count: 1, trend: "watch", fit_band: { min: 1, max: 1 } }
 ];
 
@@ -576,19 +576,37 @@ export class MockLearningApi implements LearningApi {
       {
         ability_id: "app_rel",
         name: "数量关系",
-        before_level: 2,
+        before_level: 1,
         after_level: 2,
         confidence: 0.79,
         trend: "up",
         evidence_delta: 3
+      },
+      {
+        ability_id: "app_model",
+        name: "建模表征",
+        before_level: 1,
+        after_level: 1,
+        confidence: 0.63,
+        trend: "stable",
+        evidence_delta: 2
+      },
+      {
+        ability_id: "app_check",
+        name: "检查验算",
+        before_level: 2,
+        after_level: 2,
+        confidence: 0.58,
+        trend: "down_review",
+        evidence_delta: 1
       }
     ];
 
     const recommendation: NextRecommendation = {
-      type: "CONTINUE_ABILITY",
-      title: "继续练习数量关系",
-      description: "下一轮继续尝试用物件、线段图和数轴表示题目关系。",
-      ability_id: "app_rel"
+      type: "REVIEW_ABILITY",
+      title: "再巩固一下检查验算",
+      description: "系统会安排合适的练习，帮助这项能力变得更稳定。",
+      ability_id: "app_check"
     };
 
     return {

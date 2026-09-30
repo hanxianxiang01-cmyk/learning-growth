@@ -106,3 +106,60 @@ NEXT_PUBLIC_SESSION_RESULT_PATH_TEMPLATE
 ```
 
 适配，页面不直接拼 URL。
+
+## V1.3 Mastery Closure UI Contract
+
+Mastery 计算与升级/复习判断仍完全由 Learning Engine 负责；儿童端不调用规则、不计算四维指标。
+
+### AbilityState
+
+儿童端继续消费：
+
+```text
+level: 0..4
+confidence: 0..1
+evidence_count
+trend: up | stable | watch | down_review
+```
+
+儿童可见映射：
+
+```text
+up          -> 有进步
+stable      -> 很稳定
+watch       -> 继续积累
+down_review -> 正在巩固
+```
+
+不得向儿童显示 `review_required / downgrade / transfer_missing / mastery_score` 等内部术语。
+
+### Session Result ability_changes
+
+推荐后端输出：
+
+```json
+{
+  "ability_id": "app_rel",
+  "name": "数量关系",
+  "before_level": 1,
+  "after_level": 2,
+  "confidence": 0.79,
+  "trend": "up",
+  "evidence_delta": 3
+}
+```
+
+迁移期 normalizer 同时兼容：
+
+```text
+old_level -> before_level
+new_level -> after_level
+MasteryDecision.decision -> trend fallback
+```
+
+结果页会渲染一次 Session 中的全部 `ability_changes`，不再只显示第一项。
+
+### Curriculum transparency
+
+`COLLECT_TRANSFER / COLLECT_RETENTION / REVIEW_REQUIRED` 属于后端教育决策，不应扩成儿童端学习状态。
+后端完成调度后，儿童端仍通过现有 `NEXT_TASK` 加载下一题。

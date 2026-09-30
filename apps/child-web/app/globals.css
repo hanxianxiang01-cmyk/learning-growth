@@ -124,6 +124,11 @@ a{color:inherit}
 .hero-star{font-size:54px}
 .behavior-checklist,.ability-growth-card{padding:22px}
 .behavior-checklist h3,.ability-growth-card h3{margin-top:0}
+.ability-growth-list{display:grid;gap:12px}
+.ability-status-line{display:grid;gap:4px;margin-top:8px}
+.ability-status-line strong{color:var(--cm-text);font-size:14px}
+.ability-status-line span{color:var(--cm-text-2);font-size:13px;line-height:1.55}
+.ability-evidence-note{margin-bottom:0}
 .check-item{padding:10px 0;border-bottom:1px solid var(--cm-border);display:flex;gap:10px}
 .check-item:last-child{border-bottom:0}
 .growth-level{font-size:34px;color:var(--cm-primary);font-weight:900}

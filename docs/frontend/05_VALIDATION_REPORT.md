@@ -102,3 +102,27 @@ npm run build
 ```text
 docs/20_BACKEND_CONTRACT_DEPENDENCIES_V1.3.md
 ```
+
+---
+
+## V1.3 Mastery Closure Frontend Alignment（2026-09-30）
+
+### 已执行并通过
+
+```bash
+cd apps/child-web
+node scripts/check-v13.mjs
+```
+
+新增覆盖：
+- FE-1310 Mastery UI contract alignment；
+- QA-1311 Mastery frontend regression；
+- Result Page 遍历全部 ability_changes；
+- Session Result normalizer 兼容 old_level/new_level；
+- 儿童端不出现“需复核/需要进一步复核”等工程术语。
+
+变更 TS/TSX 文件已使用 TypeScript `transpileModule` 做语法级检查：通过。
+
+### 当前环境仍未完成
+
+ZIP 不含 `node_modules`，当前环境也无法从外网安装 React / Next 依赖，因此本次不声明完整 `npm run child:typecheck` / `npm run child:build` 已通过。合入 Git main 前必须在有依赖环境补跑。

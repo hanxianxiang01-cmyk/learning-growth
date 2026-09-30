@@ -7,6 +7,7 @@
 | ID | Contract | Current Implementation | Frozen Baseline | Status | Resolution |
 |---|---|---|---|---|---|
 | DRIFT-001 | Session Result | Child Web V1.2 已接 `getSessionResult()`，包含 `learning_behaviors / ability_changes / next_recommendation` | `learning-core-v1.3.1` OpenAPI 尚未包含该Endpoint | 🔴 OPEN | 后端更新权威OpenAPI；前端当前以可配置Path + Normalizer过渡 |
+| DRIFT-002 | Mastery Closure | 运行代码 L1→L2 无条件升级；turn_service 仅写 attempt_standard；Transfer 不足按 0 处理 | `learning-core-v1.3.1` 已冻结真实 L1→L2 / transfer_window / review_required 原则 | 🔴 OPEN | 后端按 V1.3 Mastery Closure 指导补齐 Evidence Role、Window、Review→Curriculum 闭环；前端仅做展示适配 |
 
 ## Rules
 

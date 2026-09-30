@@ -130,7 +130,6 @@ export function MathResultScreen({
     );
   }
 
-  const ability = result.ability_changes[0];
   const recommendation = result.next_recommendation;
 
   const nextHref =
@@ -158,14 +157,19 @@ export function MathResultScreen({
             }))}
           />
 
-          {ability ? (
-            <AbilityGrowthCard
-              ability={ability.name ?? ability.ability_id}
-              beforeLevel={ability.before_level}
-              afterLevel={ability.after_level}
-              trend={ability.trend}
-              evidenceDelta={ability.evidence_delta}
-            />
+          {result.ability_changes.length > 0 ? (
+            <div className="ability-growth-list">
+              {result.ability_changes.map(ability => (
+                <AbilityGrowthCard
+                  key={ability.ability_id}
+                  ability={ability.name ?? ability.ability_id}
+                  beforeLevel={ability.before_level}
+                  afterLevel={ability.after_level}
+                  trend={ability.trend}
+                  evidenceDelta={ability.evidence_delta}
+                />
+              ))}
+            </div>
           ) : (
             <div className="surface-card ability-growth-card">
               <div className="eyebrow">🌱 能力成长</div>

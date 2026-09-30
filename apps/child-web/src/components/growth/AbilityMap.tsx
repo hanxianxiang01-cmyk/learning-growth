@@ -1,11 +1,5 @@
 import type { AbilityState } from "@/src/lib/api/contracts";
-
-const trendLabel = {
-  up: "上升",
-  stable: "稳定",
-  watch: "观察中",
-  down_review: "需复核"
-} as const;
+import { getAbilityStatusPresentation } from "@/src/lib/presentation/abilityStatus";
 
 export function AbilityMap({
   abilities
@@ -16,17 +10,21 @@ export function AbilityMap({
     <div className="surface-card ability-map">
       {abilities.map(item => {
         const pct = Math.max(5, Math.min(100, (item.level / 4) * 100));
+        const status = getAbilityStatusPresentation(item.trend);
         return (
-          <div className="ability-row" key={item.ability_id}>
+          <div
+            className={`ability-row ability-row-${item.trend ?? "watch"}`}
+            key={item.ability_id}
+          >
             <div>
               <strong>{item.name ?? item.ability_id}</strong>
               <small>
-                {item.trend ? trendLabel[item.trend] : "观察中"}
+                {status.label}
                 {" · "}
                 {item.evidence_count}条证据
               </small>
             </div>
-            <div className="ability-track">
+            <div className="ability-track" aria-label={`${item.name ?? item.ability_id} 当前 L${item.level}`}>
               <span style={{ width: `${pct}%` }} />
             </div>
             <div className="ability-level">L{item.level}</div>

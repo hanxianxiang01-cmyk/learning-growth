@@ -19,6 +19,15 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Changed（V1.3 Mastery Closure 前端对齐，2026-09-30）
+
+- FE-1310：能力趋势统一转换为儿童可理解文案（有进步 / 很稳定 / 继续积累 / 正在巩固），不暴露 review/downgrade 内部术语。
+- FE-1310：结果页从“只显示第一项 ability_change”改为完整渲染一次 Session 的全部能力变化。
+- FE-1310：Session Result Normalizer 兼容 `old_level/new_level` 与 MasteryDecision `decision` 迁移字段。
+- QA-1311：V1.3 静态 QA 增加 Mastery UI 边界校验，防止儿童端重新引入复核术语或只渲染单能力。
+- Mock：补充 up / stable / down_review 三种能力状态，用于结果页和成长地图回归。
+
+
 ## Fixed（Sprint 3 联调阶段修复，2026-09-28）
 
 > 以下 6 处修复在`前后端真实联调`中暴露，均为「mock 模式测不出、接真后端才会踩到」的契约/bug。

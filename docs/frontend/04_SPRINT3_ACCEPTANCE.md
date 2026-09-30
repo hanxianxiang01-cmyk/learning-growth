@@ -65,3 +65,20 @@
 ```
 
 HTTP真实联调需后端Contract满足 `docs/20_BACKEND_CONTRACT_DEPENDENCIES_V1.3.md`。
+
+---
+
+# V1.3 Mastery Closure Frontend Acceptance
+
+```text
+✅ FE-1310 Mastery UI contract alignment
+✅ QA-1311 Mastery frontend regression
+```
+
+验收：
+- [x] 前端不计算 correctness / independence / stability / transfer / MasteryScore
+- [x] Result Page 渲染全部 ability_changes
+- [x] Growth Map 支持 down_review，但儿童文案显示“正在巩固”
+- [x] Result Page 不暴露 review_required / downgrade 等工程术语
+- [x] Session Result normalizer 兼容 old_level/new_level 迁移字段
+- [x] Mastery 补证据/复习调度仍通过 NEXT_TASK 对儿童端透明
