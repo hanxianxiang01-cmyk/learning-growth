@@ -196,3 +196,59 @@ def test_l2_l3_collect_evidence_when_stability_missing():
     assert ev.decision == "collect_evidence"
     assert ev.score is None
     assert "stability" in ev.missing_evidence
+
+
+# ---- B7: L3→L4 完整 Gate（node policy）----
+
+def _transfer_evs(n, contexts, sessions):
+    return [
+        _mk_with_span("attempt_transfer", 1.0, 0, i % 3, i % sessions, ctx=f"c{i % contexts}")
+        for i in range(n)
+    ]
+
+
+def test_l3_l4_gate_met():
+    # 3 条 transfer、3 context、2 session、T≥0.80 → L4
+    evs = _transfer_evs(3, contexts=3, sessions=2)
+    node_policy = {"requires_explanation": False, "min_transfer_contexts": 3}
+    ev = evaluate_mastery("app_rel", 3, evs, node_policy=node_policy)
+    assert ev.decision == "upgraded"
+    assert ev.new_level == 4
+
+
+def test_l3_l4_transfer_count_insufficient():
+    # 只有 2 条 transfer（<3）→ collect_evidence
+    evs = _transfer_evs(2, contexts=2, sessions=2)
+    node_policy = {"requires_explanation": False, "min_transfer_contexts": 3}
+    ev = evaluate_mastery("app_rel", 3, evs, node_policy=node_policy)
+    assert ev.decision == "collect_evidence"
+    assert "l3_l4_transfer_count_insufficient" in ev.reason_codes
+
+
+def test_l3_l4_context_diversity_insufficient():
+    # 3 条 transfer 但只 2 context（<3）→ collect_evidence
+    evs = _transfer_evs(3, contexts=2, sessions=2)
+    node_policy = {"requires_explanation": False, "min_transfer_contexts": 3}
+    ev = evaluate_mastery("app_rel", 3, evs, node_policy=node_policy)
+    assert ev.decision == "collect_evidence"
+    assert "l3_l4_context_diversity_insufficient" in ev.reason_codes
+
+
+def test_l3_l4_explanation_required_missing():
+    # 节点要求 explanation，但无 explanation 证据 → collect_evidence
+    evs = _transfer_evs(3, contexts=3, sessions=2)
+    node_policy = {"requires_explanation": True, "min_transfer_contexts": 3}
+    ev = evaluate_mastery("app_rel", 3, evs, node_policy=node_policy)
+    assert ev.decision == "collect_evidence"
+    assert "l3_l4_explanation_missing" in ev.reason_codes
+
+
+def test_l3_l4_explanation_required_met():
+    # 节点要求 explanation 且提供了 → 升 L4
+    evs = _transfer_evs(3, contexts=3, sessions=2) + [
+        _mk_with_span("explanation", 1.0, 0, 0, 0)
+    ]
+    node_policy = {"requires_explanation": True, "min_transfer_contexts": 3}
+    ev = evaluate_mastery("app_rel", 3, evs, node_policy=node_policy)
+    assert ev.decision == "upgraded"
+    assert ev.new_level == 4
