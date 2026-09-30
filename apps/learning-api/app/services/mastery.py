@@ -9,13 +9,20 @@ import uuid
 from dataclasses import dataclass, field
 
 from app.core.education_rules import (
+    CI_MIN_RESOURCE_VERSIONS,
+    CI_MIN_SESSIONS,
+    CI_WINDOW,
     GATE_L1_L2,
     GATE_L2_L3,
     GATE_L3_L4,
     HINT_LEVEL_TO_INDEPENDENCE,
     MASTERY_WEIGHTS,
+    STABILITY_MIN_RESOURCE_VERSIONS,
+    STABILITY_MIN_SESSIONS,
     STABILITY_WINDOW,
+    TRANSFER_MIN_CONTEXT_FAMILIES,
     TRANSFER_MIN_ROWS,
+    TRANSFER_MIN_SESSIONS,
     TRANSFER_WINDOW_MAX,
 )
 
@@ -49,7 +56,43 @@ def _mean(vals: list[float]) -> float:
     return sum(vals) / len(vals) if vals else 0.0
 
 
-def compute_mastery_score(c: float, i: float, s: float, t: float) -> float:
+@dataclass
+class DimensionResult:
+    """一个 Mastery 维度的派生结果：值 + 覆盖是否充分。
+
+    - value 为 None：该维度尚未被充分测量（insufficient），不是 0。
+    - coverage 描述覆盖缺口，供 Curriculum 判断是缺题量/缺资源多样/缺 session/缺 context。
+    """
+
+    value: float | None
+    sufficient: bool
+    reason: str | None = None  # insufficient 时的原因码
+
+    @staticmethod
+    def sufficient(value: float) -> "DimensionResult":
+        return DimensionResult(value=value, sufficient=True, reason=None)
+
+    @staticmethod
+    def insufficient(reason: str) -> "DimensionResult":
+        return DimensionResult(value=None, sufficient=False, reason=reason)
+
+
+def _distinct_resource_versions(evidences: list[Evidence]) -> int:
+    return len({e.resource_version_id for e in evidences if e.resource_version_id is not None})
+
+
+def _distinct_sessions(evidences: list[Evidence]) -> int:
+    return len({e.session_id for e in evidences if e.session_id is not None})
+
+
+def _distinct_contexts(evidences: list[Evidence]) -> int:
+    return len({e.context_family for e in evidences if e.context_family is not None})
+
+
+def compute_mastery_score(c: float | None, i: float | None, s: float | None, t: float | None) -> float | None:
+    """四维加权；任一维度缺失则返回 None（禁止对剩余维度重归一化、禁止把缺失当 0）。"""
+    if c is None or i is None or s is None or t is None:
+        return None
     return (
         MASTERY_WEIGHTS["correctness"] * c
         + MASTERY_WEIGHTS["independence"] * i
@@ -60,43 +103,77 @@ def compute_mastery_score(c: float, i: float, s: float, t: float) -> float:
 
 # ---- 四维派生（纯函数） ----
 
-
-def derive_correctness(evidences: list[Evidence], window: int = 8) -> float:
-    scorable = [
+def _scorable(evidences: list[Evidence]) -> list[Evidence]:
+    """可评分证据：correctness 非空的标准/迁移/保持证据。"""
+    return [
         e for e in evidences
         if e.evidence_type in ("attempt_standard", "attempt_transfer", "retention_check")
         and e.correctness is not None
-    ][:window]
-    return _mean([e.correctness for e in scorable])
+    ]
 
 
-def derive_independence(evidences: list[Evidence], window: int = 8) -> float:
-    scorable = [
-        e for e in evidences
-        if e.evidence_type in ("attempt_standard", "attempt_transfer", "retention_check")
-    ][:window]
-    return _mean([e.effective_independence for e in scorable])
+def derive_correctness(evidences: list[Evidence], window: int = CI_WINDOW) -> DimensionResult:
+    """正确率：最近 window 条可评分证据，要求 ≥3 resource、≥2 session。"""
+    scorable = _scorable(evidences)[:window]
+    if not scorable:
+        return DimensionResult.insufficient("no_scorable_evidence")
+    rv = _distinct_resource_versions(scorable)
+    sess = _distinct_sessions(scorable)
+    if rv < CI_MIN_RESOURCE_VERSIONS:
+        return DimensionResult.insufficient("few_resource_versions")
+    if sess < CI_MIN_SESSIONS:
+        return DimensionResult.insufficient("few_sessions")
+    return DimensionResult.sufficient(_mean([e.correctness for e in scorable if e.correctness is not None]))
 
 
-def derive_stability(evidences: list[Evidence]) -> float:
+def derive_independence(evidences: list[Evidence], window: int = CI_WINDOW) -> DimensionResult:
+    """独立性：最近 window 条可评分证据的 effective_independence 均值，同 C 的覆盖要求。"""
+    scorable = _scorable(evidences)[:window]
+    if not scorable:
+        return DimensionResult.insufficient("no_scorable_evidence")
+    rv = _distinct_resource_versions(scorable)
+    sess = _distinct_sessions(scorable)
+    if rv < CI_MIN_RESOURCE_VERSIONS:
+        return DimensionResult.insufficient("few_resource_versions")
+    if sess < CI_MIN_SESSIONS:
+        return DimensionResult.insufficient("few_sessions")
+    return DimensionResult.sufficient(_mean([e.effective_independence for e in scorable]))
+
+
+def derive_stability(evidences: list[Evidence]) -> DimensionResult:
+    """稳定性：最近 STABILITY_WINDOW 条 standard/retention，要求 ≥3 resource、≥2 session。"""
     eligible = [
         e for e in evidences
         if e.evidence_type in ("attempt_standard", "retention_check")
         and e.correctness is not None
     ][:STABILITY_WINDOW]
     if not eligible:
-        return 0.0
-    return _mean([e.correctness * e.effective_independence for e in eligible])
+        return DimensionResult.insufficient("no_eligible_evidence")
+    rv = _distinct_resource_versions(eligible)
+    sess = _distinct_sessions(eligible)
+    if rv < STABILITY_MIN_RESOURCE_VERSIONS:
+        return DimensionResult.insufficient("few_resource_versions")
+    if sess < STABILITY_MIN_SESSIONS:
+        return DimensionResult.insufficient("few_sessions")
+    return DimensionResult.sufficient(_mean([e.correctness * e.effective_independence for e in eligible]))
 
 
-def derive_transfer(evidences: list[Evidence]) -> float:
+def derive_transfer(evidences: list[Evidence]) -> DimensionResult:
+    """迁移：最近最多 4 条 transfer 证据，要求 ≥2 条、≥2 context、≥2 session。
+
+    不足返回 insufficient（value=None），不与「测了但失败」混淆。
+    """
     eligible = [
         e for e in evidences
         if e.evidence_type == "attempt_transfer" and e.correctness is not None
     ][:TRANSFER_WINDOW_MAX]
     if len(eligible) < TRANSFER_MIN_ROWS:
-        return 0.0
-    return _mean([e.correctness * e.effective_independence for e in eligible])
+        return DimensionResult.insufficient("too_few_transfer_rows")
+    if _distinct_contexts(eligible) < TRANSFER_MIN_CONTEXT_FAMILIES:
+        return DimensionResult.insufficient("few_context_families")
+    if _distinct_sessions(eligible) < TRANSFER_MIN_SESSIONS:
+        return DimensionResult.insufficient("few_sessions")
+    return DimensionResult.sufficient(_mean([e.correctness * e.effective_independence for e in eligible]))
 
 
 @dataclass
@@ -105,26 +182,31 @@ class MasteryEvaluation:
     old_level: int
     new_level: int
     decision: str
-    score: float
-    correctness: float
-    independence: float
-    stability: float
-    transfer: float
+    score: float | None
+    correctness: float | None
+    independence: float | None
+    stability: float | None
+    transfer: float | None
     reason_codes: list[str] = field(default_factory=list)
+    missing_evidence: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
+        def _round(v: float | None) -> float | None:
+            return round(v, 4) if v is not None else None
+
         return {
             "ability_id": self.ability_id,
             "old_level": self.old_level,
             "new_level": self.new_level,
             "decision": self.decision,
-            "score": round(self.score, 4),
+            "score": _round(self.score),
             "dimensions": {
-                "correctness": round(self.correctness, 4),
-                "independence": round(self.independence, 4),
-                "stability": round(self.stability, 4),
-                "transfer": round(self.transfer, 4),
+                "correctness": _round(self.correctness),
+                "independence": _round(self.independence),
+                "stability": _round(self.stability),
+                "transfer": _round(self.transfer),
             },
+            "missing_evidence": self.missing_evidence,
             "reason_codes": self.reason_codes,
         }
 
@@ -134,19 +216,33 @@ def evaluate_mastery(
     old_level: int,
     evidences: list[Evidence],
 ) -> MasteryEvaluation:
-    """从证据推导四维 + 决策（L0→L4 状态机，纯函数）。"""
-    c = derive_correctness(evidences)
-    i = derive_independence(evidences)
-    s = derive_stability(evidences)
-    t = derive_transfer(evidences)
+    """从证据推导四维（Optional，覆盖不足=missing）+ 决策（L0→L4 状态机，纯函数）。"""
+    c_dim = derive_correctness(evidences)
+    i_dim = derive_independence(evidences)
+    s_dim = derive_stability(evidences)
+    t_dim = derive_transfer(evidences)
+
+    c, i, s, t = c_dim.value, i_dim.value, s_dim.value, t_dim.value
     score = compute_mastery_score(c, i, s, t)
+
+    missing: list[str] = []
+    if c_dim.value is None:
+        missing.append("correctness")
+    if i_dim.value is None:
+        missing.append("independence")
+    if s_dim.value is None:
+        missing.append("stability")
+    if t_dim.value is None:
+        missing.append("transfer")
 
     total_atomic = sum(
         1 for e in evidences
         if e.evidence_type in ("attempt_standard", "attempt_transfer", "retention_check", "explanation")
     )
 
-    new_level, decision, reasons = _decide(old_level, c, i, s, t, total_atomic, evidences)
+    new_level, decision, reasons = _decide(
+        old_level, c, i, s, t, total_atomic, evidences, missing, score
+    )
 
     return MasteryEvaluation(
         ability_id=ability_id,
@@ -159,17 +255,20 @@ def evaluate_mastery(
         stability=s,
         transfer=t,
         reason_codes=reasons,
+        missing_evidence=missing,
     )
 
 
 def _decide(
     old_level: int,
-    c: float,
-    i: float,
-    s: float,
-    t: float,
+    c: float | None,
+    i: float | None,
+    s: float | None,
+    t: float | None,
     total_atomic: int,
     evidences: list[Evidence],
+    missing: list[str],
+    score: float | None,
 ) -> tuple[int, str, list[str]]:
     # L0→L1：首次有效证据即升级，不用四维 masteryscore
     if old_level == 0:
@@ -196,11 +295,12 @@ def _decide(
         if len(sessions) < GATE_L1_L2["min_sessions"]:
             return 1, "collect_evidence", ["l1_l2_session_diversity_insufficient"]
 
-        if c < GATE_L1_L2["correctness"]:
+        # 三档门槛：维度 None 也算未达标
+        if c is None or c < GATE_L1_L2["correctness"]:
             return 1, "unchanged", ["l1_l2_correctness_not_met"]
-        if i < GATE_L1_L2["independence"]:
+        if i is None or i < GATE_L1_L2["independence"]:
             return 1, "unchanged", ["l1_l2_independence_not_met"]
-        if s < GATE_L1_L2["stability"]:
+        if s is None or s < GATE_L1_L2["stability"]:
             return 1, "unchanged", ["l1_l2_stability_not_met"]
 
         # 非补偿门槛：≥4/5 有效任务 max_hint_level ≤ 2
@@ -210,21 +310,24 @@ def _decide(
 
         return 2, "upgraded", ["l1_l2_gate_met"]
 
-    # L2→L3：四维 Gate 全部满足
+    # L2→L3：四维 Gate 全部满足。任一维度 missing → collect_evidence（不重归一化）。
     if old_level == 2:
-        score = compute_mastery_score(c, i, s, t)
+        if missing or score is None:
+            return 2, "collect_evidence", ["l2_l3_coverage_insufficient"]
         if (
             score >= GATE_L2_L3["score"]
-            and c >= GATE_L2_L3["correctness"]
-            and i >= GATE_L2_L3["independence"]
-            and s >= GATE_L2_L3["stability"]
-            and t >= GATE_L2_L3["transfer"]
+            and c is not None and c >= GATE_L2_L3["correctness"]
+            and i is not None and i >= GATE_L2_L3["independence"]
+            and s is not None and s >= GATE_L2_L3["stability"]
+            and t is not None and t >= GATE_L2_L3["transfer"]
         ):
             return 3, "upgraded", ["l2_l3_gate_met"]
         return 2, "unchanged", ["l2_l3_gate_not_met"]
 
-    # L3→L4：Transfer gate
+    # L3→L4：Transfer gate（含数量/context 约束，PR-C 会进一步补全 node gate）
     if old_level == 3:
+        if t is None:
+            return 3, "collect_evidence", ["l3_l4_transfer_insufficient"]
         if t >= GATE_L3_L4["transfer"]:
             return 4, "upgraded", ["l3_l4_transfer_met"]
         return 3, "unchanged", ["l3_l4_transfer_not_met"]

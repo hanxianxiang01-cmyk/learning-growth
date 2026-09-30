@@ -119,19 +119,23 @@ async def persist_mastery_state(
 
     evidence_count = len(evidences)
 
+    # confidence 兜底：四维未凑齐时 score 为 None，用 correctness 近似（再有值则 0.0）；
+    # 意义是「当前能力状态的置信度」，并非 strict mastery score。
+    confidence = ev.score if ev.score is not None else (ev.correctness if ev.correctness is not None else 0.0)
+
     if state is None:
         state = AbilityState(
             child_id=child_id,
             ability_id=ability_id,
             level=ev.new_level,
-            confidence=round(ev.score, 4),
+            confidence=round(float(confidence), 4),
             evidence_count=evidence_count,
             trend=_derive_trend(old_level, ev.new_level),
         )
         db.add(state)
     else:
         state.level = ev.new_level
-        state.confidence = round(ev.score, 4)
+        state.confidence = round(float(confidence), 4)
         state.evidence_count = evidence_count
         state.trend = _derive_trend(old_level, ev.new_level)
         state.last_evidence_at = (
@@ -144,7 +148,9 @@ async def persist_mastery_state(
         "ability_id": ability_id,
         "old_level": old_level,
         "new_level": ev.new_level,
-        "score": round(ev.score, 4),
+        "score": round(ev.score, 4) if ev.score is not None else None,
+        "decision": ev.decision,
+        "missing_evidence": ev.missing_evidence,
         "evidence_count": evidence_count,
         "trend": _derive_trend(old_level, ev.new_level),
     }
