@@ -1,12 +1,6 @@
 import { SurfaceCard } from "../ui/SurfaceCard";
 import type { AbilityTrend } from "@/src/lib/api/contracts";
-
-const trendLabel: Record<AbilityTrend, string> = {
-  up: "近期趋势上升",
-  stable: "当前表现稳定",
-  watch: "继续观察与积累证据",
-  down_review: "需要进一步复核"
-};
+import { getAbilityStatusPresentation } from "@/src/lib/presentation/abilityStatus";
 
 export function AbilityGrowthCard({
   ability,
@@ -23,6 +17,9 @@ export function AbilityGrowthCard({
 }) {
   const changed =
     typeof beforeLevel === "number" && beforeLevel !== afterLevel;
+  const downgraded =
+    typeof beforeLevel === "number" && beforeLevel > afterLevel;
+  const status = getAbilityStatusPresentation(trend);
 
   return (
     <SurfaceCard className="ability-growth-card">
@@ -30,20 +27,21 @@ export function AbilityGrowthCard({
       <h3>{ability}</h3>
 
       <div className="growth-level">
-        {typeof beforeLevel === "number"
-          ? changed
-            ? `L${beforeLevel} → L${afterLevel}`
-            : `L${afterLevel}`
+        {typeof beforeLevel === "number" && changed && !downgraded
+          ? `L${beforeLevel} → L${afterLevel}`
           : `L${afterLevel}`}
       </div>
 
-      <p className="muted">
-        {typeof evidenceDelta === "number" && evidenceDelta > 0
-          ? `本次新增 ${evidenceDelta} 条有效学习证据。`
-          : trend
-            ? trendLabel[trend]
-            : "继续积累学习证据中。"}
-      </p>
+      <div className="ability-status-line">
+        <strong>{status.label}</strong>
+        <span>{status.description}</span>
+      </div>
+
+      {typeof evidenceDelta === "number" && evidenceDelta > 0 && (
+        <p className="muted ability-evidence-note">
+          本次新增 {evidenceDelta} 条有效学习证据。
+        </p>
+      )}
     </SurfaceCard>
   );
 }

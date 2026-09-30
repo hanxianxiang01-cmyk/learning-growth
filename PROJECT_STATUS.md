@@ -52,6 +52,8 @@
 | API-1307 | Contract | Structured Response | 🟢 DONE | Frontend | — |
 | API-1308 | Hint | Workspace-aware ui_action | 🟢 DONE | Frontend | — |
 | QA-1312 | QA | /dev/v1.3-qa 双皮肤页 | 🟢 DONE | Frontend | — |
+| FE-1310 | Mastery UI | 能力状态儿童文案、多能力结果页、Normalizer迁移兼容 | 🟢 DONE | Frontend | — |
+| QA-1311 | QA | Mastery前端边界静态回归 | 🟢 DONE | Frontend | — |
 | EVT-1208 | Events | Interaction Event schema | ⚪ TODO | — | — |
 
 ## V1.3 Scope
