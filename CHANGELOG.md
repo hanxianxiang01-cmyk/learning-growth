@@ -19,6 +19,15 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Added（Session Result 契约写入权威 OpenAPI，2026-09-30）
+
+> DRIFT-001 收口：权威 OpenAPI 此前缺少 Session Result endpoint，前端一直靠可配置 Path + Normalizer 过渡。
+
+- 权威 `02_openapi_v1.3.1.yaml` 补 `GET /v1/learning/sessions/{session_id}/result` 及 `SessionResult` / `AbilityChange` / `LearningBehavior` / `NextRecommendation` / `DiagnosisSummaryItem` schema。
+- 顺带补齐 `MasteryDecision.decision` 枚举：`collect_evidence` / `recovering`（后端已在用，此前 yaml 漏同步）。
+- 前端 `config.ts` 默认 path 已与权威路由一致，注释更新；`SHA256SUMS` 同步重算。
+- `CONTRACT_DRIFT_REGISTER` 将 DRIFT-001 标为 RESOLVED。
+
 ## Added（V1.3 Mastery Closure 后端收口，2026-09-30）
 
 > DRIFT-002 完整闭环：运行实现此前只接「半条链」（证据落库但从不消化成能力等级、L1→L2 空壳秒升、L2+ 因缺 transfer 证据不可达）。分四个 PR 收口后 QA replay 全绿，正式激活 `mastery-v1.3.1`。

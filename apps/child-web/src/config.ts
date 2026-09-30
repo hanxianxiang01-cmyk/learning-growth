@@ -7,11 +7,11 @@ export const config = {
     process.env.NEXT_PUBLIC_LEARNING_API_BASE_URL ?? "http://localhost:8000",
 
   /**
-   * Current frozen local OpenAPI v1.3 does not yet contain the newly-ready
-   * Session Result endpoint, so V1.2 keeps the path configurable.
+   * Session Result endpoint 已写入权威 OpenAPI v1.3.1
+   *（GET /v1/learning/sessions/{session_id}/result）。
    *
-   * Replace this environment value with the authoritative backend route when
-   * the OpenAPI baseline is updated.
+   * 默认路径已与权威路由一致；保留环境变量仅为异构部署留兜底，
+   * 正常情况下无需覆盖。
    */
   sessionResultPathTemplate:
     process.env.NEXT_PUBLIC_SESSION_RESULT_PATH_TEMPLATE ??
