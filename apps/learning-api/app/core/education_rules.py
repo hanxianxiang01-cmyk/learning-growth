@@ -33,6 +33,19 @@ TRANSFER_MIN_CONTEXT_FAMILIES = 2
 TRANSFER_MIN_SESSIONS = 2
 
 # 升级 Gate（MVP 默认冻结）
+# L1→L2：把冻结基线「可在 Hint≤2 支持下稳定完成」补成可执行规则。
+# 阈值是 V1.3 工程默认值（非科学常数），由 rule_version 固化，后续只能新版本校准。
+GATE_L1_L2 = {
+    "min_eligible_evidence": 5,   # standard/retention 有效证据数
+    "min_resource_versions": 3,   # 跨资源多样性
+    "min_sessions": 2,            # 跨 Session 多样性
+    "correctness": 0.80,
+    "independence": 0.50,
+    "stability": 0.50,
+    # 非补偿门槛：≥ 4/5 任务 max_hint_level ≤ 2，避免几次 Hint0 抵消 Hint4
+    "min_low_hint_ratio": 0.80,
+    "max_hint_level": 2,
+}
 GATE_L2_L3 = {
     "score": 0.80,
     "correctness": 0.80,
@@ -50,6 +63,17 @@ GATE_L3_L4 = {
 ATOMIC_EVIDENCE_TYPES = ("attempt_standard", "attempt_transfer", "retention_check", "explanation")
 # 派生证据类型（source_evidence_ids 非空）
 DERIVED_EVIDENCE_TYPES = ("stability_window", "transfer_window")
+
+# Evidence role → evidence_type 映射（role 属于 Task Assignment，不绑死 Resource）
+# 证据角色（evidence_role）：standard / transfer / retention / explanation
+EVIDENCE_ROLE_TO_TYPE = {
+    "standard": "attempt_standard",
+    "transfer": "attempt_transfer",
+    "retention": "retention_check",
+    "explanation": "explanation",
+}
+# 默认 role：已有资源未配置时兜底 standard
+DEFAULT_EVIDENCE_ROLE = "standard"
 
 # 诊断分类 E01~E07
 DIAGNOSIS_LABELS = {
