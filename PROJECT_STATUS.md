@@ -45,7 +45,7 @@
 
 | Local ID | Area | Work | Status | Owner | PR |
 |---|---|---|---|---|---|
-| DRIFT-001 | Contract | Session Result API尚未写入冻结OpenAPI | 🔴 BLOCKED | Backend/Contract | — |
+| DRIFT-001 | Contract | Session Result API尚未写入冻结OpenAPI | 🟢 DONE | Backend/Contract | #21 |
 | DRIFT-002 | Mastery | 运行实现 vs 冻结 v1.3.1 契约漂移（B1~B8） | 🟢 DONE | Backend | #15~#19 |
 | FE-1311 | Mastery | Atomic Evidence Truth（L1→L2 Gate + evidence_role + 单Task单证据） | 🟢 DONE | Backend | #15 |
 | FE-1312 | Mastery | Evidence Coverage（Optional 维度 + 多样性约束） | 🟢 DONE | Backend | #16 |

@@ -96,6 +96,29 @@ paths:
                 - session_id
                 - plan_id
                 - status
+  /v1/learning/sessions/{session_id}/result:
+    get:
+      summary: Get aggregated result for a learning session
+      parameters:
+      - in: path
+        name: session_id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Aggregated session result (server-side Source of Truth)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResult'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/learning/tasks/next:
     post:
       summary: Get next task based on curriculum policy
@@ -514,6 +537,141 @@ components:
               type: integer
             policy_id:
               type: string
+    SessionResult:
+      type: object
+      required:
+      - session_id
+      - duration_ms
+      - task_count
+      - attempt_count
+      - hint_usage
+      - learning_behaviors
+      - ability_changes
+      properties:
+        session_id:
+          type: string
+          format: uuid
+        child_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        duration_ms:
+          type: integer
+          minimum: 0
+        task_count:
+          type: integer
+          minimum: 0
+        completed_count:
+          type: integer
+          minimum: 0
+        attempt_count:
+          type: integer
+          minimum: 0
+        correct_count:
+          type: integer
+          minimum: 0
+        hint_usage:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 4
+        diagnosis_summary:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiagnosisSummaryItem'
+        ability_changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AbilityChange'
+        learning_behaviors:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningBehavior'
+        next_recommendation:
+          $ref: '#/components/schemas/NextRecommendation'
+    AbilityChange:
+      type: object
+      required:
+      - ability_id
+      - after_level
+      properties:
+        ability_id:
+          type: string
+        name:
+          type: string
+        after_level:
+          type: integer
+          minimum: 0
+          maximum: 4
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        trend:
+          type: string
+          enum:
+          - up
+          - stable
+          - watch
+          - down_review
+        evidence_delta:
+          type: integer
+          minimum: 0
+    LearningBehavior:
+      type: object
+      required:
+      - code
+      - label
+      - achieved
+      properties:
+        code:
+          type: string
+        label:
+          type: string
+        achieved:
+          type: boolean
+        evidence:
+          type: string
+    NextRecommendation:
+      type: object
+      required:
+      - type
+      - title
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        ability_id:
+          type: string
+        href:
+          type: string
+    DiagnosisSummaryItem:
+      type: object
+      required:
+      - code
+      - label
+      - count
+      properties:
+        code:
+          type: string
+          enum:
+          - E01
+          - E02
+          - E03
+          - E04
+          - E05
+          - E06
+          - E07
+        label:
+          type: string
+        count:
+          type: integer
+          minimum: 0
     MasteryDecision:
       type: object
       properties:
@@ -531,6 +689,8 @@ components:
           - upgraded
           - review_required
           - downgraded_after_review
+          - collect_evidence
+          - recovering
         evidence_ids:
           type: array
           items:
