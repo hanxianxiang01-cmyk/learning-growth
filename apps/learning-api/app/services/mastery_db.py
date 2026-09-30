@@ -22,7 +22,7 @@ from app.core.education_rules import (
     TRANSFER_WINDOW_MAX,
 )
 from app.models import AbilityNode, AbilityState, Attempt, MasteryEvidence, TaskInstance
-from app.services.mastery import Evidence, evaluate_mastery
+from app.services.mastery import Evidence, decide_review, evaluate_mastery
 
 
 async def _load_evidences(
@@ -82,14 +82,6 @@ async def _load_evidences(
         for e in ev_rows
     ]
     return evidences
-
-
-def _derive_trend(old_level: int, new_level: int) -> str:
-    if new_level > old_level:
-        return "up"
-    if new_level < old_level:
-        return "down_review"
-    return "stable"
 
 
 def _window_signature(
@@ -223,6 +215,25 @@ async def persist_mastery_state(
 
     ev = evaluate_mastery(ability_id, old_level, evidences, node_policy=node_policy)
 
+    # B8：review 判定（单次失败不降级，近期质量走低先 review）
+    review = decide_review(evidences, old_level)
+
+    new_level = ev.new_level
+    # review 建议降级时，最多降 1 级（不打断升级，只针对质量走低场景）
+    if review.status == "downgrade" and old_level > 0:
+        new_level = old_level - 1
+
+    # trend 综合判定：降级→down_review；升级→up；review 建议但没真降→watch；
+    # 其余→stable
+    if new_level < old_level:
+        trend = "down_review"
+    elif new_level > old_level:
+        trend = "up"
+    elif review.status in ("review_required", "downgrade"):
+        trend = "watch"
+    else:
+        trend = "stable"
+
     # B6：满足覆盖后写派生窗口证据（幂等），先 flush 派生，再写能力状态
     await _persist_derived_windows(db, child_id, ability_id, evidences)
     await db.flush()
@@ -237,17 +248,17 @@ async def persist_mastery_state(
         state = AbilityState(
             child_id=child_id,
             ability_id=ability_id,
-            level=ev.new_level,
+            level=new_level,
             confidence=round(float(confidence), 4),
             evidence_count=evidence_count,
-            trend=_derive_trend(old_level, ev.new_level),
+            trend=trend,
         )
         db.add(state)
     else:
-        state.level = ev.new_level
+        state.level = new_level
         state.confidence = round(float(confidence), 4)
         state.evidence_count = evidence_count
-        state.trend = _derive_trend(old_level, ev.new_level)
+        state.trend = trend
         state.last_evidence_at = (
             datetime.now(timezone.utc) if evidence_count else state.last_evidence_at
         )
@@ -257,10 +268,11 @@ async def persist_mastery_state(
     return {
         "ability_id": ability_id,
         "old_level": old_level,
-        "new_level": ev.new_level,
+        "new_level": new_level,
         "score": round(ev.score, 4) if ev.score is not None else None,
         "decision": ev.decision,
         "missing_evidence": ev.missing_evidence,
+        "review_status": review.status,
         "evidence_count": evidence_count,
-        "trend": _derive_trend(old_level, ev.new_level),
+        "trend": trend,
     }
