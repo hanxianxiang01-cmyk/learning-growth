@@ -22,11 +22,9 @@ from app.models import (
     ResourceVersion,
     TaskInstance,
 )
+from app.core.education_rules import SESSION_TASK_GOAL
 from app.services.fitband import compute_fit_band
 from app.services.turn_service import record_attempt
-
-# 一次学习 session 的目标任务数（MVP 约定，与前端 ProgressDots total=3 对齐）
-SESSION_TASK_GOAL = 3
 
 
 async def start_session(
