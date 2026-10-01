@@ -29,6 +29,25 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Added（V1.4 P0 Governance Closure：context_family 受控词表 + 50题回填，2026-10-01）
+
+> 依据《V1.4 P0 Governance Closure》与《V1.3评审》§7：把 context_family 从自由文本升级为「受控词表 + 数据入口校验 + Engine 消费契约」。同时关闭 Gate 0 残留前置之一（L2→L3 生产可达性）。
+
+- `docs/governance/CONTEXT_FAMILY_VOCABULARY.md`：受控词表唯一事实源（AC-01）——6 启用族（school_objects/comparison/before_after/lineup_position/shopping/time_schedule）+ 定义/正反例/分类优先级规则 + 扩展协议（§10）+ 50 题分类明细。
+- `app/content/context_family.py`：Seed Validation（AC-02）——trim→canonical→lookup，非法值 `UNKNOWN_CONTEXT_FAMILY` 拒绝；`everyday_objects` 未批准前亦拒。
+- `app/content/context_family_map.py`：50 题 stem→family 映射（AC-04）——PASS 44 / REVIEW 6（日常物品无 canonical 族，留 NULL 不硬猜）/ REJECT 0。
+- `seed_content.py`：mastery_rule 从写死 None 改为按映射生成（入口强校验）；`turn_service` 写证据时从 `resource_version.mastery_rule.context_family` 读取并写入证据列（唯一来源冻结）。
+- 存量回填执行：50 题 mastery_rule 已回写 + 31 条历史原子证据 context_family 已补齐（幂等脚本）。
+- 硬性检查（§7）：迁移题覆盖 comparison×2 + before_after×2 → **L2→L3 transfer diversity（≥2族）生产可达路径打通**；lineup/shopping/sharing 启用但零覆盖如实记录（待内容补题）。
+- Transfer Regression（AC-05）：同族×2→insufficient、异族×2→数值，引擎判定按 canonical 计数验证通过。
+- Engine Decoupling（AC-06）：核验 mastery.py 无族名分支，仅 distinct 计数——已满足。
+- DDL 不变（§9）：varchar(64) 保持、不加 CHECK；职责四分离。
+- 测试：新增词表校验 3 用例（拒绝非法值/50题覆盖/迁移族数），后端 44 passed。
+
+### 待裁决（REVIEW 6 题，需产品/内容确认）
+
+- 是否按 §10 扩展协议正式新增 `everyday_objects` 族（气球/玩具车/水果/球/玻璃珠/杯子 6 题）；批准前其 context_family 保持 NULL，不参与 transfer 计数。
+
 ## Added（Session Result 契约写入权威 OpenAPI，2026-09-30）
 
 > DRIFT-001 收口：权威 OpenAPI 此前缺少 Session Result endpoint，前端一直靠可配置 Path + Normalizer 过渡。

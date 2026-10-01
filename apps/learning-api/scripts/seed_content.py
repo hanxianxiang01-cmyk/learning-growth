@@ -12,9 +12,27 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.content.ability_seed import ABILITY_EDGES, ABILITY_NODES
+from app.content.context_family import canonicalize_context_family
+from app.content.context_family_map import STEM_CONTEXT_FAMILY
 from app.content.resource_seed import GOLD_RESOURCES
 from app.core.config import get_settings
 from app.models import AbilityEdge, AbilityNode, Resource, ResourceVersion
+
+
+def _mastery_rule_for(r: dict) -> dict:
+    """按 Backfill 映射生成 mastery_rule，入口强校验（治理文档 §4 Seed Validation）。
+
+    - 非法 context_family → canonicalize 抛 UNKNOWN_CONTEXT_FAMILY，seed 直接失败；
+    - REVIEW 题（映射为 None）→ context_family 不写入（NULL 不得伪装成族）；
+    - transfer_capable 由资源自身声明（is_transfer），实际 evidence_role 由 Assignment 决定。
+    """
+    stem = r["content"]["stem"]
+    raw = STEM_CONTEXT_FAMILY.get(stem)
+    family = canonicalize_context_family(raw)
+    rule: dict = {"transfer_capable": bool(r.get("is_transfer"))}
+    if family is not None:
+        rule["context_family"] = family
+    return rule
 
 
 def _build_ui_schema_v1(r: dict) -> dict:
@@ -152,7 +170,7 @@ async def seed(content_only: bool = True) -> dict:
                         "ladder": r["hint_ladder"],
                         "ui_actions": r.get("ui_actions", []),
                     },
-                    mastery_rule=None,
+                    mastery_rule=_mastery_rule_for(r),
                     transfer_distance=_transfer_distance(r),
                     review_status="published",
                     published_at=None,
