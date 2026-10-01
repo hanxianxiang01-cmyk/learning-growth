@@ -293,3 +293,43 @@ def test_review_ignored_at_level_zero():
     # L0 不入 review（无级可降）
     evs = [_mk_with_span("attempt_standard", 0.0, 0, i % 3, i % 2) for i in range(3)]
     assert decide_review(evs, 0).status == "ok"
+
+
+# ---- V1.4 P0 Governance Closure: context_family 受控词表 ----
+
+def test_context_family_canonical_pass():
+    from app.content.context_family import canonicalize_context_family
+    assert canonicalize_context_family("school_objects") == "school_objects"
+    assert canonicalize_context_family(" comparison ") == "comparison"  # trim
+    assert canonicalize_context_family(None) is None  # NULL 合法 = 未判定
+    assert canonicalize_context_family("") is None
+
+
+def test_context_family_illegal_rejected():
+    import pytest as _pt
+    from app.content.context_family import canonicalize_context_family
+    for bad in ["school", "学校物品", "School_Objects", "buying", "purchase",
+                "everyday_objects"]:  # everyday_objects 未批准（§10 协议）
+        with _pt.raises(ValueError, match="UNKNOWN_CONTEXT_FAMILY"):
+            canonicalize_context_family(bad)
+
+
+def test_backfill_map_covers_50_and_transfer_diversity():
+    """AC-04 硬检查：映射50题全覆盖；迁移题 PASS 族 distinct≥2（L2→L3 可达路径存在）。"""
+    from app.content.context_family import CONTEXT_FAMILY_VOCABULARY
+    from app.content.context_family_map import STEM_CONTEXT_FAMILY
+    assert len(STEM_CONTEXT_FAMILY) == 50
+    fams = {v for v in STEM_CONTEXT_FAMILY.values() if v is not None}
+    assert fams <= set(CONTEXT_FAMILY_VOCABULARY)
+    review = sum(1 for v in STEM_CONTEXT_FAMILY.values() if v is None)
+    assert review == 6  # REVIEW 三态如实留 NULL，不硬猜
+    # 迁移题（app_transfer 5题，显式列出）中 PASS 族 distinct≥2（L2→L3 可达路径存在）
+    transfer_stems = [
+        "晨练时，小海跑了9圈，小森跑了6圈。小海比小森多跑几圈？",
+        "教室里原来摆了12把椅子，老师又搬来4把。现在一共有多少把椅子？",
+        "小雨今天走了9千步，小安比小雨多走4千步。小安今天走了多少千步？",
+        "餐桌上共有18个杯子，其中7个是蓝色的，其余是白色的。白色杯子有多少个？",
+        "书架上原来有8本新书，老师又放上5本，后来同学借走4本。现在书架上有多少本书？",
+    ]
+    transfer_fams = {STEM_CONTEXT_FAMILY[s] for s in transfer_stems} - {None}
+    assert len(transfer_fams) >= 2

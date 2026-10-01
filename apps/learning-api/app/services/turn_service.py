@@ -11,11 +11,13 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.content.context_family import canonicalize_context_family
 from app.models import (
     AbilityState,
     Attempt,
     LearningEvent,
     MasteryEvidence,
+    ResourceVersion,
     TaskInstance,
 )
 from app.core.education_rules import (
@@ -146,6 +148,15 @@ async def record_attempt(
             evidence_role = sp.get("evidence_role") or DEFAULT_EVIDENCE_ROLE
             evidence_type = EVIDENCE_ROLE_TO_TYPE.get(evidence_role, EVIDENCE_ROLE_TO_TYPE[DEFAULT_EVIDENCE_ROLE])
 
+            # context_family（V1.4 P0 Governance Closure）：唯一来源
+            # resource_version.mastery_rule.context_family（受控词表 canonical ID）。
+            # Engine 只消费该值做 distinct 计数；NULL 不计入 transfer diversity。
+            rv = await db.get(ResourceVersion, task.resource_version_id)
+            ctx_family = None
+            if rv and isinstance(rv.mastery_rule, dict):
+                # 非法历史值在此被拒（UNKNOWN_CONTEXT_FAMILY），防止污染证据表
+                ctx_family = canonicalize_context_family(rv.mastery_rule.get("context_family"))
+
             independence = {0: 1.0, 1: 0.75, 2: 0.5, 3: 0.25, 4: 0.0}[max_hint_level]
             evidence = MasteryEvidence(
                 child_id=child_id,
@@ -155,6 +166,7 @@ async def record_attempt(
                 evidence_type=evidence_type,
                 correctness=1.0 if correct else 0.0,
                 independence=independence,
+                context_family=ctx_family,
                 rule_version=RULE_VERSION,
                 valid=True,
             )
