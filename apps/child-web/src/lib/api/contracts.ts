@@ -104,6 +104,11 @@ export type NumberTaskUiSchema = {
   story?: string;
   answer_placeholder?: string;
   response_schema: TaskResponseSchema;
+  // V2 视图扩展（FE-1405）：源 schema 版本与提交报文构造所需元数据
+  source_schema_version?: "1.0" | "2.0";
+  ui_revision?: string;
+  response_type?: string;
+  workspace_id?: string;
 };
 
 export type ManipulativeTaskUiSchema = {
@@ -118,6 +123,10 @@ export type ManipulativeTaskUiSchema = {
   visual: ManipulativeVisualSchema;
   tools: WorkspaceTool[];
   response_schema: TaskResponseSchema;
+  source_schema_version?: "1.0" | "2.0";
+  ui_revision?: string;
+  response_type?: string;
+  workspace_id?: string;
 };
 
 export type UnsupportedTaskUiSchema = {
@@ -345,7 +354,7 @@ export type LearningApi = {
     requested_minutes?: number;
     ability_id?: string;
   }): Promise<TaskInstance>;
-  submitAttempt(input: AttemptRequest): Promise<AttemptResult>;
+  submitAttempt(input: AttemptRequest, task?: TaskInstance): Promise<AttemptResult>;
   requestHint(input: {
     attempt_id: string;
     requested_level?: number;

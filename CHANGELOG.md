@@ -29,6 +29,18 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Added（FE-1405 A5 纵向链端到端打通，2026-10-02）
+
+> V2 契约从"可执行 Schema"推进到"真实链路端到端可跑"：第一条 implemented renderer（number-line）的 V2 题完成 下发→渲染→提交→判分→幂等 全链验证。
+
+- `app/content/resource_seed_v2.py`：V2 纵向链资源独立文件（`ui_schema_version:"2.0"` 显式声明 + context_family canonical），首批 1 题（A5 数轴跳步，d3，before_after）。
+- `seed_content.py`：按 `ui_schema_version` 分流构建 V1/V2 ui_schema；`_build_ui_schema_v2` 产出经 `validate_ui_schema_v2` 契约验证（CI 单测自证）。
+- `learning.py`：查询期 V2 下发门控 `_v2_assignable()`——planned renderer 受控拒绝（不降级）；V2 提交判分提取 `answer.value`（V1 标量行为不变）。
+- 前端：`taskUiSchemaNormalizer` 增加 V2→渲染视图转换（number-line/object-counter 映射到现有控件，携带 ui_revision/response_type/workspace_id 元数据）；新增 `v2AttemptAdapter`（按 MathResponse V2 信封构造提交报文，含 submission_id=uuid）；`http.ts submitAttempt` 接收可选 task 分流 V1/V2 payload。
+- E2E 验证（真实 RDS + API）：V2 题入库契约 PASS → 下发 PASS → 错误提交判错(HINT) → 正确提交判对 → 重放幂等 PASS。
+- 测试 +7（门控 4 例、seed 产物契约 2 例、answer 标量 1 例），后端 65 passed；tsc/check-v14 PASS。
+- 存量 50 题 V1 行为零变化（门控只拦 V2-planned）。
+
 ## Added（FE-1404 TaskUISchema V2 + MathResponse V2 可执行契约，2026-10-02）
 
 > 评审 V0.2 步骤 2 后半：契约从 V0.1 草案推进为可执行 Schema（冻结候选，待会签）。

@@ -15,6 +15,7 @@ import { normalizeSessionResult } from "./sessionResultNormalizer";
 import { normalizeTaskUiSchema } from "./taskUiSchemaNormalizer";
 import { normalizeAttemptResult } from "./attemptResultNormalizer";
 import { normalizeHintResponse } from "./hintNormalizer";
+import { buildAttemptPayload } from "./v2AttemptAdapter";
 
 export class LearningApiError extends Error {
   constructor(
@@ -108,10 +109,12 @@ export class HttpLearningApi implements LearningApi {
     };
   }
 
-  async submitAttempt(input: AttemptRequest): Promise<AttemptResult> {
+  async submitAttempt(input: AttemptRequest, task?: TaskInstance): Promise<AttemptResult> {
+    // V2 资源：按 MathResponseSchema V2 构造提交信封（submission_id 幂等键）；V1 原样透传。
+    const payload = buildAttemptPayload(task, input);
     const raw = await this.request<unknown>("/v1/learning/attempts", {
       method: "POST",
-      body: JSON.stringify(input)
+      body: JSON.stringify(payload)
     });
     return normalizeAttemptResult(raw);
   }
