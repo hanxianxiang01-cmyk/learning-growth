@@ -29,6 +29,15 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Added（FE-1403 Renderer Registry Contract 协议冻结，2026-10-02）
+
+> 依据《V1.4 P0 Architecture Contract》P0-01 + 评审 V0.2 §3.1：冻结 23 个 Renderer 的 kebab-case 协议枚举与分流规则。
+
+- `docs/frontend/28_RENDERER_REGISTRY_CONTRACT.md`：协议冻结文档——23 枚举（R-001~R-023，含来源/实现状态分层）、V1/V2 分流规则、V2 硬约束清单、unsupported 哨兵不入协议面、Registry 12 字段交付节奏。
+- `app/content/renderer_protocol.py`：机器可读镜像 + `validate_renderer_id()`（UNKNOWN_RENDERER_ID 拒绝）+ `is_implemented()`（协议合法≠可下发，planned 受控拒绝）。
+- 测试 +5（枚举冻结23/命名映射自检/非法拒绝/哨兵排除/implemented 分层），后端 49 passed。
+- 前端 `rendererRegistry.ts` 补注释锚定协议事实源（行为零改动）。
+
 ## Added（V1.4 P0 Governance Closure：context_family 受控词表 + 50题回填，2026-10-01）
 
 > 依据《V1.4 P0 Governance Closure》与《V1.3评审》§7：把 context_family 从自由文本升级为「受控词表 + 数据入口校验 + Engine 消费契约」。同时关闭 Gate 0 残留前置之一（L2→L3 生产可达性）。
