@@ -1,0 +1,29 @@
+{
+  "task_instance_id": "550e8400-e29b-41d4-a716-446655440001",
+  "attempt_no": 1,
+  "submission_id": "550e8400-e29b-41d4-a716-446655440002",
+  "response": {
+    "schema_version": "2.0",
+    "ui_revision": "rev-1",
+    "type": "column_arithmetic",
+    "workspaces": [
+      {
+        "workspace_id": "main",
+        "data": {
+          "result_digits": [
+            { "place": "ones", "value": 5 },
+            { "place": "tens", "value": 7 }
+          ],
+          "carries": [
+            { "from_place": "ones", "to_place": "tens", "value": 1 }
+          ]
+        }
+      }
+    ],
+    "answer": { "value": 75 },
+    "interaction_events": [
+      { "event_id": "e1", "workspace_id": "main", "sequence": 0, "event_type": "DIGIT_ENTERED", "actor": "learner", "payload": { "place": "ones", "value": 5 } },
+      { "event_id": "e2", "workspace_id": "main", "sequence": 1, "event_type": "CARRY_CREATED", "actor": "learner", "payload": { "from": "ones", "to": "tens" } }
+    ]
+  }
+}

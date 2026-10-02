@@ -29,6 +29,18 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Added（FE-1404 TaskUISchema V2 + MathResponse V2 可执行契约，2026-10-02）
+
+> 评审 V0.2 步骤 2 后半：契约从 V0.1 草案推进为可执行 Schema（冻结候选，待会签）。
+
+- `packages/contracts/schemas/`：draft 2020-12 可执行 JSON Schema 两份（TaskUISchema V2 / MathResponse V2，全节点 `additionalProperties:false`——客户端自评字段机器级不可提交）。
+- `packages/contracts/contracts/validate.py`：三层校验（schema→FE-1403 协议枚举→语义层：workspace_id 唯一/sequence 唯一/is_implemented 下发分层，planned 受控拒绝不降级）。
+- `samples/`：五条纵向链全量合法样例（B5/A5/D5/E4/F6）+ 反例3组（renderer 别名/重复 workspace_id/客户端自评）+ `examples/` 带 interaction_events 全量 Attempt。
+- 测试 +9（含 schema enum 与 renderer_protocol 代码枚举防漂移同步检查），后端 58 passed。
+- `docs/frontend/29`：语义口径 + submission_id 幂等契约 + 待冻结清单 7 项（mode 字段级 Schema、submission_id 落库、TS 镜像、权威 OpenAPI 挂入=V1.4 基线立版动作）。
+- pyproject dev 依赖 + jsonschema。
+- 本期不动权威 OpenAPI（V1.3.1 冻结基线，ui_schema/response 为自由 object，V2 向后兼容不违反）。
+
 ## Added（FE-1403 Renderer Registry Contract 协议冻结，2026-10-02）
 
 > 依据《V1.4 P0 Architecture Contract》P0-01 + 评审 V0.2 §3.1：冻结 23 个 Renderer 的 kebab-case 协议枚举与分流规则。

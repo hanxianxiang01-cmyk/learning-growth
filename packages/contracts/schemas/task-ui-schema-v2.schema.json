@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "learning://contracts/task-ui-schema/v2",
+  "title": "TaskUISchema V2",
+  "description": "V1.4 任务界面契约（冻结候选）。协议事实源：docs/frontend/28（23 renderer kebab-case 枚举）+ docs/frontend/29（本契约）。renderer_version/mode/config 的 mode 专属 Schema 由各 Renderer Registry 条目补充校验；workspace_id 任务内唯一由校验脚本层强制。",
+  "type": "object",
+  "required": ["schema_version", "ui_revision", "prompt", "workspaces", "response_contract"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "2.0" },
+    "ui_revision": { "type": "string", "minLength": 1 },
+    "prompt": {
+      "type": "object",
+      "required": ["text"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "resource_ref": { "type": "string" }
+      }
+    },
+    "workspaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/workspace" }
+    },
+    "response_contract": {
+      "type": "object",
+      "required": ["response_type"],
+      "additionalProperties": false,
+      "properties": {
+        "response_type": { "$ref": "#/$defs/snake" },
+        "required_fields": { "type": "array", "items": { "type": "string" } },
+        "evidence_targets": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "hint_targets": { "type": "array", "items": { "type": "string" } },
+    "accessibility": { "type": "object" }
+  },
+  "$defs": {
+    "snake": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "renderer_id": {
+      "description": "FE-1403 冻结枚举（R-001~R-023）。unsupported 是前端哨兵，不在协议面。",
+      "enum": [
+        "object-counter", "bar-model", "number-line", "number-input", "choice-grid",
+        "place-value", "ten-frame", "column-arithmetic", "array-board", "grouping-board",
+        "formula-board", "estimation-canvas", "shape-gallery", "shape-canvas", "sorting-board",
+        "direction-grid", "ruler", "clock", "timeline", "money-board",
+        "data-table", "pictograph", "pattern-board"
+      ]
+    },
+    "workspace": {
+      "type": "object",
+      "required": ["workspace_id", "renderer", "renderer_version", "mode", "config", "initial_state", "capabilities"],
+      "additionalProperties": false,
+      "properties": {
+        "workspace_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+        "renderer": { "$ref": "#/$defs/renderer_id" },
+        "renderer_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+        "mode": { "$ref": "#/$defs/snake" },
+        "config": { "type": "object" },
+        "initial_state": { "type": "object" },
+        "capabilities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/snake" } },
+        "constraints": { "type": "object" }
+      }
+    }
+  }
+}

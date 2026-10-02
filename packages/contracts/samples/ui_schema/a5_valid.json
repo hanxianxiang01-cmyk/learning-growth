@@ -1,0 +1,25 @@
+{
+  "schema_version": "2.0",
+  "ui_revision": "rev-a5-001",
+  "prompt": { "text": "从20出发，每次向右跳5，跳3次，终点是多少？" },
+  "workspaces": [
+    {
+      "workspace_id": "main",
+      "renderer": "number-line",
+      "renderer_version": "1.0",
+      "mode": "jump_sequence",
+      "config": {
+        "scale": { "min": 0, "max": 50, "tick_step": 5 },
+        "start_marker": { "marker_id": "start", "value": 20 }
+      },
+      "initial_state": { "jumps": [] },
+      "capabilities": ["jump", "place_marker", "undo", "reset"],
+      "constraints": { "snap_to_tick": true, "auto_complete_jumps": false }
+    }
+  ],
+  "response_contract": {
+    "response_type": "number_line",
+    "required_fields": ["workspaces", "answer"],
+    "evidence_targets": ["jumps"]
+  }
+}

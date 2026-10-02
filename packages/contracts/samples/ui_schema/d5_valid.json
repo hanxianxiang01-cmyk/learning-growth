@@ -1,0 +1,26 @@
+{
+  "schema_version": "2.0",
+  "ui_revision": "rev-d5-001",
+  "prompt": { "text": "用两块三角形拼成一个正方形。" },
+  "workspaces": [
+    {
+      "workspace_id": "main",
+      "renderer": "shape-canvas",
+      "renderer_version": "1.0",
+      "mode": "compose",
+      "config": {
+        "coordinate_system": { "origin": "bottom_left", "x_positive": "right", "y_positive": "up", "unit": "grid" },
+        "pieces": [
+          { "piece_id": "p1", "vertices": [[0, 0], [1, 0], [0, 1]] },
+          { "piece_id": "p2", "vertices": [[0, 0], [1, 0], [0, 1]] }
+        ],
+        "target_outline": [[0, 0], [1, 0], [1, 1], [0, 1]],
+        "rotation_step_deg": 90
+      },
+      "initial_state": { "placements": [] },
+      "capabilities": ["drag", "rotate", "snap", "unsnap", "undo", "reset"],
+      "constraints": { "allow_flip": false, "allow_resize": false }
+    }
+  ],
+  "response_contract": { "response_type": "shape_composition", "required_fields": ["workspaces", "answer"] }
+}

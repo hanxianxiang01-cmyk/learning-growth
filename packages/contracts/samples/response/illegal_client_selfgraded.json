@@ -1,0 +1,16 @@
+{
+  "task_instance_id": "550e8400-e29b-41d4-a716-446655440020",
+  "attempt_no": 1,
+  "submission_id": "550e8400-e29b-41d4-a716-446655440021",
+  "response": {
+    "schema_version": "2.0",
+    "ui_revision": "rev-1",
+    "type": "measurement",
+    "workspaces": [
+      { "workspace_id": "main", "data": {} }
+    ],
+    "answer": { "value": 7 },
+    "correct": true,
+    "evidence_role": "transfer"
+  }
+}
