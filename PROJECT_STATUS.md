@@ -53,6 +53,7 @@
 | FE-1314 | Mastery | Review 状态机 + Curriculum 选 role | 🟢 DONE | Backend | #18 |
 | FE-1315 | Mastery | QA replay 14/14 → 激活 mastery-v1.3.1 | 🟢 DONE | Backend | #19 |
 | P0-GOV-CF | V1.4 Governance | context_family 受控词表 + Seed 校验 + 50题回填 + Transfer 回归 | 🟢 DONE（AC-01~07；待裁决6题REVIEW） | Backend/Content | — |
+| FE-1403 | V1.4 Protocol | Renderer Registry Contract：23 枚举冻结 + 校验 + V1/V2 分流规则 | 🟢 协议冻结（Registry 12 字段随交付填充；V2 JSON Schema 待冻结） | Backend/Frontend | — |
 | FE-1301 | Task Renderer | V1（number/manipulative/unsupported） | 🟢 DONE | Frontend | — |
 | FE-1302 | Math Workspace | 隔离 Workspace State | 🟢 DONE | Frontend | — |
 | FE-1303 | Manipulative | Object Counter interactive | 🟢 DONE | Frontend | — |

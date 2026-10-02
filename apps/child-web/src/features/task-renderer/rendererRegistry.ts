@@ -1,5 +1,9 @@
 import type { TaskUiSchema } from "@/src/lib/api/contracts";
 
+// Renderer 协议事实源：docs/frontend/28_RENDERER_REGISTRY_CONTRACT.md
+// 后端镜像：apps/learning-api/app/content/renderer_protocol.py（23 个 kebab-case 协议 ID）
+// "unsupported" 是前端运行时安全降级哨兵，**不属于协议面**：不得写入资源/后端/数据，
+// 仅在 resolveRendererId 无法匹配已实现 renderer 时内部使用。
 export type RendererId =
   | "number-input"
   | "object-counter"
