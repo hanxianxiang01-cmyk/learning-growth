@@ -1,0 +1,26 @@
+{
+  "schema_version": "2.0",
+  "ui_revision": "rev-b5-001",
+  "prompt": { "text": "用竖式计算47＋28，填写进位和计算结果。" },
+  "workspaces": [
+    {
+      "workspace_id": "main",
+      "renderer": "column-arithmetic",
+      "renderer_version": "1.0",
+      "mode": "addition",
+      "config": {
+        "operands": [47, 28],
+        "places": ["ones", "tens", "hundreds"],
+        "operand_layout": "fixed"
+      },
+      "initial_state": { "result_digits": [], "carries": [] },
+      "capabilities": ["input_digit", "place_carry", "edit_carry", "step_submit", "undo", "reset"],
+      "constraints": { "digit_min": 0, "digit_max": 9, "carry_autofill": false }
+    }
+  ],
+  "response_contract": {
+    "response_type": "column_arithmetic",
+    "required_fields": ["workspaces", "answer"],
+    "evidence_targets": ["result_digits", "carries"]
+  }
+}

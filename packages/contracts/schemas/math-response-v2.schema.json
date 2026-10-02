@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "learning://contracts/math-response/v2",
+  "title": "MathResponseSchema V2",
+  "description": "儿童提交外层结构（POST /v1/learning/attempts）。submission_id 幂等：同ID同内容重放返回原 Attempt，同ID不同内容 409。客户端不得提交正确率/能力等级/证据角色/诊断结果。attempt_no 是服务端顺序号，不充当幂等键。",
+  "type": "object",
+  "required": ["task_instance_id", "attempt_no", "submission_id", "response"],
+  "additionalProperties": false,
+  "properties": {
+    "task_instance_id": { "type": "string", "format": "uuid" },
+    "attempt_no": { "type": "integer", "minimum": 1 },
+    "submission_id": { "type": "string", "format": "uuid" },
+    "response": {
+      "type": "object",
+      "required": ["schema_version", "ui_revision", "type", "workspaces", "answer"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "const": "2.0" },
+        "ui_revision": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "workspaces": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["workspace_id", "data"],
+            "additionalProperties": false,
+            "properties": {
+              "workspace_id": { "type": "string", "minLength": 1 },
+              "data": { "type": "object" }
+            }
+          }
+        },
+        "answer": { "type": "object" },
+        "interaction_events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/interaction_event" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "interaction_event": {
+      "type": "object",
+      "required": ["event_id", "sequence", "event_type", "actor"],
+      "additionalProperties": false,
+      "properties": {
+        "event_id": { "type": "string", "minLength": 1 },
+        "workspace_id": { "type": "string" },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "event_type": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+        "actor": { "enum": ["learner", "hint", "system"] },
+        "payload": { "type": "object" }
+      }
+    }
+  }
+}

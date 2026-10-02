@@ -1,0 +1,14 @@
+{
+  "task_instance_id": "550e8400-e29b-41d4-a716-446655440010",
+  "attempt_no": 1,
+  "submission_id": "550e8400-e29b-41d4-a716-446655440011",
+  "response": {
+    "schema_version": "2.0",
+    "ui_revision": "rev-e4-001",
+    "type": "measurement",
+    "workspaces": [
+      { "workspace_id": "main", "data": { "object_id": "segment_1", "selected_start_tick": 2, "selected_end_tick": 9 } }
+    ],
+    "answer": { "value": 7, "unit": "cm" }
+  }
+}

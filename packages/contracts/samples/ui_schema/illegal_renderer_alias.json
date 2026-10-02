@@ -1,0 +1,17 @@
+{
+  "schema_version": "2.0",
+  "ui_revision": "rev-bad-001",
+  "prompt": { "text": "非法样例：renderer 使用 PascalCase 别名（协议要求 kebab-case）" },
+  "workspaces": [
+    {
+      "workspace_id": "main",
+      "renderer": "ColumnArithmetic",
+      "renderer_version": "1.0",
+      "mode": "addition",
+      "config": {},
+      "initial_state": {},
+      "capabilities": ["input_digit"]
+    }
+  ],
+  "response_contract": { "response_type": "column_arithmetic" }
+}

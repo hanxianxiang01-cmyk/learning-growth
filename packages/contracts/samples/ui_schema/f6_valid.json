@@ -1,0 +1,27 @@
+{
+  "schema_version": "2.0",
+  "ui_revision": "rev-f6-001",
+  "prompt": { "text": "苹果8个、梨5个，哪种更多、多几个？选择支持结论的数据。" },
+  "workspaces": [
+    {
+      "workspace_id": "main",
+      "renderer": "data-table",
+      "renderer_version": "1.0",
+      "mode": "compare",
+      "config": {
+        "columns": [
+          { "column_id": "category", "label": "水果" },
+          { "column_id": "count", "label": "数量" }
+        ],
+        "rows": [
+          { "row_id": "apple", "values": { "category": "苹果", "count": 8 } },
+          { "row_id": "pear", "values": { "category": "梨", "count": 5 } }
+        ]
+      },
+      "initial_state": { "selected_cells": [] },
+      "capabilities": ["select_cell", "compare", "number_input", "reset"],
+      "constraints": { "data_editable": false }
+    }
+  ],
+  "response_contract": { "response_type": "data_comparison", "required_fields": ["workspaces", "answer"] }
+}

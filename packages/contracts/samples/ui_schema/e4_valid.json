@@ -1,0 +1,21 @@
+{
+  "schema_version": "2.0",
+  "ui_revision": "rev-e4-001",
+  "prompt": { "text": "物体从尺子的2厘米处延伸到9厘米处，它有多长？" },
+  "workspaces": [
+    {
+      "workspace_id": "main",
+      "renderer": "ruler",
+      "renderer_version": "1.0",
+      "mode": "read_nonzero_origin",
+      "config": {
+        "scale": { "min": 0, "max": 12, "step": 1, "unit": "cm" },
+        "object": { "object_id": "segment_1", "start": 2, "end": 9 }
+      },
+      "initial_state": { "selected_start_tick": null, "selected_end_tick": null },
+      "capabilities": ["select_tick", "number_input", "reset"],
+      "constraints": { "object_movable": false, "answer_autofill": false }
+    }
+  ],
+  "response_contract": { "response_type": "measurement", "required_fields": ["workspaces", "answer"] }
+}
