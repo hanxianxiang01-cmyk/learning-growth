@@ -14,20 +14,22 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from app.content.ability_seed import ABILITY_EDGES, ABILITY_NODES
 from app.content.context_family import canonicalize_context_family
 from app.content.context_family_map import STEM_CONTEXT_FAMILY
+from app.content.renderer_protocol import validate_renderer_id
 from app.content.resource_seed import GOLD_RESOURCES
+from app.content.resource_seed_v2 import GOLD_RESOURCES_V2
 from app.core.config import get_settings
 from app.models import AbilityEdge, AbilityNode, Resource, ResourceVersion
 
 
 def _mastery_rule_for(r: dict) -> dict:
-    """按 Backfill 映射生成 mastery_rule，入口强校验（治理文档 §4 Seed Validation）。
+    """按映射（V1 存量）或显式声明（V2 新题）生成 mastery_rule，入口强校验。
 
     - 非法 context_family → canonicalize 抛 UNKNOWN_CONTEXT_FAMILY，seed 直接失败；
-    - REVIEW 题（映射为 None）→ context_family 不写入（NULL 不得伪装成族）；
+    - 未判定题（REVIEW/无声明）→ 不写 context_family（NULL 不伪装成族）；
     - transfer_capable 由资源自身声明（is_transfer），实际 evidence_role 由 Assignment 决定。
     """
     stem = r["content"]["stem"]
-    raw = STEM_CONTEXT_FAMILY.get(stem)
+    raw = r.get("context_family") if r.get("context_family") is not None else STEM_CONTEXT_FAMILY.get(stem)
     family = canonicalize_context_family(raw)
     rule: dict = {"transfer_capable": bool(r.get("is_transfer"))}
     if family is not None:
@@ -67,6 +69,37 @@ def _build_ui_schema_v1(r: dict) -> dict:
             "type": "structured",
             "answer_type": "number",
             "representation_required": False,
+        },
+    }
+
+
+def _build_ui_schema_v2(r: dict) -> dict:
+    """V2 资源 → TaskUISchema V2（docs/frontend/29 可执行契约）。
+
+    seed 期校验：renderer 必须 ∈ 23 协议枚举（implemented/planned 分层在查询期执行）。
+    """
+    renderer = r["renderer"]
+    validate_renderer_id(renderer)
+    return {
+        "schema_version": "2.0",
+        "ui_revision": r.get("ui_revision", "rev-1"),
+        "prompt": {"text": r["content"]["stem"]},
+        "workspaces": [
+            {
+                "workspace_id": "main",
+                "renderer": renderer,
+                "renderer_version": r.get("renderer_version", "1.0"),
+                "mode": r["mode"],
+                "config": r.get("config", {}),
+                "initial_state": r.get("initial_state", {}),
+                "capabilities": r.get("capabilities", []),
+                "constraints": r.get("constraints", {}),
+            }
+        ],
+        "response_contract": {
+            "response_type": r["response_type"],
+            "required_fields": ["workspaces", "answer"],
+            "evidence_targets": r.get("evidence_targets", []),
         },
     }
 
@@ -124,8 +157,8 @@ async def seed(content_only: bool = True) -> dict:
             )
             stats["edges"] += 1
 
-        # 3. 资源 + 版本
-        for r in GOLD_RESOURCES:
+        # 3. 资源 + 版本（V1 五十题 + V2 纵向链资源；按 ui_schema_version 分流构建）
+        for r in (*GOLD_RESOURCES, *GOLD_RESOURCES_V2):
             # 判重：同 ability + title
             result = await db.execute(
                 select(Resource).where(
@@ -164,7 +197,11 @@ async def seed(content_only: bool = True) -> dict:
                     difficulty=r["difficulty"],
                     task_type=r.get("task_type") or "word_problem",
                     content=r["content"],
-                    ui_schema=_build_ui_schema_v1(r),
+                    ui_schema=(
+                        _build_ui_schema_v2(r)
+                        if r.get("ui_schema_version") == "2.0"
+                        else _build_ui_schema_v1(r)
+                    ),
                     error_models=r["error_models"],
                     hint_policy={
                         "ladder": r["hint_ladder"],

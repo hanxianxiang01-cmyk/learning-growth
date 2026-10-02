@@ -89,6 +89,30 @@ async def _pick_ability(db: AsyncSession, *, child_id: uuid.UUID, session_id: uu
     return None
 
 
+def _v2_assignable(ui_schema: object) -> bool:
+    """V2 下发门控（FE-1404 §2 / 评审 §3.1 红线）：
+
+    - V1（或缺 schema_version）资源不受影响；
+    - V2 资源的主 workspace renderer 必须已 implemented，planned 受控拒绝（不降级）；
+    - 协议外 renderer 同样拒绝下发。
+    """
+    if not isinstance(ui_schema, dict) or ui_schema.get("schema_version") != "2.0":
+        return True
+    from app.content.renderer_protocol import is_implemented, validate_renderer_id
+
+    try:
+        for ws in ui_schema.get("workspaces", []):
+            rid = ws.get("renderer") if isinstance(ws, dict) else None
+            if rid is None:
+                return False
+            validate_renderer_id(rid)
+            if not is_implemented(rid):
+                return False
+    except ValueError:
+        return False
+    return True
+
+
 async def _published_resource_for_ability(
     db: AsyncSession,
     *,
@@ -102,7 +126,9 @@ async def _published_resource_for_ability(
     退到该能力「最低难度」已发布资源（保证指定能力一定有题可练）。
 
     exclude_resource_version_ids：本 session 已出过的题，取下一题时排除，
-    避免「答对后点下一题仍是同一道题」。"""
+    避免「答对后点下一题仍是同一道题」。
+
+    V2 门控：planned renderer 的 V2 资源不可下发（多取候选后在应用层过滤）。"""
     exclude = exclude_resource_version_ids or set()
     base_where = [
         Resource.ability_id == ability_id,
@@ -111,31 +137,29 @@ async def _published_resource_for_ability(
     if exclude:
         base_where.append(ResourceVersion.resource_version_id.notin_(exclude))
 
-    row = (
-        await db.execute(
-            select(ResourceVersion)
-            .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
-            .where(
-                *base_where,
-                ResourceVersion.difficulty >= band_min,
-                ResourceVersion.difficulty <= band_max,
-            )
-            .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
-            .limit(1)
+    async def _first_assignable(stmt) -> ResourceVersion | None:
+        rows = (await db.execute(stmt.limit(50))).scalars().all()
+        return next((rv for rv in rows if _v2_assignable(rv.ui_schema)), None)
+
+    row = await _first_assignable(
+        select(ResourceVersion)
+        .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+        .where(
+            *base_where,
+            ResourceVersion.difficulty >= band_min,
+            ResourceVersion.difficulty <= band_max,
         )
-    ).scalar_one_or_none()
+        .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
+    )
     if row is not None or not fallback_to_lowest:
         return row
 
-    return (
-        await db.execute(
-            select(ResourceVersion)
-            .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
-            .where(*base_where)
-            .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
-            .limit(1)
-        )
-    ).scalar_one_or_none()
+    return await _first_assignable(
+        select(ResourceVersion)
+        .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+        .where(*base_where)
+        .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
+    )
 
 
 async def assign_next_task(
@@ -284,6 +308,10 @@ async def submit_attempt(
     rv = await db.get(ResourceVersion, task.resource_version_id)
     expected = rv.content.get("answer") if rv and isinstance(rv.content, dict) else None
     user_answer = response.get("answer") if isinstance(response, dict) else None
+
+    # V2 提交：answer 为结构对象 {value:...}，判分提取 value；V1 answer 仍是标量。
+    if isinstance(user_answer, dict):
+        user_answer = user_answer.get("value")
 
     if expected is None or user_answer is None:
         correct = None

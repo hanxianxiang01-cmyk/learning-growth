@@ -100,7 +100,7 @@ export function useLearningSession({
         response: state.response,
         client_elapsed_ms: Date.now() - startedAt.current,
         used_hint_levels: state.usedHintLevels
-      });
+      }, state.task);
 
       stats.current.totalAttempts += 1;
 
