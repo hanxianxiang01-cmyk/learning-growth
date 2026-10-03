@@ -29,6 +29,14 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Merged（FE-1408 V2Renderer 接 number-line + mock A5 同步，2026-10-03）
+
+- numberLineV2.ts：V2 数轴纯函数层（state/applyJump/endpointAnswer/serialize），数据形态对齐 FE-1405 A5 链 E2E 已验证的 `data.jumps=[{jump_id,from,to}]`；未跳步不给答案（endpoint 空提交禁用）。
+- NumberLineV2.tsx：V2 数轴组件——复用 rendererRuntime（undo/reset/events），写回 v2_workspaces + answer=终点值；刻度由 config.scale 驱动（0~50 步长5），start_marker 提供起点。
+- TaskRenderer V2Renderer 加 number-line 分支（A5 链浏览器可玩，FE-1407 遗留解锁）。
+- mock taskBank 插入 mock-rel-v2-line-1（与后端 resource_seed_v2 A5 题同源：20 起步每次 +5 跳 3 次 = 35，d3）；FE-1407「A5 暂不入 mock」限制随之解除。
+- 验证：tsc 0 错、next build ✓、check-v13/v14/fe1403-b5 PASS。
+
 ## Merged（FE-1407 mock 同步 V2：B5 column-arithmetic 演示题，2026-10-03）
 
 - mock taskBank 首位插入 `mock-rel-v2-column-1`：完整 V2 TaskUISchema（schema_version 2.0 / workspaces / column-arithmetic / mode addition / response_contract），与后端 resource_seed_v2 B5 链题同源（47+28=75，d4）；mock 模式可直接体验竖式 V2 渲染链。

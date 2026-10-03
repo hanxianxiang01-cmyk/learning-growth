@@ -2,6 +2,7 @@
 
 import { AnswerComposer } from "@/src/components/learning/AnswerComposer";
 import { ColumnArithmetic } from "@/src/components/renderers/ColumnArithmetic";
+import { NumberLineV2 } from "@/src/components/renderers/NumberLineV2";
 
 import { MathQuestionCard } from "@/src/components/learning/MathQuestionCard";
 import { BarModel } from "@/src/components/manipulatives/BarModel";
@@ -132,6 +133,24 @@ function ManipulativeRenderer(
 function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
   const { task, schema, response, disabled, onResponseChange, onSubmit } = props;
   const rendererId = resolveRendererId(schema);
+
+  if (rendererId === "number-line") {
+    const workspace = schema.workspaces[0];
+    if (!workspace) return null;
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <NumberLineV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
 
   if (rendererId === "column-arithmetic") {
     const workspace = schema.workspaces[0];
