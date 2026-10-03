@@ -60,10 +60,47 @@ const numberResponseSchema = {
 // 能力 ID 统一用 app_*，与 challengeMapping（按名称「数量关系」/「策略」匹配）联动。
 const taskBank: MockTask[] = [
   // ---- app_rel（数量关系）—— 首页「数量关系挑战」入口 ----
-  // FE-1407 mock 同步：B5 column-arithmetic V2 题与后端 resource_seed_v2 同源。
-  // mock 演示把它放首位，便于直接体验竖式 V2 渲染链；真实后端按 fit_band 下发（d4）。
-  // 注：A5 的 V2 number-line 未入 mock —— 前端 V2Renderer 的 number-line 视图尚未接
-  // （现在会显示"开发中"卡），V2 链就绪后再同步（勿用 unsupported 掩盖，契约 §24）。
+  // FE-1407/1408 mock 同步：B5/A5 两道 V2 题与后端 resource_seed_v2 同源，
+  // 放首位便于直接体验竖式与数轴两条 V2 渲染链；真实后端按 fit_band 下发。
+  {
+    task_instance_id: "mock-rel-v2-line-1",
+    ability_id: "app_rel",
+    difficulty: 3,
+    goal: "用数轴跳步表征等步长连续增加",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "2.0",
+      ui_revision: "mock-rev-a5-1",
+      prompt: { text: "从20出发，每次向右跳5，跳3次，终点是多少？" },
+      workspaces: [
+        {
+          workspace_id: "main",
+          renderer: "number-line",
+          renderer_version: "1.0",
+          mode: "jump_sequence",
+          config: {
+            scale: { min: 0, max: 50, tick_step: 5 },
+            start_marker: { marker_id: "start", value: 20 }
+          },
+          initial_state: { jumps: [] },
+          capabilities: ["jump", "place_marker", "undo", "reset"],
+          constraints: { snap_to_tick: true, auto_complete_jumps: false }
+        }
+      ],
+      response_contract: {
+        response_type: "number_line",
+        required_fields: ["workspaces", "answer"],
+        evidence_targets: ["jumps"]
+      }
+    },
+    __answer: "35",
+    __hints: [
+      "先在数轴上找到起点20。",
+      "向右跳一步是变多还是变少？一步跳几？",
+      "连续跳3次相同步长，可以用加法。",
+      "20 + 5 + 5 + 5 等于几？"
+    ]
+  },
   {
     task_instance_id: "mock-rel-v2-column-1",
     ability_id: "app_rel",
