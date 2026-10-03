@@ -318,9 +318,8 @@ async def submit_attempt(
     else:
         correct = _judge(expected, user_answer)
 
-    error_model = None
-    if not correct and rv and rv.error_models:
-        error_model = rv.error_models[0].get("code") if isinstance(rv.error_models[0], dict) else None
+    # 诊断候选来源：资源侧全部错因规则（不再取"第一条"当结论，交 V2 观察匹配）。
+    error_models = rv.error_models if rv and rv.error_models else None
 
     max_hint_level = max(used_hint_levels) if used_hint_levels else 0
 
@@ -333,7 +332,9 @@ async def submit_attempt(
         correct=correct,
         max_hint_level=max_hint_level,
         client_elapsed_ms=client_elapsed_ms,
-        error_model=error_model,
+        error_models=error_models,
+        ui_schema=rv.ui_schema if rv else None,
+        resource_version_id=task.resource_version_id,
         used_hint_levels=used_hint_levels,
     )
 

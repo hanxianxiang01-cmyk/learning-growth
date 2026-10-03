@@ -79,11 +79,13 @@ async def main() -> None:
         ))
         await db.commit()
 
-        # 第一次作答：错误
+        # 第一次作答：错误（V2 诊断：建模观察 + modeling 规则 → E04 候选）
         r1 = await record_attempt(
             db, child_id=cid, task_instance_id=ti0, attempt_no=1,
             response={"answer": 0}, correct=False, max_hint_level=0,
-            error_model="modeling", used_hint_levels=[],
+            error_models=[{"code": "modeling"}],
+            ui_schema={"response_schema": {"representation_required": True}},
+            used_hint_levels=[],
         )
         await db.commit()
         ok("2. 答错→诊断", r1["diagnosis"] is not None and r1["diagnosis"]["code"] == "E04",
@@ -95,7 +97,7 @@ async def main() -> None:
         r2 = await record_attempt(
             db, child_id=cid, task_instance_id=ti0, attempt_no=2,
             response={"answer": 5}, correct=True, max_hint_level=1,
-            error_model=None, used_hint_levels=[1],
+            used_hint_levels=[1],
         )
         await db.commit()
         ok("3. 重试正确→Evidence落库", r2["evidence_id"] is not None, f"evidence={r2['evidence_id']}")

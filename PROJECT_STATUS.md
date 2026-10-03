@@ -56,6 +56,7 @@
 | FE-1403 | V1.4 Protocol | Renderer Registry Contract：23 枚举冻结 + 校验 + V1/V2 分流规则 | 🟢 协议冻结（Registry 12 字段随交付填充；V2 JSON Schema 待冻结） | Backend/Frontend | — |
 | FE-1404 | V1.4 Protocol | TaskUISchema V2 + MathResponse V2 可执行 Schema + 五链样例 + 校验器 | 🟡 冻结候选（待会签；待办7项见 docs/frontend/29 §5） | Backend/Content/Frontend | — |
 | FE-1405 | V1.4 Vertical | A5 纵向链端到端：V2 题下发→渲染→提交→判分→幂等（真实 E2E PASS） | 🟢 DONE（首批 1 题；submission_id 迁移为后续项） | Backend/Frontend | — |
+| FE-1406 | V1.4 Diagnosis | 诊断 V2：三段判定、无证据不猜、NULL 合法、confirmed 待校准（评审步骤3） | 🟢 DONE（匹配表保守缺省，正式标签字典待 ADR） | Backend/教学规则 | — |
 | FE-1301 | Task Renderer | V1（number/manipulative/unsupported） | 🟢 DONE | Frontend | — |
 | FE-1302 | Math Workspace | 隔离 Workspace State | 🟢 DONE | Frontend | — |
 | FE-1303 | Manipulative | Object Counter interactive | 🟢 DONE | Frontend | — |
