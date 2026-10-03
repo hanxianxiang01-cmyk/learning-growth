@@ -26,7 +26,7 @@ from app.core.education_rules import (
     EVIDENCE_ROLE_TO_TYPE,
     RULE_VERSION,
 )
-from app.services.diagnosis import diagnose
+from app.services.diagnosis import diagnose_v2, response_shape, response_shape_from_dict
 from app.services.hint import decide_hint
 from app.services.mastery_db import persist_mastery_state
 
@@ -41,12 +41,13 @@ async def record_attempt(
     correct: bool | None,
     max_hint_level: int,
     client_elapsed_ms: int | None = None,
-    error_model: str | None = None,
+    error_models: list | None = None,
+    ui_schema: dict | None = None,
+    resource_version_id: uuid.UUID | None = None,
     used_hint_levels: list[int] | None = None,
     agent_turn_id: str | None = None,
 ) -> dict:
-    """记录一次作答：写 attempt + event，产出诊断 + next_action。"""
-    used = used_hint_levels or []
+    """记录一次作答：写 attempt + event，产出诊断（V2 三段判定）+ next_action。"""
 
     # 1. 查 task_instance（拿 ability_id / resource_version_id / session_id）
     task = await db.get(TaskInstance, task_instance_id)
@@ -76,6 +77,8 @@ async def record_attempt(
             d_payload = event.payload.get("diagnosis")
             if isinstance(d_payload, dict):
                 diagnosis_dict = d_payload
+        # 幂等重放与首发使用同一外形规则（V2 完整记录不直接下发）
+        diagnosis_out = response_shape_from_dict(diagnosis_dict)
         next_action = (
             {"type": "HINT", "hint_level": existing.max_hint_level, "policy_id": f"hint-{existing.max_hint_level}"}
             if existing.correct is False
@@ -84,7 +87,7 @@ async def record_attempt(
         return {
             "attempt_id": existing.attempt_id,
             "correct": existing.correct,
-            "diagnosis": diagnosis_dict,
+            "diagnosis": diagnosis_out,
             "evidence_id": None,
             "next_action": next_action,
         }
@@ -102,12 +105,13 @@ async def record_attempt(
     db.add(attempt)
     await db.flush()
 
-    # 3. 诊断
-    d = diagnose(
+    # 3. 诊断（V2 三段判定：观察→候选→top_level_code 可为 NULL；hint 不再兜底错因）
+    d = diagnose_v2(
         correct,
-        error_model=error_model,
-        used_hint_levels=used,
-        repeated_pattern=attempt_no > 1 and not correct,
+        error_models=error_models,
+        response=response,
+        ui_schema=ui_schema,
+        resource_version_id=str(resource_version_id) if resource_version_id else None,
     )
 
     # 4. 写 learning_event
@@ -121,6 +125,7 @@ async def record_attempt(
         seq_no=attempt_no,
         payload={
             "correct": correct,
+            # V2 完整三段判定入 event（审计/confirmed 聚合用）；对外响应只暴露有码结论
             "diagnosis": d.to_dict() if d else None,
             "max_hint_level": max_hint_level,
         },
@@ -194,7 +199,7 @@ async def record_attempt(
     return {
         "attempt_id": attempt.attempt_id,
         "correct": correct,
-        "diagnosis": d.to_dict() if d else None,
+        "diagnosis": response_shape(d),  # V2 外形：top_level_code=None → 不下发猜测标签
         "evidence_id": evidence_id,
         "next_action": next_action,
     }

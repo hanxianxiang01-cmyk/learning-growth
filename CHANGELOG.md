@@ -29,6 +29,21 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Added（FE-1406 诊断 V2：三段判定、无证据不猜，2026-10-03）
+
+> 评审 V0.2 步骤 3：`diagnosis.py` 移除"无证据兜底"与"第一条错因"推断（§4.1 点名问题）。
+
+- `DiagnosisV2`：观察(observations+field_path) → 候选(candidates: tag/rule_id/rule_version/evidence_paths) → top_level_code；**NULL 是合法结论**（证据不足不冒充已判断，status=observation_only）。
+- **删除 `_fallback_by_hints`**：答错但无观察支持任何资源规则 → 不再猜 E01/E05；hint 依赖度不再决定错因。
+- **删除"error_models[0] 即结论"**：资源全部错因规则作为候选来源，仅当观察命中规则触发条件才形成候选（V1 建模观察=required 表征缺失；V2 观察=空工作区无过程数据）。
+- `correct=None`（未评分）不判：评分故障走工程异常，不写儿童数学误解（评审判定表行4）。
+- 多候选并存 → top_level_code 保持 NULL（"存在其他合理解释"不强选）。
+- 对外响应只暴露有码结论（response_shape：无码时 diagnosis=None，不给儿童猜测标签）；LearningEvent 保留 V2 完整三段判定（审计 + 未来 confirmed 聚合）。幂等重放同规则。
+- confirmed 状态**保留值位不启用**：判定条件（跨资源跨session+反例排除）按评审 §6 属待校准 OPEN 项。
+- `session_result.py` 诊断汇总兼容 top_level_code 与 V1 历史事件 code；`/v1/diagnosis` 独立端点经兼容层。
+- 测试重写 +15（NULL 合法/兜底移除实证/观察驱动/兼容外形/hint 不变），后端 71 passed；API 冒烟实证：答错无观察 diagnosis=None、V2 空工作区→E05 候选成立。
+- E01~E07 语义与 LE-* 分离不变；tag→观察匹配表为保守缺省，正式标签字典待内容/教学规则审定进 ADR（评审 §6）。
+
 ## Added（FE-1405 A5 纵向链端到端打通，2026-10-02）
 
 > V2 契约从"可执行 Schema"推进到"真实链路端到端可跑"：第一条 implemented renderer（number-line）的 V2 题完成 下发→渲染→提交→判分→幂等 全链验证。

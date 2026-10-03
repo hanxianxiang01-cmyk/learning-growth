@@ -116,14 +116,15 @@ async def get_session_result(db: AsyncSession, *, session_id: uuid.UUID) -> dict
         {a.max_hint_level for a in attempts if a.max_hint_level and a.max_hint_level > 0}
     )
 
-    # 诊断汇总（从 event payload.diagnosis.code 聚合）
+    # 诊断汇总（event payload.diagnosis：V2 用 top_level_code，V1 历史事件用 code；NULL 不计）
     diagnosis_counter: dict[str, int] = {}
     for e in events:
         payload = e.payload or {}
         d = payload.get("diagnosis")
-        if isinstance(d, dict) and d.get("code"):
-            code = d["code"]
-            diagnosis_counter[code] = diagnosis_counter.get(code, 0) + 1
+        if isinstance(d, dict):
+            code = d.get("top_level_code") or d.get("code")
+            if code:
+                diagnosis_counter[code] = diagnosis_counter.get(code, 0) + 1
 
     # 能力变化（对齐 AbilityChange：ability_id/name/after_level/confidence/trend/evidence_delta）
     ability_changes = []
