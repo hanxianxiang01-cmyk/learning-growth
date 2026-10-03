@@ -4,7 +4,7 @@ import React from "react";
 import { DEFAULT_CHILD_MATH_SKIN, skins, type ChildMathSkin } from "./skins";
 
 function resolveSkin(value?: string | null): ChildMathSkin {
-  return value === "healing" || value === "math-lab"
+  return value === "healing" || value === "exploration-lab"
     ? value
     : DEFAULT_CHILD_MATH_SKIN;
 }

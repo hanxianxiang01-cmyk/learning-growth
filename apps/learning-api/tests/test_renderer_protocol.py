@@ -45,10 +45,18 @@ def test_unsupported_not_in_protocol():
 
 def test_implemented_subset():
     assert IMPLEMENTED_RENDERER_IDS == {
-        "object-counter", "bar-model", "number-line", "number-input"
+        "object-counter", "bar-model", "number-line", "number-input", "column-arithmetic"
     }
     assert is_implemented("object-counter") is True
     assert is_implemented("ruler") is False  # planned：协议合法但不可下发
+
+
+def test_v2_slice_planned_rejected():
+    """test_v2_slice 依赖：column-arithmetic 下发已放行（FE-1403 B5），其余仍拒绝。"""
+    from app.content.renderer_protocol import is_implemented as impl
+    assert impl("shape-canvas") is False
+    assert impl("ruler") is False
+    assert impl("data-table") is False
 
 
 def test_all_v13_reuse_implemented():

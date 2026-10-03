@@ -1,5 +1,5 @@
-export type ChildMathSkin = "healing" | "math-lab";
-export const DEFAULT_CHILD_MATH_SKIN: ChildMathSkin = "math-lab";
+export type ChildMathSkin = "healing" | "exploration-lab";
+export const DEFAULT_CHILD_MATH_SKIN: ChildMathSkin = "exploration-lab";
 
 export const skins = {
   healing: {
@@ -20,9 +20,9 @@ export const skins = {
     radiusControl: "18px",
     shadow: "0 8px 28px rgba(77,126,111,.09)"
   },
-  "math-lab": {
-    id: "math-lab",
-    label: "数学探索实验室",
+  "exploration-lab": {
+    id: "exploration-lab",
+    label: "探索实验室",
     primary: "#287AD8",
     primarySoft: "#E6F1FD",
     secondary: "#49B39F",

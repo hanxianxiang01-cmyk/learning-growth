@@ -28,12 +28,12 @@ const abilities = [
   { ability_id: "CHECK", name: "检查验算", level: 2, confidence: 0.58, evidence_count: 5, trend: "down_review" as const }
 ];
 
-function Gallery({ skin }: { skin: "healing" | "math-lab" }) {
+function Gallery({ skin }: { skin: "healing" | "exploration-lab" }) {
   return (
     <ChildSkinProvider skin={skin}>
       <div className="ui-kit-column">
         <div className="ui-kit-title">
-          <strong>{skin === "healing" ? "轻量治愈" : "数学探索实验室"}</strong>
+          <strong>{skin === "healing" ? "轻量治愈" : "探索实验室"}</strong>
           <span>18个组件样例</span>
         </div>
 
@@ -81,12 +81,12 @@ export default function Page() {
       <header>
         <span className="eyebrow">DEV ONLY</span>
         <h1>Built-in Skin UI Kit · 36个真实组件样例</h1>
-        <p className="muted">18个核心组件 × healing/math-lab 两套系统内置皮肤。V1.3新增数学交互组件在独立QA页验证。</p>
+        <p className="muted">18个核心组件 × healing/exploration-lab 两套系统内置皮肤。V1.3新增数学交互组件在独立QA页验证。</p>
         <a className="ui-kit-v13-link" href="/dev/v1.3-qa">打开 V1.3 Math Interaction QA →</a>
       </header>
       <div className="ui-kit-grid">
         <Gallery skin="healing"/>
-        <Gallery skin="math-lab"/>
+        <Gallery skin="exploration-lab"/>
       </div>
     </main>
   );

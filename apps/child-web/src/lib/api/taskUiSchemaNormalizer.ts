@@ -4,6 +4,7 @@ import type {
   NumberLineVisualSchema,
   ObjectCounterVisualSchema,
   TaskUiSchema,
+  V2TaskUiSchema,
   WorkspaceTool
 } from "./contracts";
 
@@ -156,62 +157,48 @@ function manipulative(
 // 把 TaskUISchema V2（workspaces/config/mode）归一为现有 V1 视图结构渲染，
 // 携带 source_schema_version/ui_revision/response_type 供提交侧构造 V2 报文。
 // 目前支持 implemented renderer：number-line（jump_sequence）、objects（manipulative 系）、bar-model、纯输入。
-function v2ToView(raw: Dict, rendererId: string): TaskUiSchema {
-  const ws = asDict(Array.isArray(raw.workspaces) ? raw.workspaces[0] : {});
-  const config = asDict(ws.config);
-  const uiRevision = asString(raw.ui_revision, "rev-1");
-  const responseType = asString(asDict(raw.response_contract).response_type, "number_line");
-  const prompt = asString(asDict(raw.prompt).text, "请完成这道数学任务。");
-  const capabilities = Array.isArray(ws.capabilities)
-    ? ws.capabilities.filter((v): v is string => typeof v === "string")
+function v2ToTaskUiSchema(raw: Dict, rendererId: string): V2TaskUiSchema {
+  const workspaces = Array.isArray(raw.workspaces)
+    ? raw.workspaces.map(item => {
+        const workspace = asDict(item);
+        return {
+          workspace_id: asString(workspace.workspace_id, "main"),
+          renderer: asString(workspace.renderer, rendererId) as V2TaskUiSchema["workspaces"][number]["renderer"],
+          renderer_version: asString(workspace.renderer_version, "1.0"),
+          mode: asString(workspace.mode, "default"),
+          config: asDict(workspace.config),
+          initial_state: asDict(workspace.initial_state),
+          capabilities: Array.isArray(workspace.capabilities)
+            ? workspace.capabilities.filter((v): v is string => typeof v === "string")
+            : [],
+          constraints: workspace.constraints ? asDict(workspace.constraints) : undefined
+        };
+      })
     : [];
-  const scale = asDict(config.scale);
-  const base = {
-    schema_version: "1.0" as const,
-    renderer_id: rendererId,
-    interaction_capabilities: capabilities,
-    source_schema_version: "2.0" as const,
-    ui_revision: uiRevision,
-    response_type: responseType,
-    workspace_id: asString(ws.workspace_id, "main"),
-    prompt
-  };
 
-  if (rendererId === "number-line") {
-    const startMarker = asDict(config.start_marker);
-    return {
-      ...base,
-      kind: "manipulative",
-      answer_placeholder: "输入答案",
-      visual: {
-        type: "number-line",
-        min: asNumber(scale.min, 0),
-        max: asNumber(scale.max, 20),
-        step: asNumber(scale.tick_step ?? scale.step, 1),
-        start: startMarker.value === undefined ? undefined : asNumber(startMarker.value, 0)
-      },
-      tools: normalizeTools(ws.capabilities, ["jump", "undo", "reset"]),
-      response_schema: normalizeResponseSchema(undefined, true)
-    };
-  }
+  const responseContract = asDict(raw.response_contract);
 
-  if (rendererId === "object-counter" && Array.isArray(config.groups)) {
-    return {
-      ...base,
-      kind: "manipulative",
-      answer_placeholder: "输入答案",
-      visual: normalizeObjects({ type: "objects", groups: config.groups }),
-      tools: normalizeTools(ws.capabilities, ["move", "align", "undo", "reset"]),
-      response_schema: normalizeResponseSchema(undefined, true)
-    };
-  }
-
-  // 其他 V2 renderer 的视图兜底：纯数字输入（协议上仍可提交 answer）
   return {
-    ...base,
-    kind: "number",
-    answer_placeholder: "输入答案",
-    response_schema: normalizeResponseSchema(undefined, false)
+    schema_version: "2.0",
+    ui_revision: asString(raw.ui_revision, "rev-1"),
+    prompt: {
+      text: asString(asDict(raw.prompt).text, "请完成这道数学任务。"),
+      resource_ref: asString(asDict(raw.prompt).resource_ref) || undefined
+    },
+    workspaces,
+    response_contract: {
+      response_type: asString(responseContract.response_type, "number"),
+      required_fields: Array.isArray(responseContract.required_fields)
+        ? responseContract.required_fields.filter((v): v is string => typeof v === "string")
+        : undefined,
+      evidence_targets: Array.isArray(responseContract.evidence_targets)
+        ? responseContract.evidence_targets.filter((v): v is string => typeof v === "string")
+        : undefined
+    },
+    hint_targets: Array.isArray(raw.hint_targets)
+      ? raw.hint_targets.filter((v): v is string => typeof v === "string")
+      : undefined,
+    accessibility: raw.accessibility ? asDict(raw.accessibility) : undefined
   };
 }
 
@@ -221,7 +208,7 @@ export function normalizeTaskUiSchema(payload: unknown): TaskUiSchema {
   // V2 分流（判别字段 schema_version === "2.0"）
   if (asString(raw.schema_version) === "2.0") {
     const firstRenderer = asDict(Array.isArray(raw.workspaces) ? raw.workspaces[0] : {}).renderer;
-    return v2ToView(raw, asString(firstRenderer, "number-input"));
+    return v2ToTaskUiSchema(raw, asString(firstRenderer, "number-input"));
   }
 
   const prompt = asString(raw.prompt, "请完成这道数学任务。");

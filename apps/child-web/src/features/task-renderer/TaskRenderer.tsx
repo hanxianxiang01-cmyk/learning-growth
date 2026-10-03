@@ -1,19 +1,22 @@
 "use client";
 
 import { AnswerComposer } from "@/src/components/learning/AnswerComposer";
+import { ColumnArithmetic } from "@/src/components/renderers/ColumnArithmetic";
+
 import { MathQuestionCard } from "@/src/components/learning/MathQuestionCard";
 import { BarModel } from "@/src/components/manipulatives/BarModel";
 import { NumberLine } from "@/src/components/manipulatives/NumberLine";
 import { ObjectCounter } from "@/src/components/manipulatives/ObjectCounter";
 import { WorkspaceProvider } from "@/src/features/math-workspace";
-import { getRendererDescriptor, resolveRendererId } from "./rendererRegistry";
+import { getRendererDescriptor, isImplementedRenderer, resolveRendererId } from "./rendererRegistry";
 import type {
   InteractionEvent,
   ManipulativeTaskUiSchema,
   TaskInstance,
   TaskResponse,
   WorkspaceRepresentation,
-  WorkspaceUiAction
+  WorkspaceUiAction,
+  V2TaskUiSchema
 } from "@/src/lib/api/contracts";
 
 export function createEmptyTaskResponse(): TaskResponse {
@@ -26,6 +29,11 @@ export function isTaskResponseReady(
 ) {
   const hasAnswer = String(response.answer ?? "").trim().length > 0;
   if (!hasAnswer) return false;
+
+  if (task?.ui_schema.schema_version === "2.0") {
+    return Array.isArray(response.v2_workspaces) && response.v2_workspaces.length > 0;
+  }
+
   if (task?.ui_schema.response_schema.representation_required) {
     return Boolean(response.representation);
   }
@@ -43,7 +51,7 @@ type CommonRendererProps = {
 
 function NumberRenderer({ task, response, disabled, onResponseChange, onSubmit }: CommonRendererProps) {
   const schema = task.ui_schema;
-  if (schema.kind !== "number") return null;
+  if (schema.schema_version !== "1.0" || schema.kind !== "number") return null;
 
   const setAnswer = (answer: string) => {
     const event: InteractionEvent = {
@@ -120,10 +128,55 @@ function ManipulativeRenderer(
   );
 }
 
+
+function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
+  const { task, schema, response, disabled, onResponseChange, onSubmit } = props;
+  const rendererId = resolveRendererId(schema);
+
+  if (rendererId === "column-arithmetic") {
+    const workspace = schema.workspaces[0];
+    if (!workspace) return null;
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <ColumnArithmetic
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
+
+  return (
+    <div className="surface-card unsupported-task" data-testid="planned-renderer">
+      <strong>这个学习工具还在开发中</strong>
+      <p className="muted">当前 Renderer 已注册，但尚未开放下发。</p>
+      <small className="renderer-debug">Renderer: {rendererId}</small>
+    </div>
+  );
+}
+
 export function TaskRenderer(props: CommonRendererProps) {
   const { task } = props;
   const rendererId = resolveRendererId(task.ui_schema);
   const descriptor = getRendererDescriptor(task.ui_schema);
+
+  if (task.ui_schema.schema_version === "2.0") {
+    if (!isImplementedRenderer(rendererId)) {
+      return (
+        <div className="surface-card unsupported-task" data-testid="planned-renderer">
+          <strong>这个学习工具还在开发中</strong>
+          <p className="muted">当前 Renderer 已注册，但尚未开放下发。</p>
+          <small className="renderer-debug">Renderer: {rendererId}</small>
+        </div>
+      );
+    }
+    return <V2Renderer {...props} schema={task.ui_schema} />;
+  }
 
   if (rendererId === "number-input") return <NumberRenderer {...props} />;
 

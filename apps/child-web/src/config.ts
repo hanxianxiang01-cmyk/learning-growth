@@ -24,5 +24,5 @@ export const config = {
   childMathSkin:
     (process.env.NEXT_PUBLIC_CHILD_MATH_SKIN === "healing"
       ? "healing"
-      : "math-lab") as ChildMathSkin
+      : "exploration-lab") as ChildMathSkin
 } as const;

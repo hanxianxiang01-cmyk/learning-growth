@@ -139,13 +139,13 @@ function Case({ task }: { task: TaskInstance }) {
   );
 }
 
-function SkinCases({ skin }: { skin: "healing" | "math-lab" }) {
+function SkinCases({ skin }: { skin: "healing" | "exploration-lab" }) {
   return (
     <ChildSkinProvider skin={skin}>
       <div className="v14-qa-skin">
         <header>
           <span className="eyebrow">V1.4 P0</span>
-          <h2>{skin === "healing" ? "轻量治愈" : "数学探索实验室"}</h2>
+          <h2>{skin === "healing" ? "轻量治愈" : "探索实验室"}</h2>
         </header>
         {fixtures.map(task => <Case task={task} key={task.task_instance_id} />)}
       </div>
@@ -175,7 +175,7 @@ export default function Page() {
         </header>
         <div className="v14-qa-grid">
           <SkinCases skin="healing" />
-          <SkinCases skin="math-lab" />
+          <SkinCases skin="exploration-lab" />
         </div>
       </div>
     </main>

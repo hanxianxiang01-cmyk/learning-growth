@@ -29,6 +29,16 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Merged（FE-1403 B5 column-arithmetic 前端切片 + Gate B5 E2E，2026-10-03）
+
+> 交付来源：《V1.4 FE-1403 Renderer Implementation Contract》+ zip（基线含 FE-1405；交付方 FE-1406 未入包，合并时 backend 诊断五文件不取，main 版本保留）。
+
+- 前端：rendererRegistry 23 协议全注册+implemented 分层；columnArithmetic（State/Reducer/Serializer/Evaluator：PASS/PARTIAL/FAIL/INVALID）；ColumnArithmetic 竖式组件（双皮肤）；TaskRenderer V2 判别分流；V2TaskUiSchema 判别联合；v2_workspaces→MathResponse V2 信封。
+- 后端：renderer_protocol column-arithmetic planned→implemented（前后端分层同步）；3 处门控测试基准同步改用 ruler/data-table；B5 链题（47+28=75 竖式 before_after d4）seed 入库。
+- 合并时修复交付方 6 处 tsc 错误（重复 import / 判别守卫 / places 类型）——交付方依赖层缺失暴露，补跑清零。
+- 验证：tsc 0 错、next build ✓、check-fe1403-b5/v13/v14/governance ✓、后端 72 passed；**Gate B5 真实 API E2E 5 步全 PASS**（V2下发→竖式判分→单task单证据→重试不覆盖→Mastery回写）。
+- Gate 状态（§25 口径）：A5 GREEN · B5 API链路 GREEN/浏览器待人工 · D5/E4/F6 RED。
+
 ## Added（FE-1406 诊断 V2：三段判定、无证据不猜，2026-10-03）
 
 > 评审 V0.2 步骤 3：`diagnosis.py` 移除"无证据兜底"与"第一条错因"推断（§4.1 点名问题）。
