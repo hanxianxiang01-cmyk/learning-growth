@@ -35,9 +35,10 @@ def test_v2_implemented_assignable():
 
 
 def test_v2_planned_rejected():
+    # FE-1403 后 column-arithmetic 已 implemented；用仍 planned 的 ruler 验证门控
     doc = {
         "schema_version": "2.0",
-        "workspaces": [{"workspace_id": "main", "renderer": "column-arithmetic"}],
+        "workspaces": [{"workspace_id": "main", "renderer": "ruler"}],
     }
     assert _v2_assignable(doc) is False  # planned 受控拒绝，不降级
 

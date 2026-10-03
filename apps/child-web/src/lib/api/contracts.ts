@@ -140,7 +140,35 @@ export type UnsupportedTaskUiSchema = {
   response_schema: TaskResponseSchema;
 };
 
-export type TaskUiSchema = NumberTaskUiSchema | ManipulativeTaskUiSchema | UnsupportedTaskUiSchema;
+export type V2RendererWorkspace = {
+  workspace_id: string;
+  renderer: import("@/src/features/task-renderer/rendererRegistry").RendererProtocolId;
+  renderer_version: string;
+  mode: string;
+  config: Record<string, unknown>;
+  initial_state: Record<string, unknown>;
+  capabilities: string[];
+  constraints?: Record<string, unknown>;
+};
+
+export type V2TaskUiSchema = {
+  schema_version: "2.0";
+  ui_revision: string;
+  prompt: {
+    text: string;
+    resource_ref?: string;
+  };
+  workspaces: V2RendererWorkspace[];
+  response_contract: {
+    response_type: string;
+    required_fields?: string[];
+    evidence_targets?: string[];
+  };
+  hint_targets?: string[];
+  accessibility?: Record<string, unknown>;
+};
+
+export type TaskUiSchema = V2TaskUiSchema | NumberTaskUiSchema | ManipulativeTaskUiSchema | UnsupportedTaskUiSchema;
 
 // ---------- V1.3 Structured Response ----------
 
@@ -210,11 +238,23 @@ export type InteractionEvent = {
   payload?: Record<string, string | number | boolean | null>;
 };
 
+export type V2WorkspaceResponseData = Record<string, unknown>;
+
 export type TaskResponse = {
   schema_version: "1.0";
   answer: string;
   representation?: WorkspaceRepresentation;
   interaction_events?: InteractionEvent[];
+  /**
+   * Internal frontend transport fields for V2 renderer state.
+   * v2AttemptAdapter consumes these fields; they are never sent as V1 fields.
+   */
+  v2_workspaces?: Array<{
+    workspace_id: string;
+    data: V2WorkspaceResponseData;
+  }>;
+  v2_response_type?: string;
+  v2_ui_revision?: string;
 };
 
 // ---------- Workspace-aware Hint ----------

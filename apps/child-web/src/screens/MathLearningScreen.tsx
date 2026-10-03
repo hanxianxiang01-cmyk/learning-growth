@@ -80,13 +80,17 @@ export function MathLearningScreen({
               <div className="surface-card method-card">
                 <div className="eyebrow">数学方法</div>
                 <strong>
-                  {task.ui_schema.kind === "manipulative"
-                    ? task.ui_schema.visual.type === "objects"
-                      ? "摆一摆 · 一一对应"
-                      : task.ui_schema.visual.type === "bar-model"
-                        ? "线段图"
-                        : "数轴"
-                    : "直接作答"}
+                  {task.ui_schema.schema_version === "2.0"
+                    ? task.ui_schema.workspaces[0]?.renderer === "column-arithmetic"
+                      ? "竖式计算 · 按位计算"
+                      : "数学交互工具"
+                    : task.ui_schema.kind === "manipulative"
+                      ? task.ui_schema.visual.type === "objects"
+                        ? "摆一摆 · 一一对应"
+                        : task.ui_schema.visual.type === "bar-model"
+                          ? "线段图"
+                          : "数轴"
+                      : "直接作答"}
                 </strong>
                 <p className="muted">操作区记录的是你的数学表示方法，不会由前端直接判断能力等级。</p>
               </div>

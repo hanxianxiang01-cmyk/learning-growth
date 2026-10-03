@@ -80,7 +80,7 @@ const fixtures: TaskInstance[] = [
 function Case({ task }: { task: TaskInstance }) {
   const [response, setResponse] = useState<TaskResponse>(createEmptyTaskResponse());
   const [hintAction, setHintAction] = useState<WorkspaceUiAction | null>(null);
-  const visualType = task.ui_schema.kind === "manipulative" ? task.ui_schema.visual.type : "number";
+  const visualType = task.ui_schema.schema_version === "1.0" && task.ui_schema.kind === "manipulative" ? task.ui_schema.visual.type : "number";
 
   const triggerHint = () => {
     if (visualType === "objects") setHintAction({ type: "align_groups" });
@@ -106,13 +106,13 @@ function Case({ task }: { task: TaskInstance }) {
   );
 }
 
-function SkinCases({ skin }: { skin: "healing" | "math-lab" }) {
+function SkinCases({ skin }: { skin: "healing" | "exploration-lab" }) {
   return (
     <ChildSkinProvider skin={skin}>
       <div className="v13-qa-skin">
         <header>
           <span className="eyebrow">QA-1312</span>
-          <h2>{skin === "healing" ? "轻量治愈" : "数学探索实验室"}</h2>
+          <h2>{skin === "healing" ? "轻量治愈" : "探索实验室"}</h2>
         </header>
         {fixtures.map(task => <Case task={task} key={task.task_instance_id} />)}
       </div>
@@ -131,7 +131,7 @@ export default function Page() {
         </header>
         <div className="v13-qa-grid">
           <SkinCases skin="healing" />
-          <SkinCases skin="math-lab" />
+          <SkinCases skin="exploration-lab" />
         </div>
       </div>
     </main>

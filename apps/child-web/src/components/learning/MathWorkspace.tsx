@@ -1,6 +1,8 @@
 export function MathWorkspace({ uiSchema }: { uiSchema: import("@/src/lib/api/contracts").TaskUiSchema }) {
   const groups =
-    uiSchema.kind === "manipulative" && uiSchema.visual.type === "objects"
+    uiSchema.schema_version === "1.0" &&
+    uiSchema.kind === "manipulative" &&
+    uiSchema.visual.type === "objects"
       ? uiSchema.visual.groups
       : [];
 

@@ -94,12 +94,13 @@ def test_response_sequence_duplicate_rejected():
 # ---- 下发分层：协议合法 ≠ 可下发 ----
 
 def test_assignable_planned_rejected():
+    # FE-1403 后 b5(column-arithmetic) 已 implemented 可下发；e4(ruler) 仍 planned 拒绝
     doc = _load(SAMPLES / "ui_schema" / "b5_valid.json")
-    reasons = check_assignable(doc)
-    assert reasons and "column-arithmetic" in reasons[0]  # planned → 受控拒绝
+    assert check_assignable(doc) == []
 
-    doc_a5 = _load(SAMPLES / "ui_schema" / "a5_valid.json")
-    assert check_assignable(doc_a5) == []  # number-line 已实现 → 可下发
+    doc_e4 = _load(SAMPLES / "ui_schema" / "e4_valid.json")
+    reasons = check_assignable(doc_e4)
+    assert reasons and "ruler" in reasons[0]  # planned → 受控拒绝
 
 
 def test_schema_enum_synced_with_protocol():

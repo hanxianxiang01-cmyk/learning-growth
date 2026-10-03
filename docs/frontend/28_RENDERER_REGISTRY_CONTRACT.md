@@ -22,7 +22,7 @@
 | `choice-grid` | ChoiceGrid | R-005 | base_ui | planned |
 | `place-value` | PlaceValue | R-006 | v1.4_new | planned |
 | `ten-frame` | TenFrame | R-007 | v1.4_new | planned |
-| `column-arithmetic` | ColumnArithmetic | R-008 | v1.4_new | planned |
+| `column-arithmetic` | ColumnArithmetic | R-008 | v1.4_new | implemented（FE-1403；Gate B5 待E2E） |
 | `array-board` | ArrayBoard | R-009 | v1.4_new | planned |
 | `grouping-board` | GroupingBoard | R-010 | v1.4_new | planned |
 | `formula-board` | FormulaBoard | R-011 | v1.4_new | planned |
@@ -64,7 +64,7 @@ ui_schema.schema_version
 
 ## 4. 前端镜像对齐（本 PR 附带的唯一代码改动）
 
-`rendererRegistry.ts` 现含 5 个 ID，其中 4 个真实渲染（object-counter/bar-model/number-line/number-input）+ 1 个内部兜底哨兵 `unsupported`。**`unsupported` 不在 23 协议枚举内**——它是前端运行时的安全降级状态（"当前无可渲染 renderer"），不是协议身份。
+`rendererRegistry.ts` 现含 23 个协议 ID，其中 5 个真实 Renderer 已实现（object-counter/bar-model/number-line/number-input/column-arithmetic）+ 1 个内部兜底哨兵 `unsupported`。**`unsupported` 不在 23 协议枚举内**——它是前端运行时的安全降级状态（"当前无可渲染 renderer"），不是协议身份。
 
 冻结口径：
 - `RendererId = 23 协议 ID + "unsupported"（前端专用哨兵，标注注释，永不进入资源/后端/数据）`；

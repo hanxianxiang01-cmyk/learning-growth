@@ -8,7 +8,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "release:check": "node scripts/check-release.mjs",
-    "v1.4:check": "node scripts/check-v14.mjs"
+    "v1.4:check": "node scripts/check-v14.mjs",
+    "fe1403:b5:check": "node scripts/check-fe1403-b5.mjs"
   },
   "dependencies": {
     "next": "^14.2.0",

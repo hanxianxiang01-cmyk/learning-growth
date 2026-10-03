@@ -48,4 +48,41 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "before_after",
     },
+    {
+        # Gate B5（FE-1403 契约 §19）：column-arithmetic 竖式链
+        "ability_id": "app_rel",
+        "difficulty": 4,
+        "task_type": "word_problem",
+        "title": "图书馆的新书（竖式 V2 链）",
+        "ui_schema_version": "2.0",
+        "renderer": "column-arithmetic",
+        "mode": "addition",
+        "content": {
+            "stem": "图书角原来有47本书，这周又买来28本。现在一共有多少本书？用竖式算，填好进位。",
+            "answer": 75,
+            "goal": "用竖式表征两位数进位加法的过程与结果",
+        },
+        "config": {
+            "operands": [47, 28],
+            "places": ["ones", "tens", "hundreds"],
+            "operand_layout": "fixed",
+        },
+        "initial_state": {"result_digits": [], "carries": []},
+        "capabilities": ["input_digit", "place_carry", "edit_carry", "step_submit", "undo", "reset"],
+        "constraints": {"digit_min": 0, "digit_max": 9, "carry_autofill": False},
+        "response_type": "column_arithmetic",
+        "evidence_targets": ["result_digits", "carries"],
+        "error_models": [
+            {"pattern": "calc", "code": "calc"},
+            {"pattern": "strategy", "code": "strategy"},
+        ],
+        "hint_ladder": [
+            "先看看个位：7加8够不够十？",
+            "个位满十要向十位进1。",
+            "7 + 8 = 15，个位写5，向前进1。",
+            "十位 4 + 2 再加进上来的1，等于几？",
+        ],
+        "is_transfer": False,
+        "context_family": "before_after",
+    },
 ]

@@ -382,7 +382,11 @@ function extractAnswer(response: TaskResponse) {
 }
 
 function hintUiAction(task: MockTask, level: number): WorkspaceUiAction | null {
-  if (level < 2 || task.ui_schema.kind !== "manipulative") return null;
+  if (
+    level < 2 ||
+    task.ui_schema.schema_version === "2.0" ||
+    task.ui_schema.kind !== "manipulative"
+  ) return null;
   const visual = task.ui_schema.visual;
 
   if (visual.type === "objects") {

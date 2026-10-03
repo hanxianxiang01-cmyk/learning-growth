@@ -81,7 +81,7 @@ a{color:inherit}
   min-height:300px;padding:22px;background:var(--cm-surface);
   border:1px solid var(--cm-border);border-radius:var(--cm-radius-card);box-shadow:var(--cm-shadow)
 }
-[data-child-math-skin="math-lab"] .math-workspace{
+[data-child-math-skin="exploration-lab"] .math-workspace{
   background-color:#F8FBFF;
   background-image:
     linear-gradient(var(--cm-grid) 1px,transparent 1px),
@@ -157,8 +157,8 @@ a{color:inherit}
 
 [data-child-math-skin="healing"] .math-task-card .task-icon{filter:saturate(.8)}
 [data-child-math-skin="healing"] .coach-avatar{background:var(--cm-secondary)}
-[data-child-math-skin="math-lab"] .math-task-card{position:relative;overflow:hidden}
-[data-child-math-skin="math-lab"] .math-task-card::after{
+[data-child-math-skin="exploration-lab"] .math-task-card{position:relative;overflow:hidden}
+[data-child-math-skin="exploration-lab"] .math-task-card::after{
   content:"";position:absolute;width:90px;height:90px;right:-28px;top:-28px;border-radius:50%;
   border:1px dashed var(--cm-grid);opacity:.8
 }
@@ -208,7 +208,7 @@ a{color:inherit}
   min-height:300px;padding:20px;background:var(--cm-surface);
   border:1px solid var(--cm-border);border-radius:var(--cm-radius-card);box-shadow:var(--cm-shadow)
 }
-[data-child-math-skin="math-lab"] .manipulative-card{
+[data-child-math-skin="exploration-lab"] .manipulative-card{
   background-color:#F8FBFF;
   background-image:linear-gradient(var(--cm-grid) 1px,transparent 1px),linear-gradient(90deg,var(--cm-grid) 1px,transparent 1px);
   background-size:24px 24px
@@ -308,3 +308,75 @@ a{color:inherit}
 @media(max-width:860px){.v14-qa-grid{grid-template-columns:1fr}.v14-qa-meta{flex-direction:column}.v14-qa-meta span{max-width:100%;text-align:left}}
 
 .workspace-actions button:disabled,.draggable-token:disabled,.number-tick:disabled{opacity:.45;cursor:not-allowed}
+
+
+/* ===== FE-1403 B5 Column Arithmetic ===== */
+.column-arithmetic-board{
+  display:grid;
+  gap:0;
+  width:min(100%,520px);
+  margin:4px auto 18px;
+  padding:18px 16px 14px;
+  border:1px solid var(--cm-border);
+  border-radius:var(--cm-radius-control);
+  background:color-mix(in srgb,var(--cm-primary-soft) 36%,white);
+}
+.column-number-row,.column-operation-row,.carry-row{
+  display:grid;
+  grid-template-columns:72px 1fr;
+  align-items:center;
+  min-height:54px;
+}
+.column-row-label{font-size:12px;color:var(--cm-text-2);font-weight:800}
+.column-number{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(54px,1fr));
+  justify-items:center;
+  align-items:center;
+  max-width:240px;
+  margin-left:auto;
+  width:100%;
+}
+.column-number>span{
+  width:54px;height:42px;display:grid;place-items:center;
+  font-size:23px;font-weight:900;color:var(--cm-text);
+}
+.result-row{
+  border-top:2px solid var(--cm-text);
+  border-bottom:1px solid var(--cm-border);
+  padding:8px 0;
+}
+.column-cell{width:54px;height:44px}
+.column-cell input{
+  width:54px;height:44px;box-sizing:border-box;
+  border:2px solid var(--cm-border);
+  border-radius:10px;background:var(--cm-surface);
+  text-align:center;font-size:22px;font-weight:900;color:var(--cm-text);
+  outline:none;
+}
+.column-cell input:focus{border-color:var(--cm-primary);box-shadow:0 0 0 3px var(--cm-primary-soft)}
+.carry-row{min-height:42px}
+.carry-cell{
+  width:34px;height:30px;border:1px solid var(--cm-border);
+  border-radius:8px;background:var(--cm-surface);color:var(--cm-text-2);
+  font-weight:900;cursor:pointer;
+}
+.carry-cell.is-on{background:var(--cm-primary-soft);border-color:var(--cm-primary);color:var(--cm-primary)}
+.carry-cell.empty{border-color:transparent;background:transparent;cursor:default}
+.column-evaluation{
+  display:flex;gap:8px;align-items:center;
+  margin:10px 0 14px;padding:11px 13px;border-radius:12px;
+  background:var(--cm-primary-soft);color:var(--cm-text-2);font-size:13px;
+}
+.column-evaluation strong{color:var(--cm-primary)}
+.column-evaluation.pass{background:color-mix(in srgb,var(--cm-success) 12%,white)}
+.column-evaluation.pass strong{color:var(--cm-success)}
+.column-evaluation.fail{background:color-mix(in srgb,var(--cm-warning) 14%,white)}
+.column-evaluation.invalid{background:#FFF4F1}
+.column-evaluation.invalid strong{color:#B04A35}
+@media(max-width:600px){
+  .column-arithmetic-board{padding-inline:8px}
+  .column-number-row,.column-operation-row,.carry-row{grid-template-columns:52px 1fr}
+  .column-number{grid-template-columns:repeat(3,46px);max-width:138px}
+  .column-number>span,.column-cell,.column-cell input{width:46px}
+}

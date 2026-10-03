@@ -22,7 +22,7 @@ RENDERER_SPECS: tuple[tuple[str, str, str, str, str], ...] = (
     ("choice-grid",       "ChoiceGrid",       "R-005", "base_ui",    "planned"),
     ("place-value",       "PlaceValue",       "R-006", "v1.4_new",   "planned"),
     ("ten-frame",         "TenFrame",         "R-007", "v1.4_new",   "planned"),
-    ("column-arithmetic", "ColumnArithmetic", "R-008", "v1.4_new",   "planned"),
+    ("column-arithmetic", "ColumnArithmetic", "R-008", "v1.4_new",   "implemented"),  # FE-1403 B5 切片
     ("array-board",       "ArrayBoard",       "R-009", "v1.4_new",   "planned"),
     ("grouping-board",    "GroupingBoard",    "R-010", "v1.4_new",   "planned"),
     ("formula-board",     "FormulaBoard",     "R-011", "v1.4_new",   "planned"),
