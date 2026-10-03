@@ -29,6 +29,13 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Merged（FE-1407 mock 同步 V2：B5 column-arithmetic 演示题，2026-10-03）
+
+- mock taskBank 首位插入 `mock-rel-v2-column-1`：完整 V2 TaskUISchema（schema_version 2.0 / workspaces / column-arithmetic / mode addition / response_contract），与后端 resource_seed_v2 B5 链题同源（47+28=75，d4）；mock 模式可直接体验竖式 V2 渲染链。
+- 零新增代码路径：复用 v2AttemptAdapter V2 信封、TaskRenderer V2 判别分流、hintUiAction V2 守卫；判分沿用 extractAnswer(answer) 口径（组件写入 answer，与后端 answer.value 语义一致）。
+- 有意不做：A5 number-line 不入 mock——V2Renderer 尚未接 number-line 视图，接入会显示"开发中"卡（不用 unsupported 掩盖，契约 §24）；V2 链就绪后再同步。
+- 验证：tsc 0 错、check-v13/v14/fe1403-b5 PASS、CI 四绿（PR #33）。
+
 ## Merged（FE-1403 B5 column-arithmetic 前端切片 + Gate B5 E2E，2026-10-03）
 
 > 交付来源：《V1.4 FE-1403 Renderer Implementation Contract》+ zip（基线含 FE-1405；交付方 FE-1406 未入包，合并时 backend 诊断五文件不取，main 版本保留）。
