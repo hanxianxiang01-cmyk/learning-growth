@@ -60,6 +60,50 @@ const numberResponseSchema = {
 // 能力 ID 统一用 app_*，与 challengeMapping（按名称「数量关系」/「策略」匹配）联动。
 const taskBank: MockTask[] = [
   // ---- app_rel（数量关系）—— 首页「数量关系挑战」入口 ----
+  // FE-1407 mock 同步：B5 column-arithmetic V2 题与后端 resource_seed_v2 同源。
+  // mock 演示把它放首位，便于直接体验竖式 V2 渲染链；真实后端按 fit_band 下发（d4）。
+  // 注：A5 的 V2 number-line 未入 mock —— 前端 V2Renderer 的 number-line 视图尚未接
+  // （现在会显示"开发中"卡），V2 链就绪后再同步（勿用 unsupported 掩盖，契约 §24）。
+  {
+    task_instance_id: "mock-rel-v2-column-1",
+    ability_id: "app_rel",
+    difficulty: 4,
+    goal: "用竖式表征两位数进位加法的过程与结果",
+    strategy_policy: { hint_max_level: 4 },
+    ui_schema: {
+      schema_version: "2.0",
+      ui_revision: "mock-rev-b5-1",
+      prompt: { text: "图书角原来有47本书，这周又买来28本。现在一共有多少本书？用竖式算，填好进位。" },
+      workspaces: [
+        {
+          workspace_id: "main",
+          renderer: "column-arithmetic",
+          renderer_version: "1.0",
+          mode: "addition",
+          config: {
+            operands: [47, 28],
+            places: ["ones", "tens", "hundreds"],
+            operand_layout: "fixed"
+          },
+          initial_state: { result_digits: [], carries: [] },
+          capabilities: ["input_digit", "place_carry", "edit_carry", "step_submit", "undo", "reset"],
+          constraints: { digit_min: 0, digit_max: 9, carry_autofill: false }
+        }
+      ],
+      response_contract: {
+        response_type: "column_arithmetic",
+        required_fields: ["workspaces", "answer"],
+        evidence_targets: ["result_digits", "carries"]
+      }
+    },
+    __answer: "75",
+    __hints: [
+      "先看看个位：7加8够不够十？",
+      "个位满十要向十位进1。",
+      "7 + 8 = 15，个位写5，向前进1。",
+      "十位 4 + 2 再加进上来的1，等于几？"
+    ]
+  },
   {
     task_instance_id: "mock-rel-objects-1",
     ability_id: "app_rel",
