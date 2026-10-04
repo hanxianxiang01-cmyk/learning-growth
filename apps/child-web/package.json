@@ -10,7 +10,8 @@
     "release:check": "node scripts/check-release.mjs",
     "v1.4:check": "node scripts/check-v14.mjs",
     "fe1403:b5:check": "node scripts/check-fe1403-b5.mjs",
-    "e2e": "playwright test --config=playwright.config.mjs"
+    "e2e": "playwright test --config=playwright.config.mjs",
+    "v1.4:renderers:check": "node scripts/check-v14-renderers.mjs"
   },
   "dependencies": {
     "next": "^14.2.0",

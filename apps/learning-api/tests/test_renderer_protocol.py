@@ -44,19 +44,21 @@ def test_unsupported_not_in_protocol():
 
 
 def test_implemented_subset():
-    assert IMPLEMENTED_RENDERER_IDS == {
-        "object-counter", "bar-model", "number-line", "number-input", "column-arithmetic"
-    }
+    """FE-1409：18 V2 组件交付后 23 协议全部 implemented（可渲染，不降级）。"""
+    assert IMPLEMENTED_RENDERER_IDS == RENDERER_PROTOCOL_IDS
+    assert len(IMPLEMENTED_RENDERER_IDS) == 23
     assert is_implemented("object-counter") is True
-    assert is_implemented("ruler") is False  # planned：协议合法但不可下发
+    assert is_implemented("ruler") is True  # FE-1409 起全部可下发
 
 
-def test_v2_slice_planned_rejected():
-    """test_v2_slice 依赖：column-arithmetic 下发已放行（FE-1403 B5），其余仍拒绝。"""
+def test_all_v4_protocols_assignable():
+    """下发门控口径变化：不再有 planned 拒绝，只剩「协议外 ID」拒绝。"""
     from app.content.renderer_protocol import is_implemented as impl
-    assert impl("shape-canvas") is False
-    assert impl("ruler") is False
-    assert impl("data-table") is False
+    assert impl("shape-canvas") is True
+    assert impl("ruler") is True
+    assert impl("data-table") is True
+    assert impl("unsupported") is False  # 哨兵不在协议面，仍拒绝
+    assert impl("not-a-renderer") is False
 
 
 def test_all_v13_reuse_implemented():

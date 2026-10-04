@@ -19,27 +19,29 @@
 | `bar-model` | BarModel | R-002 | v1.3_reuse | implemented |
 | `number-line` | NumberLine | R-003 | v1.3_reuse | implemented |
 | `number-input` | NumberInput | R-004 | base_ui | implemented |
-| `choice-grid` | ChoiceGrid | R-005 | base_ui | planned |
-| `place-value` | PlaceValue | R-006 | v1.4_new | planned |
-| `ten-frame` | TenFrame | R-007 | v1.4_new | planned |
+| `choice-grid` | ChoiceGrid | R-005 | base_ui | implemented（FE-1409 组件交付） |
+| `place-value` | PlaceValue | R-006 | v1.4_new | implemented（FE-1409 组件交付） |
+| `ten-frame` | TenFrame | R-007 | v1.4_new | implemented（FE-1409 组件交付） |
 | `column-arithmetic` | ColumnArithmetic | R-008 | v1.4_new | implemented（FE-1403；Gate B5 待E2E） |
-| `array-board` | ArrayBoard | R-009 | v1.4_new | planned |
-| `grouping-board` | GroupingBoard | R-010 | v1.4_new | planned |
-| `formula-board` | FormulaBoard | R-011 | v1.4_new | planned |
-| `estimation-canvas` | EstimationCanvas | R-012 | v1.4_new | planned |
-| `shape-gallery` | ShapeGallery | R-013 | v1.4_new | planned |
-| `shape-canvas` | ShapeCanvas | R-014 | v1.4_new | planned |
-| `sorting-board` | SortingBoard | R-015 | v1.4_new | planned |
-| `direction-grid` | DirectionGrid | R-016 | v1.4_new | planned |
-| `ruler` | Ruler | R-017 | v1.4_new | planned |
-| `clock` | Clock | R-018 | v1.4_new | planned |
-| `timeline` | Timeline | R-019 | v1.4_new | planned |
-| `money-board` | MoneyBoard | R-020 | v1.4_new | planned |
-| `data-table` | DataTable | R-021 | v1.4_new | planned |
-| `pictograph` | Pictograph | R-022 | v1.4_new | planned |
-| `pattern-board` | PatternBoard | R-023 | v1.4_new | planned |
+| `array-board` | ArrayBoard | R-009 | v1.4_new | implemented（FE-1409 组件交付） |
+| `grouping-board` | GroupingBoard | R-010 | v1.4_new | implemented（FE-1409 组件交付） |
+| `formula-board` | FormulaBoard | R-011 | v1.4_new | implemented（FE-1409 组件交付） |
+| `estimation-canvas` | EstimationCanvas | R-012 | v1.4_new | implemented（FE-1409 组件交付） |
+| `shape-gallery` | ShapeGallery | R-013 | v1.4_new | implemented（FE-1409 组件交付） |
+| `shape-canvas` | ShapeCanvas | R-014 | v1.4_new | implemented（FE-1409 组件交付） |
+| `sorting-board` | SortingBoard | R-015 | v1.4_new | implemented（FE-1409 组件交付） |
+| `direction-grid` | DirectionGrid | R-016 | v1.4_new | implemented（FE-1409 组件交付） |
+| `ruler` | Ruler | R-017 | v1.4_new | implemented（FE-1409 组件交付） |
+| `clock` | Clock | R-018 | v1.4_new | implemented（FE-1409 组件交付） |
+| `timeline` | Timeline | R-019 | v1.4_new | implemented（FE-1409 组件交付） |
+| `money-board` | MoneyBoard | R-020 | v1.4_new | implemented（FE-1409 组件交付） |
+| `data-table` | DataTable | R-021 | v1.4_new | implemented（FE-1409 组件交付） |
+| `pictograph` | Pictograph | R-022 | v1.4_new | implemented（FE-1409 组件交付） |
+| `pattern-board` | PatternBoard | R-023 | v1.4_new | implemented（FE-1409 组件交付） |
 
 **关键语义：协议合法 ≠ 可下发。** planned 的 renderer 允许出现在词表/文档/内容规划里，但**不得**被任何 published 资源引用；下发前 `is_implemented` 校验，未实现即受控拒绝（不错误降级为数字题——评审 §3.1 明令）。
+
+> **FE-1409 状态变化（2026-10-04）**：V1.4 Frontend Development Package 交付 18 个 V2 组件（`V2RendererLibrary.tsx` 统一基座）后，**23 协议全部 implemented**，planned 拒绝路径自此不存在；下发门控职责收敛为「协议外/哨兵 ID 拒绝」。**诚实口径：implemented = 前端可渲染、不降级，≠ 已通过 B5 式 Vertical Gate**——各组件的 mode 字段级 Schema（§5 后 7 字段）、链题、独立 Evaluator、浏览器 E2E 仍按 `docs/governance/B5_E2E_VERTICAL_GATE.md` 模板逐个补齐。
 
 ## 3. V1 / V2 分流规则（接线规则，评审 §3.1）
 
@@ -64,7 +66,7 @@ ui_schema.schema_version
 
 ## 4. 前端镜像对齐（本 PR 附带的唯一代码改动）
 
-`rendererRegistry.ts` 现含 23 个协议 ID，其中 5 个真实 Renderer 已实现（object-counter/bar-model/number-line/number-input/column-arithmetic）+ 1 个内部兜底哨兵 `unsupported`。**`unsupported` 不在 23 协议枚举内**——它是前端运行时的安全降级状态（"当前无可渲染 renderer"），不是协议身份。
+`rendererRegistry.ts` 现含 23 个协议 ID，**FE-1409 起全部 implemented**（4 个 v1.3 复用 + column-arithmetic + 18 个新交付 V2 组件，经 `V2RendererLibrary.tsx` 统一基座）+ 1 个内部兜底哨兵 `unsupported`。**`unsupported` 不在 23 协议枚举内**——它是前端运行时的安全降级状态（"当前无可渲染 renderer"），不是协议身份。
 
 冻结口径：
 - `RendererId = 23 协议 ID + "unsupported"（前端专用哨兵，标注注释，永不进入资源/后端/数据）`；
@@ -77,6 +79,7 @@ ui_schema.schema_version
 - 本 PR 冻结前 5 项（身份字段）+ interaction 能力；
 - 其余 7 项随 mode 专属 Schema（评审 §3.2 "模式才允许发布资源"）在各 Renderer 实现 PR 中交付；
 - 首批纵向链（Phase 1 前）：B5 column-arithmetic、A5 number-line(扩展 mode)、D5 shape-canvas、E4 ruler、F6 data-table。
+- **FE-1409**：18 组件交付 = 组件渲染就绪；§5 后 7 字段（mode Schema / input/state/serialize/theme contract）仍待逐个 Vertical Gate 补齐，不得因"全部 implemented"误认为发布级完成。
 
 ## 6. 不变量（继承 P0 Architecture Contract，前后端共同遵守）
 

@@ -29,6 +29,17 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Merged（FE-1409 V1.4 Frontend Development Package：18 个 V2 Renderer 组件交付，2026-10-04）
+
+> 交付来源：《V1.4_Frontend_Development_Package.zip》（基线=main@66f374c 含 P0-01，缺 E2E harness #39，合并时无回退）。
+
+- 前端：`V2RendererLibrary.tsx` 统一基座（232 行：useRendererState 共享状态/事件/revision 隔离 + answer 提取）承载 **18 个 V2 组件**（choice-grid/place-value/ten-frame/array-board/grouping-board/formula-board/estimation-canvas/shape-gallery/shape-canvas/sorting-board/direction-grid/ruler/clock/timeline/money-board/data-table/pictograph/pattern-board）；每组件独立入口文件；TaskRenderer V2 路由全接线；registry 18 项 planned→implementedV2；globals.css 追加 renderer 样式（超集）。
+- 后端同步：renderer_protocol 23 协议全部 implemented（附 assert 23/23）；`_v2_assignable`/`check_assignable` 职责收敛为「协议外/哨兵拒绝」；3 处测试基准同步（planned 拒绝样例改 hologram-board/unsupported）。
+- 合并时修复：MoneyBoard `next` 缺索引签名（TS7053，交付方依赖层未暴露）——tsc 清零。
+- check 新增：`scripts/check-v14-renderers.mjs`（23/23 协议、18 V2 + 4 复用路由/基座/入口齐检）。
+- 诚实口径（写入 28 号文档）：**implemented = 前端可渲染不降级 ≠ 已过 B5 式 Vertical Gate**——各组件 mode 字段级 Schema（docs/29 §5-1）、链题、独立 Evaluator（四态）、undo/history、浏览器 E2E 按 B5 模板逐个补齐；23/23 全放行下发后，内容侧发布仍需 Vertical Gate 证据。
+- 验证：tsc 0 错、next build ✓ 9 routes、check-v13/v14/fe1403-b5/v14-renderers/governance 全过、后端 72 passed。
+
 ## Closed（FE-1403 B5 Vertical Gate CLOSED：浏览器 E2E harness 落地，2026-10-04）
 
 - 新增 Playwright E2E harness：`apps/child-web/e2e/b5-column-arithmetic.spec.mjs` + `playwright.config.mjs`（系统 Chrome，`npm run e2e`）；**10 用例全 PASS（50.6s）**——§7 场景矩阵 P0（01/02/03/07/08/09）+ P1（事件模型/双皮肤 3101）+ G9 V1 回归。

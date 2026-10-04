@@ -60,6 +60,7 @@
 | FE-1406 | V1.4 Diagnosis | 诊断 V2：三段判定、无证据不猜、NULL 合法、confirmed 待校准（评审步骤3） | 🟢 DONE（匹配表保守缺省，正式标签字典待 ADR） | Backend/教学规则 | — |
 | FE-1407 | V1.4 Mock | mock 同步 V2：B5 竖式演示题入 taskBank（与后端链题同源，复用既有 V2 链路） | 🟢 DONE（A5 number-line 待 V2Renderer 就绪后同步） | Frontend | #33 |
 | FE-1408 | V1.4 Renderer | V2Renderer 接 number-line（纯函数层+组件+分流）+ mock A5 题同步——A5 链浏览器可玩 | 🟢 DONE（Gate A5 前端链路闭合） | Frontend | — |
+| FE-1409 | V1.4 Renderer | V1.4 Frontend Development Package：18 个 V2 组件交付（V2RendererLibrary 基座）+ 后端 23/23 implemented 同步 | 🟡 组件交付（渲染就绪；各组件 Vertical Gate 待逐个补：mode Schema/链题/Evaluator/E2E） | Frontend/Backend | — |
 | FE-1301 | Task Renderer | V1（number/manipulative/unsupported） | 🟢 DONE | Frontend | — |
 | FE-1302 | Math Workspace | 隔离 Workspace State | 🟢 DONE | Frontend | — |
 | FE-1303 | Manipulative | Object Counter interactive | 🟢 DONE | Frontend | — |
