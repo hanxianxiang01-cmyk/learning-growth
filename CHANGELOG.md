@@ -29,6 +29,15 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Fixed（FE-1411 V1 操作题无限渲染循环——用户页面 F12 刷屏，2026-10-04）
+
+> 用户实测发现：`/child/math/session/...`（V1 objects 题）F12 疯狂报 `Maximum update depth exceeded`（718 条/会话）。
+
+- **根因**：`ManipulativeRenderer` 每次渲染 spread 出新的 `schema` 对象传给 `WorkspaceProvider`，而 Provider 以 `[schema]` 为 REINITIALIZE effect 依赖 → 每帧重置 workspace state → `onWorkspaceChange` 回调 → 父级 response 更新 → 再渲染……经典引用不稳定死循环。
+- **引入与暴露**：provider 的 schema 重置 effect 是 FE-1401（V1.4 P0）交付引入；V1.3 时代该路径无 effect 不循环，V1 题此前 E2E/冒烟全走 V2 链，**真实用户打开 V1 操作题才暴露**——B5 E2E 10 用例拦不住，需 V1 回归专项（记 QA 待办）。
+- **修复**（TaskRenderer.tsx）：`useMemo` 稳定化 `providerSchema`（依赖 [schema, rendererId]）。
+- **验证**：无头探针复现 718→1 条（仅 Chrome DevTools 探测 404 噪音）；tsc 0 错；B5 E2E 10/10、check-v13/v14 PASS。
+
 ## Done（FE-1410 submission_id 落库迁移：V2 幂等契约入数据库，2026-10-04）
 
 > 关闭 docs/frontend/29 §5-2「V2 资源下发前的后端迁移项」——V1.4 规模化前最后一笔 DDL 技术债。

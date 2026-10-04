@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { AnswerComposer } from "@/src/components/learning/AnswerComposer";
 import { ColumnArithmetic } from "@/src/components/renderers/ColumnArithmetic";
 import { NumberLineV2 } from "@/src/components/renderers/NumberLineV2";
@@ -95,6 +96,16 @@ function ManipulativeRenderer(
   const { task, schema, response, disabled, hintAction, onResponseChange, onSubmit } = props;
 
   const visual = schema.visual;
+  const rendererId = resolveRendererId(schema);
+
+  // FE-1411：identity 稳定化。WorkspaceProvider 以 [schema] 为 REINITIALIZE 依赖，
+  // 而此前这里的 spread 每次渲染都产生新对象 → 每帧重置工作区并回调 → 无限循环
+  // （Maximum update depth exceeded，dev 下 F12 刷屏）。
+  const providerSchema = useMemo(
+    () => ({ ...schema, renderer_id: rendererId }),
+    [schema, rendererId]
+  );
+
   const workspace =
     visual.type === "objects" ? (
       <ObjectCounter
@@ -108,13 +119,11 @@ function ManipulativeRenderer(
       <NumberLine />
     );
 
-  const rendererId = resolveRendererId(schema);
-
   return (
     <>
       <MathQuestionCard prompt={schema.prompt} goal={task.goal} />
       <WorkspaceProvider
-        schema={{ ...schema, renderer_id: rendererId }}
+        schema={providerSchema}
         taskInstanceId={task.task_instance_id}
         hintAction={hintAction}
         onWorkspaceChange={(representation, events) => {
