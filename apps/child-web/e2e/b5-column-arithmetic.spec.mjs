@@ -7,7 +7,9 @@
 import { test, expect, request as pwRequest } from "@playwright/test";
 
 const API = process.env.E2E_API_BASE ?? "http://127.0.0.1:8000";
-const CHILD = "00000000-0000-0000-0000-000000000001";
+// 数据卫生（docs/governance/QA_DATA_HYGIENE.md）：E2E 一律用 QA-Simulator child，
+// 禁止写入真实演示孩子 …0001 的 mastery 窗口。RDS 需预建该 child（scripts/qa_child_setup.py）。
+const CHILD = process.env.E2E_CHILD_ID ?? "00000000-0000-0000-0000-000000000099";
 
 /**
  * 向真实后端预取 B5 task，模块级缓存（跨测试复用，只打一轮 RDS）。

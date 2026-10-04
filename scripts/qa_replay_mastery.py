@@ -6,10 +6,15 @@
 
 用法：
   DATABASE_URL=... PYTHONPATH=apps/learning-api python scripts/qa_replay_mastery.py
+
+数据卫生（docs/governance/QA_DATA_HYGIENE.md）：
+- 凭据一律环境变量注入，禁止硬编码（本脚本曾泄露 RDS 密码进 git，已根治）；
+- 写入用 QA-Simulator child（…0099），禁止污染真实孩子的 mastery 证据窗口。
 """
 from __future__ import annotations
 
 import asyncio
+import os
 import sys
 import uuid
 
@@ -21,8 +26,10 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.main import app
 
-DB_URL = "postgresql+psycopg://h_pg_user:W5uae1dxfnm184UB@pgm-uf69q77eiyn7qt01fo.pg.rds.aliyuncs.com:5897/h_db"
-CHILD = "00000000-0000-0000-0000-000000000001"
+DB_URL = os.environ.get("DATABASE_URL")
+if not DB_URL:
+    raise SystemExit("需要 DATABASE_URL 环境变量（见 .env.example）")
+CHILD = os.environ.get("QA_CHILD_ID", "00000000-0000-0000-0000-000000000099")
 
 results: list[tuple[str, bool, str]] = []
 
