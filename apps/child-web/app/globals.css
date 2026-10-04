@@ -416,3 +416,15 @@ a{color:inherit}
 .number-input-v2 .ni-field input:focus{outline:none;border-color:var(--cm-primary,#2d7a68)}
 .ni-evaluation{margin:8px 0 14px;font-size:14px;color:var(--cm-text-2,#5c7280)}
 .ni-evaluation.ready{color:var(--cm-primary,#2d7a68);font-weight:700}
+
+/* FE-1416 TenFrame V2 (R07) */
+.ten-frame-v2 .tf-tens{display:flex;gap:8px;margin:8px 0}
+.tf-bundle{display:inline-grid;place-items:center;padding:8px 14px;border-radius:12px;background:var(--cm-primary,#2d7a68);color:#fff;font-weight:900;font-size:14px}
+.ten-frame-v2 .tf-frame{display:grid;grid-template-columns:repeat(5,52px);gap:8px;justify-content:center;padding:12px;border:2px solid var(--border-subtle,#dbe4e8);border-radius:14px;margin:10px 0}
+.tf-cell{width:52px;height:52px;font-size:26px;border:2px dashed var(--border-subtle,#cbd9dd);border-radius:10px;background:transparent;cursor:pointer;color:var(--cm-text-2,#8aa0ab)}
+.tf-cell.filled{border-style:solid;border-color:var(--cm-primary,#2d7a68);background:var(--cm-primary-soft,#e8f4ef);color:var(--cm-primary,#2d7a68)}
+.tf-cell:disabled{cursor:default;opacity:.7}
+.ten-frame-v2 .tf-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+.tf-evaluation{margin:8px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
+.tf-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
+.tf-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}

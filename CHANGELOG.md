@@ -29,6 +29,18 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1416 R07 TenFrame Vertical Gate：B5 模板第四组件，Batch A 全清，2026-10-04）
+
+> Batch A 收尾（SEM-1416 / Gap R07）。ten-frame 语义=20 以内"十与一"结构；**补十打包（MAKE_TEN_COMPLETED）是本 Gate 独有的过程语义**。
+
+- **纯函数层** `tenFrameV2.ts`：连续填充（点第 i 格=填到 i+1/收缩到 i，禁跳格留洞——模板首个"拒绝式交互"负例）、make-ten 打包（满10冻结成袋、tens+1 计数转第二框）、break-ten 反向拆袋、`evaluateQuantity` 三态对 target。
+- **组件** `TenFrameV2.tsx`：NumberLineV2 runtime 装配模式；事件 COUNTER_ADDED/REMOVED + MAKE_TEN_COMPLETED + TEN_BROKEN + UNDO/RESET；专件替换基座 TenFrame 路由（基座保留作参考）。
+- **链题**：R07 金题（app_rel d2 糖果装袋 13=1袋+3散，**sharing 族首题**——词表覆盖再+1）seed 真实 RDS；防漂移单测 +1（后端 82→**83 passed**）。
+- **API 级**：错位 1袋+2=12 → correct=false HINT（FAIL 可达后端）；正确 1袋+3=13 → NEXT_TASK。
+- **E2E** `e2e/r07-ten-frame.spec.mjs` 8/8（G1 空态/G2 连续填充/G5 make-ten 全链含 tens=1+count=3 结构断言/G6 错位可提交/G7 补格改对 attempt_no=2/UNDO 回退/revision 清态/healing）。**全量套件 35 passed 零回归**（B5+R01+R04+R07）。
+- 新能力词 fill/grouping 进 InteractionCapability+KNOWN 名单（名单机制第二次拦漂移）。
+- 底表 `docs/governance/R07_TENFRAME_VERTICAL_GATE.md`。**Vertical Gate 进度 5/19**；**Batch A（NumberLine/ObjectCounter/NumberInput/TenFrame）4/4 全清**。
+
 ## Done（FE-1415 R04 NumberInput Vertical Gate：B5 模板第三组件 + submission_id 幂等专项，2026-10-04）
 
 > Batch A 第三个（SEM-1413 / Gap R04）。number-input 语义最简，但它是 FE-1410 幂等契约的指定验证入口，本次把双轨幂等钉到真实页面级。

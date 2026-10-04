@@ -169,4 +169,38 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "before_after",
     },
+    {
+        # Gate R07（FE-1416）：ten-frame 数量结构链——SEM-1416 / Gap R07。
+        # 20 以内结构：摆 13 = 满框打包成一袋（MAKE_TEN_COMPLETED）+ 活动框 3。
+        "ability_id": "app_rel",
+        "difficulty": 2,
+        "task_type": "word_problem",
+        "title": "把糖果装进袋（V2 链 R07）",
+        "ui_schema_version": "2.0",
+        "renderer": "ten-frame",
+        "mode": "quantity_structure",
+        "content": {
+            "stem": "妈妈买了13颗糖。先在十格框里摆出来，摆满十个就打包装成一袋，剩下的散着放。摆好后提交。",
+            "answer": 13,
+            "goal": "用十格框表征 20 以内数的十与一结构（补十打包）",
+        },
+        "config": {"target_count": 13, "max_frames": 2},
+        "initial_state": {"tens": 0, "count": 0},
+        "capabilities": ["fill", "grouping", "undo", "reset"],
+        "constraints": {"continuous_fill": True},
+        "response_type": "ten_frame",
+        "evidence_targets": ["tens", "current_frame_count"],
+        "error_models": [
+            {"pattern": "modeling", "code": "modeling"},
+            {"pattern": "calc", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "先一颗一颗摆，摆满十个框。",
+            "满十个了！点打包，把它们装成一袋。",
+            "还剩 3 颗，在新框里摆 3 个。",
+            "一袋是 10，再加 3，一共是几？",
+        ],
+        "is_transfer": False,
+        "context_family": "sharing",
+    },
 ]
