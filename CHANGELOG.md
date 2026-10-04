@@ -29,6 +29,15 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Fixed（FE-1403-P0-01 B5 提交门禁解除，2026-10-04）
+
+> 依据《B5 真实页面 E2E + Workspace/Response 联调方案》§3/§14。
+
+- **P0 缺陷修复**：ColumnArithmetic 提交按钮原 `disabled={... || evaluation.status !== "PASS"}`——错误答案（FAIL）被前端拦死、永远到不了后端，Diagnosis/Retry/Evidence 链无法验证。改为白名单：PASS/FAIL 可提交，PARTIAL/EMPTY 与 INVALID 不可（§3 门槛表）。Evaluator 降级为纯 UI 即时反馈。
+- API 级闭环实证（真实后端 47+28）：attempt1 答 65 → correct=False → HINT；attempt2 答 75 → correct=True → NEXT_TASK。
+- 存档 `docs/governance/B5_E2E_VERTICAL_GATE.md`：FE-1403 关闭判定基准（G1–G9 + 场景矩阵 + 任务进度）。
+- 进度：P0-01/05 DONE（API 半）；G1–G9 后端纵向链 GREEN；FE-1403 Vertical Gate 关闭剩浏览器 E2E（P0-03/04/06 + P1 双皮肤）。
+
 ## Merged（FE-1408 V2Renderer 接 number-line + mock A5 同步，2026-10-03）
 
 - numberLineV2.ts：V2 数轴纯函数层（state/applyJump/endpointAnswer/serialize），数据形态对齐 FE-1405 A5 链 E2E 已验证的 `data.jumps=[{jump_id,from,to}]`；未跳步不给答案（endpoint 空提交禁用）。
