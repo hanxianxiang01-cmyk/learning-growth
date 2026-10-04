@@ -1,0 +1,1017 @@
+《V1.4 Renderer Semantic Completion → Development Gap Matrix》
+版本：V1.4-P0用途：开发执行 / P0 收口 / Vertical Gate 验收基线范围：23 Renderer Registry → 19 V2 Renderer Release Scope当前基线：4 个已有实现 + 19 个待完成/门控 Renderer
+本矩阵不是重新定义 Renderer，而是把已经冻结的 Semantic Completion 要求转换成具体开发缺口。核心目标是回答：每个 Renderer 还要开发什么，做到什么程度才能进入 Gate 验收。
+1. 当前总体状态
+目前不是“19 个 Renderer 都没有开发”。
+实际状态应按下面理解：
+层级
+当前状态
+结论
+Renderer Registry
+23/23
+✅ 已建立
+V2 Release Scope
+19
+🔴 尚未完成语义闭环
+已有 Runtime Component
+4/23
+🟡 ObjectCounter / BarModel / NumberLine / NumberInput
+19 个 V2 Renderer 代码骨架
+已存在/部分存在
+🟡 不能等同于完成
+Semantic Completion
+约 40%
+🔴 P0
+Evaluator
+约 10%
+🔴 P0
+Evidence / Diagnosis
+约 20%
+🔴 P0
+Vertical E2E
+约 40%
+🔴 P0
+B5 / D5 / E4 / F6
+未闭环
+🔴 P0
+V2 Schema / OpenAPI / TS Contract
+未完全冻结
+🔴 P0
+submission_id 幂等
+未完全闭环
+🔴 P0
+双皮肤 QA
+未完成
+P1/P0 Release Gate
+因此：现在不能进入“单纯 QA”。
+必须先进行：
+Renderer Semantic Completion → Evaluator → Evidence → Vertical Integration → Contract Test → QA
+2. Development Gap 的六个维度
+每个 Renderer 必须完成以下 6 个维度：
+编号
+Completion Dimension
+开发含义
+D1
+Semantic
+Renderer 能表达什么、不能表达什么
+D2
+State
+INITIAL / INTERACTING / VALIDATING / CORRECT / INCORRECT / RETRY 等
+D3
+Interaction
+用户行为转成标准 Semantic Event
+D4
+Response
+能消费 Structured Response V2
+D5
+Diagnosis
+能产生 Evidence，供 Diagnosis 使用
+D6
+Acceptance
+Happy / Incorrect / Empty / Error / Evidence 五类场景可验收
+其中真正的开发核心是：
+D2 + D3 + D4 + D5
+D1/D6 主要是规格和测试，但如果规格没有落到代码，也仍然属于开发缺口。
+3. 19 Renderer Development Gap Matrix
+R01 ObjectCounter
+项目
+当前状态
+Development Gap
+优先级
+Semantic
+已有基础组件
+补齐 count / compare / compose / decompose 语义边界
+P0
+State
+部分
+补齐 INITIAL → INTERACTING → VALIDATING → RESULT
+P0
+Interaction
+部分
+点击/增加/删除 → semantic event
+P0
+Response
+未闭环
+Response Adapter + expected state
+P0
+Evaluator
+弱
+count accuracy / quantity relation evaluator
+P0
+Evidence
+弱
+操作序列、最终数量、修改次数
+P0
+Diagnosis
+未闭环
+对接 Diagnosis Schema
+P0
+Acceptance
+未完整
+五类状态测试
+P0
+开发重点：基础 Renderer 标杆。
+R02 BarModel
+项目
+当前状态
+Development Gap
+优先级
+Semantic
+已有骨架
+明确 part-whole / comparison / change
+P0
+State
+部分
+block 增删、调整、提交状态
+P0
+Interaction
+部分
+drag / resize / add block 转 semantic event
+P0
+Response
+未完整
+expected model / validation rule
+P0
+Evaluator
+弱
+模型结构 evaluator
+P0
+Evidence
+弱
+block 数量、位置、关系变化
+P0
+Diagnosis
+未闭环
+结构错误分类证据
+P0
+Acceptance
+未完成
+正确/错误模型测试
+P0
+R03 NumberLine
+项目
+当前状态
+Development Gap
+优先级
+Semantic
+已有
+明确 locate / compare / jump / operation
+P0
+State
+部分
+marker / jump / answer / retry
+P0
+Interaction
+部分
+click / drag / jump → semantic event
+P0
+Response
+未完整
+target / expected position
+P0
+Evaluator
+弱
+position / interval / operation evaluator
+P0
+Evidence
+弱
+marker movement / jump sequence
+P0
+Diagnosis
+未闭环
+位置、方向、步长错误证据
+P0
+Acceptance
+未完成
+E2E
+P0
+R04 NumberInput
+项目
+当前状态
+Development Gap
+优先级
+Semantic
+已有
+明确 numeric answer
+P0
+State
+部分
+typing / validating / retry
+P0
+Interaction
+部分
+input → submit semantic event
+P0
+Response
+未完整
+expected answer / tolerance
+P0
+Evaluator
+很弱
+numeric evaluator
+P0
+Evidence
+很弱
+answer history / attempt_no
+P0
+Diagnosis
+未闭环
+错误类型证据
+P0
+Acceptance
+未完成
+submission / retry / idempotency
+P0
+特别注意：NumberInput 是 submission_id 幂等验证的重要入口。
+4. R05 BarModel 之后的结构型 Renderer
+R05 ColumnArithmetic
+Gap
+开发要求
+优先级
+Semantic
+位值、进位/退位、竖式步骤
+P0
+State
+每一列/步骤状态
+P0
+Interaction
+digit / carry / borrow semantic events
+P0
+Response
+expected intermediate state
+P0
+Evaluator
+最终答案 + 中间步骤
+P0
+Evidence
+每一步修改轨迹
+P0
+Diagnosis
+位值/进退位错误
+P0
+Acceptance
+正确、错误、重做、空状态
+P0
+R06 PlaceValue
+Gap
+开发要求
+优先级
+Semantic
+数位、位值、组成/分解
+P0
+State
+digit movement / selection
+P0
+Interaction
+drag / select → semantic event
+P0
+Response
+expected place-value structure
+P0
+Evaluator
+structure evaluator
+P0
+Evidence
+数字移动、位置选择
+P0
+Diagnosis
+位值混淆
+P0
+Acceptance
+五类状态
+P0
+R07 TenFrame
+Gap
+开发要求
+优先级
+Semantic
+10 以内/20 以内数量结构
+P0
+State
+filled / empty / selected
+P0
+Interaction
+add/remove counter
+P0
+Response
+expected quantity / grouping
+P0
+Evaluator
+quantity evaluator
+P0
+Evidence
+填充顺序、数量变化
+P0
+Diagnosis
+数量/补十结构错误
+P0
+Acceptance
+E2E
+P0
+R08 ArrayBoard
+Gap
+开发要求
+优先级
+Semantic
+rows × columns / repeated addition
+P0
+State
+row/column editing
+P0
+Interaction
+add/remove row/column
+P0
+Response
+expected array structure
+P0
+Evaluator
+row/column/product evaluator
+P0
+Evidence
+行列调整轨迹
+P0
+Diagnosis
+行列概念错误
+P0
+Acceptance
+E2E
+P0
+R09 GroupingBoard
+Gap
+开发要求
+优先级
+Semantic
+grouping / equal groups / remainder
+P0
+State
+grouping process
+P0
+Interaction
+drag/group/split
+P0
+Response
+expected grouping
+P0
+Evaluator
+group structure evaluator
+P0
+Evidence
+分组过程
+P0
+Diagnosis
+分组数量/每组数量错误
+P0
+Acceptance
+E2E
+P0
+R10 FormulaBoard
+Gap
+开发要求
+优先级
+Semantic
+equation / relation / unknown
+P0
+State
+expression editing
+P0
+Interaction
+operator / number / symbol manipulation
+P0
+Response
+expected expression
+P0
+Evaluator
+equation semantic evaluator
+P0
+Evidence
+修改顺序、替换过程
+P0
+Diagnosis
+运算符/数量关系错误
+P0
+Acceptance
+E2E
+P0
+5. 数量关系与估算
+R11 EstimationCanvas
+Gap
+开发要求
+优先级
+Semantic
+estimate / range / reason
+P0
+State
+estimate → submit → feedback
+P0
+Interaction
+input / selection
+P0
+Response
+expected range / target
+P0
+Evaluator
+tolerance / reasoning evaluator
+P0
+Evidence
+估算值、调整过程
+P0
+Diagnosis
+估算策略错误
+P0
+Acceptance
+五状态
+P0
+6. 几何 / 空间 Renderer
+R12 ShapeGallery
+Gap
+开发要求
+优先级
+Semantic
+shape recognition / classification
+P0
+State
+selected / sorted / completed
+P0
+Interaction
+select / classify
+P0
+Response
+expected shape/category
+P0
+Evaluator
+classification evaluator
+P0
+Evidence
+选择与分类轨迹
+P0
+Diagnosis
+属性识别错误
+P0
+Acceptance
+E2E
+P0
+R13 ShapeCanvas
+Gap
+开发要求
+优先级
+Semantic
+draw / compose / transform
+P0
+State
+drawing lifecycle
+P0
+Interaction
+draw / move / rotate / delete
+P0
+Response
+expected geometry constraints
+P0
+Evaluator
+geometry evaluator
+P0
+Evidence
+绘制轨迹
+P0
+Diagnosis
+几何属性错误
+P0
+Acceptance
+E2E
+P0
+R14 SortingBoard
+Gap
+开发要求
+优先级
+Semantic
+compare / classify / order
+P0
+State
+sorting process
+P0
+Interaction
+drag/drop
+P0
+Response
+expected ordering
+P0
+Evaluator
+order evaluator
+P0
+Evidence
+排序过程
+P0
+Diagnosis
+比较维度错误
+P0
+Acceptance
+E2E
+P0
+R15 DirectionGrid
+Gap
+开发要求
+优先级
+Semantic
+direction / position / route
+P0
+State
+current position / target
+P0
+Interaction
+move / route selection
+P0
+Response
+expected path / position
+P0
+Evaluator
+route evaluator
+P0
+Evidence
+movement sequence
+P0
+Diagnosis
+方向/位置关系错误
+P0
+Acceptance
+E2E
+P0
+7. 测量 / 生活数学 Renderer
+R16 Ruler
+Gap
+开发要求
+优先级
+Semantic
+length / measure / compare
+P0
+State
+ruler interaction
+P0
+Interaction
+marker / endpoint movement
+P0
+Response
+expected measurement
+P0
+Evaluator
+tolerance evaluator
+P0
+Evidence
+起止点、读数
+P0
+Diagnosis
+刻度读取错误
+P0
+Acceptance
+E2E
+P0
+R17 Clock
+Gap
+开发要求
+优先级
+Semantic
+hour / minute / time relation
+P0
+State
+hand movement / answer
+P0
+Interaction
+hour/minute hand manipulation
+P0
+Response
+expected time
+P0
+Evaluator
+time evaluator
+P0
+Evidence
+指针调整过程
+P0
+Diagnosis
+时针/分针关系错误
+P0
+Acceptance
+E2E
+P0
+R18 MoneyBoard
+Gap
+开发要求
+优先级
+Semantic
+money / amount / change
+P0
+State
+select / compose / calculate
+P0
+Interaction
+money selection / exchange
+P0
+Response
+expected amount/change
+P0
+Evaluator
+monetary evaluator
+P0
+Evidence
+选择与换算过程
+P0
+Diagnosis
+面值/金额关系错误
+P0
+Acceptance
+E2E
+P0
+R19 PatternBoard
+Gap
+开发要求
+优先级
+Semantic
+sequence / rule / prediction
+P0
+State
+pattern construction
+P0
+Interaction
+select / extend / construct
+P0
+Response
+expected pattern rule
+P0
+Evaluator
+pattern evaluator
+P0
+Evidence
+尝试顺序、修改过程
+P0
+Diagnosis
+规律识别错误
+P0
+Acceptance
+E2E
+P0
+8. 19 Renderer 横向开发缺口
+单看 Renderer 容易误判工作量。
+实际上 19 个 Renderer 共享大量基础设施，因此不能 19 次重复开发。
+P0-01 Renderer Runtime Contract
+需要统一：
+RendererDefinition
+RendererState
+RendererProps
+RendererAction
+RendererEvent
+RendererResponse
+RendererEvidence
+RendererAcceptance
+否则每个 Renderer 会自己定义一套接口。
+9. P0-02 Semantic Event System
+当前最大开发缺口之一。
+不能继续使用：
+onClick
+onChange
+onDrag
+onDrop
+作为业务证据。
+需要转换成：
+renderer.event
+↓
+semantic event
+↓
+evidence
+↓
+diagnosis
+例如：
+{
+"event_id": "...",
+"renderer_id": "number_line",
+"event_type": "NUMBER_LINE_MARKER_MOVED",
+"task_id": "...",
+"attempt_no": 2,
+"payload": {
+"from": 8,
+"to": 12
+}
+}
+这部分直接对应此前确认的 EVT-1208 P0。
+10. P0-03 Evaluator Layer
+当前 Evaluator 约 10%，这是不能进入 Release 的主要原因。
+应该形成：
+Renderer
+↓
+Interaction
+↓
+Evidence
+↓
+Evaluator
+↓
+Response
+↓
+Diagnosis
+而不是：
+Renderer
+↓
+if answer === expected
+↓
+correct
+Evaluator 至少需要支持
+类型
+示例
+Exact
+NumberInput
+Structural
+BarModel
+Sequence
+PatternBoard
+Spatial
+DirectionGrid
+Geometry
+ShapeCanvas
+Measurement
+Ruler
+Temporal
+Clock
+Composite
+ColumnArithmetic
+11. P0-04 Evidence Layer
+目前 Evidence/Diagnosis 约 20%。
+必须明确：
+Renderer 不负责判断孩子“不会什么”，Renderer 只负责提供行为证据。
+统一结构建议：
+Interaction Evidence
+↓
+Behavior Evidence
+↓
+Diagnosis
+↓
+Misconception / Ability State
+至少记录：
+attempt_no
+action sequence
+correction count
+final state
+wrong state
+time/sequence
+hint usage
+retry
+relevant semantic operation
+12. P0-05 Response Adapter
+19 个 Renderer 不能直接绑定后端原始数据。
+必须统一：
+Backend Response
+↓
+Structured Response V2
+↓
+Renderer Adapter
+↓
+Renderer Props
+需要开发：
+Response Schema V2
+Renderer Adapter
+TypeScript 类型
+Schema validation
+Contract Test
+13. P0-06 Diagnosis Adapter
+Renderer 产生：
+Evidence
+Diagnosis 服务消费：
+Evidence
++ Response
++ Task Context
+最终形成：
+Diagnosis
+├── ability_id
+├── diagnosis_code
+├── evidence
+├── confidence
+└── recommended_action
+禁止 Renderer 直接写 Mastery。
+禁止 Diagnosis 直接决定具体 Next Task。
+14. P0-07 Next Task 闭环
+最终必须打通：
+Task
+↓
+Workspace
+↓
+Renderer
+↓
+Interaction
+↓
+Response
+↓
+Evidence
+↓
+Diagnosis
+↓
+Next Recommendation
+↓
+Next Task
+目前真正缺的不是某一个 Renderer，而是这条链的 纵向闭环。
+15. 五条 Vertical Gate 对开发工作的映射
+Gate
+要开发什么
+当前状态
+VG-01 Workspace → Renderer
+Registry + Workspace Plugin API + Runtime Mount
+🟡
+VG-02 TaskUISchema → Renderer
+Schema → Renderer Props / Mode
+🔴
+VG-03 Response → Renderer
+Response Adapter + Evaluator
+🔴
+VG-04 Interaction → Diagnosis
+Event + Evidence + Diagnosis
+🔴
+VG-05 Diagnosis → Next Task
+Diagnosis → Recommendation → NextTask
+🔴
+所以目前最大的风险不是 Renderer UI，而是 Vertical Integration。
+16. 当前 P0 Development Backlog
+建议直接形成下面这组开发任务。
+ID
+开发任务
+范围
+优先级
+FE-1401
+Renderer Runtime Contract
+19
+P0
+FE-1402
+Renderer Semantic Definition
+19
+P0
+FE-1403
+Renderer State Model
+19
+P0
+FE-1404
+Semantic Event Contract
+全局
+P0
+FE-1405
+Renderer Event Adapter
+19
+P0
+FE-1406
+Structured Response V2 Adapter
+19
+P0
+FE-1407
+Renderer Evaluator
+19
+P0
+FE-1408
+Evidence Contract
+19
+P0
+FE-1409
+Diagnosis Adapter
+19
+P0
+FE-1410
+Workspace Plugin Integration
+19
+P0
+FE-1411
+TaskUISchema → Renderer
+19
+P0
+FE-1412
+Empty/Error/Retry State
+19
+P0
+FE-1413
+submission_id Idempotency
+全局
+P0
+FE-1414
+Contract Tests
+全局
+P0
+FE-1415
+B5 Vertical E2E
+Gate
+P0
+FE-1416
+D5 Vertical E2E
+Gate
+P0
+FE-1417
+E4 Vertical E2E
+Gate
+P0
+FE-1418
+F6 Vertical E2E
+Gate
+P0
+FE-1419
+Renderer Acceptance Suite
+19
+P0
+FE-1420
+Dual Skin QA
+19
+P1 / Release
+17. 推荐实际开发顺序
+不要按 R01 → R19 一个个孤立开发。
+应该采用：
+Phase A｜先打通 1 条完整链
+选择：
+ObjectCounter → Response → Evaluator → Evidence → Diagnosis → NextTask
+先让一条链真正跑通。
+Phase B｜建立 Renderer Framework
+然后完成：
+Renderer Registry
+↓
+Renderer Runtime
+↓
+TaskUISchema
+↓
+Response Adapter
+↓
+Semantic Event
+↓
+Evidence
+↓
+Diagnosis
+这时其他 Renderer 才能批量接入。
+Phase C｜按 Renderer 类型批量开发
+Batch
+Renderer
+A 基础数量
+ObjectCounter / NumberInput / NumberLine / TenFrame
+B 结构运算
+BarModel / PlaceValue / ColumnArithmetic / FormulaBoard
+C 数量关系
+ArrayBoard / GroupingBoard / EstimationCanvas
+D 几何空间
+ShapeGallery / ShapeCanvas / SortingBoard / DirectionGrid
+E 测量生活
+Ruler / Clock / MoneyBoard / PatternBoard
+18. 最终开发完成判定
+一个 Renderer 不能因为：
+“页面能打开、组件能操作”
+就标记完成。
+必须满足：
+Renderer Complete
+│
+┌─────────────┼─────────────┐
+↓             ↓             ↓
+Semantic        Runtime       Contract
+│             │             │
+↓             ↓             ↓
+Interaction → Evidence → Evaluator
+│
+↓
+Diagnosis
+│
+↓
+Next Task
+│
+↓
+E2E PASS
+即：
+单 Renderer DoD
+Semantic Definition
+State Model
+Semantic Interaction
+Response Adapter
+Evaluator
+Evidence
+Diagnosis Binding
+Empty State
+Error State
+Retry State
+Acceptance Test
+Workspace Integration
+TaskUISchema Integration
+Response Contract Test
+Diagnosis Contract Test
+19. V1.4 当前真正的开发缺口结论
+目前最需要注意的是：
+不是
+“19 个 Renderer 还要做 19 个页面。”
+而是：
+4 个已有 Renderer 需要从“组件实现”升级成“完整语义 Renderer”；19 个门控 Renderer 需要在统一 Runtime/Contract 基础上批量完成。
+因此当前 V1.4 的开发主线应该正式调整为：
+V1.4 Renderer Completion
+│
+┌────────────┴────────────┐
+↓                         ↓
+Framework P0                Renderer P0
+│                         │
+Runtime Contract          19 Semantic
+Event Contract            19 Evaluator
+Response Contract         19 Evidence
+Diagnosis Contract        19 Acceptance
+│                         │
+└────────────┬────────────┘
+↓
+Five Vertical Gates
+↓
+Contract Freeze
+↓
+Release QA
+最关键的判断
+现在可以进入开发，但不应该直接让开发人员“把 19 个 Renderer 做完”。
+应该先把本矩阵转成：
+《V1.4 Renderer Development Task Breakdown》
+也就是进一步拆到 FE-14xx → Renderer → 文件/模块 → API → Schema → Event → Evaluator → Evidence → Test Case → DoD 的粒度。
+这样开发人员拿到后可以直接执行，而不是再次自行理解这份架构文档。
