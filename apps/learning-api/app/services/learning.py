@@ -299,8 +299,13 @@ async def submit_attempt(
     response: dict,
     client_elapsed_ms: int | None = None,
     used_hint_levels: list[int] | None = None,
+    submission_id: uuid.UUID | None = None,
 ) -> dict:
-    """提交作答（无 child_id，从 task 反查），后端判分 → 诊断 → next_action。"""
+    """提交作答（无 child_id，从 task 反查），后端判分 → 诊断 → next_action。
+
+    submission_id（V2 幂等键，docs/frontend/29 §3）：可空——V1 提交不带时回落
+    (task_instance_id, attempt_no) 顺序号幂等（旧轨），V2 规模化前双轨并存。
+    """
     task = await db.get(TaskInstance, task_instance_id)
     if task is None:
         raise ValueError(f"task_instance {task_instance_id} 不存在")
@@ -336,6 +341,7 @@ async def submit_attempt(
         ui_schema=rv.ui_schema if rv else None,
         resource_version_id=task.resource_version_id,
         used_hint_levels=used_hint_levels,
+        submission_id=submission_id,
     )
 
     # 答对时补齐 next_action（record_attempt 仅在答错时生成 HINT）。

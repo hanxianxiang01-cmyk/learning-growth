@@ -43,3 +43,5 @@ venv/
 # Playwright E2E 产物
 test-results/
 playwright-report/
+.next-
+.next-*
