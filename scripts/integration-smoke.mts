@@ -8,7 +8,8 @@
 import { HttpLearningApi } from "../apps/child-web/src/lib/api/http.ts";
 import { normalizeTaskUiSchema } from "../apps/child-web/src/lib/api/taskUiSchemaNormalizer.ts";
 
-const CHILD = "00000000-0000-0000-0000-000000000001";
+// 数据卫生（docs/governance/QA_DATA_HYGIENE.md）：冒烟旅程写真实后端，用 QA-Simulator child。
+const CHILD = process.env.QA_CHILD_ID ?? "00000000-0000-0000-0000-000000000099";
 const BASE = "http://127.0.0.1:8000";
 
 // 直接实例化前端真实 Http adapter（绕过 config 的 mock 默认值，显式指定 http）

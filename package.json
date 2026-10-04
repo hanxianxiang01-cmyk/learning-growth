@@ -12,10 +12,11 @@
     "child:build": "npm --workspace @learning/child-web run build",
     "backend:test": "cd apps/learning-api && PYTHONPATH=. python3 -m pytest tests/ -q",
     "release:check": "node scripts/check-release.mjs",
-    "governance:check": "node scripts/check-governance.mjs",
+    "governance:check": "node scripts/check-governance.mjs && node scripts/check-data-hygiene.mjs",
     "branch:check": "node scripts/check-branch-name.mjs",
     "check": "npm run governance:check && npm run branch:check && npm run release:check && npm run child:typecheck && npm run child:v14:check",
-    "child:v14:check": "npm --workspace @learning/child-web run v1.4:check"
+    "child:v14:check": "npm --workspace @learning/child-web run v1.4:check",
+    "hygiene:check": "node scripts/check-data-hygiene.mjs"
   },
   "engines": {
     "node": ">=22"
