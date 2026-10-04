@@ -67,6 +67,7 @@
 | FE-1413 | Governance | 消费 V1.4 Renderer Semantic Completion Pack（4 份：Matrix/Gap/Breakdown/任务表）：存档 docs/frontend/31 + 基线判定 + SEM-<n> 编号映射裁决 + 114 Checkpoints/Batch A~E/禁止条款采纳 | 🟢 DONE（只登记不开发；其 Batch A 起手工待与交付方协商——B5=其 SEM-1414 已 CLOSED） | Governance/Frontend | #47 |
 | FE-1414 | V1.4 Renderer | R01 ObjectCounter Vertical Gate（B5 模板第二实例）：objectCounterV2 纯函数+组件（add/remove/compose/decompose+过程留痕 Evidence）、V2 金题 seed RDS、门禁=P0-01 同口径、E2E 10 用例 | ✅ **Vertical Gate CLOSED（R01）**（全量 E2E 20/20、后端 81 passed、healing 双皮肤过；见 R01_OBJECTCOUNTER_VERTICAL_GATE.md） | Frontend/Backend/QA | — |
 | FE-1415 | V1.4 Renderer | R04 NumberInput Vertical Gate（B5 模板第三实例；submission_id 幂等专项验证入口）：NumberInputV2（EMPTY 拦截/越界/整数守卫、input_history Evidence）、R04 金题 seed、E2E 7 用例 | ✅ **Vertical Gate CLOSED（R04）**（幂等四连 API 实证：重放同 attempt/异内容 409；全量 E2E 27/27、后端 82 passed；见 R04_NUMBERINPUT_VERTICAL_GATE.md；Gate 进度 3/19） | Frontend/Backend/QA | — |
+| FE-1416 | V1.4 Renderer | R07 TenFrame Vertical Gate（B5 模板第四实例；20以内十与一结构+补十打包 MAKE_TEN_COMPLETED）：tenFrameV2 连续填充/打包/拆袋、R07 金题（sharing 族首题）seed、E2E 8 用例、fill/grouping 能力入名单 | ✅ **Vertical Gate CLOSED（R07）**（全量 E2E 35/35 零回归、后端 83 passed；**Batch A 4/4 全清、Gate 进度 5/19**；见 R07_TENFRAME_VERTICAL_GATE.md） | Frontend/Backend/QA | — |
 | FE-1301 | Task Renderer | V1（number/manipulative/unsupported） | 🟢 DONE | Frontend | — |
 | FE-1302 | Math Workspace | 隔离 Workspace State | 🟢 DONE | Frontend | — |
 | FE-1303 | Manipulative | Object Counter interactive | 🟢 DONE | Frontend | — |

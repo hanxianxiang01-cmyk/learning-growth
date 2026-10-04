@@ -51,11 +51,12 @@ export type InteractionCapability =
   | "remove_object"
   | "compose_groups"
   | "decompose_group"
+  | "fill"
+  | "grouping"
   | "select"
   | "draw"
   | "rotate"
   | "sort"
-  | "fill"
   | "set_time"
   | "set_value"
   | "select_symbol";
@@ -69,7 +70,7 @@ export const KNOWN_CAPABILITY_IDS: readonly string[] = [
   "answer_input", "drag", "align", "resize", "jump", "undo", "reset",
   "highlight", "focus", "input_digit", "place_carry", "edit_carry", "step_submit",
   "add_object", "remove_object", "compose_groups", "decompose_group",
-  "select", "draw", "rotate", "sort", "fill", "set_time", "set_value", "select_symbol",
+  "fill", "grouping", "select", "draw", "rotate", "sort", "set_time", "set_value", "select_symbol",
 ];
 
 export type RendererDescriptor = {
@@ -91,7 +92,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R04";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R04" | "R07";
 };
 
 const implemented = (
@@ -200,7 +201,7 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
 
   "choice-grid": implementedV2("choice-grid", "ChoiceGrid", 1, ["answer_input", "reset"], { vertical_gate: undefined }),
   "place-value": implementedV2("place-value", "PlaceValue", 1, ["answer_input", "highlight", "focus", "reset", "undo"]),
-  "ten-frame": implementedV2("ten-frame", "TenFrame", 1, ["drag", "answer_input", "undo", "reset"]),
+  "ten-frame": implementedV2("ten-frame", "TenFrame", 1, ["fill", "grouping", "drag", "answer_input", "undo", "reset"], { vertical_gate: "R07" }),
   "column-arithmetic": implementedV2(
     "column-arithmetic", "ColumnArithmetic", 1,
     ["input_digit", "place_carry", "edit_carry", "step_submit", "undo", "reset"],

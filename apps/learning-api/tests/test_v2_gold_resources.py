@@ -77,3 +77,21 @@ def test_r04_exists_and_shape():
     assert c["min"] <= R04["content"]["answer"] <= c["max"]
     assert "answer" in R04["evidence_targets"]
     assert R04["capabilities"] == ["answer_input"]
+
+
+R07 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "ten-frame")
+
+
+def test_r07_exists_and_shape():
+    validate_renderer_id(R07["renderer"])
+    assert is_implemented(R07["renderer"])
+    assert R07["mode"] == "quantity_structure"
+    assert R07["response_type"] == "ten_frame"
+    # 20 以内：answer = tens*10 + remainder 唯一分解
+    ans = R07["content"]["answer"]
+    assert 1 <= ans <= 20
+    assert R07["config"]["target_count"] == ans
+    assert R07["config"]["max_frames"] == 2
+    assert {"fill", "grouping"} <= set(R07["capabilities"])
+    assert set(R07["evidence_targets"]) == {"tens", "current_frame_count"}
+    assert R07["context_family"] == "sharing"
