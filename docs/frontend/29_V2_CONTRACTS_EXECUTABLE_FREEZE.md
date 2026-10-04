@@ -47,7 +47,7 @@ CI 门禁：`tests/test_v2_contracts.py`（9 用例，含五条纵向链样例�
 **幂等契约（评审 §3.1 口径）**：
 - `submission_id`：一次儿童明确提交生成；网络重试=同 ID 同内容 → 返回原 Attempt；同 ID 不同内容 → 409 冲突；
 - `attempt_no`：服务端校验顺序号，**不充当幂等键**；
-- ⚠️ 现状：后端幂等键仍是 `(task_instance_id, attempt_no)`；`submission_id` 落库 + 唯一索引 = V2 资源上线前的后端迁移项（记 §5）。
+- ✅ 现状（FE-1410，2026-10-04）：`submission_id` 已落库（attempt 列 + partial unique index `uq_attempt_submission_id`）；带 submission_id 走权威幂等轨（同 ID 同内容重放、异内容 409），V1 无 submission_id 回落 `(task_instance_id, attempt_no)` 旧轨（双轨并存，向后兼容）。迁移脚本 `scripts/migrate_submission_id.py`；防漂移单测 `tests/test_submission_id.py`。
 
 **交互事件**：`event_id / sequence(唯一) / event_type(SNAKE_UPPER) / actor(learner|hint|system) / payload / workspace_id`。actor=hint 标注提示代填；缺失事件不推断孩子不会（评分只看结构，过程证据不足单独标记——归 Evaluator 规则，不在 Schema 层）。
 
@@ -68,7 +68,7 @@ A5 的验证意义：number-line 前端已实现（FE-1401），**第一条 V2 �
 | # | 项 | 归属 |
 |---|---|---|
 | 1 | 23 Renderer × mode 字段级 Schema + 合法/非法样例 + Evaluator 正反例（草案 §11 冻结条件） | 内容+后端，随各 Renderer 交付 |
-| 2 | submission_id 后端落库（attempts 表列 + 唯一索引）+ 409 冲突路径 | 后端迁移（V2 资源下发前） |
+| 2 | ~~submission_id 后端落库（attempts 表列 + 唯一索引）+ 409 冲突路径~~ **DONE（FE-1410，2026-10-04）**：`migrate_submission_id.py` 已对运行库执行（列 + partial unique index + 409）；权威基线 SQL 挂入仍属 V1.4 基线立版（见 §6） | 后端迁移 |
 | 3 | capabilities ⊆ 注册表子集校验启用 | 随 mode Schema |
 | 4 | 多工作区：展示型 vs 必需工作区、跨区引用规则（草案 §11） | 前后端会签 |
 | 5 | V1 适配冻结：50 题 V1 schema 行为不变的承诺写进回归 | QA |

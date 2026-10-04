@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.services.learning import assign_next_task, request_hint, start_session, submit_attempt
 from app.services.session_result import get_session_result
+from app.services.turn_service import SubmissionConflict
 
 router = APIRouter(prefix="/learning", tags=["learning"])
 
@@ -72,6 +73,8 @@ async def submit(
 ):
     """提交作答（对齐 OpenAPI，无 child_id，后端反查）。"""
     try:
+        sub_raw = payload.get("submission_id")
+        submission_id = uuid.UUID(str(sub_raw)) if sub_raw else None
         return await submit_attempt(
             db,
             task_instance_id=payload["task_instance_id"],
@@ -79,8 +82,12 @@ async def submit(
             response=payload.get("response", {}),
             client_elapsed_ms=payload.get("client_elapsed_ms"),
             used_hint_levels=payload.get("used_hint_levels", []),
+            submission_id=submission_id,
         )
-    except ValueError as e:
+    except SubmissionConflict as e:
+        # docs/frontend/29 §3：同 submission_id 不同内容 → 409（不得当新提交/不得 404）
+        raise HTTPException(status_code=409, detail=str(e))
+    except (ValueError, AttributeError) as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 

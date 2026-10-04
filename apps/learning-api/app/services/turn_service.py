@@ -31,6 +31,31 @@ from app.services.hint import decide_hint
 from app.services.mastery_db import persist_mastery_state
 
 
+class SubmissionConflict(ValueError):
+    """docs/frontend/29 §3 幂等契约：同 submission_id 携带不同内容 → 409。"""
+
+
+def _replay_shape(existing: Attempt, event: LearningEvent | None) -> dict:
+    """重放既有 Attempt：与首发同一外形规则（V2 完整三段判定不外发）。"""
+    diagnosis_dict = None
+    if event and isinstance(event.payload, dict):
+        d_payload = event.payload.get("diagnosis")
+        if isinstance(d_payload, dict):
+            diagnosis_dict = d_payload
+    next_action = (
+        {"type": "HINT", "hint_level": existing.max_hint_level, "policy_id": f"hint-{existing.max_hint_level}"}
+        if existing.correct is False
+        else {"type": "NEXT_TASK", "policy_id": None}
+    )
+    return {
+        "attempt_id": existing.attempt_id,
+        "correct": existing.correct,
+        "diagnosis": response_shape_from_dict(diagnosis_dict),
+        "evidence_id": None,
+        "next_action": next_action,
+    }
+
+
 async def record_attempt(
     db: AsyncSession,
     *,
@@ -46,8 +71,14 @@ async def record_attempt(
     resource_version_id: uuid.UUID | None = None,
     used_hint_levels: list[int] | None = None,
     agent_turn_id: str | None = None,
+    submission_id: uuid.UUID | None = None,
 ) -> dict:
-    """记录一次作答：写 attempt + event，产出诊断（V2 三段判定）+ next_action。"""
+    """记录一次作答：写 attempt + event，产出诊断（V2 三段判定）+ next_action。
+
+    幂等（docs/frontend/29 §3）：
+    - 有 submission_id：同 ID 同内容 → 重放原 Attempt；同 ID 异内容 → SubmissionConflict(409)；
+    - 无 submission_id（V1 提交）：回落到 (task_instance_id, attempt_no) 顺序号幂等（旧轨不变）。
+    """
 
     # 1. 查 task_instance（拿 ability_id / resource_version_id / session_id）
     task = await db.get(TaskInstance, task_instance_id)
@@ -56,8 +87,26 @@ async def record_attempt(
     ability_id = task.ability_id
     session_id = task.session_id
 
-    # 1.5 幂等：同一 (task_instance_id, attempt_no) 重复提交时，直接返回已存在的 attempt，
-    #     避免撞 attempt_task_instance_id_attempt_no_key 唯一约束（前端偶发连点/重试）。
+    # 1.5 幂等 —— 权威轨：submission_id（V2 提交必带）
+    if submission_id is not None:
+        by_sub = (
+            await db.execute(select(Attempt).where(Attempt.submission_id == submission_id))
+        ).scalar_one_or_none()
+        if by_sub is not None:
+            # 同 ID 不同内容 = 客户端把一次提交改了答案又用旧 ID 重发 → 幂等契约禁止，409
+            if by_sub.response != response:
+                raise SubmissionConflict(
+                    f"submission_id {submission_id} 已存在且内容不同（重试必须同内容）"
+                )
+            event = (
+                await db.execute(
+                    select(LearningEvent).where(LearningEvent.attempt_id == by_sub.attempt_id)
+                )
+            ).scalar_one_or_none()
+            return _replay_shape(by_sub, event)
+
+    # 1.6 幂等 —— 兼容轨：(task_instance_id, attempt_no)（无 submission_id 的 V1 提交，
+    #     或 submission_id 新但 attempt_no 已被占用的边界；行为与旧轨一致，不 500）
     existing = (
         await db.execute(
             select(Attempt).where(
@@ -72,30 +121,13 @@ async def record_attempt(
                 select(LearningEvent).where(LearningEvent.attempt_id == existing.attempt_id)
             )
         ).scalar_one_or_none()
-        diagnosis_dict = None
-        if event and isinstance(event.payload, dict):
-            d_payload = event.payload.get("diagnosis")
-            if isinstance(d_payload, dict):
-                diagnosis_dict = d_payload
-        # 幂等重放与首发使用同一外形规则（V2 完整记录不直接下发）
-        diagnosis_out = response_shape_from_dict(diagnosis_dict)
-        next_action = (
-            {"type": "HINT", "hint_level": existing.max_hint_level, "policy_id": f"hint-{existing.max_hint_level}"}
-            if existing.correct is False
-            else {"type": "NEXT_TASK", "policy_id": None}
-        )
-        return {
-            "attempt_id": existing.attempt_id,
-            "correct": existing.correct,
-            "diagnosis": diagnosis_out,
-            "evidence_id": None,
-            "next_action": next_action,
-        }
+        return _replay_shape(existing, event)
 
     # 2. 写 attempt
     attempt = Attempt(
         task_instance_id=task_instance_id,
         attempt_no=attempt_no,
+        submission_id=submission_id,
         response=response,
         correct=correct,
         client_elapsed_ms=client_elapsed_ms,

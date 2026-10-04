@@ -22,6 +22,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     func,
+    text,
 )
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import Mapped, mapped_column
@@ -234,11 +235,20 @@ class Attempt(Base):
     __table_args__ = (
         UniqueConstraint("task_instance_id", "attempt_no", name="attempt_task_instance_id_attempt_no_key"),
         CheckConstraint("max_hint_level BETWEEN 0 AND 4", name="attempt_max_hint_level_check"),
+        # submission_id 唯一（部分索引，NULL 不参与）：docs/frontend/29 §3 幂等契约的落库。
+        # V2 提交必带（一次儿童明确提交生成）；V1 提交可空（旧轨 attempt_no 顺序幂等）。
+        Index(
+            "uq_attempt_submission_id",
+            "submission_id",
+            unique=True,
+            postgresql_where=text("submission_id IS NOT NULL"),
+        ),
     )
 
     attempt_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     task_instance_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("task_instance.task_instance_id"), nullable=False)
     attempt_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    submission_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
     response: Mapped[dict] = mapped_column(JSON, nullable=False)
     correct: Mapped[bool | None] = mapped_column(Boolean)
     client_elapsed_ms: Mapped[int | None] = mapped_column(Integer)

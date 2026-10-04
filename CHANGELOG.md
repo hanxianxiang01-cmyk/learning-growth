@@ -29,6 +29,18 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1410 submission_id 落库迁移：V2 幂等契约入数据库，2026-10-04）
+
+> 关闭 docs/frontend/29 §5-2「V2 资源下发前的后端迁移项」——V1.4 规模化前最后一笔 DDL 技术债。
+
+- **DDL 迁移**（真实运行库已执行，幂等可重跑）：`scripts/migrate_submission_id.py` —— `attempt` 加 `submission_id uuid` 列 + partial 唯一索引 `uq_attempt_submission_id`（`WHERE submission_id IS NOT NULL`，尊重 V1 可空）。
+- **双轨幂等**：`turn_service.record_attempt` 带 submission_id 走权威轨（同 ID 同内容→重放原 Attempt；同 ID 异内容→`SubmissionConflict`→API 409），无 submission_id 回落 `(task_instance_id, attempt_no)` 旧轨（**V1 行为零变化**）。API 层解析 submission_id + 409 映射（SubmissionConflict 先于 ValueError 捕获）。
+- **幂等段重构**：抽 `_replay_shape()` 供双轨复用（首发/重放同外形规则，V2 完整三段判定不外发）。
+- **防漂移单测** `tests/test_submission_id.py`（+3，不依赖 DB）：列可空/类型 UUID、partial unique 索引、SubmissionConflict 继承关系。后端 72→**75 passed**。
+- **五轨实证**（真实后端+RDS）：A V2首发200 / B 同ID同内容重放同attempt_id / C 同ID异内容**409** / D 无submission_id旧轨200 / E DB层唯一索引拦住重复插入。
+- **harness 缺陷根治**（E2E-10 暴露）：双 dev 实例共享 `.next`，皮肤 `NEXT_PUBLIC_*` 编译期内联互相覆盖 → `next.config.mjs` 加 `distDir: NEXT_DIST_DIR`，`.gitignore` +`.next-*`；双实例隔离后 B5 E2E **10/10 PASS**。
+- **基线纪律**：权威 `01_schema_postgresql_v1.3.1.sql` 未改（SHA256 冻结物）；V2 挂入 = V1.4 基线立版动作（docs/29 §6）。
+
 ## Merged（FE-1409 V1.4 Frontend Development Package：18 个 V2 Renderer 组件交付，2026-10-04）
 
 > 交付来源：《V1.4_Frontend_Development_Package.zip》（基线=main@66f374c 含 P0-01，缺 E2E harness #39，合并时无回退）。
