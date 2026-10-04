@@ -62,6 +62,7 @@
 | FE-1408 | V1.4 Renderer | V2Renderer 接 number-line（纯函数层+组件+分流）+ mock A5 题同步——A5 链浏览器可玩 | 🟢 DONE（Gate A5 前端链路闭合） | Frontend | — |
 | FE-1409 | V1.4 Renderer | V1.4 Frontend Development Package：18 个 V2 组件交付（V2RendererLibrary 基座）+ 后端 23/23 implemented 同步 | 🟡 组件交付（渲染就绪；各组件 Vertical Gate 待逐个补：mode Schema/链题/Evaluator/E2E） | Frontend/Backend | — |
 | FE-1410 | V1.4 Migration | submission_id 落库（attempt 列 + partial 唯一索引）+ 双轨幂等（权威轨重放/409，V1 旧轨不变）+ 409 路径 | 🟢 DONE（真实 RDS 迁移已执行；五轨实证；防漂移单测 +3；docs/29 §5-2 关闭） | Backend | — |
+| FE-1411 | V1.4 Hotfix | V1 操作题 WorkspaceProvider 无限渲染循环修复（schema 引用不稳定） | 🟢 DONE（探针复现 718→1；QA 待办：V1 manipulative 路径浏览器回归专项） | Frontend | — |
 | FE-1301 | Task Renderer | V1（number/manipulative/unsupported） | 🟢 DONE | Frontend | — |
 | FE-1302 | Math Workspace | 隔离 Workspace State | 🟢 DONE | Frontend | — |
 | FE-1303 | Manipulative | Object Counter interactive | 🟢 DONE | Frontend | — |
