@@ -91,16 +91,22 @@ def test_response_sequence_duplicate_rejected():
         assert "sequence" in str(e)
 
 
-# ---- 下发分层：协议合法 ≠ 可下发 ----
+# ---- 下发分层：协议面 + 可下发 ----
 
-def test_assignable_planned_rejected():
-    # FE-1403 后 b5(column-arithmetic) 已 implemented 可下发；e4(ruler) 仍 planned 拒绝
+def test_assignable_after_full_implementation():
+    """FE-1409：五链样例全部可下发（23 协议 implemented）；协议外 renderer 仍拒绝。"""
     doc = _load(SAMPLES / "ui_schema" / "b5_valid.json")
     assert check_assignable(doc) == []
 
     doc_e4 = _load(SAMPLES / "ui_schema" / "e4_valid.json")
-    reasons = check_assignable(doc_e4)
-    assert reasons and "ruler" in reasons[0]  # planned → 受控拒绝
+    assert check_assignable(doc_e4) == []  # ruler 已 implemented
+
+    doc_bad = {
+        "schema_version": "2.0",
+        "workspaces": [{"workspace_id": "main", "renderer": "hologram-board"}],
+    }
+    reasons = check_assignable(doc_bad)
+    assert reasons and "hologram-board" in reasons[0]  # 协议外 → 受控拒绝
 
 
 def test_schema_enum_synced_with_protocol():

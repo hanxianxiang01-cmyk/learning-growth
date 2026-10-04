@@ -3,6 +3,11 @@
 import { AnswerComposer } from "@/src/components/learning/AnswerComposer";
 import { ColumnArithmetic } from "@/src/components/renderers/ColumnArithmetic";
 import { NumberLineV2 } from "@/src/components/renderers/NumberLineV2";
+import {
+  ChoiceGrid, PlaceValue, TenFrame, ArrayBoard, GroupingBoard, FormulaBoard, EstimationCanvas,
+  ShapeGallery, ShapeCanvas, SortingBoard, DirectionGrid, Ruler, Clock, Timeline, MoneyBoard,
+  DataTable, Pictograph, PatternBoard
+} from "@/src/components/renderers/V2RendererLibrary";
 
 import { MathQuestionCard } from "@/src/components/learning/MathQuestionCard";
 import { BarModel } from "@/src/components/manipulatives/BarModel";
@@ -133,10 +138,10 @@ function ManipulativeRenderer(
 function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
   const { task, schema, response, disabled, onResponseChange, onSubmit } = props;
   const rendererId = resolveRendererId(schema);
+  const workspace = schema.workspaces[0];
+  if (!workspace) return null;
 
   if (rendererId === "number-line") {
-    const workspace = schema.workspaces[0];
-    if (!workspace) return null;
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
@@ -152,9 +157,17 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     );
   }
 
+  const commonV2Props = {
+    taskInstanceId: task.task_instance_id,
+    schema,
+    workspace,
+    response,
+    disabled,
+    onResponseChange,
+    onSubmit
+  };
+
   if (rendererId === "column-arithmetic") {
-    const workspace = schema.workspaces[0];
-    if (!workspace) return null;
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
@@ -169,6 +182,25 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
       </>
     );
   }
+
+  if (rendererId === "choice-grid") return <ChoiceGrid {...commonV2Props} />;
+  if (rendererId === "place-value") return <PlaceValue {...commonV2Props} />;
+  if (rendererId === "ten-frame") return <TenFrame {...commonV2Props} />;
+  if (rendererId === "array-board") return <ArrayBoard {...commonV2Props} />;
+  if (rendererId === "grouping-board") return <GroupingBoard {...commonV2Props} />;
+  if (rendererId === "formula-board") return <FormulaBoard {...commonV2Props} />;
+  if (rendererId === "estimation-canvas") return <EstimationCanvas {...commonV2Props} />;
+  if (rendererId === "shape-gallery") return <ShapeGallery {...commonV2Props} />;
+  if (rendererId === "shape-canvas") return <ShapeCanvas {...commonV2Props} />;
+  if (rendererId === "sorting-board") return <SortingBoard {...commonV2Props} />;
+  if (rendererId === "direction-grid") return <DirectionGrid {...commonV2Props} />;
+  if (rendererId === "ruler") return <Ruler {...commonV2Props} />;
+  if (rendererId === "clock") return <Clock {...commonV2Props} />;
+  if (rendererId === "timeline") return <Timeline {...commonV2Props} />;
+  if (rendererId === "money-board") return <MoneyBoard {...commonV2Props} />;
+  if (rendererId === "data-table") return <DataTable {...commonV2Props} />;
+  if (rendererId === "pictograph") return <Pictograph {...commonV2Props} />;
+  if (rendererId === "pattern-board") return <PatternBoard {...commonV2Props} />;
 
   return (
     <div className="surface-card unsupported-task" data-testid="planned-renderer">

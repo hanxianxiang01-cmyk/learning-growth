@@ -173,41 +173,41 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
     ["answer_input"], { phase: 1 }
   ),
 
-  "choice-grid": planned("choice-grid", "ChoiceGrid", 4, ["answer_input"]),
-  "place-value": planned("place-value", "PlaceValue", 1, ["answer_input", "highlight", "focus"]),
-  "ten-frame": planned("ten-frame", "TenFrame", 1, ["drag", "answer_input", "undo", "reset"]),
+  "choice-grid": implementedV2("choice-grid", "ChoiceGrid", 1, ["answer_input", "reset"], { vertical_gate: undefined }),
+  "place-value": implementedV2("place-value", "PlaceValue", 1, ["answer_input", "highlight", "focus", "reset", "undo"]),
+  "ten-frame": implementedV2("ten-frame", "TenFrame", 1, ["drag", "answer_input", "undo", "reset"]),
   "column-arithmetic": implementedV2(
     "column-arithmetic", "ColumnArithmetic", 1,
     ["input_digit", "place_carry", "edit_carry", "step_submit", "undo", "reset"],
     { vertical_gate: "B5" }
   ),
-  "array-board": planned("array-board", "ArrayBoard", 1, ["drag", "resize", "answer_input", "undo", "reset"]),
-  "grouping-board": planned("grouping-board", "GroupingBoard", 1, ["drag", "answer_input", "undo", "reset"]),
-  "formula-board": planned("formula-board", "FormulaBoard", 1, ["answer_input", "highlight", "focus"]),
-  "estimation-canvas": planned("estimation-canvas", "EstimationCanvas", 1, ["drag", "answer_input", "undo", "reset"]),
-  "shape-gallery": planned("shape-gallery", "ShapeGallery", 3, ["highlight", "focus"]),
-  "shape-canvas": planned(
+  "array-board": implementedV2("array-board", "ArrayBoard", 1, ["drag", "resize", "answer_input", "undo", "reset"]),
+  "grouping-board": implementedV2("grouping-board", "GroupingBoard", 1, ["drag", "answer_input", "undo", "reset"]),
+  "formula-board": implementedV2("formula-board", "FormulaBoard", 1, ["answer_input", "highlight", "focus", "reset"]),
+  "estimation-canvas": implementedV2("estimation-canvas", "EstimationCanvas", 1, ["drag", "answer_input", "undo", "reset"]),
+  "shape-gallery": implementedV2("shape-gallery", "ShapeGallery", 3, ["highlight", "focus", "answer_input", "reset"]),
+  "shape-canvas": implementedV2(
     "shape-canvas", "ShapeCanvas", 3,
     ["drag", "resize", "undo", "reset", "highlight", "focus"],
     { vertical_gate: "D5" }
   ),
-  "sorting-board": planned("sorting-board", "SortingBoard", 2, ["drag", "undo", "reset"]),
-  "direction-grid": planned("direction-grid", "DirectionGrid", 4, ["drag", "answer_input", "undo", "reset"]),
-  "ruler": planned(
+  "sorting-board": implementedV2("sorting-board", "SortingBoard", 2, ["drag", "undo", "reset"]),
+  "direction-grid": implementedV2("direction-grid", "DirectionGrid", 4, ["drag", "answer_input", "undo", "reset"]),
+  "ruler": implementedV2(
     "ruler", "Ruler", 4,
     ["drag", "answer_input", "undo", "reset"],
     { vertical_gate: "E4" }
   ),
-  "clock": planned("clock", "Clock", 4, ["drag", "answer_input", "undo", "reset"]),
-  "timeline": planned("timeline", "Timeline", 4, ["drag", "answer_input", "undo", "reset"]),
-  "money-board": planned("money-board", "MoneyBoard", 4, ["drag", "answer_input", "undo", "reset"]),
-  "data-table": planned(
+  "clock": implementedV2("clock", "Clock", 4, ["drag", "answer_input", "undo", "reset"]),
+  "timeline": implementedV2("timeline", "Timeline", 4, ["drag", "answer_input", "undo", "reset"]),
+  "money-board": implementedV2("money-board", "MoneyBoard", 4, ["drag", "answer_input", "undo", "reset"]),
+  "data-table": implementedV2(
     "data-table", "DataTable", 2,
     ["answer_input", "highlight", "focus", "undo", "reset"],
     { vertical_gate: "F6" }
   ),
-  "pictograph": planned("pictograph", "Pictograph", 2, ["answer_input", "highlight", "focus"]),
-  "pattern-board": planned("pattern-board", "PatternBoard", 2, ["drag", "answer_input", "undo", "reset"]),
+  "pictograph": implementedV2("pictograph", "Pictograph", 2, ["answer_input", "highlight", "focus", "reset"]),
+  "pattern-board": implementedV2("pattern-board", "PatternBoard", 2, ["drag", "answer_input", "undo", "reset"]),
 
   unsupported: {
     renderer_id: "unsupported",

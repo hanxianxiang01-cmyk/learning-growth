@@ -5,7 +5,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   timeout: 240_000, // 预取打真实 RDS（跨网），全局缓存后单测试仍留足操作时间
-  expect: { timeout: 15_000 },
+  expect: { timeout: 30_000 }, // 首用例含 dev 冷编译窗口，放宽避免环境抖动误报
   retries: 0,
   workers: 1, // 串行：共享真实后端 RDS，防并发 session 干扰
   reporter: [["list"]],

@@ -80,10 +80,15 @@ def validate_response_v2(doc: dict) -> None:
 
 
 def check_assignable(doc: dict) -> list[str]:
-    """下发前检查：返回不可下发原因（planned renderer 受控拒绝，不降级）。"""
+    """下发前检查：返回不可下发原因。
+
+    FE-1409 后 23 协议全部 implemented（前端可渲染、不降级）；
+    本函数职责收敛为「协议面守卫」：协议外/哨兵 renderer 受控拒绝，不降级。
+    （planned 拒绝路径自 FE-1409 起不存在，保留判定逻辑以防未来新增 planned 项。）
+    """
     reasons: list[str] = []
     for ws in doc.get("workspaces", []):
         rid = ws.get("renderer")
         if rid and not is_implemented(rid):
-            reasons.append(f"renderer '{rid}' 协议合法但未实现（planned），不得下发")
+            reasons.append(f"renderer '{rid}' 不在协议面或未实现，不得下发")
     return reasons

@@ -34,13 +34,14 @@ def test_v2_implemented_assignable():
     assert _v2_assignable(doc) is True
 
 
-def test_v2_planned_rejected():
-    # FE-1403 后 column-arithmetic 已 implemented；用仍 planned 的 ruler 验证门控
+def test_v2_off_protocol_rejected():
+    # FE-1409 后 23 协议全 implemented，planned 拒绝路径不存在；
+    # 门控的剩余职责 = 协议外 renderer 拒绝下发（评审 §3.1 红线不变）
     doc = {
         "schema_version": "2.0",
-        "workspaces": [{"workspace_id": "main", "renderer": "ruler"}],
+        "workspaces": [{"workspace_id": "main", "renderer": "hologram-board"}],
     }
-    assert _v2_assignable(doc) is False  # planned 受控拒绝，不降级
+    assert _v2_assignable(doc) is False  # 协议外受控拒绝，不降级
 
 
 def test_v2_unknown_or_missing_renderer_rejected():
