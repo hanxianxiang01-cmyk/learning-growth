@@ -39,3 +39,7 @@ venv/
 # local AI/work scratch
 .ai-work/
 .local-handoff/
+
+# Playwright E2E 产物
+test-results/
+playwright-report/

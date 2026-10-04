@@ -15,9 +15,14 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://user:CHANGE_ME@localhost:5432/db"
 
     # CORS 白名单：同时允许 localhost 与 127.0.0.1（前端 dev server 两套地址都可能用）
+    # 3100/3101 = B5 E2E harness 专用实例（exploration-lab / healing 双皮肤）
     cors_origins: list[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "http://localhost:3100",
+        "http://127.0.0.1:3100",
+        "http://localhost:3101",
+        "http://127.0.0.1:3101",
     ]
 
 

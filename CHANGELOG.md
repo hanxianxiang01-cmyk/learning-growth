@@ -29,6 +29,16 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Closed（FE-1403 B5 Vertical Gate CLOSED：浏览器 E2E harness 落地，2026-10-04）
+
+- 新增 Playwright E2E harness：`apps/child-web/e2e/b5-column-arithmetic.spec.mjs` + `playwright.config.mjs`（系统 Chrome，`npm run e2e`）；**10 用例全 PASS（50.6s）**——§7 场景矩阵 P0（01/02/03/07/08/09）+ P1（事件模型/双皮肤 3101）+ G9 V1 回归。
+- 真实性：task 由真实后端预取（route 仅钉题重放、task_instance_id 真实），attempts/hints 全放行真实 RDS——满足「不以纯函数/Mock 替代」（原则5）。
+- **harness 抓到 API 级测不出的真实环境缺陷**：后端 CORS 白名单缺 E2E 实例端口 → 浏览器拦截 attempts 响应（后端 200/RDS 落库均正常，但响应回不到页面）。修复：`app/core/config.py` cors_origins 增补 localhost/127.0.0.1 的 3100/3101（本地 dev 端口，安全边界不变）。
+- G1~G9 九项全部转浏览器实证；FE-1403-P0-02~06 + P1-01 DONE；Gate 判定文档（B5_E2E_VERTICAL_GATE.md）§2/§3/§4/§6 同步收口，PROJECT_STATUS FE-1403-B5 → **Vertical Gate CLOSED**。
+- 附带修复两处 harness 逻辑（非产品缺陷）：G7 撤销步骤误撤十位致第二次答错；G9 选择器从 placeholder 改稳定 `#math-answer` + 能力从 app_strat（全表征必填题）改 app_cond（6 道纯数字题，已核 repr_required=false）。
+- 后端回归 72 passed（CORS 改动后）；.gitignore 补 test-results/playwright-report。
+- **B5 模板成立**：纯函数层→组件双皮肤→V2Renderer 分流→链题→check/E2E→implemented 翻转——18 planned Renderer 按此批量推进。
+
 ## Fixed（FE-1403-P0-01 B5 提交门禁解除，2026-10-04）
 
 > 依据《B5 真实页面 E2E + Workspace/Response 联调方案》§3/§14。
