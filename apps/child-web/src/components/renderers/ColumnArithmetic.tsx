@@ -253,7 +253,11 @@ export function ColumnArithmetic({
       <button
         className="primary-button"
         type="button"
-        disabled={disabled || evaluation.status !== "PASS"}
+        // FE-1403-P0-01（联调方案 §3）：提交资格只由「是否有可提交答案」决定，
+        // 不由 evaluator 对错决定。PASS/FAIL 均已填满结果位 → 可提交；
+        // PARTIAL（含 EMPTY，结果位未满）与 INVALID（非法输入）→ 不可提交。
+        // 错误答案必须能到达后端，否则 Diagnosis / Retry / Evidence 链无法验证。
+        disabled={disabled || (evaluation.status !== "PASS" && evaluation.status !== "FAIL")}
         onClick={onSubmit}
       >
         提交这道题
