@@ -29,6 +29,16 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1415 R04 NumberInput Vertical Gate：B5 模板第三组件 + submission_id 幂等专项，2026-10-04）
+
+> Batch A 第三个（SEM-1413 / Gap R04）。number-input 语义最简，但它是 FE-1410 幂等契约的指定验证入口，本次把双轨幂等钉到真实页面级。
+
+- **组件** `NumberInputV2.tsx`：parseNumberInputConfig（min/max/integer_only 字段守卫）+ parseAnswer（非法/越界/小数→EMPTY 拦提交；合法即 READY 可提交，对错交后端=P0-01 口径）+ serializeNumberInputV2（answer + input_history 尾20）；NUMBER_INPUT_CHANGED 事件；revision 清态。TaskRenderer V2 分流接线；registry vertical_gate "R04"。
+- **链题**：R04 金题（app_rel d1 小鸟飞走 7-2=5，before_after，number_input，0~20 整数）已 seed 真实 RDS；防漂移单测 +1（后端 81→**82 passed**）。
+- **幂等四连（API 级实证）**：错误答案 3→200 correct=false HINT（可达诊断链）；同 submission_id 同内容重放→**200 同 attempt_id**；同 ID 异内容→**409**；attempt_no=2 改对→correct=true NEXT_TASK。E2E 级：双击只发 1 POST/1 submission_id。
+- **浏览器 E2E** `e2e/r04-number-input.spec.mjs` 7 用例全过（G1 不降级/G2G3 空越界小数拒提/G6G4 envelope 合同/G7 重试链/E2E-08 清态/healing 双皮肤）。**全量套件 27 passed**（B5 9 + R01 11 + R04 7，零回归）。
+- 治理：`docs/governance/R04_NUMBERINPUT_VERTICAL_GATE.md`；Vertical Gate 进度 **3/19**（Batch A 剩 ten-frame）。
+
 ## Done（FE-1414 R01 ObjectCounter Vertical Gate：B5 模板第二个组件闭环，2026-10-04）
 
 > 用户裁决采纳交付方 Batch 顺序（docs/frontend/31 SEM-1410 / Gap R01），ObjectCounter 作为 Batch A 第一个打完整 Vertical Gate。

@@ -91,7 +91,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R04";
 };
 
 const implemented = (
@@ -195,7 +195,7 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
   ),
   "number-input": implemented(
     "number-input", "NumberInput", "base_ui", "number",
-    ["answer_input"], { phase: 1 }
+    ["answer_input"], { phase: 1, vertical_gate: "R04" }
   ),
 
   "choice-grid": implementedV2("choice-grid", "ChoiceGrid", 1, ["answer_input", "reset"], { vertical_gate: undefined }),

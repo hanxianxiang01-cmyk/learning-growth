@@ -134,4 +134,39 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "school_objects",
     },
+    {
+        # Gate R04（FE-1415）：number-input 数字答案链——SEM-1413 / Gap R04。
+        # submission_id 幂等契约（FE-1410）的专项验证入口：EMPTY 拦提交、
+        # 错误答案可达后端、同 submission_id 重放不产生重复证据。
+        "ability_id": "app_rel",
+        "difficulty": 1,
+        "task_type": "word_problem",
+        "title": "还剩几只鸟（V2 链 R04）",
+        "ui_schema_version": "2.0",
+        "renderer": "number-input",
+        "mode": "numeric_answer",
+        "content": {
+            "stem": "树枝上停着7只小鸟，扑棱棱飞走了2只。还剩几只？把答案写在框里。",
+            "answer": 5,
+            "goal": "从动作情境抽象出减法并直接给出数量答案",
+        },
+        "config": {"min": 0, "max": 20, "integer_only": True},
+        "initial_state": {"answer": None},
+        "capabilities": ["answer_input"],
+        "constraints": {"integer_only": True},
+        "response_type": "number_input",
+        "evidence_targets": ["answer"],
+        "error_models": [
+            {"pattern": "strategy", "code": "strategy"},
+            {"pattern": "calc", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "飞走了，鸟是变多了还是变少了？",
+            "从7里面拿走2，用什么方法？",
+            "7 - 2 等于几？",
+            "伸出7根手指，弯下2根，还剩几根？",
+        ],
+        "is_transfer": False,
+        "context_family": "before_after",
+    },
 ]
