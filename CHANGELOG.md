@@ -37,7 +37,7 @@ Major.Minor.Patch
 - **R2 凭据根治**：qa_replay 的硬编码 DB_URL 删除，改 `os.environ["DATABASE_URL"]` 必填。（密码已在 git 历史，**RDS 控制台轮换由用户执行**。）
 - **治理文档**：`docs/governance/QA_DATA_HYGIENE.md`（R1 真实数据只能由人产生 / R2 凭据只走 env / R3 新组件 E2E 继承 / R4 污染只标废不删除）。
 - **CI 门禁**：`scripts/check-data-hygiene.mjs`——静态扫描测试流量目录的真实 child 字面量（R1）与 RDS host/带密连接串（R2）；挂入 `governance:check`（CI governance job 覆盖）。正负样本验证：植入违例 FAIL、清态 PASS。
-- **B 存量清理**：确定性指纹 T1（999 答案整 task）/T2（60s 窗口 ≥5 session 批量簇）/T3（client_elapsed_ms<2000 亚秒提交）命中 **77 条**证据标 `valid=false`（metadata 记 invalidated_reason，可追溯可回滚）；陈旧派生窗口 1 条作废；重算走生产路径 `persist_mastery_state`。app_rel conf **0→0.75**（真实 41 条证据归位）；用户 13:41 真实 session 3 条证据复核完好。14 条 SUSPECT（早期快速手工）未动，名单在审计 CSV。
+- **B 存量清理**：确定性指纹 T1（999 答案整 task）/T2（60s 窗口 ≥5 session 批量簇）/T3（client_elapsed_ms<2000 亚秒提交）命中 **77 条**证据标 `valid=false`（metadata 记 invalidated_reason，可追溯可回滚）；陈旧派生窗口 1 条作废；重算走生产路径 `persist_mastery_state`。app_rel conf **0→0.75**（真实 41 条证据归位）；用户 13:41 真实 session 3 条证据复核完好。14 条 SUSPECT 经行为指纹复核（elapsed_ms 同 session 内累计递增=联调期手工快测特征，非真实学习节奏）+ 用户裁决，追加软删 12 条 → 累计 **89 条作废 + 39 条真实保留**；app_rel conf 0.75→0.50（去伪后真实值）。
 - **副产物（诚实记录）**：qa_replay #7 转 FAIL——其断言此前一直靠脏数据（自己造的 transfer 证据）自证，清理后暴露系统本无真实 transfer 证据。待 V1.4 真实链题后重写该用例。
 - **验证**：后端 75 passed；governance+hygiene PASS；B5 E2E 9 passed/1 skipped（3101 未起）——E2E 新证据 7 条全进 QA child，真实 child 近 5 分钟新增 **0**（分池实证）。
 
