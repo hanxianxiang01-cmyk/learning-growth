@@ -65,6 +65,7 @@
 | FE-1411 | V1.4 Hotfix | V1 操作题 WorkspaceProvider 无限渲染循环修复（schema 引用不稳定） | 🟢 DONE（探针复现 718→1；QA 待办：V1 manipulative 路径浏览器回归专项） | Frontend | — |
 | FE-1412 | Governance | QA 数据卫生：测试流量分池（QA-Simulator child …0099）+ 存量污染清理（77 条标废+生产路径重算，app_rel conf 0→0.75）+ 凭据根治 + check-data-hygiene CI 门禁 | 🟢 DONE（E2E 分池实证：真实 child 新增 0；待办：用户轮换 RDS 密码；qa_replay #7 转 FAIL 属诚实暴露，待真实链题后重写） | Backend/QA | — |
 | FE-1413 | Governance | 消费 V1.4 Renderer Semantic Completion Pack（4 份：Matrix/Gap/Breakdown/任务表）：存档 docs/frontend/31 + 基线判定 + SEM-<n> 编号映射裁决 + 114 Checkpoints/Batch A~E/禁止条款采纳 | 🟢 DONE（只登记不开发；其 Batch A 起手工待与交付方协商——B5=其 SEM-1414 已 CLOSED） | Governance/Frontend | #47 |
+| FE-1414 | V1.4 Renderer | R01 ObjectCounter Vertical Gate（B5 模板第二实例）：objectCounterV2 纯函数+组件（add/remove/compose/decompose+过程留痕 Evidence）、V2 金题 seed RDS、门禁=P0-01 同口径、E2E 10 用例 | ✅ **Vertical Gate CLOSED（R01）**（全量 E2E 20/20、后端 81 passed、healing 双皮肤过；见 R01_OBJECTCOUNTER_VERTICAL_GATE.md） | Frontend/Backend/QA | — |
 | FE-1301 | Task Renderer | V1（number/manipulative/unsupported） | 🟢 DONE | Frontend | — |
 | FE-1302 | Math Workspace | 隔离 Workspace State | 🟢 DONE | Frontend | — |
 | FE-1303 | Manipulative | Object Counter interactive | 🟢 DONE | Frontend | — |

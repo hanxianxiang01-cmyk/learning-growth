@@ -29,6 +29,18 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1414 R01 ObjectCounter Vertical Gate：B5 模板第二个组件闭环，2026-10-04）
+
+> 用户裁决采纳交付方 Batch 顺序（docs/frontend/31 SEM-1410 / Gap R01），ObjectCounter 作为 Batch A 第一个打完整 Vertical Gate。
+
+- **纯函数层** `objectCounterV2.ts`：add/remove（locked 组不可增删）、compose（并走记录 composed_into/composed_count——Evidence 首次含过程留痕）、decompose（拆 k 出新组继承 symbol）、答案=Σcounts、`evaluateStructure` 四态结构判定（effective=count+composed_count）。
+- **组件** `ObjectCounterV2.tsx`：复刻 NumberLineV2 runtime 装配模式（rendererWorkspaceReducer + buildRendererEvent，UPPER_SNAKE 事件）；提交门禁=B5/P0-01 同口径（PASS∪FAIL 可提交，错误答案必须到后端）。
+- **链题**：`resource_seed_v2.py` R01 金题（app_rel d1 合气球 4+3=7，context_family=school_objects，response_type=object_count，已 seed 真实 RDS）；TaskRenderer V2 分流接线；registry capabilities 扩 4（add_object/remove_object/compose_groups/decompose_group）+ vertical_gate "R01"（避 A1=place-value 撞号）；KNOWN_CAPABILITY_IDS 名单落地（防能力静默过滤漂移）。
+- **API 级实证**：下发 2.0/count_compose → 提交 correct=true → NEXT_TASK；submission_id 异内容重放 **409**（幂等权威轨在 R01 上再证）。
+- **浏览器 E2E** `e2e/r01-object-counter.spec.mjs` 10 用例：G1 不降级 / G2G3 PARTIAL 拦提交 / G6G4 错答案(4+2报6) envelope 完整→HINT / G5 摆对+compose 判对（data.groups[0].composed_into=g2、composed_count=4）/ G7 重试 attempt_no=2 / 防重入 / revision 重置不串题 / 事件模型六类 / COUNT_REMOVED 独立 / 双皮肤 healing。全量套件 **20/20 passed**（B5 零回归 + R01 全过 + healing 双皮肤）。
+- **治理**：`docs/governance/R01_OBJECTCOUNTER_VERTICAL_GATE.md`（G1~G9 对照 + 模板泛化差异 + 遗留）；数据卫生全程生效——E2E 证据全进 QA child …0099。
+- 验证：tsc 0 / check-v13·v14·renderers·fe1403-b5 全 PASS / 后端 75→**81 passed**（新增防漂移单测 test_v2_gold_resources.py ×6，不连库）。
+
 ## Merged（FE-1413 消费《V1.4 Renderer Semantic Completion Pack》4 份交付，2026-10-04）
 
 > 交付=Semantic Completion Matrix（19 Renderer 六维）+ Gap Matrix + Task Breakdown（SEM-1401~1437）+ 开发任务表 xlsx。存档 docs/frontend/31 + 无损文本抽取。

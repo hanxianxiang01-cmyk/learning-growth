@@ -46,7 +46,31 @@ export type InteractionCapability =
   | "input_digit"
   | "place_carry"
   | "edit_carry"
-  | "step_submit";
+  | "step_submit"
+  | "add_object"
+  | "remove_object"
+  | "compose_groups"
+  | "decompose_group"
+  | "select"
+  | "draw"
+  | "rotate"
+  | "sort"
+  | "fill"
+  | "set_time"
+  | "set_value"
+  | "select_symbol";
+
+/**
+ * FE-1414：能力注册名单（唯一事实源）。
+ * 组件 capabilities ⊆ 名单；seed 校验（seed_content.py）与 getInteractionCapabilities
+ * 均引用此名单，杜绝"能力被静默过滤、组件行为失去契约依据"的漂移。
+ */
+export const KNOWN_CAPABILITY_IDS: readonly string[] = [
+  "answer_input", "drag", "align", "resize", "jump", "undo", "reset",
+  "highlight", "focus", "input_digit", "place_carry", "edit_carry", "step_submit",
+  "add_object", "remove_object", "compose_groups", "decompose_group",
+  "select", "draw", "rotate", "sort", "fill", "set_time", "set_value", "select_symbol",
+];
 
 export type RendererDescriptor = {
   renderer_id: RendererId;
@@ -67,7 +91,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01";
 };
 
 const implemented = (
@@ -155,8 +179,9 @@ const planned = (
 export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
   "object-counter": implemented(
     "object-counter", "ObjectCounter", "v1.3_reuse", "manipulative",
-    ["answer_input", "drag", "align", "undo", "reset", "highlight", "focus"],
-    { visual_type: "objects", phase: 1 }
+    ["answer_input", "drag", "align", "undo", "reset", "highlight", "focus",
+      "add_object", "remove_object", "compose_groups", "decompose_group"],
+    { visual_type: "objects", phase: 1, vertical_gate: "R01" }
   ),
   "bar-model": implemented(
     "bar-model", "BarModel", "v1.3_reuse", "manipulative",

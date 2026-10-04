@@ -85,4 +85,53 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "before_after",
     },
+    {
+        # Gate R01（FE-1414）：object-counter 数量关系链——SEM-1410 / Gap R01
+        # 语义：add/remove 往组放取、compose 合入 locked 盒、count=总数即答案。
+        "ability_id": "app_rel",
+        "difficulty": 1,
+        "task_type": "word_problem",
+        "title": "气球合起来（V2 链 R01）",
+        "ui_schema_version": "2.0",
+        "renderer": "object-counter",
+        "mode": "count_compose",
+        "content": {
+            "stem": "小雨有4个红气球，又拿来了3个蓝气球。把两堆合起来数一数，一共有多少个气球？",
+            "answer": 7,
+            "goal": "用物体组表征部分-整体合成（先摆后合，答案=总数）",
+        },
+        "config": {
+            "groups": [
+                {"group_id": "g1", "label": "红气球", "symbol": "🎈", "count": 0, "locked": False},
+                {"group_id": "g2", "label": "蓝气球", "symbol": "🎈", "count": 0, "locked": False},
+            ],
+            "expected": [
+                {"group_id": "g1", "min_count": 4},
+                {"group_id": "g2", "min_count": 3},
+            ],
+            "max_total_count": 12,
+        },
+        "initial_state": {
+            "groups": [
+                {"group_id": "g1", "label": "红气球", "symbol": "🎈", "count": 0},
+                {"group_id": "g2", "label": "蓝气球", "symbol": "🎈", "count": 0},
+            ]
+        },
+        "capabilities": ["add_object", "remove_object", "compose_groups", "decompose_group", "undo", "reset"],
+        "constraints": {"max_total_count": 12},
+        "response_type": "object_count",
+        "evidence_targets": ["groups", "total"],
+        "error_models": [
+            {"pattern": "modeling", "code": "modeling"},
+            {"pattern": "calc", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "先数一数题里的红气球有几个。",
+            "在红气球组里按 4 下「＋1」。",
+            "蓝气球也要摆出来，再合起来数。",
+            "4 加 3 等于几？",
+        ],
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
 ]
