@@ -31,9 +31,11 @@ function walk(dir, out = []) {
 }
 
 // R1：测试流量目录禁止出现真实 child 字面量
+// 豁免：文件显式标注 `hygiene: allow-real-child`（数据清理类工具本身就是面向真实 child 的）
 for (const target of CHILD_SCAN) {
   for (const f of walk(target)) {
     const src = fs.readFileSync(f, "utf8");
+    if (/hygiene:\s*allow-real-child/.test(src)) continue;
     if (src.includes(REAL_CHILD) && !src.includes(QA_CHILD)) {
       errors.push(`R1 violation: ${f} 写真实后端却引用真实 child …0001（应使用 QA child …0099）`);
     }

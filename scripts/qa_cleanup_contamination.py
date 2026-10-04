@@ -1,5 +1,7 @@
 """存量污染清理（FE-1412 B 阶段）：确定性 TEST 指纹标 valid=false + 生产路径重算。
 
+hygiene: allow-real-child —— 本工具面向真实 child 清理污染，属受控例外。
+
 规则（只作废有铁证的测试数据；拿不准的列 SUSPECT 不动，等用户裁决）：
   T1 999 答案指纹（qa_replay #5 三连 attempt）
   T2 批量簇 session：同 child 60s 窗口内 ≥5 个 session 创建（人做不到）
