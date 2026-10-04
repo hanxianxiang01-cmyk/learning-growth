@@ -1,0 +1,146 @@
+V1.4 18 Renderers Batch Specification
+18 个 Renderer 统一开发 / Workspace / Response / E2E 文档包
+1. 批量范围
+本批覆盖 Registry 中尚未完成的 18 个 Renderer；已完成的 object-counter、bar-model、number-line、number-input、column-arithmetic 不重复纳入。
+#
+Protocol ID
+中文名称
+Gate
+1
+choice-grid
+选择网格
+跨域通用
+2
+place-value
+位值板
+A1
+3
+ten-frame
+十格框
+A2
+4
+array-board
+阵列板
+A3
+5
+grouping-board
+分组板
+A4
+6
+formula-board
+算式板
+A6
+7
+estimation-canvas
+估算画布
+A7
+8
+shape-gallery
+图形图库
+D1
+9
+shape-canvas
+图形画布
+D5
+10
+sorting-board
+分类板
+F1
+11
+direction-grid
+方向网格
+E1
+12
+ruler
+尺子
+E4
+13
+clock
+时钟
+E2
+14
+timeline
+时间轴
+E3
+15
+money-board
+货币板
+E5
+16
+data-table
+数据表
+F6
+17
+pictograph
+象形统计图
+F5
+18
+pattern-board
+规律板
+F4
+2. 统一开发合同
+所有 Renderer 使用 V2 Schema；禁止静默降级。
+共享 Renderer Runtime 的 Workspace / history / events / undo / reset。
+错误答案必须可提交；FAIL 不等于禁止提交。
+Renderer 不负责 mastery、Diagnosis 权威判断。
+Response 统一通过 v2AttemptAdapter。
+每个 Renderer 必须完成真实页面 E2E，不能以纯函数测试替代。
+3. 建议实施批次
+批次
+组件
+目标
+A 域
+place-value / ten-frame / array-board / grouping-board / formula-board / estimation-canvas
+连续数学操作链
+F 域
+sorting-board / data-table / pictograph / pattern-board
+分类、数据、规律
+D 域
+shape-gallery / shape-canvas
+图形识别与作图
+E 域
+direction-grid / ruler / clock / timeline / money-board
+生活数学
+通用
+choice-grid
+跨域基础选择交互
+4. 统一 E2E Gate
+Gate
+必须验证
+E1
+Renderer resolution 正确
+E2
+Workspace present 正确
+E3
+TaskResponse workspace data 完整
+E4
+MathResponse V2 payload 完整
+E5
+正确 attempt 成功
+E6
+错误 attempt 可提交并进入 diagnosis
+E7
+Retry / attempt_no / evidence 不丢
+E8
+ui_revision 不串状态
+E9
+既有 Renderer 无回归
+5. 文档索引
+01. choice-grid｜选择网格｜跨域通用
+02. place-value｜位值板｜A1
+03. ten-frame｜十格框｜A2
+04. array-board｜阵列板｜A3
+05. grouping-board｜分组板｜A4
+06. formula-board｜算式板｜A6
+07. estimation-canvas｜估算画布｜A7
+08. shape-gallery｜图形图库｜D1
+09. shape-canvas｜图形画布｜D5
+10. sorting-board｜分类板｜F1
+11. direction-grid｜方向网格｜E1
+12. ruler｜尺子｜E4
+13. clock｜时钟｜E2
+14. timeline｜时间轴｜E3
+15. money-board｜货币板｜E5
+16. data-table｜数据表｜F6
+17. pictograph｜象形统计图｜F5
+18. pattern-board｜规律板｜F4

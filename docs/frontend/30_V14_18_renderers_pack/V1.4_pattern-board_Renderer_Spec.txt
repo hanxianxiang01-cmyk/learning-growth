@@ -1,0 +1,105 @@
+V1.4 Renderer Specification｜规律板
+pattern-board · F4 · Workspace / Response / E2E
+1. 组件定位
+`pattern-board` 是 V1.4 Renderer Registry 的独立 V2 Renderer。当前为 planned；实现后必须遵守 Registry → TaskRenderer → Workspace → TaskResponse → MathResponse V2 → AttemptResult 的统一链路。
+项目
+定义
+Protocol ID
+pattern-board
+Vertical Gate
+F4
+核心交互
+规律识别、补全、验证
+Schema
+V2；禁止静默降级为 number-input
+状态
+planned / 待实现
+2. 功能范围
+围绕“规律识别、补全、验证”完成题目专属交互。
+配置与运行态分离：config / initial_state / present。
+支持通用 Runtime 的 history、undo、reset、interaction_events。
+输出标准化 answer 与 workspace data。
+即时 Evaluator 仅负责交互反馈，不负责 mastery/Diagnosis 权威判断。
+3. Workspace Contract
+层级
+字段
+要求
+Config
+workspace_id / renderer / renderer_version
+稳定、可追踪
+Config
+题目专属参数
+只保留该 Renderer 必需配置
+State
+initial_state / present
+可确定性重建
+Runtime
+history
+用于 undo，由通用 Runtime 管理
+Runtime
+interaction_events
+记录关键用户行为
+4. Response Contract
+字段
+要求
+schema_version
+固定 `2.0`
+ui_revision
+必须来自 TaskUiSchema
+type
+对应 Renderer response type
+workspaces
+包含 workspace_id、renderer、data
+answer
+允许提交正确或错误答案
+interaction_events
+关键事件不能因 FAIL 而丢失
+5. 事件模型
+建议关键事件：`ITEM_ADDED / ITEM_MOVED / PATTERN_SET / BLANK_FILLED / VERIFY / RESET / UNDO`。事件用于 Evidence/行为诊断，不直接决定 mastery。
+6. Evaluator / Diagnosis 边界
+PASS / PARTIAL / FAIL / INVALID 可用于即时 UI 反馈。
+FAIL 必须允许提交；错误答案本身是诊断证据。
+PARTIAL / INVALID 在不能形成合法答案时可阻止提交。
+Diagnosis、mastery、学习策略由后端权威链路决定。
+7. 真实页面 E2E
+ID
+场景
+验收
+E01
+V2 Renderer resolution
+真实页面加载对应 protocol_id，无降级
+E02
+Workspace
+核心操作后 present 正确
+E03
+Response
+TaskResponse 携带 workspace data
+E04
+Correct submit
+正确答案得到 correct=true
+E05
+Wrong submit
+错误答案可提交并得到 diagnosis/next_action
+E06
+Retry
+attempt_no 正确递增，上一轮 evidence 不丢
+E07
+Revision
+ui_revision 变化后不串 Workspace
+E08
+Duplicate submit
+快速重复点击只产生一次 attempt
+E09
+Regression
+现有 Renderer 无回归
+8. 最小 Fixture
+2,4,6,8,__,__ 补全
+9. Vertical Gate / Definition of Done
+Registry → TaskRenderer 解析正确，真实页面无静默降级。
+Workspace 可稳定序列化，核心交互有事件记录。
+TaskResponse → MathResponse V2 → AttemptResult 闭环通过。
+正确、错误两类 attempt 均有真实 E2E。
+错误 attempt 能进入 Diagnosis / Retry。
+ui_revision、workspace_id、attempt_no 可追踪。
+双皮肤保持相同数据与交互合同。
+PROJECT_STATUS 与 Renderer Registry Contract 同步更新。
