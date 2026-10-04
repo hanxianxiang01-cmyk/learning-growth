@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { AnswerComposer } from "@/src/components/learning/AnswerComposer";
 import { ColumnArithmetic } from "@/src/components/renderers/ColumnArithmetic";
 import { NumberLineV2 } from "@/src/components/renderers/NumberLineV2";
+import { NumberInputV2 } from "@/src/components/renderers/NumberInputV2";
 import { ObjectCounterV2 } from "@/src/components/renderers/ObjectCounterV2";
 import {
   ChoiceGrid, PlaceValue, TenFrame, ArrayBoard, GroupingBoard, FormulaBoard, EstimationCanvas,
@@ -182,6 +183,22 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
         <ColumnArithmetic
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
+
+  if (rendererId === "number-input") {
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <NumberInputV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}

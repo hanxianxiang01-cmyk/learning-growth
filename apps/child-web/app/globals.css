@@ -409,3 +409,10 @@ a{color:inherit}
 .oc-evaluation.pass strong{color:var(--cm-success,#2f9e63)}
 .oc-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}
 .oc-evaluation.empty,.oc-evaluation.partial{background:#f1f5f7}
+
+/* FE-1415 NumberInput V2 (R04) */
+.number-input-v2 .ni-field{display:block;margin:14px 0 6px}
+.number-input-v2 .ni-field input{width:100%;max-width:180px;font-size:28px;font-weight:800;text-align:center;padding:10px;border:2px solid var(--border-subtle,#dbe4e8);border-radius:14px;background:var(--cm-surface,#fff);color:var(--cm-text-1,#20323d)}
+.number-input-v2 .ni-field input:focus{outline:none;border-color:var(--cm-primary,#2d7a68)}
+.ni-evaluation{margin:8px 0 14px;font-size:14px;color:var(--cm-text-2,#5c7280)}
+.ni-evaluation.ready{color:var(--cm-primary,#2d7a68);font-weight:700}

@@ -60,3 +60,20 @@ def test_v2_renderer_coverage_at_least_two_quantity():
     # V2 链至少覆盖 column-arithmetic(B5) 与 object-counter(R01)（Vertical Gate 两个实例）
     renderers = {r["renderer"] for r in GOLD_RESOURCES_V2}
     assert {"column-arithmetic", "object-counter"} <= renderers
+
+
+R04 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "number-input")
+
+
+def test_r04_exists_and_shape():
+    validate_renderer_id(R04["renderer"])
+    assert is_implemented(R04["renderer"])
+    assert R04["ui_schema_version"] == "2.0"
+    assert R04["mode"] == "numeric_answer"
+    assert R04["response_type"] == "number_input"
+    # 答案在 config 值域内
+    c = R04["config"]
+    assert c["integer_only"] is True
+    assert c["min"] <= R04["content"]["answer"] <= c["max"]
+    assert "answer" in R04["evidence_targets"]
+    assert R04["capabilities"] == ["answer_input"]
