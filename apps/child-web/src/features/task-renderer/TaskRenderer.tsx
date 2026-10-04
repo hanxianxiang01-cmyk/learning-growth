@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { AnswerComposer } from "@/src/components/learning/AnswerComposer";
 import { ColumnArithmetic } from "@/src/components/renderers/ColumnArithmetic";
 import { NumberLineV2 } from "@/src/components/renderers/NumberLineV2";
+import { ObjectCounterV2 } from "@/src/components/renderers/ObjectCounterV2";
 import {
   ChoiceGrid, PlaceValue, TenFrame, ArrayBoard, GroupingBoard, FormulaBoard, EstimationCanvas,
   ShapeGallery, ShapeCanvas, SortingBoard, DirectionGrid, Ruler, Clock, Timeline, MoneyBoard,
@@ -181,6 +182,22 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
         <ColumnArithmetic
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
+
+  if (rendererId === "object-counter") {
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <ObjectCounterV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
