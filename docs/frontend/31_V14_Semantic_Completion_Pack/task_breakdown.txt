@@ -1,0 +1,1035 @@
+V1.4 Renderer Development Task Breakdown
+版本： V1.4-P0定位： Renderer Semantic Completion 开发执行基线上游基线： 《V1.4 Renderer Semantic Completion Matrix》配套基线： 《V1.4 Renderer Semantic Completion → Development Gap Matrix》范围： 19 个 V2 Renderer + Renderer Runtime + Contract + Evaluator + Evidence + Diagnosis + Vertical Gate目标： 将现有 Renderer 从“组件存在”推进到“可接入、可交互、可评估、可诊断、可验收”的 V2 Renderer。
+1. 文档目的
+本文件不是架构设计文档，而是 V1.4 开发任务拆解表。
+开发人员应以本文件回答以下问题：
+当前要开发什么；
+修改哪个模块；
+依赖哪个 Contract；
+Renderer 如何接收 Task；
+用户操作如何形成 Semantic Event；
+Response 如何进入 Renderer；
+Evaluator 如何判断结果；
+Evidence 如何生成；
+Diagnosis 如何消费 Evidence；
+如何进入 Vertical Gate；
+什么条件下才能标记完成。
+2. V1.4 开发总原则
+2.1 不允许以“页面完成”作为 Renderer 完成标准
+以下情况均不能标记 Renderer Complete：
+页面能够打开；
+UI 能够点击；
+能够输入答案；
+能够显示正确/错误；
+本地 mock 数据可以运行；
+组件 Storybook 可以运行。
+必须完成：
+Task
+↓
+Workspace
+↓
+TaskUISchema
+↓
+Renderer
+↓
+Semantic Interaction
+↓
+Response
+↓
+Evaluator
+↓
+Evidence
+↓
+Diagnosis
+↓
+Recommendation
+↓
+Next Task
+3. V1.4 P0 开发架构
+┌──────────────────────────────────────┐
+│              Workspace               │
+└──────────────────┬───────────────────┘
+↓
+┌──────────────────────────────────────┐
+│            TaskUISchema              │
+└──────────────────┬───────────────────┘
+↓
+┌──────────────────────────────────────┐
+│          Renderer Registry            │
+└──────────────────┬───────────────────┘
+↓
+┌──────────────────────────────────────┐
+│          Renderer Runtime             │
+│                                      │
+│  State / Props / Actions / Events    │
+└──────────────────┬───────────────────┘
+↓
+┌────────┴────────┐
+↓                 ↓
+Interaction        Response
+↓                 ↓
+Semantic Event    Evaluator
+│                 │
+└────────┬────────┘
+↓
+Evidence
+↓
+Diagnosis
+↓
+Recommendation
+↓
+Next Task
+4. 开发阶段划分
+Phase
+名称
+主要目标
+优先级
+P0-A
+Runtime Contract
+统一 Renderer 运行时协议
+P0
+P0-B
+Semantic Event
+统一用户行为事件
+P0
+P0-C
+Response / Evaluator
+统一结果计算
+P0
+P0-D
+Evidence / Diagnosis
+打通行为证据
+P0
+P0-E
+Renderer Completion
+19 Renderer 批量完成
+P0
+P0-F
+Vertical Gate
+五条纵向链路
+P0
+P0-G
+Contract Freeze
+冻结 V2 Contract
+P0
+P0-H
+Release QA
+最终验收
+P0
+5. P0-A｜Renderer Runtime Contract
+FE-1401｜Renderer Runtime Contract
+目标：
+建立所有 Renderer 共同使用的 Runtime Contract。
+必须定义
+RendererDefinition
+RendererProps
+RendererState
+RendererAction
+RendererEvent
+RendererResponse
+RendererEvidence
+RendererAcceptance
+RendererDefinition 至少包含
+renderer_id
+version
+capability_ids
+supported_modes
+supported_states
+input_schema
+response_schema
+event_types
+evidence_types
+DoD
+TypeScript 类型完成
+Schema 完成
+Registry 可以读取
+19 Renderer 均可注册
+Contract Test PASS
+6. FE-1402｜Renderer State Contract
+统一状态：
+INITIAL
+LOADING
+READY
+INTERACTING
+VALIDATING
+SUBMITTED
+CORRECT
+INCORRECT
+RETRY
+COMPLETED
+EMPTY
+ERROR
+DISABLED
+开发要求
+所有 Renderer：
+有 INITIAL
+有 READY
+有 INTERACTING
+有 VALIDATING
+有 SUBMITTED
+有 CORRECT
+有 INCORRECT
+有 RETRY
+有 COMPLETED
+有 EMPTY
+有 ERROR
+允许 Renderer 根据自身语义裁剪状态，但必须明确声明。
+7. FE-1403｜Renderer Registry Runtime
+建立：
+Renderer Registry
+↓
+renderer_id
+↓
+RendererDefinition
+↓
+Runtime Mount
+必须支持
+getRenderer(renderer_id)
+registerRenderer()
+validateRendererDefinition()
+mountRenderer()
+DoD
+同一个 renderer_id 不允许存在多个 Runtime 实现。
+8. P0-B｜Semantic Event System
+FE-1404｜Semantic Event Contract
+禁止直接把 DOM Event 当作业务事件。
+不允许
+onClick
+onChange
+onDrag
+onDrop
+直接进入 Diagnosis。
+必须转换为
+Semantic Event
+统一结构：
+{
+"event_id": "...",
+"session_id": "...",
+"task_id": "...",
+"renderer_id": "...",
+"event_type": "...",
+"timestamp": "...",
+"attempt_no": 1,
+"sequence_no": 3,
+"payload": {}
+}
+FE-1405｜Renderer Event Adapter
+每个 Renderer 建立：
+UI Interaction
+↓
+Event Adapter
+↓
+Semantic Event
+例如：
+NumberInput
+输入 36
+↓
+NUMBER_INPUT_CHANGED
+↓
+payload.answer = 36
+而不是直接把 React onChange 发送给后端。
+9. P0-C｜Response / Evaluator
+FE-1406｜Structured Response V2 Adapter
+统一：
+Backend Response
+↓
+Response Schema
+↓
+Renderer Adapter
+↓
+Renderer Props
+Renderer 不直接依赖后端数据库字段。
+必须完成
+Response Schema
+Adapter
+TS Type
+Runtime Validation
+Contract Test
+FE-1407｜Evaluator Framework
+建立统一 Evaluator Interface：
+evaluate(
+task,
+response,
+interaction_evidence
+)
+输出至少包含：
+result
+score
+correct
+error_code
+evidence
+Evaluator 类型
+类型
+Renderer
+Exact
+NumberInput
+Quantity
+ObjectCounter / TenFrame
+Structural
+BarModel / PlaceValue
+Arithmetic
+ColumnArithmetic
+Equation
+FormulaBoard
+Spatial
+DirectionGrid
+Geometry
+ShapeCanvas
+Sequence
+PatternBoard
+Measurement
+Ruler
+Time
+Clock
+Money
+MoneyBoard
+10. P0-D｜Evidence
+FE-1408｜Evidence Contract
+统一：
+{
+"evidence_id": "...",
+"task_id": "...",
+"renderer_id": "...",
+"attempt_no": 2,
+"events": [],
+"final_state": {},
+"correction_count": 2,
+"retry_count": 1
+}
+原则
+Renderer 提供：
+What happened
+Evaluator 提供：
+What is correct
+Diagnosis 提供：
+What it may mean
+FE-1409｜Diagnosis Adapter
+链路：
+Evidence
++
+Response
++
+Task Context
+↓
+Diagnosis
+Diagnosis 至少包含：
+ability_id
+diagnosis_code
+evidence
+confidence
+recommended_action
+禁止：
+Renderer → Mastery
+Renderer → Diagnosis conclusion
+11. P0-E｜19 Renderer Development
+以下任务采用统一模板：
+Semantic
+State
+Interaction
+Response
+Evaluator
+Evidence
+Diagnosis
+Acceptance
+FE-1410｜ObjectCounter
+开发任务
+count
+add
+remove
+compare
+compose
+decompose
+semantic events
+quantity evaluator
+evidence
+retry
+acceptance
+验收
+任务：桌上有 8 个苹果，再放 3 个
+操作：增加 3 个
+结果：11
+Evidence：记录增加过程
+Diagnosis：能够区分最终结果与操作过程
+FE-1411｜BarModel
+开发任务
+part-whole
+comparison
+change
+block add/remove
+block resize
+relation event
+structure evaluator
+model evidence
+diagnosis binding
+FE-1412｜NumberLine
+开发任务
+marker
+jump
+compare
+operation
+semantic movement event
+position evaluator
+jump evidence
+direction error diagnosis
+FE-1413｜NumberInput
+开发任务
+numeric input
+submit
+retry
+answer history
+evaluator
+attempt_no
+submission_id
+idempotency
+evidence
+acceptance
+这是全局 Submission Contract 的验证 Renderer。
+FE-1414｜ColumnArithmetic
+开发任务
+digit state
+column state
+carry
+borrow
+intermediate state
+semantic operation event
+evaluator
+step evidence
+diagnosis
+重点
+不能只验证最终答案。
+必须验证：
+个位
+→ 十位
+→ 百位
+→ 进位/退位
+→ 最终结果
+FE-1415｜PlaceValue
+digit
+position
+place value
+compose
+decompose
+movement event
+structure evaluator
+evidence
+diagnosis
+FE-1416｜TenFrame
+10-frame
+fill
+remove
+grouping
+quantity evaluator
+semantic event
+evidence
+diagnosis
+FE-1417｜ArrayBoard
+row
+column
+repeated addition
+multiplication relation
+row/column event
+structure evaluator
+evidence
+diagnosis
+FE-1418｜GroupingBoard
+grouping
+split
+equal groups
+remainder
+drag/group event
+group evaluator
+evidence
+diagnosis
+FE-1419｜FormulaBoard
+number
+operator
+relation
+unknown
+expression editing
+equation evaluator
+evidence
+diagnosis
+FE-1420｜EstimationCanvas
+estimate
+range
+target
+adjustment
+estimation evaluator
+strategy evidence
+diagnosis
+FE-1421｜ShapeGallery
+shape selection
+classification
+property recognition
+selection event
+classification evaluator
+evidence
+diagnosis
+FE-1422｜ShapeCanvas
+draw
+move
+rotate
+compose
+transform
+geometry evaluator
+drawing evidence
+diagnosis
+FE-1423｜SortingBoard
+classification
+ordering
+comparison
+drag/drop semantic event
+ordering evaluator
+sorting evidence
+diagnosis
+FE-1424｜DirectionGrid
+position
+direction
+route
+movement
+route evaluator
+movement evidence
+diagnosis
+FE-1425｜Ruler
+scale
+endpoint
+measurement
+comparison
+measurement evaluator
+reading evidence
+diagnosis
+FE-1426｜Clock
+hour hand
+minute hand
+time
+adjustment
+time evaluator
+manipulation evidence
+diagnosis
+FE-1427｜MoneyBoard
+denomination
+compose
+exchange
+total
+change
+monetary evaluator
+evidence
+diagnosis
+FE-1428｜PatternBoard
+sequence
+rule
+extend
+predict
+pattern evaluator
+construction evidence
+diagnosis
+12. P0-F｜Workspace Integration
+FE-1429｜Workspace → Renderer
+实现：
+Workspace
+↓
+Task
+↓
+TaskUISchema
+↓
+renderer_id
+↓
+Renderer Registry
+↓
+Runtime Renderer
+验收
+同一个 TaskUISchema 在不同 Workspace Context 下能够正确 Mount。
+FE-1430｜TaskUISchema → Renderer
+TaskUISchema 至少能够表达：
+renderer_id
+mode
+interaction_mode
+initial_state
+task_data
+constraints
+response_schema
+Renderer 不允许自己猜测 Task 类型。
+13. FE-1431｜Session / Submission Contract
+统一：
+session_id
+task_id
+attempt_no
+submission_id
+必须支持
+same submission_id
+↓
+repeat request
+↓
+same result
+↓
+no duplicate evidence
+↓
+no duplicate diagnosis
+14. P0-G｜Five Vertical Gates
+FE-1432｜VG-01 Workspace → Renderer
+必须通过
+Workspace
+→ Task
+→ TaskUISchema
+→ Registry
+→ Renderer
+PASS 条件
+renderer_id 正确
+Props 正确
+State 正确
+无硬编码 Renderer
+Runtime Mount PASS
+FE-1433｜VG-02 TaskUISchema → Renderer
+PASS 条件
+TaskUISchema
+→ Renderer Props
+→ UI
+至少验证：
+task_data
+mode
+constraints
+interaction_mode
+response schema
+FE-1434｜VG-03 Response → Renderer
+PASS 条件
+Response
+→ Adapter
+→ Evaluator
+→ Renderer Result
+验证：
+correct
+incorrect
+score
+error_code
+evidence
+FE-1435｜VG-04 Interaction → Diagnosis
+PASS 条件
+Interaction
+→ Semantic Event
+→ Evidence
+→ Diagnosis
+禁止：
+onClick
+→ Diagnosis
+FE-1436｜VG-05 Diagnosis → Next Task
+PASS 条件
+Diagnosis
+→ Recommendation
+→ Next Task
+→ TaskUISchema
+→ Renderer
+形成完整学习闭环。
+15. P0-H｜Contract Test
+FE-1437｜Renderer Contract Test
+19 个 Renderer 必须统一测试：
+Test 01
+Registry → Renderer
+Test 02
+TaskUISchema → Props
+Test 03
+Interaction → Event
+Test 04
+Response → Evaluator
+Test 05
+Evaluator → Evidence
+Test 06
+Evidence → Diagnosis
+Test 07
+Diagnosis → Recommendation
+Test 08
+Recommendation → Next Task
+16. Renderer Acceptance Test Matrix
+每个 Renderer 至少需要：
+Case
+必测
+Initial
+✅
+Loading
+✅
+Ready
+✅
+Happy Path
+✅
+Incorrect Path
+✅
+Retry
+✅
+Empty
+✅
+Error
+✅
+Evidence
+✅
+Diagnosis
+✅
+Next Task
+✅
+因此：
+19 Renderer × 11 Acceptance Cases
+= 209 个基础验收场景
+17. 开发批次
+不建议 19 个 Renderer 同时开发。
+Batch A｜基础数量
+ObjectCounter
+NumberInput
+NumberLine
+TenFrame
+目标：
+建立第一套完整 Renderer Pattern。
+Batch B｜结构与运算
+BarModel
+PlaceValue
+ColumnArithmetic
+FormulaBoard
+目标：
+验证 Structural Evaluator。
+Batch C｜数量关系
+ArrayBoard
+GroupingBoard
+EstimationCanvas
+目标：
+验证关系型 Renderer。
+Batch D｜几何空间
+ShapeGallery
+ShapeCanvas
+SortingBoard
+DirectionGrid
+目标：
+验证 Spatial / Geometry Evidence。
+Batch E｜生活数学
+Ruler
+Clock
+MoneyBoard
+PatternBoard
+目标：
+验证 Measurement / Daily Math / Sequence。
+18. 开发顺序不能反过来
+禁止：
+19 Renderer UI
+↓
+最后再想 Response
+↓
+最后再想 Diagnosis
+正确顺序：
+Contract
+↓
+Runtime
+↓
+Semantic Event
+↓
+Response
+↓
+Evaluator
+↓
+Evidence
+↓
+Diagnosis
+↓
+Renderer
+↓
+Acceptance
+19. 每个 Renderer 的统一代码结构
+建议最终形成类似：
+renderer/
+├── definition.ts
+├── schema.ts
+├── types.ts
+├── state.ts
+├── actions.ts
+├── events.ts
+├── adapter.ts
+├── evaluator.ts
+├── evidence.ts
+├── diagnosis.ts
+├── component.tsx
+└── tests/
+├── semantic.test.ts
+├── state.test.ts
+├── interaction.test.ts
+├── response.test.ts
+├── evaluator.test.ts
+├── evidence.test.ts
+└── acceptance.test.ts
+具体目录可以根据当前代码仓库调整，但职责不能混在 Component 内部。
+20. 禁止出现的实现方式
+20.1 Component 直接调用后端
+Component
+↓
+fetch()
+↓
+API
+禁止。
+应：
+Renderer
+↓
+Adapter / Runtime
+↓
+API Contract
+20.2 Component 自己判断 Diagnosis
+禁止：
+if childWrongThreeTimes:
+diagnosis = "不会进位"
+正确：
+Interaction Evidence
+↓
+Evaluator
+↓
+Diagnosis
+20.3 Renderer 自己修改 Ability State
+禁止：
+renderer.setMastery(...)
+Ability State 必须由上层 Learning/Diagnosis 系统处理。
+20.4 用 UI Event 代替 Semantic Event
+禁止：
+click
+drag
+change
+作为学习行为证据。
+21. Definition of Done
+单个 Renderer 只有全部满足以下条件，才能标记：
+SEMANTIC_COMPLETE
+Contract
+RendererDefinition
+Props Schema
+State Contract
+Event Contract
+Response Contract
+Evidence Contract
+Runtime
+Registry
+Workspace Mount
+TaskUISchema
+Runtime State
+Interaction
+Semantic Events
+Attempt
+Retry
+Submission
+Evaluation
+Evaluator
+Correct
+Incorrect
+Error Code
+Evidence
+Action sequence
+Final state
+Correction
+Retry
+Relevant behavior
+Diagnosis
+Evidence binding
+Diagnosis binding
+Recommendation binding
+QA
+Happy Path
+Incorrect Path
+Empty
+Error
+Retry
+E2E
+22. V1.4 最终开发任务总表
+ID
+任务
+类型
+优先级
+FE-1401
+Renderer Runtime Contract
+Framework
+P0
+FE-1402
+Renderer State Contract
+Framework
+P0
+FE-1403
+Renderer Registry Runtime
+Framework
+P0
+FE-1404
+Semantic Event Contract
+Contract
+P0
+FE-1405
+Renderer Event Adapter
+Framework
+P0
+FE-1406
+Response V2 Adapter
+Contract
+P0
+FE-1407
+Evaluator Framework
+Framework
+P0
+FE-1408
+Evidence Contract
+Contract
+P0
+FE-1409
+Diagnosis Adapter
+Integration
+P0
+FE-1410
+ObjectCounter
+Renderer
+P0
+FE-1411
+BarModel
+Renderer
+P0
+FE-1412
+NumberLine
+Renderer
+P0
+FE-1413
+NumberInput
+Renderer
+P0
+FE-1414
+ColumnArithmetic
+Renderer
+P0
+FE-1415
+PlaceValue
+Renderer
+P0
+FE-1416
+TenFrame
+Renderer
+P0
+FE-1417
+ArrayBoard
+Renderer
+P0
+FE-1418
+GroupingBoard
+Renderer
+P0
+FE-1419
+FormulaBoard
+Renderer
+P0
+FE-1420
+EstimationCanvas
+Renderer
+P0
+FE-1421
+ShapeGallery
+Renderer
+P0
+FE-1422
+ShapeCanvas
+Renderer
+P0
+FE-1423
+SortingBoard
+Renderer
+P0
+FE-1424
+DirectionGrid
+Renderer
+P0
+FE-1425
+Ruler
+Renderer
+P0
+FE-1426
+Clock
+Renderer
+P0
+FE-1427
+MoneyBoard
+Renderer
+P0
+FE-1428
+PatternBoard
+Renderer
+P0
+FE-1429
+Workspace → Renderer
+Integration
+P0
+FE-1430
+TaskUISchema → Renderer
+Integration
+P0
+FE-1431
+Session / Submission Contract
+Contract
+P0
+FE-1432
+VG-01
+Vertical Gate
+P0
+FE-1433
+VG-02
+Vertical Gate
+P0
+FE-1434
+VG-03
+Vertical Gate
+P0
+FE-1435
+VG-04
+Vertical Gate
+P0
+FE-1436
+VG-05
+Vertical Gate
+P0
+FE-1437
+Renderer Contract Test
+QA
+P0
+23. P0 开发完成标准
+V1.4 不以“FE-1437 做完”作为最终标准。
+最终 Release Gate：
+19 / 19 Renderer
+↓
+6 / 6 Semantic Dimensions
+↓
+114 / 114 Completion Checkpoints
+↓
+5 / 5 Vertical Gates PASS
+↓
+Contract Drift = 0
+↓
+P0 = 0
+↓
+E2E Learning Loop PASS
+↓
+V2 Contract Freeze
+↓
+Release QA PASS
+其中：
+19 × 6 = 114
+是本阶段的核心 Completion Matrix。
+24. V1.4 开发管理结论
+当前 V1.4 不应该再以：
+“还有哪些页面没有开发？”
+作为主要管理问题。
+应该改成：
+“19 个 Renderer 的 Semantic Completion 是否全部闭环？”
+因此开发管理层级固定为：
+Layer 1
+Renderer Runtime
+↓
+Layer 2
+Renderer Contract
+↓
+Layer 3
+19 Renderer
+↓
+Layer 4
+Evaluator / Evidence / Diagnosis
+↓
+Layer 5
+Five Vertical Gates
+↓
+Layer 6
+V2 Contract Freeze
+↓
+Layer 7
+Release QA
+V1.4 的 P0 开发完成定义：
+不是 19 个 Renderer “都有页面”，而是 19 个 Renderer 都能在统一 Contract 下完成 Task → Interaction → Response → Evaluation → Evidence → Diagnosis → Next Task 的可验证闭环。
+因此，本文件可以直接作为 V1.4 Frontend Development Backlog 的母表。后续开发人员不应再自行解释“Renderer 完成”的含义；所有开发、Code Review 和 QA 均以本 Breakdown + Semantic Completion Matrix + Vertical Gate 为准。

@@ -1,0 +1,1311 @@
+《V1.4 Renderer Semantic Completion Matrix（19 Renderer）》
+Semantic Completion → Five Vertical Gates → V2 Contract Freeze → Release QA
+版本：V1.4-P0 / V2-RC 前置治理版状态：开发与 QA 执行基线适用范围：19 个当前 V2 Renderer
+0. 执行摘要
+V1.4 当前不再以“Renderer 有没有实现”为完成标准。
+此前已经完成：
+Renderer Registry 基础建设
+Workspace API
+TaskUISchema
+Structured Response / Evidence
+Diagnosis / Misconception 契约
+现有 Renderer 组件/runtime skeleton
+但当前真正缺口集中在：
+Renderer Semantic Completion
+也就是把 Renderer 从：
+Component Exists
+推进到：
+Semantic Complete
++
+State Complete
++
+Interaction Complete
++
+Response Complete
++
+Diagnosis Complete
++
+Acceptance Complete
+历史基线中曾出现 23 Renderer 的规划口径，而当前 V1.4 收口口径已经收敛到 19 个 V2 Renderer。因此本报告不再把历史 23 Renderer 作为当前交付范围，后续以当前 19 Renderer Registry 为唯一 Release Scope。
+1. Renderer Completion Definition
+1.1 Renderer 不再定义为 UI Component
+V2 Renderer 的正式定义：
+Renderer
+=
+Semantic Definition
++
+State Model
++
+Response Contract
++
+Interaction Contract
++
+Evidence / Diagnosis Binding
++
+Acceptance Criteria
+因此：
+有组件
+≠
+Renderer 完成
+必须达到：
+Component
+↓
+Semantic
+↓
+State
+↓
+Response
+↓
+Interaction
+↓
+Evidence
+↓
+Diagnosis
+↓
+Acceptance
+2. 六项 Completion Contract
+19 个 Renderer 全部使用同一套六维 Completion Contract。
+Contract
+核心问题
+Semantic
+这个 Renderer 为什么存在？
+State
+当前任务处于什么状态？
+Interaction
+用户可以做什么？
+Response
+Renderer 展示什么后端结果？
+Diagnosis
+用户行为如何进入诊断？
+Acceptance
+如何证明这个 Renderer 已经完成？
+3. Renderer Semantic Completion Matrix
+说明： 以下矩阵按当前 V2 Renderer 治理范围建立。对于尚未完成实际代码语义绑定的 Renderer，标记为 P0 Completion，而不是虚构成“已完成”。
+#
+Renderer
+Semantic
+State
+Interaction
+Response
+Diagnosis
+Acceptance
+R01
+ObjectCounter
+P0
+P0
+P0
+P0
+P0
+P0
+R02
+BarModel
+P0
+P0
+P0
+P0
+P0
+P0
+R03
+NumberLine
+P0
+P0
+P0
+P0
+P0
+P0
+R04
+NumberInput
+P0
+P0
+P0
+P0
+P0
+P0
+R05
+ColumnArithmetic
+P0
+P0
+P0
+P0
+P0
+P0
+R06
+PlaceValue
+P0
+P0
+P0
+P0
+P0
+P0
+R07
+TenFrame
+P0
+P0
+P0
+P0
+P0
+P0
+R08
+ArrayBoard
+P0
+P0
+P0
+P0
+P0
+P0
+R09
+GroupingBoard
+P0
+P0
+P0
+P0
+P0
+P0
+R10
+FormulaBoard
+P0
+P0
+P0
+P0
+P0
+P0
+R11
+EstimationCanvas
+P0
+P0
+P0
+P0
+P0
+P0
+R12
+ShapeGallery
+P0
+P0
+P0
+P0
+P0
+P0
+R13
+ShapeCanvas
+P0
+P0
+P0
+P0
+P0
+P0
+R14
+SortingBoard
+P0
+P0
+P0
+P0
+P0
+P0
+R15
+DirectionGrid
+P0
+P0
+P0
+P0
+P0
+P0
+R16
+Ruler
+P0
+P0
+P0
+P0
+P0
+P0
+R17
+Clock
+P0
+P0
+P0
+P0
+P0
+P0
+R18
+MoneyBoard
+P0
+P0
+P0
+P0
+P0
+P0
+R19
+PatternBoard
+P0
+P0
+P0
+P0
+P0
+P0
+当前判断
+这里的 P0 不是说 19 个 Renderer “完全没做”。
+而是：
+现有实现不足以证明其已经达到 V2 Semantic Completion 标准。
+这与之前盘点出的：
+“Renderer 多为 runtime skeleton，语义完成待补”
+是一致的。
+4. R01 — ObjectCounter
+4.1 Semantic
+定位
+用于支持儿童通过：
+观察对象
+→ 一一对应
+→ 计数
+→ 表达数量
+→ 验证数量
+完成数量理解任务。
+不允许退化为
+一个数字 + 几个圆点
+Renderer 必须体现“数量关系”。
+4.2 State
+至少支持：
+initial
+counting
+selected
+submitted
+correct
+incorrect
+retry
+completed
+关键状态：
+selected_count
+target_count
+attempt_count
+4.3 Interaction
+必须支持至少一种真实操作：
+select_object
+deselect_object
+count
+submit
+retry
+不能只有：
+click submit
+4.4 Response
+Response 至少能够表达：
+objects
+target
+correct_answer
+counting_mode
+interaction_constraints
+4.5 Diagnosis
+重点捕获：
+漏数
+重复计数
+数量对应错误
+未完成一一对应
+直接猜答案
+4.6 Acceptance
+必须能够证明：
+儿童操作
+→ 系统记录
+→ 正确判断
+→ Diagnosis
+5. R02 — BarModel
+Semantic
+核心不是“画柱子”。
+而是：
+通过长度/部分—整体关系建立数量结构模型。
+支持：
+整体
+部分
+未知部分
+数量关系
+State
+empty
+drawing
+partial
+complete
+submitted
+correct
+incorrect
+Interaction
+至少：
+create_segment
+resize_segment
+label_segment
+delete_segment
+submit
+Response
+需要：
+model_structure
+segments
+labels
+relations
+expected_structure
+Diagnosis
+重点：
+部分整体关系错误
+未识别已知量
+未识别未知量
+模型与算式不一致
+Acceptance
+必须验证：
+模型结构本身可以成为 Evidence。
+6. R03 — NumberLine
+Semantic
+用于建立：
+数的位置
+距离
+大小关系
+加减变化
+而不仅是展示数字。
+State
+initial
+marking
+dragging
+answering
+submitted
+correct
+incorrect
+Interaction
+place_marker
+move_marker
+jump
+select_interval
+submit
+Response
+range
+step
+marks
+target
+expected_position
+Diagnosis
+捕获：
+数轴定位错误
+步长理解错误
+加减方向错误
+数量距离关系错误
+Acceptance
+必须证明：
+位置操作
+→ Evidence
+→ Diagnosis
+7. R04 — NumberInput
+Semantic
+负责：
+结构化数字表达与答案输入。
+它是最简单的 Renderer 之一，但不能因此省略 Contract。
+State
+empty
+editing
+valid
+invalid
+submitted
+correct
+incorrect
+Interaction
+input
+clear
+submit
+retry
+Response
+必须区分：
+expected_value
+accepted_format
+actual_value
+validation
+Diagnosis
+不能只记录：
+wrong_answer
+至少区分：
+数值错误
+位数错误
+格式错误
+空输入
+多次尝试
+Acceptance
+相同错误输入必须能够形成稳定 Evidence。
+8. R05 — ColumnArithmetic
+Semantic
+用于：
+建立竖式计算过程，而不是只得到计算结果。
+重点包括：
+位值
+进位
+借位
+计算顺序
+中间结果
+最终结果
+State
+initial
+editing
+partial
+carry_pending
+borrow_pending
+submitted
+correct
+incorrect
+Interaction
+input_digit
+carry
+borrow
+edit_cell
+submit
+Response
+需要返回：
+operands
+operator
+expected_steps
+expected_result
+carry_rules
+borrow_rules
+Diagnosis
+必须支持：
+位值错误
+进位错误
+借位错误
+运算顺序错误
+最终结果错误
+9. R06 — PlaceValue
+Semantic
+支持：
+个位
+十位
+百位
+千位
+之间的位置价值理解。
+Interaction
+place_digit
+move_digit
+select_place
+compose_number
+decompose_number
+Diagnosis
+重点：
+digit_value_error
+place_position_error
+composition_error
+decomposition_error
+10. R07 — TenFrame
+Semantic
+通过十框结构帮助儿童建立：
+5 + ?
+10以内结构
+10的组成
+补十
+数量结构
+Interaction
+add_counter
+remove_counter
+move_counter
+submit
+Diagnosis
+重点：
+数量识别错误
+补十错误
+结构化数量理解不足
+11. R08 — ArrayBoard
+Semantic
+用于：
+行
+列
+重复数量
+乘法结构
+之间的关系建立。
+Interaction
+add_row
+add_column
+resize_array
+select_group
+submit
+Response
+必须表达：
+rows
+columns
+total
+grouping
+expected_equation
+Diagnosis
+重点：
+行列混淆
+重复加法与乘法关系错误
+总数量计算错误
+12. R09 — GroupingBoard
+Semantic
+用于建立：
+平均分
+分组
+每组数量
+组数
+之间的关系。
+Interaction
+create_group
+move_item
+remove_item
+balance_groups
+submit
+Diagnosis
+重点：
+分组错误
+每组数量错误
+剩余量错误
+平均分概念错误
+13. R10 — FormulaBoard
+Semantic
+用于把：
+情境
+→ 数量关系
+→ 算式
+连接起来。
+不能退化为普通 NumberInput。
+Interaction
+select_number
+select_operator
+compose_formula
+reorder
+submit
+Response
+available_terms
+expected_formula
+equivalent_formulas
+validation_rules
+Diagnosis
+重点：
+运算符错误
+数量对应错误
+算式顺序错误
+情境与公式不一致
+14. R11 — EstimationCanvas
+Semantic
+核心是：
+估算策略，而非猜一个接近答案的数字。
+Interaction
+mark_reference
+round
+estimate
+compare
+submit
+Diagnosis
+需要记录：
+rounding_strategy
+reference_selection
+estimate_error
+strategy_used
+15. R12 — ShapeGallery
+Semantic
+用于：
+观察
+识别
+比较
+分类
+几何图形。
+Interaction
+select_shape
+compare
+classify
+match
+submit
+Diagnosis
+重点：
+图形识别错误
+属性识别错误
+分类标准错误
+16. R13 — ShapeCanvas
+Semantic
+与 ShapeGallery 区分：
+ShapeGallery = 识别ShapeCanvas = 操作/构造
+Interaction
+draw
+move
+rotate
+resize
+compose
+delete
+Diagnosis
+重点：
+构造错误
+属性遗漏
+空间关系错误
+旋转/方向理解错误
+17. R14 — SortingBoard
+Semantic
+核心是：
+根据明确规则进行分类。
+不是简单拖拽。
+Interaction
+create_category
+drag_item
+move_item
+change_rule
+submit
+Response
+必须明确：
+items
+categories
+sorting_rule
+expected_classification
+Diagnosis
+重点：
+classification_error
+rule_mismatch
+attribute_confusion
+18. R15 — DirectionGrid
+Semantic
+用于：
+方向
+位置
+路径
+空间关系
+Interaction
+move
+select_direction
+draw_path
+rotate
+submit
+Diagnosis
+重点：
+方向混淆
+相对位置错误
+路径错误
+起终点理解错误
+19. R16 — Ruler
+Semantic
+核心：
+长度测量与单位理解。
+Interaction
+move_ruler
+align
+measure
+read_scale
+submit
+Response
+scale
+unit
+target_length
+tolerance
+measurement
+Diagnosis
+重点：
+起点未对齐
+刻度读取错误
+单位错误
+测量范围错误
+20. R17 — Clock
+Semantic
+用于：
+时针
+分针
+时间
+时间关系
+Interaction
+move_hour_hand
+move_minute_hand
+select_time
+compare_time
+submit
+Diagnosis
+重点：
+时针/分针混淆
+分钟刻度错误
+时刻读取错误
+时间关系错误
+21. R18 — MoneyBoard
+Semantic
+用于：
+金额
+币值
+组合
+找零
+Interaction
+select_coin
+select_note
+add_money
+remove_money
+make_change
+submit
+Diagnosis
+重点：
+币值识别错误
+金额组合错误
+找零错误
+金额关系错误
+22. R19 — PatternBoard
+Semantic
+用于：
+观察
+重复
+变化
+预测
+验证
+建立模式意识。
+Interaction
+select_pattern
+extend_pattern
+modify_pattern
+predict_next
+submit
+Diagnosis
+重点：
+重复单元识别错误
+变化规律错误
+下一项预测错误
+只观察局部而未识别整体规律
+23. 19 Renderer 统一 State Contract
+19 个 Renderer 不允许各自发明状态名称。
+建议统一：
+INITIAL
+LOADING
+READY
+INTERACTING
+VALIDATING
+SUBMITTED
+CORRECT
+INCORRECT
+RETRY
+COMPLETED
+EMPTY
+ERROR
+DISABLED
+Renderer 可以拥有领域专属内部状态，但：
+对 Workspace / Task / Diagnosis 暴露的状态必须统一。
+24. 19 Renderer 统一 Interaction Contract
+Interaction Event 不再允许：
+onClick
+onChange
+onDrag
+这种 UI 层事件直接成为业务 Evidence。
+统一转换为：
+Renderer Interaction
+↓
+Semantic Event
+例如：
+{
+"event_type": "object_selected",
+"renderer_id": "object-counter",
+"task_id": "xxx",
+"payload": {
+"object_id": "obj-03"
+}
+}
+25. Interaction Event 六要素
+每个事件至少需要：
+event_id
+task_id
+renderer_id
+event_type
+timestamp
+payload
+推荐增加：
+attempt_no
+sequence_no
+session_id
+26. Response Contract
+Renderer 不应该直接消费任意 Backend JSON。
+统一：
+Backend Response
+↓
+Response Schema
+↓
+Renderer Adapter
+↓
+Renderer
+Renderer 只认自己的：
+Renderer Response Model
+27. Diagnosis Contract
+19 Renderer 必须统一接入：
+Interaction Evidence
+↓
+Behavior Evidence
+↓
+Diagnosis
+而不是：
+Renderer
+↓
+直接判断“孩子不会”
+Renderer 只负责提供：
+可解释的行为证据。
+Diagnosis Engine 决定：
+这些证据意味着什么。
+28. Acceptance Contract
+每一个 Renderer 必须至少有以下验收案例：
+A — Happy Path
+Task
+→ Render
+→ Interaction
+→ Correct
+→ Complete
+B — Incorrect Path
+Task
+→ Interaction
+→ Incorrect
+→ Diagnosis
+→ Retry
+C — Empty Path
+No usable data
+→ Empty State
+D — Error Path
+Invalid Response
+→ Error State
+E — Evidence Path
+Interaction
+→ Evidence
+→ Diagnosis
+29. 五条 Vertical Gate 验收底表
+这张表才是整个 Matrix 的核心。
+Gate
+验证范围
+通过标准
+VG-01
+Workspace → Renderer
+Task 能正确选择并加载 Renderer
+VG-02
+TaskUISchema → Renderer
+Schema 与 Renderer 语义完全一致
+VG-03
+Response → Renderer
+真实 Response 能驱动 UI
+VG-04
+Interaction → Diagnosis
+用户行为产生结构化 Evidence
+VG-05
+Diagnosis → Next Task
+Diagnosis 能影响下一任务
+30. VG-01：Workspace → Renderer
+测试链
+Task ID
+↓
+Workspace
+↓
+TaskUISchema
+↓
+Renderer Registry
+↓
+Renderer
+P0 验收
+Renderer ID 正确
+Registry 可查
+Workspace 可加载
+Context 正确传递
+Task 切换无残留状态
+31. VG-02：TaskUISchema → Renderer
+检查：
+task_type
+capability_id
+renderer_id
+mode
+interaction_mode
+是否一致。
+禁止：
+TaskUISchema:
+number_line
+Renderer:
+number-input
+但 UI 看起来“还能工作”。
+32. VG-03：Response → Renderer
+测试：
+valid response
+partial response
+empty response
+invalid response
+loading
+error
+所有状态必须有明确行为。
+33. VG-04：Interaction → Diagnosis
+必须验证：
+用户行为
+↓
+Semantic Event
+↓
+Evidence
+↓
+Diagnosis
+不能只有：
+submit = wrong
+34. VG-05：Diagnosis → Next Task
+必须至少跑通：
+Task A
+↓
+错误行为
+↓
+Diagnosis
+↓
+Recommendation
+↓
+Task B
+并验证 Task B 的 Renderer 与能力节点匹配。
+35. V2 Contract Freeze Checklist
+进入 Freeze 前逐项检查：
+Contract
+Freeze
+Renderer Registry
+☐
+Workspace API
+☐
+TaskUISchema
+☐
+Response Schema
+☐
+Interaction Event Schema
+☐
+Evidence Schema
+☐
+Diagnosis Schema
+☐
+Next Recommendation
+☐
+Renderer State Model
+☐
+Renderer Acceptance Contract
+☐
+36. Freeze 后变更规则
+P0 禁止修改
+Renderer ID
+Capability ID
+核心 Response 字段
+Diagnosis 字段语义
+Interaction Event 类型
+TaskUISchema 核心结构
+允许
+视觉
+布局
+Typography
+Spacing
+Animation
+Accessibility
+Performance
+37. Release QA 总矩阵
+最终 QA 不是 19 次孤立测试。
+需要：
+19 Renderer
+×
+6 Semantic Contracts
+×
+5 Vertical Gates
+形成完整验收面。
+理论上：
+19 × 6 = 114
+个 Renderer-level completion checkpoints。
+再叠加：
+5 Vertical Gates
+作为系统级闭环验证。
+38. P0 问题分类
+以下任何一项出现，不得 Release。
+P0-01 Semantic Gap
+Renderer 有 UI，但不知道自己服务什么学习语义。
+P0-02 Schema Gap
+Renderer 自己猜 Response 字段。
+P0-03 State Gap
+没有明确状态模型。
+P0-04 Interaction Gap
+用户操作没有结构化事件。
+P0-05 Evidence Gap
+Interaction 无法进入 Evidence。
+P0-06 Diagnosis Gap
+Evidence 无法进入 Diagnosis。
+P0-07 Recommendation Gap
+Diagnosis 无法影响下一任务。
+P0-08 Acceptance Gap
+无法证明 Renderer 已完成。
+39. 当前 19 Renderer Completion Board
+建议开发团队直接按此表推进：
+Renderer
+Semantic
+State
+Interaction
+Response
+Diagnosis
+Acceptance
+当前 Gate
+ObjectCounter
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+BarModel
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+NumberLine
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+NumberInput
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+ColumnArithmetic
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+PlaceValue
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+TenFrame
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+ArrayBoard
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+GroupingBoard
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+FormulaBoard
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+EstimationCanvas
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+ShapeGallery
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+ShapeCanvas
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+SortingBoard
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+DirectionGrid
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+Ruler
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+Clock
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+MoneyBoard
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+PatternBoard
+P0
+P0
+P0
+P0
+P0
+P0
+BLOCKED
+40. 开发执行顺序
+不能 19 个 Renderer 同时散开开发。
+建议：
+Batch A — 基础 Renderer
+ObjectCounter
+NumberInput
+NumberLine
+TenFrame
+目标：
+首先跑通完整 Semantic → Response → Interaction → Diagnosis 闭环。
+Batch B — 结构 Renderer
+BarModel
+PlaceValue
+ColumnArithmetic
+FormulaBoard
+重点验证：
+复杂结构数据与 Diagnosis。
+Batch C — 数量关系 Renderer
+ArrayBoard
+GroupingBoard
+EstimationCanvas
+重点：
+操作行为 → 数学结构 Evidence。
+Batch D — Geometry / Spatial
+ShapeGallery
+ShapeCanvas
+SortingBoard
+DirectionGrid
+重点：
+空间/分类行为语义。
+Batch E — Measurement / Daily Math
+Ruler
+Clock
+MoneyBoard
+PatternBoard
+重点：
+真实任务情境与下一任务推荐。
+41. 每个 Renderer 的 Definition of Done
+一个 Renderer 只有同时满足以下条件才算：
+DONE
+[✓] Semantic Definition
+[✓] State Model
+[✓] Response Schema
+[✓] Interaction Event
+[✓] Evidence Mapping
+[✓] Diagnosis Mapping
+[✓] Empty State
+[✓] Error State
+[✓] Retry State
+[✓] Acceptance Test
+[✓] Workspace Integration
+[✓] TaskUISchema Integration
+[✓] Response Integration
+[✓] Diagnosis Integration
+否则：
+INCOMPLETE
+42. 最终 Release Definition
+V1.4 → V2 Renderer Release 必须满足：
+19 / 19 Renderer
+↓
+Semantic Complete
+↓
+114 / 114 Completion Checkpoints
+↓
+5 / 5 Vertical Gates
+↓
+V2 Contract Freeze
+↓
+Release QA
+↓
+E2E Learning Loop PASS
+最终闭环：
+┌──────────────┐
+│ Capability   │
+└──────┬───────┘
+↓
+┌──────────────┐
+│ Task         │
+└──────┬───────┘
+↓
+┌──────────────┐
+│ Workspace    │
+└──────┬───────┘
+↓
+┌──────────────┐
+│ Renderer     │
+└──────┬───────┘
+↓
+┌──────────────┐
+│ Interaction  │
+└──────┬───────┘
+↓
+┌──────────────┐
+│ Evidence     │
+└──────┬───────┘
+↓
+┌──────────────┐
+│ Diagnosis    │
+└──────┬───────┘
+↓
+┌──────────────┐
+│ Recommendation│
+└──────┬───────┘
+↓
+┌──────────────┐
+│ Next Task    │
+└──────┬───────┘
+│
+└──────────────→ Renderer
+43. 本报告的治理结论
+当前状态
+不是 Renderer 数量不足。
+而是：
+Renderer Semantic Contract 尚未完成。
+当前 P0
+19 Renderer
+×
+6 Completion Contract
+全部需要进入正式 Completion 管理。
+下一阶段唯一主线
+Renderer Semantic Completion
+↓
+Five Vertical Gate
+↓
+V2 Contract Freeze
+↓
+Release QA
+Release 判断
+在以下条件全部成立前：
+19/19 Semantic Complete
+5/5 Vertical Gates PASS
+P0 = 0
+Contract Drift = 0
+E2E Learning Loop = PASS
+V2 Renderer 不应标记为 Complete，V1.4 不应进入最终 Release。
+需要特别纠正一个基线问题
+目前历史材料存在 23 Renderer / 19 Renderer / 18 已有组件 三种数字口径。现阶段必须把它们严格区分：
+23
+= 历史 Registry / Protocol Scope
+19
+= 当前 V2 Renderer Release Scope
+18
+= 当前已形成 runtime/component implementation 的 Renderer 数量口径
+因此本报告不会把“18 个组件”直接等同于“18 个完成 Renderer”。
+真正的完成数字只有一个：
+19 / 19 Renderer Semantic Completion。
+这也正是本报告作为 五条 Vertical Gate 验收底表 的意义：后续不再用“组件数量”“文件数量”判断 V2 是否完成，而统一使用 Semantic Contract + Vertical Gate + E2E Evidence 判断。

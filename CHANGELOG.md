@@ -29,6 +29,16 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Merged（FE-1413 消费《V1.4 Renderer Semantic Completion Pack》4 份交付，2026-10-04）
+
+> 交付=Semantic Completion Matrix（19 Renderer 六维）+ Gap Matrix + Task Breakdown（SEM-1401~1437）+ 开发任务表 xlsx。存档 docs/frontend/31 + 无损文本抽取。
+
+- **基线判定**：交付方工作快照≈FE-1408 前——"4/23 组件 / submission_id 未闭环 / B5 未闭环 / E2E 40%"四项断言均过时（现 23/23 implemented、FE-1410 幂等闭环、B5 Vertical Gate CLOSED）。其核心主张"implemented≠Semantic Complete 现在不能进单纯 QA"与我们 FE-1409 诚实口径一致，采纳。
+- **编号冲突裁决**：交付重占 FE-1401~1437 且语义与已用序列错位（其 1410=ObjectCounter vs 我们 1410=submission_id）→ 不采纳，引用一律 `SEM-<n>` 前缀，执行按自有序列立项。
+- **Scope 差异**：交付 Release Scope 19（剔 choice-grid/data-table/pictograph/timeline）；裁决 Registry 保持 23（冻结枚举不缩），P0 批次按 19 执行、被剔 4 组件 Gate 顺延。
+- **有效增量**：19×6=114 Completion Checkpoints + A~E 五路径验收 → B5 五件套模板升级为正式底表；Batch A~E 分批顺序采纳；禁止条款 20.1~20.4（组件不 fetch/不自判 Diagnosis/不改 AbilityState/DOM Event≠Semantic Event）入 review checklist。
+- 只登记不开发（与 30 号 18 Renderers Pack 同一纪律）；主战场=SEM-1410~1428（除已 CLOSED 的 ColumnArithmetic）等价"逐组件 Vertical Gate"。
+
 ## Done（FE-1412 QA 数据卫生治理：测试流量分池 + 存量污染清理 + 凭据根治，2026-10-04）
 
 > 用户实测触发：真实 session 3 题全对，但 app_rel 停 L1 conf=0——108 条证据大半是 QA 重放/E2E 模拟数据，压住 CI 窗口（最近 8 条），真实水平永远测不准。同期发现 `qa_replay_mastery.py` 把真实 RDS 密码硬编码进了 git（PR #19 引入）。

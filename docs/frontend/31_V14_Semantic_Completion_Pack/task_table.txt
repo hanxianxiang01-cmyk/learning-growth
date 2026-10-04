@@ -1,0 +1,40 @@
+
+----- SHEET: Sheet1 -----
+任务ID | 任务名称 | 类型 | 优先级 | 范围 | 输入/输出与核心内容 | 前置依赖 | 开发目标 | 完成/验收标准 | 状态 | 负责人 | 计划开始 | 计划完成 | 实际完成 | 阻塞项 | PR | 备注
+FE-1401 | Renderer Runtime Contract | Framework | P0 | 全部19 Renderer | RendererDefinition / Props / State / Action / Event / Response / Evidence / Acceptance | Renderer Registry | 统一 Renderer Runtime Contract；TS 类型+Schema | 19 Renderer 可注册并通过 Contract Test | 待开发
+FE-1402 | Renderer State Contract | Framework | P0 | 全部19 Renderer | 统一 INITIAL/LOADING/READY/INTERACTING/VALIDATING/SUBMITTED/CORRECT/INCORRECT/RETRY/COMPLETED/EMPTY/ERROR/DISABLED | FE-1401 | 统一状态机与状态声明 | 19 Renderer 状态声明完整；非法状态转换被拦截 | 待开发
+FE-1403 | Renderer Registry Runtime | Framework | P0 | 全部19 Renderer | registerRenderer / getRenderer / validateRendererDefinition / mountRenderer | FE-1401 | Registry → Runtime Mount | 同一 renderer_id 唯一实现；可动态 Mount | 待开发
+FE-1404 | Semantic Event Contract | Contract | P0 | 全局 | event_id/session_id/task_id/renderer_id/event_type/timestamp/attempt_no/sequence_no/payload | FE-1401 | 建立统一 Semantic Event Schema | 所有业务行为不直接依赖 DOM Event；Schema Test PASS | 待开发
+FE-1405 | Renderer Event Adapter | Framework | P0 | 全部19 Renderer | UI Interaction → Semantic Event | FE-1404 | 每个 Renderer 建立事件适配层 | 关键操作均产生标准 Semantic Event | 待开发
+FE-1406 | Structured Response V2 Adapter | Contract | P0 | 全部19 Renderer | Backend Response → Response Schema → Renderer Adapter → Props | FE-1401 | 统一 Response Adapter 与运行时校验 | 19 Renderer 均可消费 Structured Response V2 | 待开发
+FE-1407 | Evaluator Framework | Framework | P0 | 全局+19 Renderer | evaluate(task,response,evidence) → result/score/correct/error_code/evidence | FE-1406 | 建立 Evaluator Interface 与基础类型 | 支持 Exact/Structural/Sequence/Spatial/Measurement 等类型 | 待开发
+FE-1408 | Evidence Contract | Contract | P0 | 全局+19 Renderer | evidence_id/task_id/renderer_id/attempt_no/events/final_state/correction_count/retry_count | FE-1404 | 统一行为证据模型 | Evidence Schema 可校验；可供 Diagnosis 消费 | 待开发
+FE-1409 | Diagnosis Adapter | Integration | P0 | 全局+19 Renderer | Evidence + Response + Task Context → Diagnosis | FE-1407; FE-1408 | 建立 Diagnosis Adapter | 禁止 Renderer 直接写 Diagnosis/Mastery；Contract Test PASS | 待开发
+FE-1410 | ObjectCounter | Renderer | P0 | ObjectCounter | count/add/remove/compare/compose/decompose；quantity evaluator；evidence | FE-1402~1409 | 完成首个完整 Renderer Pattern | Happy/Incorrect/Retry/Empty/Error/Evidence/Diagnosis PASS | 待开发
+FE-1411 | BarModel | Renderer | P0 | BarModel | part-whole/comparison/change；block 操作；structure evaluator | FE-1402~1409 | 结构型 Renderer | 模型结构评估与 Evidence PASS | 待开发
+FE-1412 | NumberLine | Renderer | P0 | NumberLine | marker/jump/compare/operation；position evaluator | FE-1402~1409 | 位置与跳跃语义 | 移动轨迹可形成 Evidence；评估 PASS | 待开发
+FE-1413 | NumberInput | Renderer | P0 | NumberInput | numeric input/submit/retry/attempt/submission_id/idempotency | FE-1402~1409; FE-1431 | 基础答案 Renderer + Submission Contract | 重复 submission_id 不产生重复 Evidence/Diagnosis | 待开发
+FE-1414 | ColumnArithmetic | Renderer | P0 | ColumnArithmetic | digit/column/carry/borrow/intermediate state；step evaluator | FE-1402~1409 | 过程型算术 Renderer | 最终答案+中间步骤均可评估 | 待开发
+FE-1415 | PlaceValue | Renderer | P0 | PlaceValue | digit/position/place value/compose/decompose | FE-1402~1409 | 结构型数位 Renderer | 位值结构评估与 Evidence PASS | 待开发
+FE-1416 | TenFrame | Renderer | P0 | TenFrame | fill/remove/grouping；quantity evaluator | FE-1402~1409 | 数量结构 Renderer | 数量与补十行为可评估 | 待开发
+FE-1417 | ArrayBoard | Renderer | P0 | ArrayBoard | row/column/repeated addition/multiplication relation | FE-1402~1409 | 行列结构 Renderer | 行列与乘法关系可评估 | 待开发
+FE-1418 | GroupingBoard | Renderer | P0 | GroupingBoard | grouping/split/equal groups/remainder | FE-1402~1409 | 分组关系 Renderer | 分组过程 Evidence + Evaluator PASS | 待开发
+FE-1419 | FormulaBoard | Renderer | P0 | FormulaBoard | number/operator/relation/unknown/expression editing | FE-1402~1409 | 方程关系 Renderer | 表达式语义评估 PASS | 待开发
+FE-1420 | EstimationCanvas | Renderer | P0 | EstimationCanvas | estimate/range/target/adjustment；strategy evidence | FE-1402~1409 | 估算 Renderer | 估算范围与策略证据 PASS | 待开发
+FE-1421 | ShapeGallery | Renderer | P0 | ShapeGallery | shape selection/classification/property recognition | FE-1402~1409 | 图形识别分类 Renderer | 分类与属性证据 PASS | 待开发
+FE-1422 | ShapeCanvas | Renderer | P0 | ShapeCanvas | draw/move/rotate/compose/transform；geometry evaluator | FE-1402~1409 | 几何操作 Renderer | 绘制轨迹可形成 Evidence | 待开发
+FE-1423 | SortingBoard | Renderer | P0 | SortingBoard | classification/ordering/comparison；drag/drop semantic event | FE-1402~1409 | 排序 Renderer | 排序过程可评估并诊断 | 待开发
+FE-1424 | DirectionGrid | Renderer | P0 | DirectionGrid | position/direction/route/movement；route evaluator | FE-1402~1409 | 空间方向 Renderer | 路径与移动序列可评估 | 待开发
+FE-1425 | Ruler | Renderer | P0 | Ruler | scale/endpoint/measurement/comparison | FE-1402~1409 | 测量 Renderer | 起止点、读数、误差可形成 Evidence | 待开发
+FE-1426 | Clock | Renderer | P0 | Clock | hour hand/minute hand/time/adjustment | FE-1402~1409 | 时间 Renderer | 指针操作与时间结果可评估 | 待开发
+FE-1427 | MoneyBoard | Renderer | P0 | MoneyBoard | denomination/compose/exchange/total/change | FE-1402~1409 | 金额 Renderer | 面值组合与找零可评估 | 待开发
+FE-1428 | PatternBoard | Renderer | P0 | PatternBoard | sequence/rule/extend/predict | FE-1402~1409 | 规律 Renderer | 规律构造过程与结果可评估 | 待开发
+FE-1429 | Workspace → Renderer | Integration | P0 | 全局+19 Renderer | Workspace → Task → TaskUISchema → Registry → Renderer | FE-1403; FE-1430 | 完成 Workspace Runtime Mount | 无硬编码 Renderer；动态 Mount PASS | 待开发
+FE-1430 | TaskUISchema → Renderer | Integration | P0 | 全局+19 Renderer | renderer_id/mode/interaction_mode/initial_state/task_data/constraints/response_schema | FE-1406; FE-1429 | Schema → Props 映射 | TaskUISchema 可驱动 Renderer，不依赖内部猜测 | 待开发
+FE-1431 | Session / Submission Contract | Contract | P0 | 全局 | session_id/task_id/attempt_no/submission_id；幂等 | FE-1404; FE-1406 | 统一提交协议 | 重复提交幂等；不重复写 Evidence/Diagnosis | 待开发
+FE-1432 | VG-01 Workspace → Renderer | Vertical Gate | P0 | 全局+19 Renderer | Workspace → Task → TaskUISchema → Registry → Runtime Mount | FE-1429; FE-1430 | 第一条纵向 Gate | renderer_id/Props/State/Runtime Mount 全部 PASS | 待验收
+FE-1433 | VG-02 TaskUISchema → Renderer | Vertical Gate | P0 | 全局+19 Renderer | TaskUISchema → Renderer Props → UI | FE-1430 | 第二条纵向 Gate | task_data/mode/constraints/interaction_mode/response_schema PASS | 待验收
+FE-1434 | VG-03 Response → Renderer | Vertical Gate | P0 | 全局+19 Renderer | Response → Adapter → Evaluator → Result | FE-1406; FE-1407 | 第三条纵向 Gate | correct/incorrect/score/error_code/evidence PASS | 待验收
+FE-1435 | VG-04 Interaction → Diagnosis | Vertical Gate | P0 | 全局+19 Renderer | Interaction → Semantic Event → Evidence → Diagnosis | FE-1404; FE-1408; FE-1409 | 第四条纵向 Gate | 事件、证据、诊断链路 PASS | 待验收
+FE-1436 | VG-05 Diagnosis → Next Task | Vertical Gate | P0 | 全局+19 Renderer | Diagnosis → Recommendation → Next Task → TaskUISchema → Renderer | FE-1409; FE-1430 | 第五条纵向 Gate | 完整学习闭环 PASS | 待验收
+FE-1437 | Renderer Contract Test | QA | P0 | 全局+19 Renderer | Registry→Renderer；Schema→Props；Interaction→Event；Response→Evaluator；Evidence→Diagnosis；Diagnosis→Next Task | FE-1432~1436 | 统一 Contract Test Suite | 19 Renderer × 核心 Contract Test 全部 PASS | 待验收
