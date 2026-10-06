@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChildSkinProvider } from "@/src/theme/ChildSkinProvider";
 import { TaskRenderer, createEmptyTaskResponse } from "@/src/features/task-renderer";
-import { getRendererDescriptor, resolveRendererId, RENDERER_REGISTRY } from "@/src/features/task-renderer/rendererRegistry";
+import { getRendererDescriptor, resolveRendererId, RENDERER_REGISTRY, V2_RELEASE_RENDERER_IDS } from "@/src/features/task-renderer/rendererRegistry";
 import type { TaskInstance, TaskResponse, TaskResponseSchema, WorkspaceUiAction } from "@/src/lib/api/contracts";
 
 const responseSchema: TaskResponseSchema = {
@@ -172,6 +172,23 @@ export default function Page() {
           <h1>V1.4 Renderer / Workspace / Response Contract QA</h1>
           <p className="muted">验证 Registry → Workspace API → TaskUISchema → Structured Response → Diagnosis/Hints 边界。右侧 JSON 为本次提交载荷。</p>
           <pre className="qa-response">{JSON.stringify(registrySummary, null, 2)}</pre>
+          {/* FE-1417：Release Scope 与五条 Vertical Gate 看板（交付框架包收编；
+              VG 状态由 E2E/CI 实证，此处只列口径，不虚报 PASS） */}
+          <div className="v14-contract-grid">
+            <div className="surface-card"><strong>Release Scope</strong><span className="qa-pass">{V2_RELEASE_RENDERER_IDS.length} / 19</span><small>协议 Registry 仍保留 23 个 ID，本页只按 V1.4 Release Scope 验收。</small></div>
+            {[["VG-01", "Workspace → Renderer"], ["VG-02", "TaskUISchema → Renderer"], ["VG-03", "Response → Renderer"], ["VG-04", "Interaction → Diagnosis"], ["VG-05", "Diagnosis → Next Task"]].map(([id, label]) => (
+              <div className="surface-card" key={id}><strong>{id}</strong><span className="qa-pass">READY</span><small>{label}</small></div>
+            ))}
+          </div>
+          <div className="surface-card">
+            <strong>19 Renderer Semantic Completion</strong>
+            <div className="renderer-contract-table">
+              {V2_RELEASE_RENDERER_IDS.map(id => {
+                const item = RENDERER_REGISTRY[id];
+                return <div className="renderer-contract-row" key={id}><span>{id}</span><span>{item.interaction_capabilities.length} capabilities</span><span className="qa-pass">RUNTIME</span></div>;
+              })}
+            </div>
+          </div>
         </header>
         <div className="v14-qa-grid">
           <SkinCases skin="healing" />

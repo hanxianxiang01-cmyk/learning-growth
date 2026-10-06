@@ -33,6 +33,26 @@ export type RendererId = RendererProtocolId | "unsupported";
 
 export type RendererStatus = "implemented" | "planned";
 
+/**
+ * V1.4 Release Scope（FE-1417，交付方 docs/frontend/32 口径）：
+ * 协议 Registry 仍保留 23 个 ID（冻结枚举不缩——28 号契约治理），
+ * 但发布验收 / QA 看板只计算这 19 个。被剔除的 4 个（choice-grid /
+ * data-table / pictograph / timeline）组件保留运行，Gate 顺延。
+ */
+export const V2_RELEASE_RENDERER_IDS = [
+  "object-counter", "bar-model", "number-line", "number-input",
+  "column-arithmetic", "place-value", "ten-frame", "array-board",
+  "grouping-board", "formula-board", "estimation-canvas", "shape-gallery",
+  "shape-canvas", "sorting-board", "direction-grid", "ruler", "clock",
+  "money-board", "pattern-board"
+] as const satisfies readonly RendererProtocolId[];
+
+export type V2ReleaseRendererId = typeof V2_RELEASE_RENDERER_IDS[number];
+
+export function isV2ReleaseRenderer(id: RendererId): id is V2ReleaseRendererId {
+  return (V2_RELEASE_RENDERER_IDS as readonly string[]).includes(id);
+}
+
 export type InteractionCapability =
   | "answer_input"
   | "drag"
