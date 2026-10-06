@@ -214,6 +214,12 @@ export type WorkspaceRepresentation =
   | BarModelRepresentation
   | NumberLineRepresentation;
 
+/**
+ * 交互事件枚举（FE-1417 收编交付框架包）：
+ * 小写值为 V1 时代遗留（Representation 路径），UPPER_SNAKE 为 V2 语义事件
+ * （docs/frontend/26 §3 / rendererContract）。渲染器状态名（READY/INTERACTING/…）
+ * 不属于事件，其事实源是 rendererContract.RENDERER_STATES。
+ */
 export type InteractionEventType =
   | "representation_changed"
   | "answer_changed"
@@ -225,7 +231,48 @@ export type InteractionEventType =
   | "reset"
   | "highlight"
   | "focus"
-  | "hint_applied";
+  | "hint_applied"
+  // V2 语义事件（专件已闭 Gate：B5/A5/R01/R04/R07）
+  | "DIGIT_ENTERED"
+  | "CARRY_CREATED"
+  | "CARRY_REMOVED"
+  | "STEP_SUBMITTED"
+  | "JUMP_CREATED"
+  | "MARKER_PLACED"
+  | "COUNT_ADDED"
+  | "COUNT_REMOVED"
+  | "GROUP_COMPOSED"
+  | "GROUP_DECOMPOSED"
+  | "NUMBER_INPUT_CHANGED"
+  | "MAKE_TEN_COMPLETED"
+  | "TEN_BROKEN"
+  | "SUBMITTED"
+  | "UNDO"
+  | "RESET"
+  // V2 语义事件（基座 18 组件，V2RendererLibrary 实际发射）
+  | "OPTION_SELECTED"
+  | "OPTION_DESELECTED"
+  | "VALUE_CHANGED"
+  | "COUNTER_ADDED"
+  | "COUNTER_REMOVED"
+  | "ROW_CHANGED"
+  | "COLUMN_CHANGED"
+  | "GROUP_CHANGED"
+  | "GROUP_CREATED"
+  | "GROUP_REMOVED"
+  | "FORMULA_CHANGED"
+  | "ESTIMATE_CHANGED"
+  | "SHAPE_SELECTED"
+  | "SHAPE_CHANGED"
+  | "ORDER_CHANGED"
+  | "DIRECTION_CHANGED"
+  | "MEASUREMENT_CHANGED"
+  | "TIME_CHANGED"
+  | "MONEY_ADDED"
+  | "CELL_EDITED"
+  | "DATA_POINT_SELECTED"
+  | "BLANK_FILLED"
+  | "DIGIT_CHANGED";
 
 export type InteractionEvent = {
   event_id: string;
@@ -236,6 +283,10 @@ export type InteractionEvent = {
   capability_id?: string;
   target_id?: string;
   payload?: Record<string, string | number | boolean | null>;
+  /** V2 事件元数据（FE-1417，rendererContract.createSemanticEvent 填充）。 */
+  session_id?: string;
+  attempt_no?: number;
+  sequence_no?: number;
 };
 
 export type V2WorkspaceResponseData = Record<string, unknown>;
@@ -280,6 +331,8 @@ export type TaskInstance = {
 export type AttemptRequest = {
   task_instance_id: string;
   attempt_no: number;
+  /** FE-1417：V2 幂等键（stable，缺省由 adapter 派生 task:attempt:revision）。 */
+  submission_id?: string;
   response: TaskResponse;
   client_elapsed_ms?: number;
   used_hint_levels?: number[];

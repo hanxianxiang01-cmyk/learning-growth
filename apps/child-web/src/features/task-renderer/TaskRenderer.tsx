@@ -19,6 +19,7 @@ import { NumberLine } from "@/src/components/manipulatives/NumberLine";
 import { ObjectCounter } from "@/src/components/manipulatives/ObjectCounter";
 import { WorkspaceProvider } from "@/src/features/math-workspace";
 import { getRendererDescriptor, isImplementedRenderer, resolveRendererId } from "./rendererRegistry";
+import { assertTaskUiSchemaV2 } from "./rendererContract";
 import type {
   InteractionEvent,
   ManipulativeTaskUiSchema,
@@ -149,6 +150,9 @@ function ManipulativeRenderer(
 
 function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
   const { task, schema, response, disabled, onResponseChange, onSubmit } = props;
+  // FE-1417（交付框架包收编）：V2 契约入口校验——workspace 缺 renderer_version/
+  // capabilities 等字段属于内容事故，显式失败优于静默渲染错误。
+  assertTaskUiSchemaV2(schema);
   const rendererId = resolveRendererId(schema);
   const workspace = schema.workspaces[0];
   if (!workspace) return null;

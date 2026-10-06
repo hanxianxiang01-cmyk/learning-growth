@@ -29,6 +29,16 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Merged（FE-1417 消费《V1.4 Renderer Completed Pack》交付快照：框架层收编 + 2 个致命缺陷修复，2026-10-06）
+
+> 交付方按 docs/frontend/31 Step 1-10 实际改码后回传整仓快照（zip，315 文件）+ 完成度报告，自称 Contract QA 19/19 全绿但**无 node_modules、未跑 build/E2E**。逐项核对：**其基线=main@83a0e94（FE-1411）**——FE-1412~1416 六件事全部不在其视野，测试脚本大面积回退。只摘框架层增量，绝不整包合并。
+
+- **三方 diff 定基线**（base 候选×交付×当前 main 逐文件核）：qa_replay（明文密码+真实 child）/integration-smoke/b5 spec（真实 child）/CHANGELOG/治理文档/R01·R04·R07 专件——全部 ❌ 拒绝回退，保留我们的。zip 原件**不入仓**（内含 FE-1412 已根治的 RDS 明文密码，存仓=凭据重新进 git 历史）。
+- **✅ 采纳框架层**（我们此前缺失的地基）：`rendererContract.ts`（13 态状态机+canTransition+语义事件工厂+evidence builder）、`evaluatorRegistry.ts`（23 evaluator 表，generic 弱判 NOT_EVALUATED 不猜）、`diagnosisAdapter.ts`/`nextTaskAdapter.ts`（后端权威边界）、`V2_RELEASE_RENDERER_IDS` 19 口径入代码、contracts.ts V2 UPPER_SNAKE 事件枚举收编、InteractionEvent 元数据（session/attempt/sequence_no）、QA 页 VG-01~05 看板、check-v14-contracts/release.mjs 两脚本（npm scripts 挂接）。
+- **⚠️ 修掉交付方 3 个自测未发现的缺陷**：**A（致命）**stable submission_id 用冒号串 `task:attempt:rev`——后端 `uuid.UUID()` 直接 ValueError→404，所有 V2 提交全灭（其无 E2E 故未暴露；我们全量首跑 4 分钟超时实锤后定位）→ 重写为确定性哈希输出严格 8-4-4-4-12 UUID 形状，同 (task,attempt,revision) 恒定命中幂等轨、attempt_no 变则 ID 变；**B** evidence/evaluation 注入在其 TaskRenderer handleResponseChange（attempt_no 恒=1 且每次 change 重建 runtime）→ 移至 adapter 提交时刻取真实 attempt_no；**C** 其事件枚举混入 13 个状态名（READY/INTERACTING…属状态机不属事件）→ 剔除并注释划界。rendererContract 模块自身也有未跑 tsc 的类型错误（event_type: string 不收窄）→ 一并修。
+- **"19/19" 口径澄清（写入消费索引 docs/frontend/32 README）**：交付的 19/19 是 Contract 结构层；真正打过浏览器 Vertical Gate 的仍只有 5 个（A5/B5/R01/R04/R07），其余 14 个="契约就绪、语义待完成"——与我们 FE-1409 的诚实口径一致，不随交付方升级完成度声明。
+- **验证**：tsc 0（含交付模块修正）；check-v14 四脚本（含新收编 contracts/release）全 PASS；governance+hygiene PASS；**全量 Playwright E2E 35/35 passed**（B5 10+R01 11+R04 7+R07 7 双皮肤零回归——stable submission_id 重写后幂等轨端到端实锤）。
+
 ## Done（FE-1416 R07 TenFrame Vertical Gate：B5 模板第四组件，Batch A 全清，2026-10-04）
 
 > Batch A 收尾（SEM-1416 / Gap R07）。ten-frame 语义=20 以内"十与一"结构；**补十打包（MAKE_TEN_COMPLETED）是本 Gate 独有的过程语义**。
