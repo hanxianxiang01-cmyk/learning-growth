@@ -568,4 +568,51 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "school_objects",
     },
+    {
+        # FE-1426 R14 sorting-board 金题：数字卡从小到大排。
+        # 视觉字号（visual_rank）与数值故意错开——按"字看起来大"排 →
+        # dimension_confusion 原料（Diagnosis P0"比较维度错误"）。
+        # 答案=数值顺序拼接整数 1247（后端标量相等判分，不动冻结链）。
+        "code": "V2-R14-SORT-001",
+        "title": "把数字卡从小到大排好",
+        "ability_id": "app_rd",
+        "renderer": "sorting-board",
+        "ui_schema_version": "2.0",
+        "mode": "ordering",
+        "response_type": "sorting_board",
+        "content": {
+            "stem": "桌上四张数字卡排得乱七八糟：7、1、4、2（卡片上的字有大有小，那是画的，别上当）。点两张卡把它们交换位置，把数字**从小到大**排好，答案按顺序写出这四个数字组成的数。",
+            "answer": 1247,
+            "goal": "按数值维度（非视觉大小）比较并排序",
+        },
+        "config": {
+            "direction": "asc",
+            "items": [
+                {"id": "c1", "value": 7, "visual_rank": 2},
+                {"id": "c2", "value": 1, "visual_rank": 4},
+                {"id": "c3", "value": 4, "visual_rank": 1},
+                {"id": "c4", "value": 2, "visual_rank": 3},
+            ],
+            "initial_order": ["c1", "c2", "c3", "c4"],
+        },
+        "initial_state": {"order": ["c1", "c2", "c3", "c4"], "selected": None, "swaps": []},
+        "constraints": {"direction": "asc", "cards": 4},
+        "capabilities": ["drag", "undo", "reset", "sort", "answer_input"],
+        "evidence_targets": ["order", "order_values", "swaps", "structure"],
+        "hint_ladder": [
+            {"level": 1, "text": "从小到大排——先找四个数里最小的那个。"},
+            {"level": 2, "text": "7、1、4、2 里谁最小？别看字多大，看数字是几。"},
+            {"level": 3, "text": "1 最小排第一，然后 2、4、7——现在 2 和 7 站错了地方。"},
+            {"level": 4, "text": "点 7 再点 1 交换，点 4 再点 2 交换，就是 1、2、4、7 啦。"},
+        ],
+        "error_models": [
+            {"pattern": "dimension_confusion", "code": "E-ST-01", "note": "按卡片字号（视觉大小）排——比较维度错误 P0 原料"},
+            {"pattern": "reversed", "code": "E-ST-02", "note": "完整降序（方向反）"},
+            {"pattern": "disordered", "code": "E-ST-03", "note": "既非正序/降序/视觉序的乱序"},
+        ],
+        "task_type": "word_problem",
+        "difficulty": 2,
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
 ]
