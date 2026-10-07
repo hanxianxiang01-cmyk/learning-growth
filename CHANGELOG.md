@@ -29,6 +29,18 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1418 R02 BarModel Vertical Gate：B5 模板第五组件，模型结构 evaluator 三分法，2026-10-07）
+
+> Batch B 先锋（Gap R02）。bar-model 的独有价值=**结构错误分类证据**：modeling（已知条读错）/relation（模型不成立）/calc（数算错）三类各自 E2E 可达，序列化进 Evidence 供后端诊断原料；前端弱判不越权，判分仍后端权威。
+
+- **纯函数层** `barModelV2.ts`：parseBarModelConfig（part_whole/comparison、known 恰好两根、答案可解性守卫）+ applyBarDelta（钳制）+ solveExpected + `evaluateBarModel` 三分法（优先级 modeling→relation→calc）+ serializeBarModelV2（bars 三值+structure 证据）。node 语义矩阵 13 断言全过。
+- **组件** `BarModelV2.tsx`：三行条（+/− 步进、答案条高亮）、结构提示文案按错误分类呈现、BAR_BLOCK_ADDED/REMOVED 事件、revision 清态；专件替换基座 BarModel 路由（TaskRenderer 251 行，V1 路径 318 行保留）。
+- **链题**：R02 金题（**app_model 能力节点首题**，星星 5+3=8，school_objects）seed 真实 RDS；防漂移单测 +1（后端 83→**84 passed**）。
+- **API 实证**：结构错答 9→correct=false HINT（calc 证据入库）；答对 8→NEXT_TASK；重放同 attempt_id；异内容 409。
+- **E2E** `e2e/r02-bar-model.spec.mjs` 10/10（G1/G2G3 答案条 EMPTY 门禁/relation+modeling 双负例专项/G4 envelope structure 断言/G5/G7 减格改对/UNDO/防重入/清态/healing）。**全量套件 45 passed**（前四 Gate 零回归）。
+- contracts 事件枚举补 BAR_BLOCK_ADDED/REMOVED；registry vertical_gate "R02"。
+- 底表 `docs/governance/R02_BARMODEL_VERTICAL_GATE.md`。**Vertical Gate 进度 6/19**。
+
 ## Merged（FE-1417 消费《V1.4 Renderer Completed Pack》交付快照：框架层收编 + 2 个致命缺陷修复，2026-10-06）
 
 > 交付方按 docs/frontend/31 Step 1-10 实际改码后回传整仓快照（zip，315 文件）+ 完成度报告，自称 Contract QA 19/19 全绿但**无 node_modules、未跑 build/E2E**。逐项核对：**其基线=main@83a0e94（FE-1411）**——FE-1412~1416 六件事全部不在其视野，测试脚本大面积回退。只摘框架层增量，绝不整包合并。

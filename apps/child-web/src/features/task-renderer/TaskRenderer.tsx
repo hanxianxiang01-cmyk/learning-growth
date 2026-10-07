@@ -6,6 +6,7 @@ import { ColumnArithmetic } from "@/src/components/renderers/ColumnArithmetic";
 import { NumberLineV2 } from "@/src/components/renderers/NumberLineV2";
 import { NumberInputV2 } from "@/src/components/renderers/NumberInputV2";
 import { ObjectCounterV2 } from "@/src/components/renderers/ObjectCounterV2";
+import { BarModelV2 } from "@/src/components/renderers/BarModelV2";
 import { TenFrameV2 } from "@/src/components/renderers/TenFrameV2";
 import {
   ChoiceGrid, PlaceValue, ArrayBoard, GroupingBoard, FormulaBoard, EstimationCanvas,
@@ -236,6 +237,22 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
         <TenFrameV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
+
+  if (rendererId === "bar-model") {
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <BarModelV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}

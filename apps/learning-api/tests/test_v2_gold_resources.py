@@ -95,3 +95,26 @@ def test_r07_exists_and_shape():
     assert {"fill", "grouping"} <= set(R07["capabilities"])
     assert set(R07["evidence_targets"]) == {"tens", "current_frame_count"}
     assert R07["context_family"] == "sharing"
+
+
+R02 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "bar-model")
+
+
+def test_r02_exists_and_shape():
+    validate_renderer_id(R02["renderer"])
+    assert is_implemented(R02["renderer"])
+    assert R02["ui_schema_version"] == "2.0"
+    assert R02["mode"] == "part_whole"
+    assert R02["response_type"] == "bar_model"
+    c = R02["config"]
+    # 恰好两根已知条，答案条唯一未知；答案=结构关系可解
+    known = c["known"]
+    assert set(known.keys()) == {"a", "b"}
+    assert c["answer_bar"] == "c"
+    assert known["a"] + known["b"] == R02["content"]["answer"]
+    assert c["max_blocks"] >= R02["content"]["answer"]
+    # 金题的 error_models 必须含模型结构错分类原料（R02 P0 Diagnosis 条目）
+    codes = {e["code"] for e in R02["error_models"]}
+    assert {"modeling", "calc"} <= codes
+    assert "structure" in R02["evidence_targets"]
+    assert R02["context_family"] == "school_objects"
