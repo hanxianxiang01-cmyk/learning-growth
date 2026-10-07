@@ -265,6 +265,8 @@ export type InteractionEventType =
   | "ARRAY_COL_REMOVED"
   | "ITEM_ADDED"
   | "ITEM_REMOVED"
+  | "REASON_SELECTED"
+  | "REASON_REPLACED"
   | "SUBMITTED"
   | "UNDO"
   | "RESET"

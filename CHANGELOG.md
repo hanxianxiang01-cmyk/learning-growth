@@ -29,6 +29,17 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1423 R11 EstimationCanvas Vertical Gate：B5 模板第十组件，近似数估算+理由，Batch C 全清，2026-10-07）
+
+> Batch C 收官（Gap R11）。estimation-canvas=滑条估算+理由 chip：**判分锚定小学近似数语义**（38≈最接近整十=40，答案唯一，后端 float 相等判分不动冻结链）；tolerance evaluator 的 too_high/too_low+close 粒度是**诊断原料走 Evidence**（R08 transpose 解耦同款口径——方向对情境真值 actual、close 对目标 expected）。Gap"五状态"落地：EMPTY(estimate)→EMPTY(reason)→PASS→FAIL(too_high/too_low) 各有 E2E 靶。
+
+- **纯函数层** `estimationCanvasV2.ts`：parseEstimationConfig（expected==roundTen(actual)、actual 非整十、值域守卫）+ applyEstimate（同值 no-op 不记史）+ applyReason（noop/replaced 语义分明）+ evaluateEstimation 五态 + serialize（estimate/reason/adjust_history/reference/answer/structure）；node 语义矩阵全过。
+- **组件** `EstimationCanvasV2.tsx`：滑条+参照+理由三 chip；ESTIMATE_CHANGED/REASON_SELECTED/REASON_REPLACED 事件链，**adjust_history=Gap"调整过程"可回放 Evidence**；未选理由不可提交（"先想再估"纪律）；专件替换基座路由。
+- **链题**：R11 金题（书架估书 38≈40，**shopping 族首题**——词表"启用但零覆盖"第二族开始有真实数据；app_model 第三题）seed RDS；防漂移单测+1（后端 94→**95 passed**）。
+- **API 实证**（走 FE-1422a pin 机制首抽命中）：估 35 未整十→false HINT；估 48 too_high 原料→false；估 40→true NEXT_TASK；重放同 attempt_id。
+- **E2E** `e2e/r11-estimation-canvas.spec.mjs` 10/10（EMPTY×2、五字段 envelope、调整历史 [20,35,40] 断言、G7 估低改对、dblclick 防重入、UNDO 单步、healing）。全量套件 **93 passed** 零回归。
+- 底表 `docs/governance/R11_ESTIMATIONCANVAS_VERTICAL_GATE.md`。**Vertical Gate 进度 11/19；Batch C 3/3 全清**。
+
 ## Done（FE-1422a QA 确定性钉题：pin + v2-catalog，E2E 永别 band 掷骰子，2026-10-07）
 
 > 背景：R09 收口时全量回归大面积超时，根因=QA child 每轮 E2E 写 attempt → mastery band 漂移 → 旧 buildTaskPool 抽题命中=f(band 历史轨迹)不可复现（docs/governance/QA_PINNED_TASK_PROPOSAL.md 方案 A）。

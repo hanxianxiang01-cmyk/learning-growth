@@ -437,4 +437,48 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "sharing",
     },
+    {
+        # FE-1423 R11 estimation-canvas 金题：近似数估算（38 本≈40），
+        # **shopping 族首题**（词表"启用但零覆盖"第二族开始有真实数据）。
+        # expected 必须是 actual 四舍五入到最近十（前端 parseEstimationConfig 同守卫）。
+        "code": "V2-R11-EST-001",
+        "title": "书架上大约有多少本书",
+        "ability_id": "app_model",
+        "renderer": "estimation-canvas",
+        "ui_schema_version": "2.0",
+        "mode": "estimation_range",
+        "response_type": "estimation_canvas",
+        "content": {
+            "stem": "书店阿姨数到一半记下了：这一摞是 10 本。整个书架上的书比这一摞多得多。拖动滑条估一估书架上大约有多少本，再选一选你是怎么想的。（答案估到最接近的整十）",
+            "answer": 40,
+            "actual": 38,
+            "goal": "用参照量估算总数并四舍五入到整十",
+        },
+        "config": {
+            "reference": 10,
+            "max": 60,
+            "expected": 40,
+            "actual": 38,
+            "tolerance": 6,
+        },
+        "initial_state": {"estimate": None, "reason": None, "adjust_history": []},
+        "constraints": {"round_to_nearest_ten": True},
+        "capabilities": ["answer_input", "highlight", "focus", "undo", "reset"],
+        "evidence_targets": ["estimate", "reason", "adjust_history", "structure"],
+        "hint_ladder": [
+            {"level": 1, "text": "先看看那一摞 10 本有多高，再比一比书架上的高度。"},
+            {"level": 2, "text": "书架上的书摞起来大约有几个'一摞10本'那么高？"},
+            {"level": 3, "text": "比 3 摞多一点、比 4 摞少一点——3 摞是 30，4 摞是 40，你估哪个更接近？"},
+            {"level": 4, "text": "估算要估到最接近的整十：想一想 38 离 30 近还是离 40 近？"},
+        ],
+        "error_models": [
+            {"pattern": "no_reference_use", "code": "E-EST-01", "note": "没看参照量随手拖（估算策略错误原料）"},
+            {"pattern": "too_high", "code": "E-EST-02", "note": "估得过高（tolerance evaluator 方向原料）"},
+            {"pattern": "too_low", "code": "E-EST-03", "note": "估得过低（方向原料，close 分'差一点'与'差很多'）"},
+        ],
+        "task_type": "estimation",
+        "difficulty": 2,
+        "is_transfer": False,
+        "context_family": "shopping",
+    },
 ]
