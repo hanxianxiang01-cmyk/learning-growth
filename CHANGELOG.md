@@ -29,6 +29,18 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1421 R08 ArrayBoard Vertical Gate：B5 模板第八组件，product/structure 解耦首例，2026-10-07）
+
+> Batch C 起手（Gap R08）。array-board=行列建阵列表征乘法；本 Gate 的数学点=**积对≠摆对**：摆 4×3（目标 3×4）时乘法交换律让答案 12 仍**判对**，但 structure evaluator 报 `transpose` 留痕 Evidence——前端结构通道与后端判分通道独立可信、互不污染（**首个"判对但带诊断原料"实例**，R08 Diagnosis P0"行列概念错误"落地）。
+
+- **纯函数层** `arrayBoardV2.ts`：parseArrayBoardConfig（target 1~9 整数、max≥target 否则回退 9 保可达）+ applyRow/ColDelta 钳制 + `evaluateArray` EMPTY→PASS→transpose→count（方阵转置=PASS 自动兼容）+ serializeArrayBoardV2（rows/columns/product/target_structure/structure）。node 语义矩阵含 fallback 语义与双非法拒绝全过。
+- **组件** `ArrayBoardV2.tsx`：行/列 +/− 双控 + 实时点阵预览（grid 12 dot 断言）；ARRAY_ROW/COL_ADDED/REMOVED=Gap"行列调整轨迹"；专件替换基座 ArrayBoard 路由。
+- **链题**：R08 金题（排队做操 3×4=12）seed 真实 RDS——**app_model 节点第二题 + lineup_position 词表族首题**（治理文档"启用但零覆盖"三族之一开始有真实数据）；防漂移单测 +1（后端 87→**88 passed**，含"非方阵守卫"断言）。
+- **API 实证**：**transpose→correct:true**（解耦端到端实锤）；count 2×5→false HINT；PASS→NEXT_TASK；重放同 attempt_id。
+- **E2E** `e2e/r08-array-board.spec.mjs` 9/9（TRANSPOSE 专项双断言 correct=true+structure.error、只加行仍 EMPTY、G7 行+1列−1 改对、max 越界 disabled、UNDO/RESET、healing）。**全量套件 72 passed** 零回归。
+- contracts 事件枚举补 ARRAY_ROW/COL_*；registry vertical_gate "R08" + add/remove_object。
+- 底表 `docs/governance/R08_ARRAYBOARD_VERTICAL_GATE.md`。**Vertical Gate 进度 9/19**。
+
 ## Done（FE-1420 R10 FormulaBoard Vertical Gate：B5 模板第七组件，Batch B 全清，2026-10-07）
 
 > Batch B 收官（Gap R10）。formula-board=算式填空板（token 流+空槽），核心=**equation semantic evaluator**：左右两边各自求值核对等式，错误二分类各有金题靶——**operator**（翻符号可救=数对符号错）/**relation**（翻符号救不回=数量关系错）。**V2 首个非数字答案链**（answer="-"）端到端跑通（_judge 文本分支/numericOrText 透传/后端 str 比对全链路验证）。

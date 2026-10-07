@@ -364,4 +364,40 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "before_after",
     },
+    {
+        # Gate R08（FE-1421）：array-board 阵列板链——Gap R08（Batch C 起手）。
+        # 3行×4列排队情境；product/structure 解耦是数学点：摆成 4×3 积仍=12
+        # （交换律，后端判对），但 structure.error=transpose 留痕（行列概念互换
+        # 原料，R08 Diagnosis P0"行列概念错误"）。lineup_position 词表族首题。
+        "ability_id": "app_model",
+        "difficulty": 1,
+        "task_type": "array",
+        "title": "排队做操（V2 链 R08）",
+        "ui_schema_version": "2.0",
+        "renderer": "array-board",
+        "mode": "array_structure",
+        "content": {
+            "stem": "小朋友排队做操，每排站4人，站了3排。用行列把队伍排出来（先想横的几排、竖的几人），数一数一共几人？",
+            "answer": 12,
+            "goal": "用行列阵列表征几个几（3排×每排4人=12）",
+        },
+        "config": {"target_rows": 3, "target_cols": 4, "max_rows": 8, "max_cols": 8},
+        "initial_state": {"rows": 0, "cols": 0},
+        "capabilities": ["add_object", "remove_object", "answer_input", "undo", "reset"],
+        "constraints": {"rows_le_max": 8, "cols_le_max": 8},
+        "response_type": "array_board",
+        "evidence_targets": ["rows", "columns", "structure"],
+        "error_models": [
+            {"pattern": "transpose", "code": "modeling"},
+            {"pattern": "count", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "做操的队：横着一排一排站，有几排？",
+            "题目说站了3排——先加到3行。",
+            "每排站4人，就是竖着一列一列有4个。",
+            "3 行 4 列：一行一行数，4、8、12……",
+        ],
+        "is_transfer": False,
+        "context_family": "lineup_position",
+    },
 ]
