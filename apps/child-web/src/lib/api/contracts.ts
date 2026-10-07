@@ -246,6 +246,8 @@ export type InteractionEventType =
   | "NUMBER_INPUT_CHANGED"
   | "MAKE_TEN_COMPLETED"
   | "TEN_BROKEN"
+  | "BAR_BLOCK_ADDED"
+  | "BAR_BLOCK_REMOVED"
   | "SUBMITTED"
   | "UNDO"
   | "RESET"

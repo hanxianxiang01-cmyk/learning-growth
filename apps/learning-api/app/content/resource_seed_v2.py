@@ -203,4 +203,39 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "sharing",
     },
+    {
+        # Gate R02（FE-1418）：bar-model 条形模型链——SEM / Gap R02。
+        # part_whole 模式：部分 5+3，答案条=整体（c=a+b）。核心验证模型结构
+        # evaluator：已知条摆错=modeling、整体不比部分长=relation、数错=calc。
+        "ability_id": "app_model",
+        "difficulty": 1,
+        "task_type": "word_problem",
+        "title": "画条形图算一共（V2 链 R02）",
+        "ui_schema_version": "2.0",
+        "renderer": "bar-model",
+        "mode": "part_whole",
+        "content": {
+            "stem": "小雨有5颗红星星，又画了3颗黄星星。把两根部分条摆出来，再把整体条摆得和加起来一样长。一共几颗？",
+            "answer": 8,
+            "goal": "用条形图表征部分-整体关系（先摆已知，再摆整体）",
+        },
+        "config": {"mode": "part_whole", "known": {"a": 5, "b": 3}, "answer_bar": "c", "max_blocks": 12},
+        "initial_state": {"bars": {"a": 0, "b": 0, "c": 0}, "answerTouched": False},
+        "capabilities": ["add_object", "remove_object", "answer_input", "undo", "reset"],
+        "constraints": {"structure": "whole_gt_parts"},
+        "response_type": "bar_model",
+        "evidence_targets": ["bars", "structure"],
+        "error_models": [
+            {"pattern": "modeling", "code": "modeling"},
+            {"pattern": "calc", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "题目里红星星和黄星星各有几颗？先把这两根条摆出来。",
+            "整体条要跟什么一样长？和两根部分加起来一样长。",
+            "5 加 3 等于几？整体条就摆几格。",
+            "数一数你的整体条：是不是从开头到末尾正好 8 格？",
+        ],
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
 ]

@@ -112,7 +112,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R04" | "R07";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R07";
 };
 
 const implemented = (
@@ -206,8 +206,8 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
   ),
   "bar-model": implemented(
     "bar-model", "BarModel", "v1.3_reuse", "manipulative",
-    ["answer_input", "resize", "undo", "reset", "highlight", "focus"],
-    { visual_type: "bar-model", phase: 1 }
+    ["answer_input", "resize", "undo", "reset", "highlight", "focus", "add_object", "remove_object"],
+    { visual_type: "bar-model", phase: 1, vertical_gate: "R02" }
   ),
   "number-line": implemented(
     "number-line", "NumberLine", "v1.3_reuse", "manipulative",
