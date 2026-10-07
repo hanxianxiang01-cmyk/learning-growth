@@ -542,3 +542,19 @@ a{color:inherit}
 .sg-evaluation{margin:8px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
 .sg-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
 .sg-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}
+
+/* FE-1425 ShapeCanvas V2 (R13) */
+.shape-canvas-v2 .sc-board{display:block;margin:10px auto;border:2px solid var(--border-subtle,#dbe4e8);border-radius:14px;background:var(--cm-surface,#fff)}
+.shape-canvas-v2 .sc-line{stroke:var(--border-subtle,#e4ecef);stroke-width:2}
+.shape-canvas-v2 .sc-peg{fill:var(--cm-text-2,#9db0ba);cursor:pointer}
+.shape-canvas-v2 .sc-peg:hover{fill:var(--cm-primary,#2d7a68)}
+.shape-canvas-v2 .sc-peg.taken{fill:var(--cm-primary,#2d7a68)}
+.shape-canvas-v2 .sc-polygon{fill:color-mix(in srgb,var(--cm-primary,#2d7a68) 18%,transparent);stroke:var(--cm-primary,#2d7a68);stroke-width:3;stroke-linejoin:round}
+.shape-canvas-v2 .sc-vertex{fill:var(--cm-secondary,#d98324);stroke:#fff;stroke-width:2}
+.shape-canvas-v2 .sc-vertex-index{fill:#fff;font-size:12px;font-weight:800;pointer-events:none}
+.shape-canvas-v2 .sc-remove{width:auto!important;padding:0 10px;font-size:13px!important;font-weight:700}
+.sc-meta{margin:6px 0;font-size:15px;color:var(--cm-text-2,#5c7280)}
+.sc-meta strong{color:var(--cm-text-1,#20323d)}
+.sc-evaluation{margin:8px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
+.sc-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
+.sc-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}

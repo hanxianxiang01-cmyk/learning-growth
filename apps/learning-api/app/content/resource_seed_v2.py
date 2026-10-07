@@ -527,4 +527,45 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "school_objects",
     },
+    {
+        # FE-1425 R13 shape-canvas 金题：钉子板画面积 6 的长方形。
+        # 答案=面积 6；解耦靶：平行四边形 (0,0)(3,0)(4,2)(1,2) 面积同为 6 →
+        # 后端判对 + not_right_angle 几何属性原料走 Evidence（第四次运用）。
+        "code": "V2-R13-CANVAS-001",
+        "title": "钉子板上画一个长方形",
+        "ability_id": "app_model",
+        "renderer": "shape-canvas",
+        "ui_schema_version": "2.0",
+        "mode": "shape_drawing",
+        "response_type": "shape_canvas",
+        "content": {
+            "stem": "钉子板上按顺序点 4 个钉子，围出一个**长方形**，要正好盖住 6 个格子（面积=6）。点错了可以「撤一个点」。画好后提交，答案填它的面积。",
+            "answer": 6,
+            "goal": "用点阵顶点表征长方形（直角+面积约束）",
+        },
+        "config": {
+            "grid": 5,
+            "target_area": 6,
+            "target_shape": "rectangle",
+        },
+        "initial_state": {"vertices": []},
+        "constraints": {"vertex_count": 4, "right_angles": 4, "area": 6},
+        "capabilities": ["drag", "resize", "undo", "reset", "highlight", "focus", "draw"],
+        "evidence_targets": ["vertices", "area", "right_angles", "structure"],
+        "hint_ladder": [
+            {"level": 1, "text": "长方形要点几个钉子？（4 个，每个角都要方方正正）"},
+            {"level": 2, "text": "面积 6 可以怎么分？想一想 6=几×几。"},
+            {"level": 3, "text": "6=3×2：先点一个角，向右数 3 格点第二个角。"},
+            {"level": 4, "text": "按 (左下)→右 3 格→上 2 格→左 3 格 的顺序点，围出来数数是不是 6 格。"},
+        ],
+        "error_models": [
+            {"pattern": "vertex_count", "code": "E-SC-01", "note": "顶点数不是 4（图形种类错）"},
+            {"pattern": "not_right_angle", "code": "E-SC-02", "note": "四边形但角不是直角（歪斜/凹形——几何属性错误 P0 原料）"},
+            {"pattern": "wrong_size", "code": "E-SC-03", "note": "是长方形但面积≠6（尺寸错）"},
+        ],
+        "task_type": "word_problem",
+        "difficulty": 2,
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
 ]
