@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getLearningApi } from "@/src/lib/api";
-import { resolveAbilityId, type ChallengeKind } from "@/src/lib/challengeMapping";
+import {
+  CHALLENGE_CARDS,
+  resolveAbilityId,
+  type ChallengeKind
+} from "@/src/lib/challengeMapping";
 import type { AbilityState, LearnerProfile } from "@/src/lib/api/contracts";
 import {
   GrowthEntryCard,
@@ -31,6 +35,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
   }, [api, childId]);
 
   const start = async (challenge: ChallengeKind) => {
+    // FE-1428：challenge 即卡片 kind；能力解析走 challengeMapping（关键词优先，app_* 兜底）
     setStarting(true);
     setError(null);
     try {
@@ -95,25 +100,21 @@ export function MathHomeScreen({ childId }: { childId: string }) {
             </span>
           </div>
 
-          <div className="task-grid">
-            <MathTaskCard
-              icon="🔢"
-              title="数量关系挑战"
-              goal="通过摆一摆、画一画理解题目关系"
-              minutes={8}
-              difficulty={2}
-              loading={starting}
-              onStart={() => start("quantity")}
-            />
-            <MathTaskCard
-              icon="🧩"
-              title="策略挑战"
-              goal="尝试用不同方法解决同一个问题"
-              minutes={6}
-              difficulty={2}
-              loading={starting}
-              onStart={() => start("strategy")}
-            />
+          {/* FE-1428：挑战入口改为 CHALLENGE_CARDS 配置表驱动——V2 各能力节点
+              先各放一张手工测试入口卡，测试通过后在配置表里增删即可收起/优化。 */}
+          <div className="task-grid task-grid-challenge">
+            {CHALLENGE_CARDS.map(card => (
+              <MathTaskCard
+                key={card.kind}
+                icon={card.icon}
+                title={card.title}
+                goal={card.goal}
+                minutes={card.minutes}
+                difficulty={card.difficulty}
+                loading={starting}
+                onStart={() => start(card.kind)}
+              />
+            ))}
           </div>
         </section>
 
