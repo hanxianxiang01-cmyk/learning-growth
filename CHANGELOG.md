@@ -29,6 +29,17 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1424 R12 ShapeGallery Vertical Gate：B5 模板第十一组件，图形分类解耦最锋利一例，Batch D 起手，2026-10-07）
+
+> Batch D 起手（Gap R12）。shape-gallery=图形墙选形分类：点形拿起（toggle 可放下）→ 点"正方形的家"放进 → 点家里成员退回。**答案=家里图形个数**——本 Gate 把解耦口径推到最锋利：混入长方形但数对 3 → **后端判对（correct=true NEXT_TASK）+ attribute_confusion 原料留痕**（R08/R11 之后第三次运用，几何域成立=跨域通用架构）。分类 evaluator 判定顺序=属性错优先于漏放（Diagnosis P0"属性识别错误"权重）；config 守卫（前端 parser 同式）：目标类必须有成员且墙上有诱饵，否则答案退化为"全拿"。
+
+- **纯函数层** `shapeGalleryV2.ts`：parseShapeGalleryConfig（id 唯一/kind 四类/target 有成员且有诱饵）+ applySelect（toggle+IN_HOME 拒）/applyPlaceHome（NO_SELECTION）/applyReturnHome + evaluateShapeGallery EMPTY→attribute_confusion→missed→PASS + serialize（home 轨迹序/home_kinds 原料/structure）。node 语义矩阵全过。
+- **组件** `ShapeGalleryV2.tsx`：墙+家两步点选（儿童可靠性口径不依赖 drag）；SHAPE_SELECTED/DESELECTED/PLACED/HOME_REJECTED/RETURNED 事件链=Gap"选择与分类轨迹"；专件替换基座路由。
+- **链题**：R12 金题（给正方形找一个家，答案=3，school_objects）**app_cond 节点第二题** seed RDS；防漂移+1（后端 95→**96 passed**）。
+- **API 实证**（pin 首抽即中）：混入但数对→**true**（解耦端到端）/ missed→false HINT / PASS→NEXT_TASK / 重放同 attempt_id。
+- **E2E** `e2e/r12-shape-gallery.spec.mjs` **12/12 一次全过**（toggle、NO_SELECTION、home 轨迹序断言、解耦双断言、退回修正路径、IN_HOME disabled、G7 漏放→补放 attempt_no=2、dblclick 防重入、UNDO 单步、healing）。全量套件 **105 passed** 零回归。
+- 底表 `docs/governance/R12_SHAPEGALLERY_VERTICAL_GATE.md`。**Vertical Gate 进度 12/19**。
+
 ## Done（FE-1423 R11 EstimationCanvas Vertical Gate：B5 模板第十组件，近似数估算+理由，Batch C 全清，2026-10-07）
 
 > Batch C 收官（Gap R11）。estimation-canvas=滑条估算+理由 chip：**判分锚定小学近似数语义**（38≈最接近整十=40，答案唯一，后端 float 相等判分不动冻结链）；tolerance evaluator 的 too_high/too_low+close 粒度是**诊断原料走 Evidence**（R08 transpose 解耦同款口径——方向对情境真值 actual、close 对目标 expected）。Gap"五状态"落地：EMPTY(estimate)→EMPTY(reason)→PASS→FAIL(too_high/too_low) 各有 E2E 靶。
