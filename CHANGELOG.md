@@ -29,6 +29,19 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1419 R06 PlaceValue Vertical Gate：B5 模板第六组件，位值混淆诊断专项，2026-10-07）
+
+> Batch B 第二题（Gap R06）。place-value=数字卡放位值框（digit movement）；**牌堆 multiset 守卫让孩子只可能"站错位置"**——structure evaluator 产出 place_confusion 原料（R06 Diagnosis P0"位值混淆"落地）。
+
+- **纯函数层** `placeValueV2.ts`：parsePlaceValueConfig（target 10~999 位数自适应 places、pool multiset 强制相等、非法拒绝双负例）+ applyPick/applySlot 三动作（place/swap/return）+ evaluatePlaceValue EMPTY/PASS/place_confusion + serializePlaceValueV2（slots/pool_remaining/answer/target_digits/structure）。node 语义矩阵全过（含 swap 对调回堆）。
+- **组件** `PlaceValueV2.tsx`：框/牌堆点选两步交互（儿童可靠性口径替代 drag，Gap 语义等价）、选中态高亮、DIGIT_PICKED/UNPICKED/PLACED/SWAPPED/RETURNED 事件、revision 清态；专件替换基座 PlaceValue 路由。
+- **链题**：R06 金题（**app_rd 能力节点首题**，数字卡回家 352，pool=[2,5,3] 乱序，school_objects）seed 真实 RDS；防漂移单测 +1（后端 84→**85 passed**）。
+- **API 实证**：混淆拼 325→correct=false HINT（place_confusion 证据入库）；答对 352→NEXT_TASK；重放同 attempt_id；异内容 409。
+- **E2E** `e2e/r06-place-value.spec.mjs` 9/9（EMPTY 部分放置负例、CONFUSE 专项断言 structure.error、**SWAP 修正路径**（站错两张对调改对）、G7 混淆→提示→swap→attempt_no=2、UNDO 双步历史、防重入、清态、healing）。全量套件 **54 passed** 零回归。
+- contracts 事件枚举补 DIGIT_PICKED/UNPICKED/PLACED/SWAPPED/RETURNED；registry vertical_gate "R06"+select。
+- **UNDO 粒度教训**：pick 与 place 各是一步 history，撤销回"牌未拿起"需两步（skill 坑清单已补）。
+- 底表 `docs/governance/R06_PLACEVALUE_VERTICAL_GATE.md`。**Vertical Gate 进度 7/19**。
+
 ## Done（FE-1418 R02 BarModel Vertical Gate：B5 模板第五组件，模型结构 evaluator 三分法，2026-10-07）
 
 > Batch B 先锋（Gap R02）。bar-model 的独有价值=**结构错误分类证据**：modeling（已知条读错）/relation（模型不成立）/calc（数算错）三类各自 E2E 可达，序列化进 Evidence 供后端诊断原料；前端弱判不越权，判分仍后端权威。

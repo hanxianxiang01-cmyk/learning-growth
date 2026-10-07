@@ -118,3 +118,23 @@ def test_r02_exists_and_shape():
     assert {"modeling", "calc"} <= codes
     assert "structure" in R02["evidence_targets"]
     assert R02["context_family"] == "school_objects"
+
+
+R06 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "place-value")
+
+
+def test_r06_exists_and_shape():
+    validate_renderer_id(R06["renderer"])
+    assert is_implemented(R06["renderer"])
+    assert R06["mode"] == "place_value_build"
+    assert R06["response_type"] == "place_value"
+    c = R06["config"]
+    # 牌堆必须与目标数字 multiset 相等（前端 parser 同款守卫——不一致则题不可解）
+    assert sorted(c["pool"]) == sorted(int(d) for d in str(c["target"]))
+    assert c["target"] == R06["content"]["answer"]
+    assert 10 <= c["target"] <= 999
+    # R06 Diagnosis P0：位值混淆原料必须在 error_models
+    patterns = {e["pattern"] for e in R06["error_models"]}
+    assert "place_value_confusion" in patterns
+    assert {"slots", "structure"} <= set(R06["evidence_targets"])
+    assert "select" in R06["capabilities"]
