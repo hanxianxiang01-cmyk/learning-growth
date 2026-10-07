@@ -29,6 +29,14 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1428 首页挑战入口配置化：V2 五能力节点各一张手工测试卡，2026-10-07）
+
+> 14 个已闭 Gate 中 8 个组件的 V2 金题挂在 app_model / app_rd / app_cond 三个能力节点上，但首页写死只有「数量关系」「策略」两张卡（app_rel/app_strat），新组件无手工测试入口。按"每个卡先放一个入口组件，测试通过完再收起或优化"的口径改造：入口从硬编码改为 `CHALLENGE_CARDS` 配置表驱动，5 个 V2 金题能力节点各一张卡；后续收起/优化只动配置表，渲染逻辑不再改。
+
+- `challengeMapping.ts`：`ChallengeKind` 扩为 quantity/modeling/reading/conditions/strategy；新增 `CHALLENGE_CARDS`（icon/title/goal/keywords/fallbackAbilityId）。解析仍按名称关键词优先（后端/mock 两套命名兼容），解析不到退 `fallback_ability_id`（app_* canonical，与 ability_seed 及 mock 能力表一致）。
+- `MathHomeScreen.tsx`：两张写死卡 → `CHALLENGE_CARDS.map` 动态渲染（5 卡，2 列网格自然排布）。
+- 验证：tsc 0 错、next build ✓（**新坑：NODE_OPTIONS 注入的 brokered-fs-shim 与 webpack 并行 mkdir 竞态致 EEXIST/ENOENT 假失败，`NODE_OPTIONS=""` 绕过后正常**；build 会自动把 distDir types 追加进 tsconfig include，提交前需回滚）；3100 首页 SSR 实测 5 张卡全出；后端抽查 app_model/app_rd/app_cond 三节点 `tasks/next` 均正确命中 V2 金题 goal。E2E 零触碰（无 spec 引用首页卡）。
+
 ## Done（FE-1426 R14 SortingBoard Vertical Gate：B5 模板第十三组件，比较维度干扰设计，Batch D 3/4，2026-10-07）
 
 > Batch D 第三题（Gap R14）。sorting-board=两步点选交换排序（点 A 拿、点 B 换位，drag 的儿童可靠性等价替代）。答案=数值升序拼接整数（1247，后端标量相等判分不动冻结链）。**Diagnosis P0"比较维度错误"的设计落地**：卡面字号（visual_rank）与数值**故意错开**做干扰维度——按"看起来大"排 → dimension_confusion 精确命中；parser 守卫保证正序/降序/视觉序三态互斥（否则分诊失效）。
