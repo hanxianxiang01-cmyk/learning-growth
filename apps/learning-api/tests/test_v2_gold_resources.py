@@ -170,3 +170,24 @@ def test_r10_operator_gold():
     # Gap R10 Diagnosis P0"运算符错误"原料
     assert "operator" in {e["pattern"] for e in R10OP["error_models"]}
     assert R10OP["context_family"] == "before_after"
+
+
+R08 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "array-board")
+
+
+def test_r08_exists_and_shape():
+    validate_renderer_id(R08["renderer"])
+    assert is_implemented(R08["renderer"])
+    assert R08["mode"] == "array_structure"
+    assert R08["response_type"] == "array_board"
+    c = R08["config"]
+    assert c["target_rows"] * c["target_cols"] == R08["content"]["answer"]
+    # 非方阵：transpose 判定才有意义（方阵转置=正确摆法）
+    assert c["target_rows"] != c["target_cols"]
+    assert c["max_rows"] >= c["target_rows"] and c["max_cols"] >= c["target_cols"]
+    # Gap R08 Diagnosis P0：行列概念错误原料（transpose 分类必须在 error_models）
+    patterns = {e["pattern"] for e in R08["error_models"]}
+    assert {"transpose", "count"} <= patterns
+    # lineup_position 词表首题（此前该族零覆盖——治理文档如实记录）
+    assert R08["context_family"] == "lineup_position"
+    assert {"rows", "columns", "structure"} <= set(R08["evidence_targets"])
