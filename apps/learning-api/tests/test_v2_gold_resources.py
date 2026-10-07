@@ -191,3 +191,24 @@ def test_r08_exists_and_shape():
     # lineup_position 词表首题（此前该族零覆盖——治理文档如实记录）
     assert R08["context_family"] == "lineup_position"
     assert {"rows", "columns", "structure"} <= set(R08["evidence_targets"])
+
+
+R09 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "grouping-board")
+
+
+def test_r09_exists_and_shape():
+    validate_renderer_id(R09["renderer"])
+    assert is_implemented(R09["renderer"])
+    assert R09["mode"] == "equal_groups"
+    assert R09["response_type"] == "grouping_board"
+    c = R09["config"]
+    # 等分整除：答案=每组个数（前端 groupingAnswer 同口径）
+    assert c["items"] % c["target_groups"] == 0
+    assert c["items"] // c["target_groups"] == R09["content"]["answer"]
+    assert c["max_groups"] >= c["target_groups"]
+    # Gap R09 Diagnosis P0"分组数量/每组数量错误"两支原料
+    patterns = {e["pattern"] for e in R09["error_models"]}
+    assert {"group_count", "unequal_share"} <= patterns
+    assert {"groups", "structure"} <= set(R09["evidence_targets"])
+    # sharing 族第二题（R07 首题后）
+    assert R09["context_family"] == "sharing"

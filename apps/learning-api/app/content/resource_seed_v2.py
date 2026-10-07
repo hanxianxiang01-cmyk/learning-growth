@@ -400,4 +400,41 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "lineup_position",
     },
+    {
+        # Gate R09（FE-1422）：grouping-board 平均分物链——Gap R09（Batch C 第二题）。
+        # 12 颗糖分给 3 个小朋友（3组×每组一样多，答案=每组 4）。
+        # structure evaluator 二分类各有靶：count（组数≠3）/unequal（不均）。
+        # sharing 族第二题；app_rel 节点第四题。
+        "ability_id": "app_rel",
+        "difficulty": 3,
+        "task_type": "word_problem",
+        "title": "把糖分给小朋友（V2 链 R09）",
+        "ui_schema_version": "2.0",
+        "renderer": "grouping-board",
+        "mode": "equal_groups",
+        "content": {
+            "stem": "12颗糖要平均分给3个小朋友。圈出3个组，把糖一颗一颗发完，每人都要一样多。每人几颗？",
+            "answer": 4,
+            "goal": "主动建组+逐组分发，建立等分（平均）概念",
+        },
+        "config": {"items": 12, "target_groups": 3, "max_groups": 6},
+        "initial_state": {"groups": [], "pool": 12},
+        "capabilities": ["grouping", "answer_input", "undo", "reset"],
+        "constraints": {"items_equal_groups": True},
+        "response_type": "grouping_board",
+        "evidence_targets": ["groups", "structure"],
+        "error_models": [
+            {"pattern": "group_count", "code": "modeling"},
+            {"pattern": "unequal_share", "code": "modeling"},
+            {"pattern": "calc", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "先圈出3个组——要分给几个小朋友？",
+            "从上面的糖堆里发：点一个组的＋号，一颗一颗发。",
+            "发完啦？数数每组是不是一样多。",
+            "12颗平均分给3人：12÷3=几？",
+        ],
+        "is_transfer": False,
+        "context_family": "sharing",
+    },
 ]

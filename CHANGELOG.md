@@ -29,6 +29,27 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1422a QA 确定性钉题：pin + v2-catalog，E2E 永别 band 掷骰子，2026-10-07）
+
+> 背景：R09 收口时全量回归大面积超时，根因=QA child 每轮 E2E 写 attempt → mastery band 漂移 → 旧 buildTaskPool 抽题命中=f(band 历史轨迹)不可复现（docs/governance/QA_PINNED_TASK_PROPOSAL.md 方案 A）。
+
+- **后端**：`app/core/qa.py`（QA_CHILD_ID/is_qa_child）+ `GET /v1/content/v2-catalog`（published+V2 门控同口径，应用层过滤避免方言）+ `tasks/next` 可选 `pin_resource_version_id`——**路由层硬校验仅 QA child（真实 child 403）**，命中直接落题绕过 band/排除，strategy_policy 带 `pinned:true` 审计标记；pin 缺省路径比特级不变。
+- **契约**：openapi.yaml 入 spec（catalog 路径 + pin 参数 + 403）；`tests/test_qa_pin.py` 6 用例（守卫在触库前短路，db=None 安全）；后端 89→**94 passed**。
+- **E2E**：共享模块 `e2e/pinned-tasks.mjs`（catalog 模块级缓存、每 task 独立 session+pin、renderer#mode 键定位）；**9 个 spec 旧 buildTaskPool/fetchTasks 全数替换**——钉题确定性 100%。
+- **QA 池**：`scripts/qa_child_setup.py --reset-bands`（7 能力回 level0/conf0/band(1,1)，仅动 …0099）。
+- **验收**：全量 E2E **连续 2 次 83/83 全绿**（第二轮为 band 重置后跑，实证不再依赖运气）。
+
+## Done（FE-1422 R09 GroupingBoard Vertical Gate：B5 模板第九组件，主动建组平均分物，2026-10-07）
+
+> Batch C 第二题（Gap R09）。grouping-board=平均分物：孩子**主动建组、逐组发糖、收回、解散空组**——分的过程是动作不是渲染结果。structure evaluator 二分类各有靶：**count**（组数≠目标：2组×6）/**unequal**（组数对但不均：3组 5,4,3）；EMPTY=池里还有没发的（"分完才是一个成立的答案"）。
+
+- **纯函数层** `groupingBoardV2.ts`：parseGroupingConfig（items 2~20/target≥2≤items/max 守卫、**不尽分形态放行**——12÷5组恒 unequal 数学自洽）+ applyAddGroup/RemoveGroup（**防丢物：有糖组不可解散**）/addItem/removeItem（POOL_EMPTY 拒）+ evaluateGrouping EMPTY→count→unequal→PASS + serialize（groups[]/pool_remaining/answer/target_groups/items/structure）。node 语义矩阵全过。
+- **组件** `GroupingBoardV2.tsx`：池子可视化+逐组＋/−/解散按钮；GROUP_CREATED/REMOVED+ITEM_ADDED/REMOVED=Gap"分组过程"事件链；专件替换基座路由。
+- **链题**：R09 金题（12糖分3人=每人4，**sharing 族第二题**、app_rel 第四题）seed RDS；防漂移单测+1（后端 88→**89 passed**）。
+- **API 实证**：(6,6) count→false HINT；(5,4,3) unequal→false；(4,4,4)→true NEXT_TASK；重放同 attempt_id。
+- **E2E** `e2e/r09-grouping-board.spec.mjs` 11/11（**R09-FIX 收回+补发修正路径**、R09-DISMISS 防丢物约束、G7 收光重圈第三组 attempt_no=2、发11/12仍EMPTY、UNDO 单步回 EMPTY、healing）。全量套件 **83 passed** 零回归。
+- 底表 `docs/governance/R09_GROUPINGBOARD_VERTICAL_GATE.md`。**Vertical Gate 进度 10/19**。
+
 ## Done（FE-1421 R08 ArrayBoard Vertical Gate：B5 模板第八组件，product/structure 解耦首例，2026-10-07）
 
 > Batch C 起手（Gap R08）。array-board=行列建阵列表征乘法；本 Gate 的数学点=**积对≠摆对**：摆 4×3（目标 3×4）时乘法交换律让答案 12 仍**判对**，但 structure evaluator 报 `transpose` 留痕 Evidence——前端结构通道与后端判分通道独立可信、互不污染（**首个"判对但带诊断原料"实例**，R08 Diagnosis P0"行列概念错误"落地）。

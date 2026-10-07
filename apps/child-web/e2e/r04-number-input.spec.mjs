@@ -1,48 +1,15 @@
 // FE-1415 R04 number-input 真实页面 E2E（B5 模板第三实例；submission_id 幂等专项）。
 // 合同：B5_E2E_VERTICAL_GATE.md 口径 + docs/frontend/31 SEM-1413 / Gap R04。
+// 钉题：FE-1422a 确定性 pin（v2-catalog → pin_resource_version_id），不靠 band 运气。
 // 数据卫生：CHILD=QA-Simulator …0099（QA_DATA_HYGIENE R1/R3）。
 import { test, expect, request as pwRequest } from "@playwright/test";
+import { fetchPinnedTasks } from "./pinned-tasks.mjs";
 
 const API = process.env.E2E_API_BASE ?? "http://127.0.0.1:8000";
 const CHILD = process.env.E2E_CHILD_ID ?? "00000000-0000-0000-0000-000000000099";
 
-const TASK_POOL_SIZE = 8;
-let taskPool = null;
-let poolCursor = 0;
-
-async function buildTaskPool(n) {
-  const ctx = await pwRequest.newContext({ baseURL: API });
-  const tasks = [];
-  for (let s = 0; s < 25 && tasks.length < n; s += 1) {
-    const session = await ctx.post("/v1/learning/sessions", {
-      data: { child_id: CHILD, subject: "math", requested_minutes: 15 }
-    });
-    const sid = (await session.json()).session_id;
-    for (let i = 0; i < 16 && tasks.length < n; i += 1) {
-      const resp = await ctx.post("/v1/learning/tasks/next", {
-        data: { child_id: CHILD, session_id: sid, subject: "math", ability_id: "app_rel", requested_minutes: 15 }
-      });
-      const t = await resp.json();
-      const ui = t.ui_schema || {};
-      const ws = (ui.workspaces || [])[0] || {};
-      if (ui.schema_version === "2.0" && ws.renderer === "number-input") {
-        tasks.push({ task: t, sessionId: sid });
-      }
-    }
-  }
-  await ctx.dispose();
-  if (tasks.length < n) throw new Error(`预取 R04 task 不足：${tasks.length}/${n}`);
-  return tasks;
-}
-
-async function fetchR04Tasks(k) {
-  if (!taskPool) taskPool = await buildTaskPool(TASK_POOL_SIZE);
-  const out = [];
-  for (let i = 0; i < k; i += 1) {
-    if (poolCursor >= taskPool.length) taskPool.push(...(await buildTaskPool(k)));
-    out.push(taskPool[poolCursor++]);
-  }
-  return out;
+function r04Tasks(k) {
+  return fetchPinnedTasks({ api: API, child: CHILD, renderer: "number-input", count: k });
 }
 
 async function pinTasks(page, tasks) {
@@ -78,7 +45,7 @@ async function submitAttempt(page) {
 
 // ---------- G1：V2 number-input 渲染不降级（不回到 V1 AnswerComposer） ----------
 test("R04-E2E-09 (G1) 渲染 number-input V2，无开发中卡", async ({ page }) => {
-  const [r] = await fetchR04Tasks(1);
+  const [r] = await r04Tasks(1);
   await pinTasks(page, [r]);
   await page.goto(sessionUrl("g1"));
   await expect(card(page)).toBeVisible();
@@ -89,7 +56,7 @@ test("R04-E2E-09 (G1) 渲染 number-input V2，无开发中卡", async ({ page }
 
 // ---------- G2/G3：空/非法输入不可提交 ----------
 test("R04-E2E-03 (G2/G3) 空输入与越界输入 → 提交禁用、不发请求", async ({ page }) => {
-  const [r] = await fetchR04Tasks(1);
+  const [r] = await r04Tasks(1);
   await pinTasks(page, [r]);
   await page.goto(sessionUrl("empty"));
   await input(page).fill("99"); // 越界 → null
@@ -105,7 +72,7 @@ test("R04-E2E-03 (G2/G3) 空输入与越界输入 → 提交禁用、不发请�
 
 // ---------- G6/G4：错误答案可提交 + envelope 合同 + HINT 链 ----------
 test("R04-E2E-02 (G6/G4) 答 3 → envelope 合同 → correct=false → HINT", async ({ page }) => {
-  const [r] = await fetchR04Tasks(1);
+  const [r] = await r04Tasks(1);
   await pinTasks(page, [r]);
   await page.goto(sessionUrl("wrong"));
   await input(page).fill("3");
@@ -131,7 +98,7 @@ test("R04-E2E-02 (G6/G4) 答 3 → envelope 合同 → correct=false → HINT", 
 
 // ---------- 幂等专项（Gap R04 核心使命）：双击只一个 attempt ----------
 test("R04-IDEM 防重入：双击提交只发一个 POST（submission_id 唯一）", async ({ page }) => {
-  const [r] = await fetchR04Tasks(1);
+  const [r] = await r04Tasks(1);
   await pinTasks(page, [r]);
   await page.goto(sessionUrl("idem"));
   await input(page).fill("5");
@@ -149,7 +116,7 @@ test("R04-IDEM 防重入：双击提交只发一个 POST（submission_id 唯一�
 
 // ---------- G5/G7：重试链（attempt_no 递增 + 单 Task 单证据） ----------
 test("R04-G7 答错改对：attempt_no=2、重试后可提交且判对", async ({ page }) => {
-  const [r] = await fetchR04Tasks(1);
+  const [r] = await r04Tasks(1);
   await pinTasks(page, [r]);
   await page.goto(sessionUrl("retry"));
 
@@ -171,7 +138,7 @@ test("R04-G7 答错改对：attempt_no=2、重试后可提交且判对", async (
 
 // ---------- E2E-08：revision 切换清态 ----------
 test("R04-E2E-08 下一题清空输入，不继承答案", async ({ page }) => {
-  const two = await fetchR04Tasks(2);
+  const two = await r04Tasks(2);
   const task2 = structuredClone(two[1].task);
   task2.ui_schema.ui_revision = `${two[1].task.ui_schema.ui_revision}-rev2`;
   await pinTasks(page, [two[0], { task: task2, sessionId: two[1].sessionId }]);
@@ -189,7 +156,7 @@ test("R04-E2E-08 下一题清空输入，不继承答案", async ({ page }) => {
 // ---------- 双皮肤 ----------
 test("R04-E2E-10 healing 皮肤同契约", async ({ page }) => {
   test.skip(!process.env.E2E_HEALING_BASE, "需 3101 healing 实例");
-  const [r] = await fetchR04Tasks(1);
+  const [r] = await r04Tasks(1);
   await pinTasks(page, [r]);
   const url = new URL(sessionUrl("healing"), process.env.E2E_HEALING_BASE);
   await page.goto(url.toString());
