@@ -246,3 +246,29 @@ def round_to_ten_guard(c: dict) -> bool:
         and c["expected"] <= c["max"]
         and c["actual"] <= c["max"]
     )
+
+
+R12 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "shape-gallery")
+
+
+def test_r12_exists_and_shape():
+    validate_renderer_id(R12["renderer"])
+    assert is_implemented(R12["renderer"])
+    assert R12["mode"] == "shape_classification"
+    assert R12["response_type"] == "shape_gallery"
+    c = R12["config"]
+    shapes = c["shapes"]
+    assert 4 <= len(shapes) <= 10
+    ids = [s["id"] for s in shapes]
+    assert len(ids) == len(set(ids)), "图形 id 必须唯一（前端 parser 同守卫）"
+    target_ids = {s["id"] for s in shapes if s["kind"] == c["target_kind"]}
+    # 答案=目标类成员数；且有非目标诱饵（分类才成立）
+    assert len(target_ids) == R12["content"]["answer"]
+    assert 1 <= len(target_ids) < len(shapes)
+    # Gap R12 Diagnosis P0"属性识别错误"原料
+    patterns = {e["pattern"] for e in R12["error_models"]}
+    assert {"attribute_confusion", "missed"} <= patterns
+    assert {"home", "home_kinds", "structure"} <= set(R12["evidence_targets"])
+    assert "select" in R12["capabilities"]
+    # app_cond 能力节点第二题
+    assert R12["ability_id"] == "app_cond"

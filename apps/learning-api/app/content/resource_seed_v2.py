@@ -481,4 +481,50 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "shopping",
     },
+    {
+        # FE-1424 R12 shape-gallery 金题：图形分类墙（把正方形送回它的家）。
+        # 答案=目标类成员数 3（可"数对但混入"——attribute_confusion 走 Evidence，
+        # R08/R11 解耦口径第三次运用）。**app_cond 能力节点第二题**。
+        "code": "V2-R12-SHAPE-001",
+        "title": "给正方形找一个家",
+        "ability_id": "app_cond",
+        "renderer": "shape-gallery",
+        "ui_schema_version": "2.0",
+        "mode": "shape_classification",
+        "response_type": "shape_gallery",
+        "content": {
+            "stem": "美术角的图形墙上有 6 个图形邻居混住了。把所有的**正方形**点起来，放进下面「正方形的家」里——长方形、圆形的朋友可不是正方形哦。数一数家里最后有几个图形。",
+            "answer": 3,
+            "goal": "按边与角的属性识别并分类正方形（计数验证）",
+        },
+        "config": {
+            "target_kind": "square",
+            "shapes": [
+                {"id": "s1", "name": "红正方形", "kind": "square", "color": "#d64545"},
+                {"id": "r1", "name": "蓝长方形", "kind": "rectangle", "color": "#3b6fb5"},
+                {"id": "s2", "name": "绿正方形", "kind": "square", "color": "#2f9e63"},
+                {"id": "c1", "name": "黄圆形", "kind": "circle", "color": "#d9a520"},
+                {"id": "s3", "name": "紫正方形", "kind": "square", "color": "#7a5aa8"},
+                {"id": "r2", "name": "橙长方形", "kind": "rectangle", "color": "#d98324"},
+            ],
+        },
+        "initial_state": {"selected": None, "home": []},
+        "constraints": {"target_members": 3, "decoys": 3},
+        "capabilities": ["select", "highlight", "focus", "answer_input", "undo", "reset"],
+        "evidence_targets": ["home", "home_kinds", "structure", "selected"],
+        "hint_ladder": [
+            {"level": 1, "text": "正方形和长方形哪里不一样？数一数它们的边。"},
+            {"level": 2, "text": "正方形的四条边都一样长，长方形有两条长、两条短。"},
+            {"level": 3, "text": "先把四条边一样长的图形挑出来拿在手里。"},
+            {"level": 4, "text": "红、绿、紫三个图形四条边都一样长——把它们都送回家再数。"},
+        ],
+        "error_models": [
+            {"pattern": "attribute_confusion", "code": "E-SG-01", "note": "把长方形/圆形当正方形放进家（属性识别错误 P0 原料）"},
+            {"pattern": "missed", "code": "E-SG-02", "note": "成员全对但漏放（分类不完整原料）"},
+        ],
+        "task_type": "word_problem",
+        "difficulty": 1,
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
 ]
