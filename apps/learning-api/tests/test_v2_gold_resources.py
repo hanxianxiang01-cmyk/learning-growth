@@ -138,3 +138,35 @@ def test_r06_exists_and_shape():
     assert "place_value_confusion" in patterns
     assert {"slots", "structure"} <= set(R06["evidence_targets"])
     assert "select" in R06["capabilities"]
+
+
+R10 = next(r for r in GOLD_RESOURCES_V2 if r.get("mode") == "unknown_number")
+R10OP = next(r for r in GOLD_RESOURCES_V2 if r.get("mode") == "unknown_operator")
+
+
+def test_r10_number_slot_gold():
+    validate_renderer_id(R10["renderer"])
+    assert is_implemented(R10["renderer"])
+    assert R10["response_type"] == "formula_board"
+    tokens = R10["config"]["tokens"]
+    assert sum(1 for t in tokens if t["t"] == "eq") == 1
+    slots = [t for t in tokens if t["t"] == "slot"]
+    assert len(slots) == 1 and slots[0]["accept"] == "number"
+    assert R10["config"]["answer_slot"] == slots[0]["id"]
+    # 等式语义可解：□+4=9 → 5（与 evaluator 同口径核对）
+    assert R10["content"]["answer"] == 9 - 4
+    assert R10["ability_id"] == "app_strat"  # 节点首题
+    assert {"filled", "structure"} <= set(R10["evidence_targets"])
+
+
+def test_r10_operator_gold():
+    tokens = R10OP["config"]["tokens"]
+    slots = [t for t in tokens if t["t"] == "slot"]
+    assert len(slots) == 1 and slots[0]["accept"] == "operator"
+    assert R10OP["config"]["answer_slot"] == slots[0]["id"]
+    # 7○2=5 的唯一解是 "-"
+    assert R10OP["content"]["answer"] == "-"
+    assert 7 - 2 == 5 and 7 + 2 != 5
+    # Gap R10 Diagnosis P0"运算符错误"原料
+    assert "operator" in {e["pattern"] for e in R10OP["error_models"]}
+    assert R10OP["context_family"] == "before_after"

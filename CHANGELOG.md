@@ -29,6 +29,19 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1420 R10 FormulaBoard Vertical Gate：B5 模板第七组件，Batch B 全清，2026-10-07）
+
+> Batch B 收官（Gap R10）。formula-board=算式填空板（token 流+空槽），核心=**equation semantic evaluator**：左右两边各自求值核对等式，错误二分类各有金题靶——**operator**（翻符号可救=数对符号错）/**relation**（翻符号救不回=数量关系错）。**V2 首个非数字答案链**（answer="-"）端到端跑通（_judge 文本分支/numericOrText 透传/后端 str 比对全链路验证）。
+
+- **纯函数层** `formulaBoardV2.ts`：parseFormulaConfig（token 四类校验、恰一等号、槽 1~3、answer_slot 存在性、两侧各≤1 运算形态守卫）+ applyActivate/applyNumberKey（多位追加/上限/首位 0 拒）/applyOperatorKey（替换 flagged）/applyClear + evaluateFormula EMPTY/PASS/operator/relation + serializeFormulaBoardV2。node 语义矩阵 20+ 断言全过。
+- **组件** `FormulaBoardV2.tsx`：点亮空圈→弹对应键盘（数字盘/＋－大盘）、SLOT_ACTIVATED/NUMBER_FILLED/**NUMBER_REPLACED**/OPERATOR_FILLED/**OPERATOR_REPLACED**/SLOT_CLEARED 事件链——Gap R10 Evidence"修改顺序、替换过程"成为可回放事件序列；专件替换基座路由。
+- **链题**：**双金题一 Gate**（□+4=9 unknown_number + 7○2=5 unknown_operator），均 **app_strat 节点首题**（第四能力节点），seed 真实 RDS；防漂移单测 +2（后端 85→**87 passed**）。
+- **API 实证**：填 6→relation 证据 correct=false HINT；填 5→PASS NEXT_TASK；选＋→**operator** 证据 correct=false；选−→**字符串答案 correct=true**（V2 首例）；重放同 attempt_id。
+- **E2E** `e2e/r10-formula-board.spec.mjs` 9/9（G2/G3 清空退 EMPTY、RELATION/OPERATOR 双分类专项、G7 符号替换改对断言 OPERATOR_REPLACED、键盘越界拒绝+UNDO 步粒度、healing）。全量套件 **63 passed** 零回归。
+- contracts 事件枚举补 SLOT_*/NUMBER_*/OPERATOR_* 六连；registry vertical_gate "R10"。
+- 环境：Playwright 启动清 test-results 撞 safe-delete bulk 阈值 → **--output=/tmp/…** 绕开（skill 已补）。
+- 底表 `docs/governance/R10_FORMULABOARD_VERTICAL_GATE.md`。**Vertical Gate 进度 8/19；Batch B 4/4 全清**。
+
 ## Done（FE-1419 R06 PlaceValue Vertical Gate：B5 模板第六组件，位值混淆诊断专项，2026-10-07）
 
 > Batch B 第二题（Gap R06）。place-value=数字卡放位值框（digit movement）；**牌堆 multiset 守卫让孩子只可能"站错位置"**——structure evaluator 产出 place_confusion 原料（R06 Diagnosis P0"位值混淆"落地）。

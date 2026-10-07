@@ -274,4 +274,94 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "school_objects",
     },
+    {
+        # Gate R10（FE-1420）：formula-board 算式填空链之一（未知数）——Gap R10。
+        # □ + 4 = 9：equation semantic evaluator 左右求值核对；
+        # 答案=未知加数 5。app_strat（策略/列式）能力节点首题。
+        "ability_id": "app_strat",
+        "difficulty": 2,
+        "task_type": "equation_fill",
+        "title": "方框里藏了几（V2 链 R10）",
+        "ui_schema_version": "2.0",
+        "renderer": "formula-board",
+        "mode": "unknown_number",
+        "content": {
+            "stem": "盒子里有一些弹珠，外面又有4颗。一共有9颗。□+4=9，方框里藏了几？点亮圆圈填数字。",
+            "answer": 5,
+            "goal": "用等式关系求未知加数（方程思想萌芽）",
+        },
+        "config": {
+            "tokens": [
+                {"t": "slot", "id": "box", "accept": "number"},
+                {"t": "op", "v": "+"},
+                {"t": "num", "v": 4},
+                {"t": "eq"},
+                {"t": "num", "v": 9},
+            ],
+            "answer_slot": "box",
+            "max_number": 20,
+        },
+        "initial_state": {"filled": {}, "activeSlot": None},
+        "capabilities": ["answer_input", "highlight", "focus", "reset", "undo"],
+        "constraints": {"equation_sides_max_one_op": True},
+        "response_type": "formula_board",
+        "evidence_targets": ["filled", "structure"],
+        "error_models": [
+            {"pattern": "relation", "code": "calc"},
+            {"pattern": "calc", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "等号右边一共有9颗，左边要凑出同样多的9。",
+            "外面的4颗已经在这儿了，方框要替你补几颗才到9？",
+            "想一想：4 加几等于 9？",
+            "从4往上数到9，数了几步？",
+        ],
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
+    {
+        # Gate R10（FE-1420）：formula-board 算式填空链之二（未知运算符）——
+        # Gap R10 Diagnosis P0"运算符错误"的专项靶：7○2=5，答案=-。
+        # 填成 + 时 evaluator 翻转符号可救 → structure.error=operator 原料。
+        "ability_id": "app_strat",
+        "difficulty": 2,
+        "task_type": "equation_fill",
+        "title": "加号还是减号（V2 链 R10）",
+        "ui_schema_version": "2.0",
+        "renderer": "formula-board",
+        "mode": "unknown_operator",
+        "content": {
+            "stem": "鱼缸里有7条鱼，游走了一些剩下几条？看图列式 7○2=5。圆圈里该点加号还是减号？",
+            "answer": "-",
+            "goal": "按数量变化选择正确的运算符号",
+        },
+        "config": {
+            "tokens": [
+                {"t": "num", "v": 7},
+                {"t": "slot", "id": "op0", "accept": "operator"},
+                {"t": "num", "v": 2},
+                {"t": "eq"},
+                {"t": "num", "v": 5},
+            ],
+            "answer_slot": "op0",
+            "max_number": 20,
+        },
+        "initial_state": {"filled": {}, "activeSlot": None},
+        "capabilities": ["answer_input", "highlight", "focus", "reset", "undo"],
+        "constraints": {"equation_sides_max_one_op": True},
+        "response_type": "formula_board",
+        "evidence_targets": ["filled", "structure"],
+        "error_models": [
+            {"pattern": "operator", "code": "modeling"},
+            {"pattern": "relation", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "鱼是变多了还是变少了？",
+            "变少要用哪个符号？",
+            "7 加 2 是几？和等号右边一样吗？",
+            "试试减号：7 减 2 等于几？",
+        ],
+        "is_transfer": False,
+        "context_family": "before_after",
+    },
 ]
