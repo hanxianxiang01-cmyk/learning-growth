@@ -1,45 +1,16 @@
 // FE-1421 R08 array-board 真实页面 E2E（B5 模板第八实例；product/structure 解耦专项）。
 // 合同：B5_E2E_VERTICAL_GATE.md + Gap R08（Diagnosis=行列概念错误 P0）。
+// 钉题：FE-1422a 确定性 pin（v2-catalog → pin_resource_version_id），不靠 band 运气。
 // 数据卫生：CHILD=QA-Simulator …0099；ability=app_model，target=3行×4列。
 import { test, expect, request as pwRequest } from "@playwright/test";
+import { fetchPinnedTasks } from "./pinned-tasks.mjs";
 
 const API = process.env.E2E_API_BASE ?? "http://127.0.0.1:8000";
 const CHILD = process.env.E2E_CHILD_ID ?? "00000000-0000-0000-0000-000000000099";
 const ABILITY = "app_model";
 
-async function fetchTasks(n) {
-  const ctx = await pwRequest.newContext({ baseURL: API });
-  const tasks = [];
-  for (let s = 0; s < 30 && tasks.length < n; s += 1) {
-    const session = await ctx.post("/v1/learning/sessions", {
-      data: { child_id: CHILD, subject: "math", requested_minutes: 15 }
-    });
-    const sid = (await session.json()).session_id;
-    for (let i = 0; i < 16 && tasks.length < n; i += 1) {
-      const resp = await ctx.post("/v1/learning/tasks/next", {
-        data: { child_id: CHILD, session_id: sid, subject: "math", ability_id: ABILITY, requested_minutes: 15 }
-      });
-      const t = await resp.json();
-      const ui = t.ui_schema || {};
-      const ws = (ui.workspaces || [])[0] || {};
-      if (ui.schema_version === "2.0" && ws.renderer === "array-board") {
-        tasks.push({ task: t, sessionId: sid });
-      }
-    }
-  }
-  await ctx.dispose();
-  if (tasks.length < n) throw new Error(`预取 R08 task 不足：${tasks.length}/${n}`);
-  return tasks;
-}
-
-let taskPool = null;
-let poolCursor = 0;
-
-async function r08Tasks(k) {
-  if (!taskPool) taskPool = await fetchTasks(8);
-  const out = [];
-  for (let i = 0; i < k; i += 1) out.push(taskPool[poolCursor++ % taskPool.length]);
-  return out;
+function r08Tasks(k) {
+  return fetchPinnedTasks({ api: API, child: CHILD, renderer: "array-board", count: k });
 }
 
 async function pinTasks(page, tasks) {

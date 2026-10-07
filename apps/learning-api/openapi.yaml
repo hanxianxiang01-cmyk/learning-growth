@@ -96,6 +96,34 @@ paths:
                 - session_id
                 - plan_id
                 - status
+  /v1/content/v2-catalog:
+    get:
+      summary: 'FE-1422a read-only V2 resource catalog (QA/E2E pinned-task discovery).
+        Frozen-OpenAPI 之外的新增只读端点，对齐 sessions/{id}/result 先例；列出 published
+        且通过 _v2_assignable 门控的 V2 资源。'
+      responses:
+        '200':
+          description: V2 catalog items
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        resource_version_id: { type: string, format: uuid }
+                        resource_id: { type: string, format: uuid }
+                        ability_id: { type: string }
+                        renderer: { type: string }
+                        mode: { type: string }
+                        difficulty: { type: integer, minimum: 1, maximum: 5 }
+                        title: { type: string }
+                        transfer_distance:
+                          type: [integer, "null"]
   /v1/learning/tasks/next:
     post:
       summary: Get next task based on curriculum policy
@@ -124,6 +152,16 @@ paths:
                 requested_minutes:
                   type: integer
                   default: 15
+                ability_id:
+                  type: string
+                  description: 显式指定能力（挑战卡片映射）；缺省时后端自选
+                pin_resource_version_id:
+                  type: string
+                  format: uuid
+                  description: 'FE-1422a QA 确定性钉题：命中 published + V2-assignable
+                    资源直接落题，绕过 fit_band/session 排除。**仅限 QA 测试池 child
+                    （…0099）**——真实 child 携带返回 403（docs/governance/QA_DATA_HYGIENE.md）。
+                    缺省（生产路径）行为与本参数引入前一致。'
       responses:
         '200':
           description: Task instance
@@ -131,6 +169,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskInstance'
+        '403':
+          description: pin_resource_version_id used by non-QA child
         '409':
           description: Selected resource version is retired
           content:

@@ -1,60 +1,16 @@
 // FE-1420 R10 formula-board 真实页面 E2E（B5 模板第七实例；equation semantic evaluator）。
 // 双金题：□+4=9（数字槽，relation 靶）与 7○2=5（符号槽，operator 靶）。
 // 数据卫生：CHILD=QA-Simulator …0099；ability=app_strat。
-import { test, expect, request as pwRequest } from "@playwright/test";
+// 钉题：FE-1422a 确定性 pin（按 renderer+mode 定位 catalog）。
+import { test, expect } from "@playwright/test";
+import { fetchPinnedTasks } from "./pinned-tasks.mjs";
 
 const API = process.env.E2E_API_BASE ?? "http://127.0.0.1:8000";
 const CHILD = process.env.E2E_CHILD_ID ?? "00000000-0000-0000-0000-000000000099";
 const ABILITY = "app_strat";
 
-async function fetchTask(ctx, wantMode, n) {
-  const tasks = [];
-  for (let s = 0; s < 25 && tasks.length < n; s += 1) {
-    const session = await ctx.post("/v1/learning/sessions", {
-      data: { child_id: CHILD, subject: "math", requested_minutes: 15 }
-    });
-    const sid = (await session.json()).session_id;
-    for (let i = 0; i < 20 && tasks.length < n; i += 1) {
-      const resp = await ctx.post("/v1/learning/tasks/next", {
-        data: { child_id: CHILD, session_id: sid, subject: "math", ability_id: ABILITY, requested_minutes: 15 }
-      });
-      const t = await resp.json();
-      const ui = t.ui_schema || {};
-      const ws = (ui.workspaces || [])[0] || {};
-      if (ui.schema_version === "2.0" && ws.renderer === "formula-board" && ws.mode === wantMode) {
-        tasks.push({ task: t, sessionId: sid });
-      }
-    }
-  }
-  return tasks;
-}
-
-let poolNumber = null;
-let poolOperator = null;
-let cursorNumber = 0;
-let cursorOperator = 0;
-
-async function numberTasks(k) {
-  if (!poolNumber) {
-    const ctx = await pwRequest.newContext({ baseURL: API });
-    poolNumber = await fetchTask(ctx, "unknown_number", 6);
-    await ctx.dispose();
-  }
-  const out = [];
-  for (let i = 0; i < k; i += 1) out.push(poolNumber[cursorNumber++ % poolNumber.length]);
-  return out;
-}
-
-async function operatorTasks(k) {
-  if (!poolOperator) {
-    const ctx = await pwRequest.newContext({ baseURL: API });
-    poolOperator = await fetchTask(ctx, "unknown_operator", 4);
-    await ctx.dispose();
-  }
-  const out = [];
-  for (let i = 0; i < k; i += 1) out.push(poolOperator[cursorOperator++ % poolOperator.length]);
-  return out;
-}
+const numberTasks = k => fetchPinnedTasks({ api: API, child: CHILD, renderer: "formula-board", mode: "unknown_number", count: k });
+const operatorTasks = k => fetchPinnedTasks({ api: API, child: CHILD, renderer: "formula-board", mode: "unknown_operator", count: k });
 
 async function pinTasks(page, tasks) {
   let cursor = 0;

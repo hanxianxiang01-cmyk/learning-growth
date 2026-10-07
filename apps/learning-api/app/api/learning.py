@@ -9,6 +9,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
+from app.core.qa import is_qa_child
 from app.services.learning import assign_next_task, request_hint, start_session, submit_attempt
 from app.services.session_result import get_session_result
 from app.services.turn_service import SubmissionConflict
@@ -55,7 +56,15 @@ async def next_task(
     payload: dict[str, Any] = Body(...),
     db: AsyncSession = Depends(get_db),
 ):
-    """取下一题（对齐 OpenAPI；可选 ability_id：由前端挑战卡片显式指定能力，否则后端自选）。"""
+    """取下一题（对齐 OpenAPI；可选 ability_id：由前端挑战卡片显式指定能力，否则后端自选）。
+
+    pin_resource_version_id（FE-1422a QA 确定性钉题）：**仅限 QA child**。
+    真实 child 携带该参数 → 403（生产选题路径不允许测试机制侵入）。
+    """
+    pin_raw = payload.get("pin_resource_version_id")
+    pin = uuid.UUID(str(pin_raw)) if pin_raw else None
+    if pin is not None and not is_qa_child(payload.get("child_id")):
+        raise HTTPException(status_code=403, detail="pin_resource_version_id 仅限 QA 测试池 child 使用")
     return await assign_next_task(
         db,
         child_id=payload["child_id"],
@@ -63,6 +72,7 @@ async def next_task(
         subject=payload["subject"],
         requested_minutes=payload.get("requested_minutes"),
         ability_id=payload.get("ability_id"),
+        pin_resource_version_id=pin,
     )
 
 

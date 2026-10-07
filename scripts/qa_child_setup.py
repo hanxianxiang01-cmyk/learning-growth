@@ -7,6 +7,10 @@ QA-Simulator（…0099）。ability_state 主键含 child_id，分池天然隔�
 
 用法：
   DATABASE_URL=... python scripts/qa_child_setup.py
+  DATABASE_URL=... python scripts/qa_child_setup.py --reset-bands
+    （FE-1422a：把 QA 池 ability_state 恢复到创建默认 level0/conf0/band1~1——
+     E2E 每轮写 attempt 会让 mastery 引擎推 level、band 漂移；pin 钉题路径
+     已不依赖 band，但 qa_replay 等 mastery 回归仍需干净起点。）
 """
 from __future__ import annotations
 
@@ -52,6 +56,28 @@ async def seed(db) -> None:
     await db.commit()
 
 
+async def reset_bands(db) -> None:
+    """QA 池 7 能力 state 恢复到创建默认（level/conf/band/evidence/trend）。
+
+    只动 QA child（…0099）——真实 child 的 mastery 是人的数据，绝对不碰
+    （docs/governance/QA_DATA_HYGIENE.md）。
+    """
+    rows = (
+        await db.execute(select(AbilityState).where(AbilityState.child_id == QA_CHILD_ID))
+    ).scalars().all()
+    for st in rows:
+        st.level = 0
+        st.confidence = 0.0
+        st.fit_band_min = 1
+        st.fit_band_max = 1
+        st.evidence_count = 0
+        st.trend = "watch"
+        st.last_evidence_at = None
+        st.version = st.version + 1
+    await db.commit()
+    print(f"已重置 QA 池 {len(rows)} 个能力 band → (1,1)/level0")
+
+
 async def main() -> None:
     url = os.environ.get("DATABASE_URL")
     if not url:
@@ -60,6 +86,8 @@ async def main() -> None:
     Session = async_sessionmaker(eng, expire_on_commit=False)
     async with Session() as db:
         await seed(db)
+        if "--reset-bands" in sys.argv:
+            await reset_bands(db)
         rs = await db.execute(select(AbilityState).where(AbilityState.child_id == QA_CHILD_ID))
         states = rs.scalars().all()
     await eng.dispose()

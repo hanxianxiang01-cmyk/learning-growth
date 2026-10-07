@@ -162,6 +162,46 @@ async def _published_resource_for_ability(
     )
 
 
+async def list_v2_catalog(db: AsyncSession) -> list[dict]:
+    """published 且 V2-assignable 的资源目录（FE-1422a，QA 钉题发现端点）。
+
+    只读；与 `_published_resource_for_ability` 用同一 `_v2_assignable` 门控，
+    保证"目录里能查到的 = pin 一定能落题的"，两端语义不漂移。
+    """
+    rows = (
+        await db.execute(
+            select(ResourceVersion, Resource.ability_id, Resource.title)
+            .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+            .where(ResourceVersion.review_status == "published")
+            .order_by(Resource.ability_id.asc(), ResourceVersion.difficulty.asc())
+        )
+    ).all()
+    out = []
+    for rv, ability_id, title in rows:
+        # schema_version 过滤在应用层（ui_schema 是通用 JSON 列，避免方言表达式）
+        if not isinstance(rv.ui_schema, dict) or rv.ui_schema.get("schema_version") != "2.0":
+            continue
+        if not _v2_assignable(rv.ui_schema):
+            continue
+        renderer = None
+        mode = None
+        ws = (rv.ui_schema or {}).get("workspaces") or []
+        if ws and isinstance(ws[0], dict):
+            renderer = ws[0].get("renderer")
+            mode = ws[0].get("mode")
+        out.append({
+            "resource_version_id": str(rv.resource_version_id),
+            "resource_id": str(rv.resource_id),
+            "ability_id": ability_id,
+            "renderer": renderer,
+            "mode": mode,
+            "difficulty": rv.difficulty,
+            "title": title,
+            "transfer_distance": rv.transfer_distance,
+        })
+    return out
+
+
 async def assign_next_task(
     db: AsyncSession,
     *,
@@ -170,12 +210,16 @@ async def assign_next_task(
     subject: str,
     requested_minutes: int | None = None,
     ability_id: str | None = None,
+    pin_resource_version_id: uuid.UUID | None = None,
 ) -> dict:
     """取下一题并落 task_instance，返回 OpenAPI TaskInstance 结构。
 
     - 显式 ability_id（前端挑战卡片 → 能力映射）：优先 fit_band 内选题，
       带内无题退到该能力最低难度（保证指定能力一定有题）。
     - 未指定：候选能力 level 升序，取「fit_band 内有已发布资源」的第一个（原行为）。
+    - pin_resource_version_id（FE-1422a，QA 确定性钉题）：**仅 QA child 可用**
+      （403 校验在路由层）；命中 published + V2-assignable 资源则直接落题，
+      绕过 fit_band / session 排除。缺省时行为与原逻辑比特级一致。
     """
     selected_ability: str | None = None
     rv: ResourceVersion | None = None
@@ -192,7 +236,23 @@ async def assign_next_task(
         ).scalars().all()
     )
 
-    if ability_id:
+    if pin_resource_version_id is not None:
+        # QA 钉题路径：不看 band、不看排除；只守 published + V2 门控红线。
+        pinned = await db.get(ResourceVersion, pin_resource_version_id)
+        if pinned is None or pinned.review_status != "published" or not _v2_assignable(pinned.ui_schema):
+            return {
+                "task_instance_id": None,
+                "ability_id": None,
+                "difficulty": None,
+                "ui_schema": None,
+                "strategy_policy": None,
+                "reason": "pinned_resource_not_assignable",
+            }
+        res = await db.get(Resource, pinned.resource_id)
+        selected_ability = res.ability_id if res else ability_id
+        rv = pinned
+        band_min = band_max = pinned.difficulty
+    elif ability_id:
         state = await db.get(AbilityState, {"child_id": child_id, "ability_id": ability_id})
         level = state.level if state else 0
         confidence = float(state.confidence) if state else 0.0
@@ -271,6 +331,7 @@ async def assign_next_task(
             "fit_band": [band_min, band_max],
             "evidence_role": evidence_role,
             "task_purpose": task_purpose,
+            **({"pinned": True} if pin_resource_version_id is not None else {}),
         },
     )
     db.add(task)

@@ -1,52 +1,16 @@
 // FE-1414 R01 object-counter 真实页面 E2E（B5 模板第二个 Vertical Gate）。
 // 合同：docs/governance/B5_E2E_VERTICAL_GATE.md G1~G9 口径 + docs/frontend/31 SEM-1410。
 // 真实性：task 来自真实后端 /tasks/next（route 只做钉题重放）；/attempts、/hints 放行真实后端。
+// 钉题：FE-1422a 确定性 pin（v2-catalog → pin_resource_version_id），不靠 band 运气。
 // 数据卫生：CHILD=QA-Simulator …0099（docs/governance/QA_DATA_HYGIENE.md R1/R3）。
 import { test, expect, request as pwRequest } from "@playwright/test";
+import { fetchPinnedTasks } from "./pinned-tasks.mjs";
 
 const API = process.env.E2E_API_BASE ?? "http://127.0.0.1:8000";
 const CHILD = process.env.E2E_CHILD_ID ?? "00000000-0000-0000-0000-000000000099";
 
-const TASK_POOL_SIZE = 10;
-let taskPool = null;
-let poolCursor = 0;
-
-async function buildTaskPool(n) {
-  const ctx = await pwRequest.newContext({ baseURL: API });
-  const tasks = [];
-  for (let s = 0; s < 20 && tasks.length < n; s += 1) {
-    const session = await ctx.post("/v1/learning/sessions", {
-      data: { child_id: CHILD, subject: "math", requested_minutes: 15 }
-    });
-    const sid = (await session.json()).session_id;
-    for (let i = 0; i < 16 && tasks.length < n; i += 1) {
-      const resp = await ctx.post("/v1/learning/tasks/next", {
-        data: { child_id: CHILD, session_id: sid, subject: "math", ability_id: "app_rel", requested_minutes: 15 }
-      });
-      const t = await resp.json();
-      const ui = t.ui_schema || {};
-      const ws = (ui.workspaces || [])[0] || {};
-      if (ui.schema_version === "2.0" && ws.renderer === "object-counter") {
-        tasks.push({ task: t, sessionId: sid });
-      }
-    }
-  }
-  await ctx.dispose();
-  if (tasks.length < n) throw new Error(`预取 R01 task 不足：${tasks.length}/${n}`);
-  return tasks;
-}
-
-async function fetchR01Tasks(k) {
-  if (!taskPool) taskPool = await buildTaskPool(TASK_POOL_SIZE);
-  const out = [];
-  for (let i = 0; i < k; i += 1) {
-    if (poolCursor >= taskPool.length) {
-      const more = await buildTaskPool(k);
-      taskPool.push(...more);
-    }
-    out.push(taskPool[poolCursor++]);
-  }
-  return out;
+function r01Tasks(k) {
+  return fetchPinnedTasks({ api: API, child: CHILD, renderer: "object-counter", count: k });
 }
 
 async function pinTasks(page, tasks) {
@@ -89,7 +53,7 @@ async function fillRight(page) {
 
 // ---------- G1：V2 renderer 正确进入真实页面，不降级 ----------
 test("R01-E2E-09 (G1) 渲染 object-counter，无降级卡、无开发中卡", async ({ page }) => {
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   await page.goto(sessionUrl("g1"));
   await expect(card(page)).toBeVisible();
@@ -101,7 +65,7 @@ test("R01-E2E-09 (G1) 渲染 object-counter，无降级卡、无开发中卡", a
 
 // ---------- G2/G3：部分摆放不可提交 ----------
 test("R01-E2E-03 (G2/G3) 只摆 1 个 → 提交禁用，不产生 attempt", async ({ page }) => {
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   await page.goto(sessionUrl("partial"));
   await addBtn(page, "g1").click();
@@ -115,7 +79,7 @@ test("R01-E2E-03 (G2/G3) 只摆 1 个 → 提交禁用，不产生 attempt", asy
 
 // ---------- G6/G4：错误答案可提交 + V2 envelope 合同 ----------
 test("R01-E2E-02 (G6/G4) 摆成 4+2 报 6 → envelope 完整 → correct=false → HINT", async ({ page }) => {
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   await page.goto(sessionUrl("wrong"));
   for (let i = 0; i < 4; i += 1) await addBtn(page, "g1").click();
@@ -147,7 +111,7 @@ test("R01-E2E-02 (G6/G4) 摆成 4+2 报 6 → envelope 完整 → correct=false 
 
 // ---------- G5：正确摆法 + compose 过程 → 判对 → 下一题 ----------
 test("R01-E2E-01 (G5) 4+3 合起来提交 → correct=true → NEXT_TASK", async ({ page }) => {
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   await page.goto(sessionUrl("right"));
   await fillRight(page);
@@ -164,7 +128,7 @@ test("R01-E2E-01 (G5) 4+3 合起来提交 → correct=true → NEXT_TASK", async
 
 // ---------- G7：重试 attempt_no 递增、单 Task 单证据 ----------
 test("R01-G7 错误后改对再提交：attempt_no=2、首轮证据保留", async ({ page }) => {
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   await page.goto(sessionUrl("retry"));
 
@@ -186,7 +150,7 @@ test("R01-G7 错误后改对再提交：attempt_no=2、首轮证据保留", asyn
 
 // ---------- 防重入：双击只发一个 POST ----------
 test("R01-E2E-07 防重入：双击提交只发一个 POST", async ({ page }) => {
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   await page.goto(sessionUrl("dup"));
   await fillRight(page);
@@ -201,7 +165,7 @@ test("R01-E2E-07 防重入：双击提交只发一个 POST", async ({ page }) =>
 
 // ---------- revision 变化不串题 ----------
 test("R01-E2E-08 下一题后 Workspace 重置，不继承上一题", async ({ page }) => {
-  const two = await fetchR01Tasks(2);
+  const two = await r01Tasks(2);
   const task2 = structuredClone(two[1].task);
   task2.ui_schema.ui_revision = `${two[1].task.ui_schema.ui_revision}-rev2`;
   await pinTasks(page, [two[0], { task: task2, sessionId: two[1].sessionId }]);
@@ -222,7 +186,7 @@ test("R01-E2E-08 下一题后 Workspace 重置，不继承上一题", async ({ p
 
 // ---------- P1：语义事件可追溯 ----------
 test("R01-P1 事件模型：COUNT_ADDED/COMPOSED/DECOMPOSED/UNDO/RESET 入 payload", async ({ page }) => {
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   await page.goto(sessionUrl("events"));
   await addBtn(page, "g1").click();
@@ -247,7 +211,7 @@ test("R01-P1 事件模型：COUNT_ADDED/COMPOSED/DECOMPOSED/UNDO/RESET 入 paylo
 
 // ---------- COUNT_REMOVED 独立覆盖 ----------
 test("R01-P1b COUNT_REMOVED：放5减1成4+3 → 判对", async ({ page }) => {
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   await page.goto(sessionUrl("events2"));
   for (let i = 0; i < 5; i += 1) await addBtn(page, "g1").click();
@@ -263,7 +227,7 @@ test("R01-P1b COUNT_REMOVED：放5减1成4+3 → 判对", async ({ page }) => {
 // ---------- P1 双皮肤（3101 healing） ----------
 test("R01-E2E-10 healing 皮肤：同契约同数据结构", async ({ page }) => {
   test.skip(!process.env.E2E_HEALING_BASE, "需 3101 healing 实例");
-  const [r01] = await fetchR01Tasks(1);
+  const [r01] = await r01Tasks(1);
   await pinTasks(page, [r01]);
   const url = new URL(sessionUrl("healing"), process.env.E2E_HEALING_BASE);
   await page.goto(url.toString());

@@ -5,8 +5,10 @@
 // - task 来自真实后端 /tasks/next（route 只做「钉题重放」，task_instance_id 真实存在）；
 // - /attempts、/hints 全部放行真实后端（判分、evidence、attempt_no 递增、diagnosis 均为后端权威）。
 import { test, expect, request as pwRequest } from "@playwright/test";
+import { fetchPinnedTasks } from "./pinned-tasks.mjs";
 
 const API = process.env.E2E_API_BASE ?? "http://127.0.0.1:8000";
+// 钉题：FE-1422a 确定性 pin（v2-catalog → pin_resource_version_id），不靠 band 运气。
 // 数据卫生（docs/governance/QA_DATA_HYGIENE.md）：E2E 一律用 QA-Simulator child，
 // 禁止写入真实演示孩子 …0001 的 mastery 窗口。RDS 需预建该 child（scripts/qa_child_setup.py）。
 const CHILD = process.env.E2E_CHILD_ID ?? "00000000-0000-0000-0000-000000000099";
@@ -16,48 +18,8 @@ const CHILD = process.env.E2E_CHILD_ID ?? "00000000-0000-0000-0000-000000000099"
  * 每测试需要独立的 task_instance_id（提交幂等键），故预取一批（8 个）分配。
  * 缓存 + 180s timeout 组合解决跨网阿里云 RDS 往返慢导致的超时。
  */
-const TASK_POOL_SIZE = 12;
-let taskPool = null;
-let poolCursor = 0;
-
-async function buildTaskPool(n) {
-  const ctx = await pwRequest.newContext({ baseURL: API });
-  const tasks = [];
-  for (let s = 0; s < 20 && tasks.length < n; s += 1) {
-    const session = await ctx.post("/v1/learning/sessions", {
-      data: { child_id: CHILD, subject: "math", requested_minutes: 15 }
-    });
-    const sid = (await session.json()).session_id;
-    for (let i = 0; i < 16 && tasks.length < n; i += 1) {
-      const resp = await ctx.post("/v1/learning/tasks/next", {
-        data: { child_id: CHILD, session_id: sid, subject: "math", ability_id: "app_rel", requested_minutes: 15 }
-      });
-      const t = await resp.json();
-      const ui = t.ui_schema || {};
-      const ws = (ui.workspaces || [])[0] || {};
-      if (ui.schema_version === "2.0" && ws.renderer === "column-arithmetic") {
-        tasks.push({ task: t, sessionId: sid });
-      }
-    }
-  }
-  await ctx.dispose();
-  if (tasks.length < n) throw new Error(`预取 B5 task 不足：${tasks.length}/${n}`);
-  return tasks;
-}
-
-/** 从池中取 k 个独立 task（同 pool，不同 task_instance_id）。 */
-async function fetchB5Tasks(k) {
-  if (!taskPool) taskPool = await buildTaskPool(TASK_POOL_SIZE);
-  const out = [];
-  for (let i = 0; i < k; i += 1) {
-    if (poolCursor >= taskPool.length) {
-      // 池耗尽：追加一轮预取
-      const more = await buildTaskPool(k);
-      taskPool.push(...more);
-    }
-    out.push(taskPool[poolCursor++]);
-  }
-  return out;
+function b5Tasks(k) {
+  return fetchPinnedTasks({ api: API, child: CHILD, renderer: "column-arithmetic", count: k });
 }
 
 /** route 钉题：/tasks/next 按顺序重放预取的真实 task；提交/提示链路放行。 */
@@ -100,7 +62,7 @@ const submitButton = page => page.getByRole("button", { name: /提交这道题/ 
 
 // ---------- G1 / E2E-09：V2 renderer 正确进入真实页面，不降级 ----------
 test("B5-E2E-09 (G1) 渲染 column-arithmetic，无 number-input、无开发中卡", async ({ page }) => {
-  const [b5] = await fetchB5Tasks(1);
+  const [b5] = await b5Tasks(1);
   await pinTasks(page, [b5]);
   await page.goto(sessionUrl("g1"));
   await expect(columnCard(page)).toBeVisible();
@@ -111,7 +73,7 @@ test("B5-E2E-09 (G1) 渲染 column-arithmetic，无 number-input、无开发中�
 
 // ---------- E2E-03 (G2/G3)：部分填写不可提交 ----------
 test("B5-E2E-03 (G2/G3) 只填个位 → 提交禁用，不产生 attempt", async ({ page }) => {
-  const [b5] = await fetchB5Tasks(1);
+  const [b5] = await b5Tasks(1);
   await pinTasks(page, [b5]);
   await page.goto(sessionUrl("partial"));
   await expect(columnCard(page)).toBeVisible();
@@ -127,7 +89,7 @@ test("B5-E2E-03 (G2/G3) 只填个位 → 提交禁用，不产生 attempt", asyn
 
 // ---------- E2E-02 (G6) + P0-04 (G4)：错误答案可提交，payload 合同完整 ----------
 test("B5-E2E-02 (G6/G4) 答 65 可提交 → V2 envelope 完整 → correct=false → HINT", async ({ page }) => {
-  const [b5] = await fetchB5Tasks(1);
+  const [b5] = await b5Tasks(1);
   await pinTasks(page, [b5]);
   await page.goto(sessionUrl("wrong"));
   await expect(columnCard(page)).toBeVisible();
@@ -168,7 +130,7 @@ test("B5-E2E-02 (G6/G4) 答 65 可提交 → V2 envelope 完整 → correct=fals
 
 // ---------- E2E-01 (G5) + E2E-07 半 + 提示链 ----------
 test("B5-E2E-01 (G5) 正确答案提交 → correct=true → 下一题", async ({ page }) => {
-  const [b5] = await fetchB5Tasks(1);
+  const [b5] = await b5Tasks(1);
   await pinTasks(page, [b5]);
   await page.goto(sessionUrl("right"));
   await digit(page, "个", 5);
@@ -183,7 +145,7 @@ test("B5-E2E-01 (G5) 正确答案提交 → correct=true → 下一题", async (
 
 // ---------- G7 / E2E-06 05：重试 attempt_no 递增、evidence 不丢 + undo/reset ----------
 test("B5-G7 错误后改对再提交：attempt_no=2 递增、首轮证据保留（单Task单证据）", async ({ page }) => {
-  const [b5] = await fetchB5Tasks(1);
+  const [b5] = await b5Tasks(1);
   await pinTasks(page, [b5]);
   await page.goto(sessionUrl("retry"));
 
@@ -209,7 +171,7 @@ test("B5-G7 错误后改对再提交：attempt_no=2 递增、首轮证据保留�
 
 // ---------- E2E-07 (P0)：快速重复点击只产生一次 attempt ----------
 test("B5-E2E-07 防重入：双击提交只发一个 POST", async ({ page }) => {
-  const [b5] = await fetchB5Tasks(1);
+  const [b5] = await b5Tasks(1);
   await pinTasks(page, [b5]);
   await page.goto(sessionUrl("dup"));
   await digit(page, "个", 5);
@@ -227,7 +189,7 @@ test("B5-E2E-07 防重入：双击提交只发一个 POST", async ({ page }) => 
 
 // ---------- E2E-08 (P0-06)：ui_revision 变化不串题 ----------
 test("B5-E2E-08 下一题后 Workspace 重置，不继承上一题", async ({ page }) => {
-  const two = await fetchB5Tasks(2);
+  const two = await b5Tasks(2);
   // 服务端同资源 revision 相同；注入第二题改 revision 以驱动 RESET（提交链不校验 revision）
   const task2 = structuredClone(two[1].task);
   task2.ui_schema.ui_revision = `${two[1].task.ui_schema.ui_revision}-rev2`;
@@ -255,7 +217,7 @@ test("B5-E2E-08 下一题后 Workspace 重置，不继承上一题", async ({ pa
 
 // ---------- E2E-04/05/06 (P1)：事件、undo、reset 可追溯 ----------
 test("B5-P1 事件模型：DIGIT_ENTERED/CARRY_CREATED/UNDO/RESET 入 payload", async ({ page }) => {
-  const [b5] = await fetchB5Tasks(1);
+  const [b5] = await b5Tasks(1);
   await pinTasks(page, [b5]);
   await page.goto(sessionUrl("events"));
   await digit(page, "个", 9);
@@ -278,7 +240,7 @@ test("B5-P1 事件模型：DIGIT_ENTERED/CARRY_CREATED/UNDO/RESET 入 payload", 
 // ---------- E2E-10 (P1)：双皮肤同契约（3101 = healing 实例） ----------
 test("B5-E2E-10 healing 皮肤：交互合同与数据结构与默认皮肤一致", async ({ page }) => {
   test.skip(!process.env.E2E_HEALING_BASE, "需 3101 healing 实例（playwright webServer 自动拉起）");
-  const [b5] = await fetchB5Tasks(1);
+  const [b5] = await b5Tasks(1);
   await pinTasks(page, [b5]);
   const url = new URL(sessionUrl("healing"), process.env.E2E_HEALING_BASE);
   await page.goto(url.toString());
