@@ -112,7 +112,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R10";
 };
 
 const implemented = (
@@ -229,7 +229,7 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
   ),
   "array-board": implementedV2("array-board", "ArrayBoard", 1, ["drag", "resize", "answer_input", "undo", "reset"]),
   "grouping-board": implementedV2("grouping-board", "GroupingBoard", 1, ["drag", "answer_input", "undo", "reset"]),
-  "formula-board": implementedV2("formula-board", "FormulaBoard", 1, ["answer_input", "highlight", "focus", "reset"]),
+  "formula-board": implementedV2("formula-board", "FormulaBoard", 1, ["answer_input", "highlight", "focus", "reset", "undo"], { vertical_gate: "R10" }),
   "estimation-canvas": implementedV2("estimation-canvas", "EstimationCanvas", 1, ["drag", "answer_input", "undo", "reset"]),
   "shape-gallery": implementedV2("shape-gallery", "ShapeGallery", 3, ["highlight", "focus", "answer_input", "reset"]),
   "shape-canvas": implementedV2(
