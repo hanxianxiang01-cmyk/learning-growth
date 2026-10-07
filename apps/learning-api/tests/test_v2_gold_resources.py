@@ -272,3 +272,26 @@ def test_r12_exists_and_shape():
     assert "select" in R12["capabilities"]
     # app_cond 能力节点第二题
     assert R12["ability_id"] == "app_cond"
+
+
+R13 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "shape-canvas")
+
+
+def test_r13_exists_and_shape():
+    validate_renderer_id(R13["renderer"])
+    assert is_implemented(R13["renderer"])
+    assert R13["mode"] == "shape_drawing"
+    assert R13["response_type"] == "shape_canvas"
+    c = R13["config"]
+    assert c["target_shape"] == "rectangle"
+    assert 4 <= c["grid"] <= 6
+    # 面积可达守卫（前端 parseShapeCanvasConfig 同式）：target_area ≤ (grid-1)^2
+    assert 2 <= c["target_area"] <= (c["grid"] - 1) ** 2
+    # 答案=面积标量（后端 float 相等判分）
+    assert c["target_area"] == R13["content"]["answer"]
+    # Gap R13 Diagnosis P0 三分类原料齐备
+    patterns = {e["pattern"] for e in R13["error_models"]}
+    assert {"vertex_count", "not_right_angle", "wrong_size"} <= patterns
+    # Evidence=绘制轨迹（顶点序）+ 几何属性原料
+    assert {"vertices", "area", "right_angles", "structure"} <= set(R13["evidence_targets"])
+    assert "draw" in R13["capabilities"]

@@ -29,6 +29,17 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1425 R13 ShapeCanvas Vertical Gate：B5 模板第十二组件，钉子板几何评估器，2026-10-07）
+
+> Batch D 第二题（Gap R13）。shape-canvas=点阵板依序点顶点画封闭图形（draw=点钉、delete=撤点；move/rotate 以点序重建替代，差异记录底表 §3）。金题"钉子板上画面积 6 的长方形"：答案=面积（shoelace 整数二倍面积免浮点误差），**解耦第四次运用**——平行四边形面积恰=6 → 后端判对（correct=true NEXT_TASK）+ `not_right_angle` 几何属性原料走 Evidence。geometry evaluator 判定顺序=**形状属性错优先于尺寸错**（EMPTY→vertex_count→not_right_angle→wrong_size→PASS，Diagnosis P0"几何属性错误"权重）。
+
+- **纯函数层** `shapeCanvasV2.ts`：parseShapeCanvasConfig（grid 4~6/面积可达守卫/target_shape 词表）+ applyAddPoint（OUT_OF_RANGE/DUPLICATE_POINT/MAX_VERTICES 三拒）+ applyRemoveLast + doubledSignedArea/countRightAngles（点积==0 整数判定）+ serialize（vertices 点击轨迹序/right_angles 原料/structure）。node 语义矩阵全过（含凹四边形/顺时针 PASS/config 三守卫）。
+- **组件** `ShapeCanvasV2.tsx`：SVG 点阵板+自动闭合预览+顶点序号；SHAPE_POINT_ADDED/DELETED/REJECTED=Gap"绘制轨迹"事件链；专件替换基座路由（基座保留作参考）。
+- **链题**：R13 金题（面积 6，**app_model 第三题**）seed RDS；防漂移+1（后端 96→**97 passed**）。
+- **API 实证**（pin 首抽即中）：解耦 true+原料 / wrong_size false / PASS NEXT_TASK / 重放同 attempt_id。
+- **E2E** `e2e/r13-shape-canvas.spec.mjs` 11/11（E2E-04 首跑断言形态笔误修正——vertices 是 {x,y} 对象序；解耦双断言、修正路径撤点重画、重复点拒绝、dblclick、UNDO、healing）。全量套件 **116 passed** 零回归。
+- 底表 `docs/governance/R13_SHAPECANVAS_VERTICAL_GATE.md`。**Vertical Gate 进度 13/19；Batch D 2/4**。
+
 ## Done（FE-1424 R12 ShapeGallery Vertical Gate：B5 模板第十一组件，图形分类解耦最锋利一例，Batch D 起手，2026-10-07）
 
 > Batch D 起手（Gap R12）。shape-gallery=图形墙选形分类：点形拿起（toggle 可放下）→ 点"正方形的家"放进 → 点家里成员退回。**答案=家里图形个数**——本 Gate 把解耦口径推到最锋利：混入长方形但数对 3 → **后端判对（correct=true NEXT_TASK）+ attribute_confusion 原料留痕**（R08/R11 之后第三次运用，几何域成立=跨域通用架构）。分类 evaluator 判定顺序=属性错优先于漏放（Diagnosis P0"属性识别错误"权重）；config 守卫（前端 parser 同式）：目标类必须有成员且墙上有诱饵，否则答案退化为"全拿"。
