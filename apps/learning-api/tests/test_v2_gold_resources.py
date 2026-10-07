@@ -212,3 +212,37 @@ def test_r09_exists_and_shape():
     assert {"groups", "structure"} <= set(R09["evidence_targets"])
     # sharing 族第二题（R07 首题后）
     assert R09["context_family"] == "sharing"
+
+
+R11 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "estimation-canvas")
+
+
+def test_r11_exists_and_shape():
+    validate_renderer_id(R11["renderer"])
+    assert is_implemented(R11["renderer"])
+    assert R11["mode"] == "estimation_range"
+    assert R11["response_type"] == "estimation_canvas"
+    c = R11["config"]
+    # 近似数语义自洽（前端 parseEstimationConfig 同守卫）：
+    # expected = actual 四舍五入最近十；actual 非整十；全部落滑条值域
+    assert round_to_ten_guard(c)
+    assert c["expected"] == R11["content"]["answer"]
+    assert 1 <= c["reference"] <= c["max"]
+    # Gap R11 Diagnosis P0"估算策略错误"原料：方向二分 + 参照未用
+    patterns = {e["pattern"] for e in R11["error_models"]}
+    assert {"too_high", "too_low", "no_reference_use"} <= patterns
+    # Evidence=估算值、调整过程、理由（Gap R11 Evidence P0）
+    assert {"estimate", "adjust_history", "reason", "structure"} <= set(R11["evidence_targets"])
+    # shopping 族首题（词表"启用但零覆盖"→开始有真实数据）
+    assert R11["context_family"] == "shopping"
+
+
+def round_to_ten_guard(c: dict) -> bool:
+    """expected==round_half_to_ten(actual) 且 actual 非整十（与前端守卫同式）。"""
+    return (
+        round(c["actual"] / 10) * 10 == c["expected"]
+        and c["expected"] % 10 == 0
+        and c["actual"] % 10 != 0
+        and c["expected"] <= c["max"]
+        and c["actual"] <= c["max"]
+    )
