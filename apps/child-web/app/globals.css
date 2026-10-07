@@ -558,3 +558,13 @@ a{color:inherit}
 .sc-evaluation{margin:8px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
 .sc-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
 .sc-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}
+
+/* FE-1426 SortingBoard V2 (R14) */
+.sorting-board-v2 .sb-cards{display:flex;gap:10px;justify-content:center;align-items:stretch;margin:14px 0;min-height:96px}
+.sb-card{min-width:74px;border:2px solid var(--border-subtle,#dbe4e8);border-radius:14px;background:var(--cm-surface,#fff);font-weight:900;color:var(--cm-text-1,#20323d);cursor:pointer;padding:12px 8px;line-height:1;display:grid;place-items:center}
+.sb-card.picked{border-color:var(--cm-secondary,#d98324);background:color-mix(in srgb,var(--cm-secondary,#d98324) 16%,white);transform:translateY(-4px)}
+.sb-card:disabled{opacity:.6;cursor:default}
+.sb-undo-swap{width:auto!important;padding:0 10px;font-size:13px!important;font-weight:700}
+.sb-evaluation{margin:8px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
+.sb-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
+.sb-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}

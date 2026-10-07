@@ -112,7 +112,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R08" | "R09" | "R10" | "R11" | "R12" | "R13";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R08" | "R09" | "R10" | "R11" | "R12" | "R13" | "R14";
 };
 
 const implemented = (
@@ -237,7 +237,7 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
     ["drag", "resize", "undo", "reset", "highlight", "focus", "draw"],
     { vertical_gate: "R13" }
   ),
-  "sorting-board": implementedV2("sorting-board", "SortingBoard", 2, ["drag", "undo", "reset"]),
+  "sorting-board": implementedV2("sorting-board", "SortingBoard", 2, ["drag", "undo", "reset", "sort", "answer_input"], { vertical_gate: "R14" }),
   "direction-grid": implementedV2("direction-grid", "DirectionGrid", 4, ["drag", "answer_input", "undo", "reset"]),
   "ruler": implementedV2(
     "ruler", "Ruler", 4,

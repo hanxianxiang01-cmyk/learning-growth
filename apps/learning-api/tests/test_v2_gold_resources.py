@@ -295,3 +295,37 @@ def test_r13_exists_and_shape():
     # Evidence=绘制轨迹（顶点序）+ 几何属性原料
     assert {"vertices", "area", "right_angles", "structure"} <= set(R13["evidence_targets"])
     assert "draw" in R13["capabilities"]
+
+
+R14 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "sorting-board")
+
+
+def test_r14_exists_and_shape():
+    validate_renderer_id(R14["renderer"])
+    assert is_implemented(R14["renderer"])
+    assert R14["mode"] == "ordering"
+    assert R14["response_type"] == "sorting_board"
+    c = R14["config"]
+    assert c["direction"] == "asc"
+    items = c["items"]
+    assert 3 <= len(items) <= 6
+    values = [it["value"] for it in items]
+    ranks = [it["visual_rank"] for it in items]
+    # 前端 parser 同守卫：值一位数不重复、视觉档位 1..n 排列
+    assert all(1 <= v <= 9 for v in values) and len(set(values)) == len(values)
+    assert sorted(ranks) == list(range(1, len(items) + 1))
+    # 答案=数值升序拼接整数（后端标量相等判分）
+    assert int("".join(str(v) for v in sorted(values))) == R14["content"]["answer"]
+    # 干扰维度必须存在：视觉序 ≠ 数值序（否则 dimension_confusion 态不可能出现）
+    visual_order = [it["id"] for it in sorted(items, key=lambda i: -i["visual_rank"])]
+    target_order = [it["id"] for it in sorted(items, key=lambda i: i["value"])]
+    assert visual_order != target_order
+    # 初始序≠正解（前端 parser 同守卫）
+    assert c["initial_order"] != target_order
+    # Gap R14 Diagnosis P0"比较维度错误"原料
+    patterns = {e["pattern"] for e in R14["error_models"]}
+    assert {"dimension_confusion", "reversed", "disordered"} <= patterns
+    assert {"order", "swaps", "structure"} <= set(R14["evidence_targets"])
+    assert "sort" in R14["capabilities"]
+    # app_rd 能力节点第二题（R06 位值之后）
+    assert R14["ability_id"] == "app_rd"

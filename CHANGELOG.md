@@ -29,6 +29,19 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1426 R14 SortingBoard Vertical Gate：B5 模板第十三组件，比较维度干扰设计，Batch D 3/4，2026-10-07）
+
+> Batch D 第三题（Gap R14）。sorting-board=两步点选交换排序（点 A 拿、点 B 换位，drag 的儿童可靠性等价替代）。答案=数值升序拼接整数（1247，后端标量相等判分不动冻结链）。**Diagnosis P0"比较维度错误"的设计落地**：卡面字号（visual_rank）与数值**故意错开**做干扰维度——按"看起来大"排 → dimension_confusion 精确命中；parser 守卫保证正序/降序/视觉序三态互斥（否则分诊失效）。
+>
+> **解耦第五形态（与前四次互补）**：R08/R11/R12/R13 是"判对+原料留痕"；R14 的 dimension(1274)/reversed(7421) 答案本身≠正解 → 判错，但 `structure.error` 能区分**错的方式**——判错也能带分诊，解耦架构的对称补充（底表 §2）。
+
+- **纯函数层** `sortingBoardV2.ts`：parseSortingConfig（值 1~9 一位数拼接无歧义/档位 1..n 排列/initial≠target/visual 序既非正序也非降序——六守卫）+ applySelectCard(toggle)/applySwap（NO_SELECTION/SAME_CARD/NO_SUCH_ITEM）/applyUndoSwap（原子退末次交换）+ evaluateSorting EMPTY→PASS→reversed→dimension→disordered + serialize（swaps=[[from,to]] 排序过程/order_values 轨迹/structure）。node 语义矩阵全过。
+- **组件** `SortingBoardV2.tsx`：卡面字号按 visual_rank 显性化干扰维度（数字 1 用 36px 最大字）；SORT_CARD_SELECTED/UNPICKED/SWAPPED/UNDOED 事件链；三分类提示文案直达教学语言（"你是按字的大小排的吧？"）；专件替换基座路由。
+- **链题**：R14 金题（7、1、4、2 从小到大=1247，school_objects）**app_rd 节点第二题** seed RDS；防漂移+1（后端 97→**98 passed**，含三参考序互斥校验）。
+- **API 实证**（pin 首抽即中）：dimension 1274 false HINT / reversed 7421 false / PASS 1247 NEXT_TASK / 重放同 attempt_id。
+- **E2E** `e2e/r14-sorting-board.spec.mjs` 11/11（干扰字号 toHaveCSS 断言——**新坑：toHaveStyle 是 Testing-Library API，Playwright 用 toHaveCSS**；swaps 轨迹、dimension/reversed 双靶、修正路径、退交换、dblclick、healing）。全量套件 **127 passed** 零回归。
+- 底表 `docs/governance/R14_SORTINGBOARD_VERTICAL_GATE.md`。**Vertical Gate 进度 14/19；Batch D 3/4**。
+
 ## Done（FE-1425 R13 ShapeCanvas Vertical Gate：B5 模板第十二组件，钉子板几何评估器，2026-10-07）
 
 > Batch D 第二题（Gap R13）。shape-canvas=点阵板依序点顶点画封闭图形（draw=点钉、delete=撤点；move/rotate 以点序重建替代，差异记录底表 §3）。金题"钉子板上画面积 6 的长方形"：答案=面积（shoelace 整数二倍面积免浮点误差），**解耦第四次运用**——平行四边形面积恰=6 → 后端判对（correct=true NEXT_TASK）+ `not_right_angle` 几何属性原料走 Evidence。geometry evaluator 判定顺序=**形状属性错优先于尺寸错**（EMPTY→vertex_count→not_right_angle→wrong_size→PASS，Diagnosis P0"几何属性错误"权重）。
