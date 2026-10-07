@@ -238,4 +238,40 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "school_objects",
     },
+    {
+        # Gate R06（FE-1419）：place-value 位值板链——Gap R06（Batch B 第二题）。
+        # 数字卡放进百/十/个框（digit movement）；牌堆=目标数的乱序排列，
+        # 孩子只可能"站错位置"——structure evaluator 报 place_confusion，
+        # 正是 R06 Diagnosis P0"位值混淆"的原料。app_rd 能力节点首题。
+        "ability_id": "app_rd",
+        "difficulty": 2,
+        "task_type": "number_concept",
+        "title": "数字卡回家（V2 链 R06）",
+        "ui_schema_version": "2.0",
+        "renderer": "place-value",
+        "mode": "place_value_build",
+        "content": {
+            "stem": "数字卡 3、5、2 走丢了。把它们放回百、十、个的框里，组成 352。",
+            "answer": 352,
+            "goal": "按数位把数字放到正确位置（位值结构感知）",
+        },
+        "config": {"target": 352, "pool": [2, 5, 3]},
+        "initial_state": {"pool": [2, 5, 3], "slots": [None, None, None], "picked": None},
+        "capabilities": ["select", "answer_input", "undo", "reset", "highlight", "focus"],
+        "constraints": {"pool_multiset_equals_target_digits": True},
+        "response_type": "place_value",
+        "evidence_targets": ["slots", "structure"],
+        "error_models": [
+            {"pattern": "place_value_confusion", "code": "modeling"},
+            {"pattern": "calc", "code": "calc"},
+        ],
+        "hint_ladder": [
+            "352 的百位是几？把那张卡拿起来。",
+            "拿起 3，点百位框。十位和个位还差谁？",
+            "十位是 5，个位是 2——顺序别站反啦。",
+            "从百位读到个位：三百…再读下去是什么？",
+        ],
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
 ]

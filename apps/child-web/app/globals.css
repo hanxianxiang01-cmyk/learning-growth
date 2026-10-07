@@ -448,3 +448,17 @@ a{color:inherit}
 .bm-evaluation{margin:10px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
 .bm-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
 .bm-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}
+
+/* FE-1419 PlaceValue V2 (R06) */
+.place-value-v2 .pv-slots{display:flex;gap:12px;justify-content:center;margin:14px 0}
+.pv-slot{display:flex;flex-direction:column;align-items:center;gap:4px;width:78px;height:96px;border:3px dashed var(--border-subtle,#b9c9d2);border-radius:16px;background:var(--cm-surface,#fff);cursor:pointer;padding:6px}
+.pv-slot.filled{border-style:solid;border-color:var(--cm-primary,#2d7a68);background:var(--cm-primary-soft,#e8f4ef)}
+.pv-place-name{font-size:13px;font-weight:700;color:var(--cm-text-2,#5c7280)}
+.pv-digit{font-size:38px;font-weight:900;color:var(--cm-text-1,#20323d);line-height:1}
+.pv-pool{display:flex;gap:10px;justify-content:center;min-height:56px;margin:6px 0 12px}
+.pv-tile{width:52px;height:52px;border-radius:12px;border:2px solid var(--border-subtle,#dbe4e8);background:#fff;font-size:26px;font-weight:900;cursor:pointer;color:var(--cm-text-1,#20323d)}
+.pv-tile.picked{border-color:var(--cm-secondary,#d98324);background:color-mix(in srgb,var(--cm-secondary,#d98324) 16%,white);transform:translateY(-3px)}
+.pv-pool-empty{font-size:14px;color:var(--cm-text-2,#8aa0ab);align-self:center}
+.pv-evaluation{margin:8px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
+.pv-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
+.pv-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}

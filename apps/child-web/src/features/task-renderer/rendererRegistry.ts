@@ -112,7 +112,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R07";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07";
 };
 
 const implemented = (
@@ -220,7 +220,7 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
   ),
 
   "choice-grid": implementedV2("choice-grid", "ChoiceGrid", 1, ["answer_input", "reset"], { vertical_gate: undefined }),
-  "place-value": implementedV2("place-value", "PlaceValue", 1, ["answer_input", "highlight", "focus", "reset", "undo"]),
+  "place-value": implementedV2("place-value", "PlaceValue", 1, ["answer_input", "highlight", "focus", "reset", "undo", "select"], { vertical_gate: "R06" }),
   "ten-frame": implementedV2("ten-frame", "TenFrame", 1, ["fill", "grouping", "drag", "answer_input", "undo", "reset"], { vertical_gate: "R07" }),
   "column-arithmetic": implementedV2(
     "column-arithmetic", "ColumnArithmetic", 1,
