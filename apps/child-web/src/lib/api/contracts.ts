@@ -263,6 +263,8 @@ export type InteractionEventType =
   | "ARRAY_ROW_REMOVED"
   | "ARRAY_COL_ADDED"
   | "ARRAY_COL_REMOVED"
+  | "ITEM_ADDED"
+  | "ITEM_REMOVED"
   | "SUBMITTED"
   | "UNDO"
   | "RESET"
