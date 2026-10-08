@@ -81,7 +81,8 @@ export type InteractionCapability =
   | "set_value"
   | "select_symbol"
   | "navigate"
-  | "measure";
+  | "measure"
+  | "extend_pattern";
 
 /**
  * FE-1414：能力注册名单（唯一事实源）。
@@ -92,7 +93,7 @@ export const KNOWN_CAPABILITY_IDS: readonly string[] = [
   "answer_input", "drag", "align", "resize", "jump", "undo", "reset",
   "highlight", "focus", "input_digit", "place_carry", "edit_carry", "step_submit",
   "add_object", "remove_object", "compose_groups", "decompose_group",
-  "fill", "grouping", "select", "draw", "rotate", "sort", "set_time", "set_value", "select_symbol", "navigate", "measure",
+  "fill", "grouping", "select", "draw", "rotate", "sort", "set_time", "set_value", "select_symbol", "navigate", "measure", "extend_pattern",
 ];
 
 export type RendererDescriptor = {
@@ -114,7 +115,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R08" | "R09" | "R10" | "R11" | "R12" | "R13" | "R14" | "R15" | "R16";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R08" | "R09" | "R10" | "R11" | "R12" | "R13" | "R14" | "R15" | "R16" | "R17" | "R18" | "R19";
 };
 
 const implemented = (
@@ -246,16 +247,16 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
     ["measure", "answer_input", "undo", "reset"],
     { vertical_gate: "R16" }
   ),
-  "clock": implementedV2("clock", "Clock", 4, ["drag", "answer_input", "undo", "reset"]),
+  "clock": implementedV2("clock", "Clock", 4, ["set_time", "answer_input", "undo", "reset"], { vertical_gate: "R17" }),
   "timeline": implementedV2("timeline", "Timeline", 4, ["drag", "answer_input", "undo", "reset"]),
-  "money-board": implementedV2("money-board", "MoneyBoard", 4, ["drag", "answer_input", "undo", "reset"]),
+  "money-board": implementedV2("money-board", "MoneyBoard", 4, ["compose_groups", "decompose_group", "answer_input", "undo", "reset"], { vertical_gate: "R18" }),
   "data-table": implementedV2(
     "data-table", "DataTable", 2,
     ["answer_input", "highlight", "focus", "undo", "reset"],
     { vertical_gate: "F6" }
   ),
   "pictograph": implementedV2("pictograph", "Pictograph", 2, ["answer_input", "highlight", "focus", "reset"]),
-  "pattern-board": implementedV2("pattern-board", "PatternBoard", 2, ["drag", "answer_input", "undo", "reset"]),
+  "pattern-board": implementedV2("pattern-board", "PatternBoard", 2, ["extend_pattern", "select", "answer_input", "undo", "reset"], { vertical_gate: "R19" }),
 
   unsupported: {
     renderer_id: "unsupported",
