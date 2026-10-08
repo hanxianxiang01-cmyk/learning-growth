@@ -29,6 +29,10 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Review（FE-1432 核对轮：V1.4 题库包 L1-2100/L2-1008 消费判定=**不入库**，2026-10-08）
+
+> 交付方 3,108 题包（L1 Core 2,100 + L2 Dynamic 1,008）核对结论：**矩阵壳，非内容**。20 字段结构 3108 题全一致，但 prompt 3108/3108 全为模板占位句（"围绕X完成N层任务"）、answer 0/3108、diagnosis_target 全车"E01-E07"常量——与旧 210 题包同病且覆盖谎报（声明 19 renderer 实测 17 类，缺 ten-frame/estimation-canvas）。四道闸（M→app 映射/词表/config/答案）一条没解。唯一净增量=question_role 八角色 + variant_group_id + retry_of 链（与复习调度语义吻合，采纳为治理口径参考）。原件存档 `docs/frontend/33_V14_question_bank_L1_2100_L2_1008/`，判定表见该目录 README。**"Gate 打完一道喂一道"技术前提已就绪（19/19），等待交付方补齐真题文本+答案+config+词表族再启动入库。**
+
 ## Done（FE-1436 R19 PatternBoard Vertical Gate：B5 模板第十八组件，ABAB 规律延续，Batch E 收官=19/19 全清，2026-10-08）
 
 > Batch E 收官题（Gap R19）。pattern-board=花边"黄蓝黄蓝…"识别周期延续 2 空格（调色板点选填珠、点珠两次=抠除）。答案=空格 token 拼接整数 12（黄=1 蓝=2，后端标量判分不动冻结链）。
