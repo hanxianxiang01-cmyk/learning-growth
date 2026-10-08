@@ -29,6 +29,14 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Review（FE-1432b 试灌审计轮：V1.4_P0_Trial_155 包——内容真、契约错位，不入库，产出 Config 契约对照表，2026-10-08）
+
+> 交付方 155 题试灌包（自称 P0_TRIAL、M→app 标 PENDING 没装冻结）。三轮审计：① 7 条断言全真——**真题文本 155/155、answer 全有、19 renderer 齐（补上 ten-frame/estimation-canvas）、context_family 零越表**：内容态度合格；② config×parser 硬审（`audit-155-config.mjs`）：专件 122 题 **PASS 8 / FAIL 114（93%）**；③ 垫片转换再审（`convert_trial155.py`，语义缺口硬拒 22）：转换后 PASS 51 / FAIL 41——**字段错位 1/3 可机器救，答案轴错位 2/3 只能重导**。
+>
+> 主矛盾=**答案语义轴冲突**：direction-grid 答步数（我方终点编码）、shape-canvas 答形状名（我方面积）、sorting-board 是分类（我方排序）、pattern-board 是等差数列（我方 ABAB 周期）、money-board 单位元（我方角）+4 题 paid−price=0 却答 64——**题包自身数据矛盾 18 题**（自带 schema 校验查不出，逐题一致性审计必须进交付流水线）。diagnosis 20 种自由 tag 与我方 19 Gate error 词表零重合。
+>
+> 处置=产出 `docs/frontend/34_V14_trial155_contract_audit/CONTRACT.md`（**19 渲染器逐条契约对照表**：我方金样例+parser 守卫+题包形状+冲突判定+重导指令+可直接沿用清单 ~45 题）——正是交付方 README 预判的"先修 Contract 再扩产 3,108"。审计脚本保留作**入库验收门禁**（每批题先跑）。
+
 ## Review（FE-1432 核对轮：V1.4 题库包 L1-2100/L2-1008 消费判定=**不入库**，2026-10-08）
 
 > 交付方 3,108 题包（L1 Core 2,100 + L2 Dynamic 1,008）核对结论：**矩阵壳，非内容**。20 字段结构 3108 题全一致，但 prompt 3108/3108 全为模板占位句（"围绕X完成N层任务"）、answer 0/3108、diagnosis_target 全车"E01-E07"常量——与旧 210 题包同病且覆盖谎报（声明 19 renderer 实测 17 类，缺 ten-frame/estimation-canvas）。四道闸（M→app 映射/词表/config/答案）一条没解。唯一净增量=question_role 八角色 + variant_group_id + retry_of 链（与复习调度语义吻合，采纳为治理口径参考）。原件存档 `docs/frontend/33_V14_question_bank_L1_2100_L2_1008/`，判定表见该目录 README。**"Gate 打完一道喂一道"技术前提已就绪（19/19），等待交付方补齐真题文本+答案+config+词表族再启动入库。**
