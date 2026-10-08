@@ -80,7 +80,8 @@ export type InteractionCapability =
   | "set_time"
   | "set_value"
   | "select_symbol"
-  | "navigate";
+  | "navigate"
+  | "measure";
 
 /**
  * FE-1414：能力注册名单（唯一事实源）。
@@ -91,7 +92,7 @@ export const KNOWN_CAPABILITY_IDS: readonly string[] = [
   "answer_input", "drag", "align", "resize", "jump", "undo", "reset",
   "highlight", "focus", "input_digit", "place_carry", "edit_carry", "step_submit",
   "add_object", "remove_object", "compose_groups", "decompose_group",
-  "fill", "grouping", "select", "draw", "rotate", "sort", "set_time", "set_value", "select_symbol", "navigate",
+  "fill", "grouping", "select", "draw", "rotate", "sort", "set_time", "set_value", "select_symbol", "navigate", "measure",
 ];
 
 export type RendererDescriptor = {
@@ -113,7 +114,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R08" | "R09" | "R10" | "R11" | "R12" | "R13" | "R14" | "R15";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R08" | "R09" | "R10" | "R11" | "R12" | "R13" | "R14" | "R15" | "R16";
 };
 
 const implemented = (
@@ -242,8 +243,8 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
   "direction-grid": implementedV2("direction-grid", "DirectionGrid", 4, ["navigate", "answer_input", "undo", "reset"], { vertical_gate: "R15" }),
   "ruler": implementedV2(
     "ruler", "Ruler", 4,
-    ["drag", "answer_input", "undo", "reset"],
-    { vertical_gate: "E4" }
+    ["measure", "answer_input", "undo", "reset"],
+    { vertical_gate: "R16" }
   ),
   "clock": implementedV2("clock", "Clock", 4, ["drag", "answer_input", "undo", "reset"]),
   "timeline": implementedV2("timeline", "Timeline", 4, ["drag", "answer_input", "undo", "reset"]),

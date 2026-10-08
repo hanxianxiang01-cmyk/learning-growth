@@ -29,6 +29,20 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1429 R16 Ruler Vertical Gate：B5 模板第十五组件，量尺两点标记，Batch E 起手，2026-10-08）
+
+> Batch E 第一题（Gap R16）。ruler=尺面点刻度放两标记夹住物体（第 3 点清空重放——"再点就是重来"儿童心智）。物体**故意非零起点**（铅笔跨 3..8）；答案=标记间隔 5（后端标量相等判分，不动冻结链——Gap"tolerance evaluator"的容差语义留待非整刻度题库启用，差异入底表 §3）。
+>
+> **解耦第七次运用（R08/R15 同形态）**：平移段靶 {4,9} span=5 → 后端判对 + `aligned=false` 留痕——"量对了=后端判、夹没夹住两头=结构层说"。**判错侧**：零起误读 {0,8}→answer=8≠5 判错 + `from_zero_reading` 精确分诊（Diagnosis P0"刻度读取错误"落地）；parser 守卫 left≥1 保证此靶必判错且与 PASS 互斥（R15"靶可达"纪律延续）。
+
+- **纯函数层** `rulerV2.ts`：parseRulerConfig（max 10..30/物体整数刻度 right>left≥1≤max）+ applyPlaceMark（NO_SUCH_TICK/重放）/applyClearMarks（NO_MARK）+ evaluateMeasurement EMPTY→PASS(aligned)→from_zero→wrong_span（附 span/diff）+ serialize（marks 起止/span/reading/object/structure）。node 语义矩阵 20 断言全过。
+- **组件** `RulerV2.tsx`：刻度尺+物体覆盖层+▼标记；RULER_MARK_SET（payload.restarting 记重放）/RULER_MARKS_CLEARED 事件链；误读提示直达教学语言（"铅笔不是从 0 开始的，要夹住它的两头"）；专件替换基座路由（基座 Ruler range 滑条保留作参考）。
+- **能力词表**：新增 `measure` 三处同步；registry vertical_gate E4→**R16**。
+- **链题**：R16 金题（铅笔 3→8 长 5，school_objects）**app_model 节点第五题** seed RDS；防漂移+1（后端 99→**100 passed**，含"零起靶≠正解"校验）。
+- **API 实证**（pin=1f23c045 首抽即中）：from_zero 8 false HINT / 重放同 attempt_id / 异内容 409 / PASS 5 NEXT_TASK（全程带递增 attempt_no——R15 坑口径固化）。
+- **E2E** `e2e/r16-ruler.spec.mjs` 10/10 首跑全绿（解耦靶 aligned=false 双断言、第三点重放、清标记回 EMPTY、dblclick、healing）。
+- 底表 `docs/governance/R16_RULER_VERTICAL_GATE.md`。**Vertical Gate 进度 16/19；Batch E 1/4**。
+
 ## Done（FE-1427 R15 DirectionGrid Vertical Gate：B5 模板第十四组件，5×5 路径导航，Batch D 收官，2026-10-08）
 
 > Batch D 收官题（Gap R15）。direction-grid=点相邻格挪步走出路线（上/下/左/右一步；对角/隔格/同格拒绝）。答案=**终点格编码 row×cols+col**（19，后端标量相等判分不动冻结链）；完整路径走 Evidence `path/directions/turns`（Gap"movement sequence"）。route evaluator 四态：EMPTY→PASS(detour)→direction_reversed→wrong_position（附曼哈顿距离）。

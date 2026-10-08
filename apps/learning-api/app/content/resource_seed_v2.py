@@ -659,4 +659,49 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "school_objects",
     },
+    {
+        # FE-1429 R16 ruler 金题：量铅笔长度（Batch E 起手）。
+        # 铅笔躺在尺子 3..8 上（**故意不从 0 开始**）——两标记夹住物体，
+        # 答案=间隔长度 5（后端标量判分，不动冻结链）。
+        # 分诊靶：零起误读 {0,8}→answer=8≠5 判错 + from_zero_reading（Diagnosis P0
+        # "刻度读取错误"精确命中，parser 守卫 left≥1 保证此靶必判错）。
+        # **解耦第七次运用**（R08/R15 形态）：平移段 {4,9} span=5 判对 +
+        # aligned=false 留痕——量对了=后端判、夹没夹住两头=结构层说。
+        # app_model 能力节点第五题。
+        "code": "V2-R16-RULER-001",
+        "title": "量一量铅笔有多长",
+        "ability_id": "app_model",
+        "renderer": "ruler",
+        "ui_schema_version": "2.0",
+        "mode": "measurement",
+        "response_type": "ruler",
+        "content": {
+            "stem": "铅笔躺在尺子上，左头对着刻度 **3**，右头对着刻度 **8**（注意：它不是从 0 开始的）。先点左头对的刻度放一个标记，再点右头对的刻度放第二个标记，两个标记之间就是铅笔的长度（厘米）。答案填这个长度。",
+            "answer": 5,
+            "goal": "用两标记间隔量物体长度（非零起点刻度读取）",
+        },
+        "config": {
+            "max": 20,
+            "object": [3, 8],
+        },
+        "initial_state": {"marks": []},
+        "constraints": {"object_span": 5, "left_offset": 3},
+        "capabilities": ["measure", "answer_input", "undo", "reset"],
+        "evidence_targets": ["marks", "span", "reading", "structure"],
+        "hint_ladder": [
+            {"level": 1, "text": "铅笔的左头对着尺子上的几？"},
+            {"level": 2, "text": "对，是 3——第一个标记要点在 3 上，不是 0 哦。"},
+            {"level": 3, "text": "右头对着 8——第二个标记点 8，夹住两头。"},
+            {"level": 4, "text": "8 减 3 等于几？两个标记差几格，铅笔就长几厘米。"},
+        ],
+        "error_models": [
+            {"pattern": "from_zero_reading", "code": "E-RL-01", "note": "把左标记放在 0 上量到右端（零起误读——刻度读取错误 P0 靶）"},
+            {"pattern": "wrong_span", "code": "E-RL-02", "note": "间隔对不上物体长度（附差值原料）"},
+            {"pattern": "misaligned", "code": "E-RL-03", "note": "间隔量对但标记没夹住两头（判对+留痕）"},
+        ],
+        "task_type": "word_problem",
+        "difficulty": 1,
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
 ]

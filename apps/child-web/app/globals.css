@@ -579,3 +579,18 @@ a{color:inherit}
 .dg-evaluation{margin:8px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
 .dg-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
 .dg-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}
+.ruler-v2 .rl-ruler{position:relative;margin:26px 8px 34px;padding-top:26px}
+.rl-object{position:absolute;top:0;height:24px;display:flex;align-items:center;justify-content:center;font-size:18px;background:color-mix(in srgb,var(--cm-secondary,#d98324) 20%,white);border:2px solid var(--cm-secondary,#d98324);border-radius:8px}
+.rl-ticks{display:flex;align-items:flex-end;border-bottom:3px solid var(--cm-text-1,#20323d);min-height:56px}
+.rl-tick{flex:1;border:none;background:transparent;cursor:pointer;position:relative;height:44px;padding:0;display:flex;align-items:flex-end;justify-content:center}
+.rl-tick:disabled{opacity:.6;cursor:default}
+.rl-tick::before{content:"";position:absolute;bottom:0;width:2px;background:var(--cm-text-1,#20323d)}
+.rl-tick.major::before{height:16px}
+.rl-tick.minor::before{height:8px;opacity:.55}
+.rl-num{position:absolute;bottom:-22px;font-size:11px;font-weight:700;color:var(--cm-text-2,#5c7280)}
+.rl-tick.marked{background:color-mix(in srgb,#d64545 10%,transparent)}
+.rl-tick.marked::after{content:"▼";position:absolute;top:-20px;color:#d64545;font-size:15px}
+.rl-clear{width:auto!important;padding:0 10px;font-size:13px!important;font-weight:700}
+.rl-evaluation{margin:26px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
+.rl-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
+.rl-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}

@@ -361,3 +361,30 @@ def test_r15_exists_and_shape():
     assert "navigate" in R15["capabilities"]
     # app_model 能力节点第四题（R02 bar-model / R08 array / R11 estimation 之后）
     assert R15["ability_id"] == "app_model"
+
+
+R16 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "ruler")
+
+
+def test_r16_exists_and_shape():
+    validate_renderer_id(R16["renderer"])
+    assert is_implemented(R16["renderer"])
+    assert R16["mode"] == "measurement"
+    assert R16["response_type"] == "ruler"
+    c = R16["config"]
+    assert 10 <= c["max"] <= 30  # 前端 parser 同守卫
+    left, right = c["object"]
+    assert all(isinstance(v, int) for v in (left, right))
+    # 前端守卫：left≥1——否则 from_zero_reading 靶（0..right）与正解重合，分诊失效
+    assert left >= 1
+    assert right > left and right <= c["max"]
+    # 答案=物体长度（间隔）
+    assert right - left == R16["content"]["answer"]
+    # 零起误读靶答案必须 ≠ 正解（分诊靶可判错的前提）
+    assert right != R16["content"]["answer"]
+    patterns = {e["pattern"] for e in R16["error_models"]}
+    assert {"from_zero_reading", "wrong_span", "misaligned"} <= patterns
+    assert {"marks", "span", "structure"} <= set(R16["evidence_targets"])
+    assert "measure" in R16["capabilities"]
+    # app_model 能力节点第五题（R15 direction-grid 之后）
+    assert R16["ability_id"] == "app_model"

@@ -270,6 +270,8 @@ export type InteractionEventType =
   | "PATH_EXTENDED"
   | "PATH_STEP_UNDONE"
   | "PATH_CLEARED"
+  | "RULER_MARK_SET"
+  | "RULER_MARKS_CLEARED"
   | "SUBMITTED"
   | "UNDO"
   | "RESET"
