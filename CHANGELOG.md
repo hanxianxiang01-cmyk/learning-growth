@@ -29,6 +29,15 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Review（FE-1432d 整改任务单下发：trial155 → v2 批 A/B/C 三路径重交付，2026-10-08）
+
+> 基于用户拍板的验收原则，把 docs/34 审计结论 + PC-v1 契约落成**给交付方的正式任务单**（docs/frontend/36/TASK_ORDER.md）。核心条款：
+> - **不是重做 155 题**，按 A（≈45 补 hint_ladder/goal/diagnosis）/ B（≈77 语义重导，验收对象=「题目语义+config+answer+evaluator」整体，**拒字段换皮**——direction 终点编码/shape-canvas 面积/sorting 真换挂 choice-grid/clock 重生成整半点/estimation 值域）/ C（18 数据修复，**定为 P0**）三路径重交；每题恰好一类、B∩C 归 C、MANIFEST 逐题 155 行必填七列
+> - **流水线顺序卡死**：audit-155-config.mjs → Consistency Audit → 才允许 Pin E2E/Judge/Evidence/Diagnosis → qa_replay；一致性审计非附加检查
+> - **工具归属**：Gate 3 权威判定权在我方（parser 源不可外发），交付方自检报告随包但复跑为准；随任务单发出**独立可运行的 `consistency_audit.py`**（纯标准库、PC-v1 §10 六类规则+词表+拼接歧义共 8 类检查）——对 trial155 回归实跑：37 条违规，18 题内伤全命中且规则更严（direction 纯直线扩展至 116/117）
+> - **交付包结构固定**：`155_question_bank_delivery_v2/`（A/B/C 三目录+ability_mapping+reports+DELIVERY_MANIFEST.md），question_id 沿用原 ID 保证审计可追溯；缺随附申报=整包拒收
+> - 我方收货链对应 PC-v1 §11 8-Gate：MANIFEST 完整性→Gate1~3→5% pin 实灌（≥8 题覆盖全出现 renderer）→qa_replay；**下一轮起不再人工逐题看 155**
+
 ## Review（FE-1432c 契约收编：交付方《Question Bank Production Contract v1.0》= 我方 docs/34 的正式化文档，收下作验收基线，2026-10-08）
 
 > 交付方基于我方 trial155 审计对照表（docs/34/CONTRACT.md）整理出 17 节正式契约（docx，298 段）。逐条核验：**内容与审计产出一致、无失真、无夹带**——§5 全局三条=我方 G1~G3；§6 19 渲染器矩阵+§7 重导规则与 parser 守卫逐字一致；§10 一致性 Gate 吸收我方 18 题数据内伤实证；§11 把入库流程制度化为 **8-Gate 验收链**（Schema→一致性→Config×Parser→5% Pin E2E→Judge→Evidence→Diagnosis→qa_replay，我方 audit 脚本=Gate 3、pin 机制=Gate 4 地基、replay=Gate 8 执行器，全部现成）；§13/§14 采纳"converter 降级、先修契约再扩产"。**处置=收下作 V1.4 题库生产验收基线**（FE-1434 契约 FROZEN 的输入件）；原件+抽取文本存档 docs/frontend/35，条款引用记 `PC-v1.<节号>`。FE-1432 入库继续挂起等 B/C 类重导批。
