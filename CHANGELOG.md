@@ -29,6 +29,47 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1436 R19 PatternBoard Vertical Gate：B5 模板第十八组件，ABAB 规律延续，Batch E 收官=19/19 全清，2026-10-08）
+
+> Batch E 收官题（Gap R19）。pattern-board=花边"黄蓝黄蓝…"识别周期延续 2 空格（调色板点选填珠、点珠两次=抠除）。答案=空格 token 拼接整数 12（黄=1 蓝=2，后端标量判分不动冻结链）。
+>
+> **解耦第九次运用（Gap 原文直接点名原料）**：Evidence=「尝试顺序、修改过程」——摆错→抠掉→改对，最终 answer=12 判对 + `changed_once=true` 留痕（attempt>blanks 即"试出来的"）；一次对 vs 试错对都算掌握，但策略稳定性诊断价值不同，原料不丢交后端观察匹配。**判错双子靶**：phase_shift [2,1]=周期读对但从末颗重新数（真实高频错法）；rule_ignored [2,2]=全末颗没找规律（Diagnosis P0"规律识别错误"）。parser 三守卫：period∈2..3 存在 / shifted≠expected（回文退化拒）/ 全末颗≠expected。
+
+- **纯函数层** `patternBoardV2.ts`：inferPeriod（最小周期 2..3）+ parsePatternConfig（visible 3..6/blanks 2..3/palette 2..4/调色板⊇可见 token）+ applyPlaceToken（NO_SUCH_TOKEN/NO_EMPTY_SLOT）/applyReplaceAt（SAME_TOKEN）/applyClearAt（ALREADY_EMPTY）+ evaluatePattern EMPTY→PASS→phase_shift→rule_ignored→wrong_sequence + serialize（beads/period/pattern_text/attempt_history=[[slot,from,to]]）。node 语义矩阵全过（首跑抓出 evaluatePattern 相位比对用错操作数 bug——same(shifted) 比的是 shifted vs expected 自身，修为 equals(actual, shifted)——矩阵价值又一实证）。
+- **组件** `PatternBoardV2.tsx`：珠串（固定珠+空格虚线位）+双点抠除交互；PATTERN_BEAD_PLACED/REPLACED/REMOVED/RESET 事件链；phase_shift 提示直达教学语言（"从上一颗重新数了"）。
+- **能力词表**：新增 `extend_pattern`（三处同步）。
+- **链题**：R19 金题（黄蓝黄蓝+2 空，school_objects）**app_rel 第四题**（ABAB=一一对应的时序版）seed RDS；防漂移+1（后端 102→**103 passed**，含相位/惯性靶互斥校验）。
+- **API 实证**（pin=1723d78a 五连）：rule_ignored 22 false HINT / 重放同 attempt_id / 异内容 409 / PASS 12(changed_once) NEXT_TASK / phase_shift 21 false。
+- **E2E** `e2e/r19-pattern-board.spec.mjs` **11/11 首跑全绿**（解耦靶 changed_once 双断言、双子靶分诊、修正路径含中间态 phase_shift 确认、RESET、dblclick、healing）。全量 E2E 见 PR 验证记录。
+- 底表 `docs/governance/R19_PATTERNBOARD_VERTICAL_GATE.md`。**Vertical Gate 19/19——V1.4 全部 Renderer 竖切闭环**。下一步进入收官四件套（FE-1432 题库入库/1433 replay#7/1434 契约 FROZEN/1435 立版）。
+
+## Done（FE-1431 R18 MoneyBoard Vertical Gate：B5 模板第十七组件，凑付换算，Batch E 3/4，2026-10-08）
+
+> Batch E 第三题（Gap R18）。money-board=点钱包档位拿币凑商品价（1角/5角/1元/5元四档，点加取回减）。**价格故意带角位**（3元5角=35角）；答案=付出总角数 35（后端标量判分，不动冻结链）。
+>
+> **解耦第八次运用（R08/R15/R16 同形态）**：笨凑法（2元+3枚5角=35，币数 5>最少 4）→ 后端判对 + `uses_extra=true` 留痕——"钱凑没凑对=后端判、换得笨不笨=结构层说"。**判错侧（R14/R15/R17 同形态）**：把「5 角」当「5 元」数（3枚1元+5枚5角=55角）→ `denomination_confusion` 精确分诊（Diagnosis P0"面值/金额关系错误"）。parser 守卫：角位必须为 5 的非零倍数（整十价混淆靶退化→拒）+ 钱包必含 5角&1元档（混淆靶可达）——延续"每个 FAIL 态必有可达且互斥靶"。
+
+- **纯函数层** `moneyBoardV2.ts`：parseMoneyConfig（price 5..200/角位非零5倍数/含5&10档/贪心可组）+ applyAddCoin（NO_SUCH_DENOMINATION/OVER_LIMIT 12枚上限）/applyRemoveCoin（NONE_LEFT）+ minCoins 贪心（规范币制下=最优）+ evaluatePayment EMPTY→PASS(uses_extra)→denomination_confusion→underpaid/overpaid（附 diff）。node 语义矩阵全过（混淆 55-35=20、笨凑 5>4、上限 13 拒）。
+- **组件** `MoneyBoardV2.tsx`：四档钱包（拿币→台面 chip 队列→取回）；MONEY_COIN_ADDED/REMOVED/RESET 事件链；混淆提示直达教学语言（"把 5角 当 5元 数啦？角和元不一样大"）；专件替换基座路由（基座 MoneyBoard 保留作参考）。
+- **能力词**：复用 compose_groups/decompose_group；registry vertical_gate → R18。
+- **链题**：R18 金题（练习本 3元5角=35 角，shopping）**app_strat 第三题** seed RDS（pin=b978d294）；防漂移+1（含"混淆靶总量≠正解"校验，后端 22 passed）。
+- **API 实证**（pin 首抽即中）：confusion 55 false HINT / 重放同 attempt_id / 异内容 409 / PASS 35 NEXT_TASK（递增 attempt_no）。
+- **E2E** `e2e/r18-money-board.spec.mjs` 10/10 首跑全绿（解耦靶 uses_extra 双断言、混淆分诊、取回补正路径、取回下限禁用、dblclick、healing）。
+- 底表 `docs/governance/R18_MONEYBOARD_VERTICAL_GATE.md`。**Vertical Gate 进度 18/19；Batch E 3/4**。
+
+## Done（FE-1430 R17 Clock Vertical Gate：B5 模板第十六组件，钟面拨针，Batch E 2/4，2026-10-08）
+
+> Batch E 第二题（Gap R17）。clock=钟面点数字拨时针 + 整点/半点两档拨分针（SVG 双针实时指向，拖拽的儿童可靠性替代）。整时/半点口径（二年级认识时间）；答案=总分钟数 h×60+m（3:00→6:00=360，后端标量判分不动冻结链）。
+>
+> **判错分诊（R14/R15/R16 同形态）**：`hand_swap`——把**长针指的数字**当时针读（6:00 长针在 12→误读"12点"拨成 12:00，answer=720≠360）精确命中 Diagnosis P0"时针/分针关系错误"。形式化 swapOf(target)={h: m===0?12:m/5, m}；parser 守卫互换态必须合法且≠target（目标 12:00 互换=自身→拒，配置层消灭退化靶）。
+
+- **纯函数层** `clockV2.ts`：parseClockConfig（m∈{0,30}/h∈1..12/起终不重合/互换靶合法且互斥）+ applySetHour（NO_SUCH_POSITION/INVALID_COMBO——m=30 时 h=12 合法=12:30）/applySetMinute（0/30 两档，unchanged 不产生调整）+ evaluateClock EMPTY→PASS→hand_swap→wrong_time（附分钟差）+ serialize（h/m/time_text/adjust_history=[[hand,from,to]]）。node 语义矩阵全过（含半点链 4:30=270、12:30 合法）。
+- **组件** `ClockV2.tsx`：SVG 钟面 12 数字位（g+circle 双层 picked）+ 整/半点按钮；CLOCK_HOUR_SET/MINUTE_SET 事件链；指针 rotate 实时（`rotate(deg 100 100)`）；关系错误提示直达教学语言（"看着长针指的数字读钟啦？"）；专件替换基座路由（基座 Clock `<input type=time>` 保留作参考）。
+- **链题**：R17 金题（3:00 拨到 6:00，**time_schedule 词表族首题真实覆盖**）app_cond 第三题 seed RDS（pin=814b32f1）；防漂移+1（含"互换靶≠正解"校验，后端 21 passed）。
+- **API 实证**（pin 首抽即中）：hand_swap 720 false HINT / 重放同 attempt_id / 异内容 409 / PASS 360 NEXT_TASK（递增 attempt_no）。
+- **E2E** `e2e/r17-clock.spec.mjs` 10/10（首跑 3 挂=picked class 只在 circle 未镜像到 g 层 testid，修 g 双层后全绿——新坑入 skill；半点链/UNDO/RESET/dblclick/healing）。全量 **167 passed** 零回归（R17+R18 合跑）。
+- 底表 `docs/governance/R17_CLOCK_VERTICAL_GATE.md`。**Vertical Gate 进度 17/19；Batch E 2/4**。
+
 ## Done（FE-1429 R16 Ruler Vertical Gate：B5 模板第十五组件，量尺两点标记，Batch E 起手，2026-10-08）
 
 > Batch E 第一题（Gap R16）。ruler=尺面点刻度放两标记夹住物体（第 3 点清空重放——"再点就是重来"儿童心智）。物体**故意非零起点**（铅笔跨 3..8）；答案=标记间隔 5（后端标量相等判分，不动冻结链——Gap"tolerance evaluator"的容差语义留待非整刻度题库启用，差异入底表 §3）。

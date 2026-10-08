@@ -388,3 +388,111 @@ def test_r16_exists_and_shape():
     assert "measure" in R16["capabilities"]
     # app_model 能力节点第五题（R15 direction-grid 之后）
     assert R16["ability_id"] == "app_model"
+
+
+R17 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "clock")
+
+
+def test_r17_exists_and_shape():
+    validate_renderer_id(R17["renderer"])
+    assert is_implemented(R17["renderer"])
+    assert R17["mode"] == "time_setting"
+    assert R17["response_type"] == "clock"
+    c = R17["config"]
+    sh, sm = c["start"]
+    th, tm = c["target"]
+    # 前端 parser 同守卫：整时/半点口径（m∈{0,30}，h∈1..12）
+    assert sm in (0, 30) and tm in (0, 30)
+    assert 1 <= sh <= 12 and 1 <= th <= 12
+    assert (sh, sm) != (th, tm)
+    # 答案=总分钟数
+    assert th * 60 + tm == R17["content"]["answer"]
+    # 互换靶（长针读数当短针）必须合法且 ≠ 正解
+    swap_h = 12 if tm == 0 else tm // 5
+    assert 1 <= swap_h <= 12 and swap_h != th
+    assert swap_h * 60 + tm != R17["content"]["answer"]
+    patterns = {e["pattern"] for e in R17["error_models"]}
+    assert {"hand_swap", "wrong_time"} <= patterns
+    assert {"h", "m", "adjust_history", "structure"} <= set(R17["evidence_targets"])
+    assert "set_time" in R17["capabilities"]
+    # app_cond 第三题；time_schedule 词表族真实覆盖
+    assert R17["ability_id"] == "app_cond"
+    assert R17["context_family"] == "time_schedule"
+
+
+R18 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "money-board")
+
+
+def _min_coins(price, denoms):
+    rest, n = price, 0
+    for d in sorted(denoms, reverse=True):
+        take, rest = divmod(rest, d)
+        n += take
+    assert rest == 0
+    return n
+
+
+def test_r18_exists_and_shape():
+    validate_renderer_id(R18["renderer"])
+    assert is_implemented(R18["renderer"])
+    assert R18["mode"] == "payment"
+    assert R18["response_type"] == "money_board"
+    c = R18["config"]
+    price = c["price"]
+    assert 5 <= price <= 200
+    # 前端 parser 同守卫：角位是 5 的非零倍数（混淆靶存在且必判错的前提）
+    assert price % 10 != 0 and price % 5 == 0
+    denoms = c["denominations"]
+    assert 5 in denoms and 10 in denoms  # 混淆靶 {10×元位, 5×角位} 可达守卫
+    assert _min_coins(price, denoms) >= 1
+    # 答案=总角数
+    assert price == R18["content"]["answer"]
+    # 混淆靶（把 5 角当 5 元）总量必 ≠ 正解
+    confusion_total = (price // 10) * 10 + (price % 10) * 5
+    assert confusion_total != price
+    patterns = {e["pattern"] for e in R18["error_models"]}
+    assert {"denomination_confusion", "underpaid", "overpaid", "uses_extra"} <= patterns
+    assert {"counts", "coins", "total", "structure"} <= set(R18["evidence_targets"])
+    assert {"compose_groups", "decompose_group"} <= set(R18["capabilities"])
+    # app_strat 第三题；shopping 词表族第二题（R11 estimation 之后）
+    assert R18["ability_id"] == "app_strat"
+    assert R18["context_family"] == "shopping"
+
+
+R19 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "pattern-board")
+
+
+def test_r19_exists_and_shape():
+    validate_renderer_id(R19["renderer"])
+    assert is_implemented(R19["renderer"])
+    assert R19["mode"] == "pattern_extension"
+    assert R19["response_type"] == "pattern_board"
+    c = R19["config"]
+    vis, blanks, palette = c["visible"], c["blanks"], c["palette"]
+    # 前端 parser 同守卫
+    assert 3 <= len(vis) <= 6 and 2 <= blanks <= 3 and 2 <= len(palette) <= 4
+    assert all(1 <= t <= 5 for t in vis + palette)
+    assert len(set(palette)) == len(palette)
+    assert all(t in palette for t in vis)  # 调色板 ⊇ 可见 token
+    # 存在周期 p∈2..3（全同/无周期被前端拒）
+    period = None
+    for p in range(2, min(3, len(vis) - 1) + 1):
+        unit = vis[:p]
+        if all(vis[i] == unit[i % p] for i in range(len(vis))):
+            period = p
+            break
+    assert period is not None
+    # 正解=周期延续；答案=token 拼接一位数整数（无歧义）
+    expected = [vis[(len(vis) + i) % period] for i in range(blanks)]
+    assert int("".join(str(t) for t in expected)) == R19["content"]["answer"]
+    # 相位靶（后移一位）≠ 正解（回文退化被前端拒）
+    shifted = [vis[(len(vis) + i + 1) % period] for i in range(blanks)]
+    assert shifted != expected
+    # 惯性靶（全=末颗）≠ 正解
+    assert not all(t == vis[-1] for t in expected)
+    patterns = {e["pattern"] for e in R19["error_models"]}
+    assert {"phase_shift", "rule_ignored", "wrong_sequence", "changed_once"} <= patterns
+    assert {"beads", "attempt_history", "structure"} <= set(R19["evidence_targets"])
+    assert "extend_pattern" in R19["capabilities"]
+    # app_rel 第四题（ABAB=一一对应的时序版）
+    assert R19["ability_id"] == "app_rel"

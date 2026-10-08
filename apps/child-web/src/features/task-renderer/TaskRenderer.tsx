@@ -17,10 +17,13 @@ import { ShapeCanvasV2 } from "@/src/components/renderers/ShapeCanvasV2";
 import { SortingBoardV2 } from "@/src/components/renderers/SortingBoardV2";
 import { DirectionGridV2 } from "@/src/components/renderers/DirectionGridV2";
 import { RulerV2 } from "@/src/components/renderers/RulerV2";
+import { ClockV2 } from "@/src/components/renderers/ClockV2";
+import { MoneyBoardV2 } from "@/src/components/renderers/MoneyBoardV2";
+import { PatternBoardV2 } from "@/src/components/renderers/PatternBoardV2";
 import { TenFrameV2 } from "@/src/components/renderers/TenFrameV2";
 import {
   ChoiceGrid,
-  Clock, Timeline, MoneyBoard,  DataTable, Pictograph, PatternBoard
+  Timeline, DataTable, Pictograph
 } from "@/src/components/renderers/V2RendererLibrary";
 
 import { MathQuestionCard } from "@/src/components/learning/MathQuestionCard";
@@ -433,13 +436,58 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     );
   }
 
+  if (rendererId === "clock") {
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <ClockV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
+
+  if (rendererId === "money-board") {
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <MoneyBoardV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
+
+  if (rendererId === "pattern-board") {
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <PatternBoardV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
+
   if (rendererId === "choice-grid") return <ChoiceGrid {...commonV2Props} />;
-  if (rendererId === "clock") return <Clock {...commonV2Props} />;
   if (rendererId === "timeline") return <Timeline {...commonV2Props} />;
-  if (rendererId === "money-board") return <MoneyBoard {...commonV2Props} />;
   if (rendererId === "data-table") return <DataTable {...commonV2Props} />;
   if (rendererId === "pictograph") return <Pictograph {...commonV2Props} />;
-  if (rendererId === "pattern-board") return <PatternBoard {...commonV2Props} />;
 
   return (
     <div className="surface-card unsupported-task" data-testid="planned-renderer">

@@ -660,6 +660,139 @@ GOLD_RESOURCES_V2: list[dict] = [
         "context_family": "school_objects",
     },
     {
+        # FE-1430 R17 clock 金题：3:00 拨到 6:00（Batch E 第二题）。
+        # 答案=总分钟数 360（后端标量判分，不动冻结链）。
+        # 分诊靶 hand_swap：{12,0}（把长针指的 12 当时针读→拨成 12:00，
+        # answer=720≠360 判错+"时针/分针关系错误" P0 精确命中）。
+        # parser 守卫：互换态必须合法且≠target（start(3,0) 避开互换退化重合）。
+        # **app_cond 第三题**；词表族 time_schedule（二年级时间单元真实覆盖）。
+        "code": "V2-R17-CLOCK-001",
+        "title": "把钟拨到 6 点",
+        "ability_id": "app_cond",
+        "renderer": "clock",
+        "ui_schema_version": "2.0",
+        "mode": "time_setting",
+        "response_type": "clock",
+        "content": {
+            "stem": "钟面上现在是 **3:00**。动画片 **6:00** 开始播出——把时针（短针）和分针（长针）拨到 6 点整。点钟面上的数字拨短针，点下面「整点 / 半点」拨长针。答案用**分钟**表示 6 点（从 12 点走起一共几分钟，如 1 点=60）。",
+            "answer": 360,
+            "goal": "区分时针/分针职责并按整时口径拨钟",
+        },
+        "config": {
+            "start": [3, 0],
+            "target": [6, 0],
+        },
+        "initial_state": {"h": 3, "m": 0, "adjust_history": []},
+        "constraints": {"granularity": "hour_only"},
+        "capabilities": ["set_time", "answer_input", "undo", "reset"],
+        "evidence_targets": ["h", "m", "adjust_history", "structure"],
+        "hint_ladder": [
+            {"level": 1, "text": "6 点的时候，短针指着几？长针呢？"},
+            {"level": 2, "text": "整点时**长针一定指 12**——现在长针已经指 12 了，不用动。"},
+            {"level": 3, "text": "只要把短针拨到 6：点钟面上的 6。"},
+            {"level": 4, "text": "6 点=从 12 走了 6 大格，每大格 60 分钟：6×60=360。"},
+        ],
+        "error_models": [
+            {"pattern": "hand_swap", "code": "E-CK-01", "note": "拿长针（分针）指的数字读钟（12:00）——时针/分针关系错误 P0 靶"},
+            {"pattern": "wrong_time", "code": "E-CK-02", "note": "未到目标时刻（附分钟差原料）"},
+        ],
+        "task_type": "word_problem",
+        "difficulty": 2,
+        "is_transfer": False,
+        "context_family": "time_schedule",
+    },
+    {
+        # FE-1431 R18 money-board 金题：付 3 元 5 角（Batch E 第三题）。
+        # 答案=付出总角数 35（后端标量判分，不动冻结链）。
+        # 分诊靶 denomination_confusion：把"5角"当"5元"数——3 枚 1 元 + 5 枚 5 角
+        # =55 角≠35 判错（Diagnosis P0"面值/金额关系错误"精确命中）。
+        # **解耦第八次运用**：2元+3枚5角=35 币数 5>最少 4 → 判对+uses_extra 留痕。
+        # **app_strat 第三题**；词表族 shopping（购物付钱真实语境）。
+        "code": "V2-R18-MONEY-001",
+        "title": "给练习本付钱",
+        "ability_id": "app_strat",
+        "renderer": "money-board",
+        "ui_schema_version": "2.0",
+        "mode": "payment",
+        "response_type": "money_board",
+        "content": {
+            "stem": "一本练习本 **3 元 5 角**。钱包里有 1 角、5 角、1 元、5 元四种钱：点一档就拿出一枚放到台面上，点「取回」放回去。凑出**正好** 3 元 5 角（不能多不能少）。答案用**角**表示你付了多少（1 元=10 角）。",
+            "answer": 35,
+            "goal": "用不同面值组合凑出给定金额（元角换算）",
+        },
+        "config": {
+            "price": 35,
+            "denominations": [1, 5, 10, 50],
+        },
+        "initial_state": {"counts": {}, "selection_history": []},
+        "constraints": {"price_jiao": 35, "coins_max": 12},
+        "capabilities": ["compose_groups", "decompose_group", "answer_input", "undo", "reset"],
+        "evidence_targets": ["counts", "coins", "total", "selection_history", "structure"],
+        "hint_ladder": [
+            {"level": 1, "text": "3 元 5 角里有几个 1 元？"},
+            {"level": 2, "text": "3 个 1 元——点三次「1 元」拿出三枚。"},
+            {"level": 3, "text": "还差 5 角：拿**一枚** 5 角就够，不是五枚哦。"},
+            {"level": 4, "text": "3 枚 1 元 + 1 枚 5 角 = 30+5=35 角，正好。"},
+        ],
+        "error_models": [
+            {"pattern": "denomination_confusion", "code": "E-MB-01", "note": "把 5 角当 5 元数（角位数字×5角枚数=55 角）——面值/金额关系错误 P0 靶"},
+            {"pattern": "underpaid", "code": "E-MB-02", "note": "付少了（附差额角数）"},
+            {"pattern": "overpaid", "code": "E-MB-03", "note": "付多了（附超出角数）"},
+            {"pattern": "uses_extra", "code": "E-MB-04", "note": "凑对但币多于最少组合（判对+换算策略留痕）"},
+        ],
+        "task_type": "word_problem",
+        "difficulty": 2,
+        "is_transfer": False,
+        "context_family": "shopping",
+    },
+    {
+        # FE-1436 R19 pattern-board 金题：ABAB 花边接着摆（Batch E 收官）。
+        # 可见串 黄蓝黄蓝（token 1=黄 2=蓝），2 个空格 → 正解 [1,2]。
+        # 答案=空格 token 拼接整数 12（后端标量判分，不动冻结链）。
+        # 判错分诊：相位错 [2,1]→phase_shift（"从上一颗重新数"）；
+        # 无脑全蓝 [2,2]→rule_ignored（末颗惯性，Diagnosis P0"规律识别错误"）。
+        # **解耦第九次运用**（Gap"尝试顺序、修改过程"）：摆对但中途改过珠
+        # → 判对 + changed_once=true 留痕（试错过程本身就是学习证据）。
+        # app_rel 第四题（ABAB=两个量交替对应，一一对应的时序版）。
+        "code": "V2-R19-PATTERN-001",
+        "title": "花边接着摆",
+        "ability_id": "app_rel",
+        "renderer": "pattern-board",
+        "ui_schema_version": "2.0",
+        "mode": "pattern_extension",
+        "response_type": "pattern_board",
+        "content": {
+            "stem": "联欢会的花边是按规律串的：**黄、蓝、黄、蓝**……后面还缺 2 颗珠子。看看它是怎么**轮流**排的，从调色板点颜色把空格补上（点已放的珠子可以抠掉重放）。答案把后 2 颗按顺序写成一个两位数：黄=1，蓝=2（例：先黄后蓝=12）。",
+            "answer": 12,
+            "goal": "识别 AB 交替周期并延续到后续空位",
+        },
+        "config": {
+            "visible": [1, 2, 1, 2],
+            "blanks": 2,
+            "palette": [1, 2],
+        },
+        "initial_state": {"beads": [None, None], "attempt_history": []},
+        "constraints": {"period": 2, "blanks": 2},
+        "capabilities": ["extend_pattern", "select", "answer_input", "undo", "reset"],
+        "evidence_targets": ["beads", "attempt_history", "period", "structure"],
+        "hint_ladder": [
+            {"level": 1, "text": "数一数：第 1 颗是什么颜色？第 2 颗呢？第 3 颗又变回谁？"},
+            {"level": 2, "text": "黄、蓝，黄、蓝——它们是**轮流**出来的，两个一组。"},
+            {"level": 3, "text": "第 4 颗是蓝，那第 5 颗该轮到谁了？"},
+            {"level": 4, "text": "轮到黄啦，接着又是蓝——空格放 黄、蓝 = 1、2，答案 12。"},
+        ],
+        "error_models": [
+            {"pattern": "phase_shift", "code": "E-PB-01", "note": "周期读对但从上一颗重新数（[2,1]）——相位偏移原料"},
+            {"pattern": "rule_ignored", "code": "E-PB-02", "note": "全摆成同一种（末颗惯性）——没找规律 P0 靶"},
+            {"pattern": "wrong_sequence", "code": "E-PB-03", "note": "其余错序（附 expected/actual 逐位原料）"},
+            {"pattern": "changed_once", "code": "E-PB-04", "note": "摆对但中途改过珠（判对+尝试过程留痕）"},
+        ],
+        "task_type": "word_problem",
+        "difficulty": 1,
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
+    {
         # FE-1429 R16 ruler 金题：量铅笔长度（Batch E 起手）。
         # 铅笔躺在尺子 3..8 上（**故意不从 0 开始**）——两标记夹住物体，
         # 答案=间隔长度 5（后端标量判分，不动冻结链）。
