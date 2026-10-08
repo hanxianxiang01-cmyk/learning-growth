@@ -15,10 +15,11 @@ import { EstimationCanvasV2 } from "@/src/components/renderers/EstimationCanvasV
 import { ShapeGalleryV2 } from "@/src/components/renderers/ShapeGalleryV2";
 import { ShapeCanvasV2 } from "@/src/components/renderers/ShapeCanvasV2";
 import { SortingBoardV2 } from "@/src/components/renderers/SortingBoardV2";
+import { DirectionGridV2 } from "@/src/components/renderers/DirectionGridV2";
 import { TenFrameV2 } from "@/src/components/renderers/TenFrameV2";
 import {
   ChoiceGrid,
-  DirectionGrid, Ruler, Clock, Timeline, MoneyBoard,  DataTable, Pictograph, PatternBoard
+  Ruler, Clock, Timeline, MoneyBoard,  DataTable, Pictograph, PatternBoard
 } from "@/src/components/renderers/V2RendererLibrary";
 
 import { MathQuestionCard } from "@/src/components/learning/MathQuestionCard";
@@ -399,8 +400,23 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     );
   }
 
+  if (rendererId === "direction-grid") {
+    return (
+      <>
+        <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
+        <DirectionGridV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+        />
+      </>
+    );
+  }
+
   if (rendererId === "choice-grid") return <ChoiceGrid {...commonV2Props} />;
-  if (rendererId === "direction-grid") return <DirectionGrid {...commonV2Props} />;
   if (rendererId === "ruler") return <Ruler {...commonV2Props} />;
   if (rendererId === "clock") return <Clock {...commonV2Props} />;
   if (rendererId === "timeline") return <Timeline {...commonV2Props} />;

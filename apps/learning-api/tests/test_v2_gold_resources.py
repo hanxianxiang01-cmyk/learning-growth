@@ -329,3 +329,35 @@ def test_r14_exists_and_shape():
     assert "sort" in R14["capabilities"]
     # app_rd 能力节点第二题（R06 位值之后）
     assert R14["ability_id"] == "app_rd"
+
+
+R15 = next(r for r in GOLD_RESOURCES_V2 if r.get("renderer") == "direction-grid")
+
+
+def test_r15_exists_and_shape():
+    validate_renderer_id(R15["renderer"])
+    assert is_implemented(R15["renderer"])
+    assert R15["mode"] == "route_navigation"
+    assert R15["response_type"] == "direction_grid"
+    c = R15["config"]
+    assert 3 <= c["rows"] <= 6 and 3 <= c["cols"] <= 6  # 前端 parser 同守卫
+    sr, sc = c["start"]["r"], c["start"]["c"]
+    tr, tc = c["target"]["r"], c["target"]["c"]
+    assert 0 <= sr < c["rows"] and 0 <= sc < c["cols"]
+    assert 0 <= tr < c["rows"] and 0 <= tc < c["cols"]
+    assert (sr, sc) != (tr, tc)
+    dr, dc = tr - sr, tc - sc
+    # 前端守卫：行列位移都非零（纯直线无转向教学点）
+    assert dr != 0 and dc != 0
+    # 前端守卫：反走靶必须仍在盘内（否则 direction_reversed 分诊名存实亡）
+    assert 0 <= sr - dr < c["rows"] and 0 <= sc - dc < c["cols"]
+    # 答案=终点格编码（行主序）
+    assert tr * c["cols"] + tc == R15["content"]["answer"]
+    # 反走答案与正解必须不同（分诊靶可判错的前提）
+    assert (sr - dr) * c["cols"] + (sc - dc) != R15["content"]["answer"]
+    patterns = {e["pattern"] for e in R15["error_models"]}
+    assert {"direction_reversed", "wrong_position", "detour"} <= patterns
+    assert {"path", "directions", "structure"} <= set(R15["evidence_targets"])
+    assert "navigate" in R15["capabilities"]
+    # app_model 能力节点第四题（R02 bar-model / R08 array / R11 estimation 之后）
+    assert R15["ability_id"] == "app_model"

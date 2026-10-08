@@ -79,7 +79,8 @@ export type InteractionCapability =
   | "sort"
   | "set_time"
   | "set_value"
-  | "select_symbol";
+  | "select_symbol"
+  | "navigate";
 
 /**
  * FE-1414：能力注册名单（唯一事实源）。
@@ -90,7 +91,7 @@ export const KNOWN_CAPABILITY_IDS: readonly string[] = [
   "answer_input", "drag", "align", "resize", "jump", "undo", "reset",
   "highlight", "focus", "input_digit", "place_carry", "edit_carry", "step_submit",
   "add_object", "remove_object", "compose_groups", "decompose_group",
-  "fill", "grouping", "select", "draw", "rotate", "sort", "set_time", "set_value", "select_symbol",
+  "fill", "grouping", "select", "draw", "rotate", "sort", "set_time", "set_value", "select_symbol", "navigate",
 ];
 
 export type RendererDescriptor = {
@@ -112,7 +113,7 @@ export type RendererDescriptor = {
   serialize_contract: string;
   theme_contract: "shared-semantic-tokens";
   phase: 1 | 2 | 3 | 4;
-  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R08" | "R09" | "R10" | "R11" | "R12" | "R13" | "R14";
+  vertical_gate?: "A5" | "B5" | "D5" | "E4" | "F6" | "R01" | "R02" | "R04" | "R06" | "R07" | "R08" | "R09" | "R10" | "R11" | "R12" | "R13" | "R14" | "R15";
 };
 
 const implemented = (
@@ -238,7 +239,7 @@ export const RENDERER_REGISTRY: Record<RendererId, RendererDescriptor> = {
     { vertical_gate: "R13" }
   ),
   "sorting-board": implementedV2("sorting-board", "SortingBoard", 2, ["drag", "undo", "reset", "sort", "answer_input"], { vertical_gate: "R14" }),
-  "direction-grid": implementedV2("direction-grid", "DirectionGrid", 4, ["drag", "answer_input", "undo", "reset"]),
+  "direction-grid": implementedV2("direction-grid", "DirectionGrid", 4, ["navigate", "answer_input", "undo", "reset"], { vertical_gate: "R15" }),
   "ruler": implementedV2(
     "ruler", "Ruler", 4,
     ["drag", "answer_input", "undo", "reset"],
