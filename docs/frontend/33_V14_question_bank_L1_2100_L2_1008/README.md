@@ -42,6 +42,20 @@
 2. `variant_group_id` 分组 + `retry_of` 链 → 正式题库入库时的溯源字段格式参考；
 3. 42 能力命名清单（M01-M42 ability_name）→ 后续 M→app_* 映射表的原料。
 
+## 平行 PR 包裁决（2026-10-08 下午追加）
+
+交付方随后发来 `PR文件包/`（bundle+patch+PR.md，commit 558033a "docs: archive FE-1432 question bank review"）——
+**与我方 PR #68 是平行重复作业**（对方在我方旧快照基线 c8e0bd3 上独立做了同一核对）。裁决：
+
+| 项 | 判定 |
+|---|---|
+| patch 合入 | ❌ **拒绝**：基线早于 Batch A~E 全部 Gate 收口，apply 即回滚我方 CHANGELOG（diff -269/+15） |
+| json/xlsx 存档 | ✅ 与我方 docs/33 存档 md5 逐字节一致，无需动作 |
+| 核对结论 | ✅ 与我方 PR #68 完全一致（模板句/零答案/四道闸/17≠19）——**双方独立核对同结论，互证有效** |
+| REVIEW_CONCLUSION.md | 🟡 吸收并入本目录（四段式正式结论函，比登记条目更适合作给交付方的回复底稿） |
+| 交付纪律 | ✅ 对方自证 branch/governance/release/v14 check 全 PASS，未编造 PR 号、如实声明无 remote——口径良好 |
+
+
 ## 下一步建议（FE-1432 重定义）
 
 原计划"210 题入库"与本轮 3,108 包入库**同因搁置**：内容层未就绪。
