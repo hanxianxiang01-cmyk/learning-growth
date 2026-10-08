@@ -29,6 +29,20 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Done（FE-1427 R15 DirectionGrid Vertical Gate：B5 模板第十四组件，5×5 路径导航，Batch D 收官，2026-10-08）
+
+> Batch D 收官题（Gap R15）。direction-grid=点相邻格挪步走出路线（上/下/左/右一步；对角/隔格/同格拒绝）。答案=**终点格编码 row×cols+col**（19，后端标量相等判分不动冻结链）；完整路径走 Evidence `path/directions/turns`（Gap"movement sequence"）。route evaluator 四态：EMPTY→PASS(detour)→direction_reversed→wrong_position（附曼哈顿距离）。
+>
+> **解耦第六次运用（R08 同形态）**：绕路走到 ☆→answer=19 判对 + `structure.detour=true` 留痕——"到没走到=后端判、走得绕不绕=结构层说"。**反走靶与 R14 同侧（判错也带分诊）**：位移整体取反 (1,0)→answer=5≠19 判错但 `direction_reversed` 精确命中（Diagnosis P0"方向错误"落地）；parser 守卫（行列位移非零+反走靶必在盘内）保证该态可达且与 PASS 互斥。
+
+- **纯函数层** `directionGridV2.ts`：parseDirectionConfig（grid 3..6/起终不重合/行列位移非零/反走靶盘内——四守卫，{r,c} 与 [r,c] 双形态）+ applyMoveTo（NO_SUCH_CELL/SAME_CELL/NON_ADJACENT）/applyUndoStep（AT_START）+ serialize（path "r,c" 序列/directions/turns/structure）。node 语义矩阵全过。
+- **组件** `DirectionGridV2.tsx`：25 格棋盘（起/☆/●/· 角色标注）；PATH_EXTENDED/PATH_STEP_UNDONE/PATH_CLEARED 事件链；三分类提示直达教学语言（"好像把方向走反啦"）；专件替换基座路由（基座 DirectionGrid 保留作参考）。
+- **能力词表**：新增 `navigate`（InteractionCapability + KNOWN_CAPABILITY_IDS + descriptor 三处同步）。
+- **链题**：R15 金题（start(2,2)→target(3,4)，school_objects）**app_model 节点第四题** seed RDS；防漂移+1（后端 98→**99 passed**，含反走靶可达性校验）。
+- **API 实证**（pin 首抽即中）：反走 5 false HINT / 重放同 attempt_id / 异内容 409 / PASS 19 NEXT_TASK。**新坑：手测重试必须带递增 attempt_no——缺省 1 撞兼容轨幂等回放旧 attempt**（前端 session 页本来正确，httpx 手测踩出）。
+- **E2E** `e2e/r15-direction-grid.spec.mjs` 10/10（envelope answer={value:19} 封装断言——r01/r10 同款口径；cellRole start 常驻断言；detour 双断言；dblclick；healing）。冷编译假失败重现（06/09/10 首跑超时、二跑 19.8s 全绿）。
+- 底表 `docs/governance/R15_DIRECTIONGRID_VERTICAL_GATE.md`。**Vertical Gate 进度 15/19；Batch D 4/4 全清**。
+
 ## Done（FE-1428 首页挑战入口配置化：V2 五能力节点各一张手工测试卡，2026-10-07）
 
 > 14 个已闭 Gate 中 8 个组件的 V2 金题挂在 app_model / app_rd / app_cond 三个能力节点上，但首页写死只有「数量关系」「策略」两张卡（app_rel/app_strat），新组件无手工测试入口。按"每个卡先放一个入口组件，测试通过完再收起或优化"的口径改造：入口从硬编码改为 `CHALLENGE_CARDS` 配置表驱动，5 个 V2 金题能力节点各一张卡；后续收起/优化只动配置表，渲染逻辑不再改。

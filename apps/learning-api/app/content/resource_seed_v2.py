@@ -615,4 +615,48 @@ GOLD_RESOURCES_V2: list[dict] = [
         "is_transfer": False,
         "context_family": "school_objects",
     },
+    {
+        # FE-1427 R15 direction-grid 金题：5×5 地图从起点走到 ☆。
+        # 答案=终点格编码 3*5+4=19（后端标量判分，不动冻结链）。
+        # 分诊靶：反走终点=(2*2-3, 2*2-4)=(1,0)→answer=5≠19 判错+
+        # direction_reversed 原料（Diagnosis P0"方向错误"，解耦第五形态同族）。
+        # 绕路到 ☆ → 判对 + detour=true 留痕（R08 形态）。**app_model 第四题**。
+        "code": "V2-R15-DGRID-001",
+        "title": "从起点走到星星格",
+        "ability_id": "app_model",
+        "renderer": "direction-grid",
+        "ui_schema_version": "2.0",
+        "mode": "route_navigation",
+        "response_type": "direction_grid",
+        "content": {
+            "stem": "校园地图上小人站在中间格子（起点），**图书馆**在它的下面一行、右边两格（☆ 格）。点小人旁边（上/下/左/右）的格子一步一步走过去，走到了提交。答案填 ☆ 格的编号：从上到下、从左到右按行编号，第一格是 0（第 4 行第 5 列 = 3×5+4）。",
+            "answer": 19,
+            "goal": "按位置关系（下行右移）规划并走出路线",
+        },
+        "config": {
+            "rows": 5,
+            "cols": 5,
+            "start": {"r": 2, "c": 2},
+            "target": {"r": 3, "c": 4},
+        },
+        "initial_state": {"steps": [{"r": 2, "c": 2}]},
+        "constraints": {"grid": "5x5", "adjacent_only": True},
+        "capabilities": ["navigate", "answer_input", "undo", "reset"],
+        "evidence_targets": ["path", "directions", "turns", "structure"],
+        "hint_ladder": [
+            {"level": 1, "text": "☆ 在小人的哪边？先想清楚往哪边走。"},
+            {"level": 2, "text": "它在下面一行——先点小人下面的格子走一步。"},
+            {"level": 3, "text": "到了下面那行，还差两格——继续点右边的格子。"},
+            {"level": 4, "text": "下→右→右，三步就站到 ☆ 上啦。"},
+        ],
+        "error_models": [
+            {"pattern": "direction_reversed", "code": "E-DG-01", "note": "位移整体走反（下右右→上左左，落在 (1,0)）——方向错误 P0 原料"},
+            {"pattern": "wrong_position", "code": "E-DG-02", "note": "未到 ☆ 格（附距目标曼哈顿距离原料）"},
+            {"pattern": "detour", "code": "E-DG-03", "note": "走到了但路线长于最短路（判对+留痕）"},
+        ],
+        "task_type": "word_problem",
+        "difficulty": 1,
+        "is_transfer": False,
+        "context_family": "school_objects",
+    },
 ]
