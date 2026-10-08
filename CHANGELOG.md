@@ -29,6 +29,10 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Review（FE-1432c 契约收编：交付方《Question Bank Production Contract v1.0》= 我方 docs/34 的正式化文档，收下作验收基线，2026-10-08）
+
+> 交付方基于我方 trial155 审计对照表（docs/34/CONTRACT.md）整理出 17 节正式契约（docx，298 段）。逐条核验：**内容与审计产出一致、无失真、无夹带**——§5 全局三条=我方 G1~G3；§6 19 渲染器矩阵+§7 重导规则与 parser 守卫逐字一致；§10 一致性 Gate 吸收我方 18 题数据内伤实证；§11 把入库流程制度化为 **8-Gate 验收链**（Schema→一致性→Config×Parser→5% Pin E2E→Judge→Evidence→Diagnosis→qa_replay，我方 audit 脚本=Gate 3、pin 机制=Gate 4 地基、replay=Gate 8 执行器，全部现成）；§13/§14 采纳"converter 降级、先修契约再扩产"。**处置=收下作 V1.4 题库生产验收基线**（FE-1434 契约 FROZEN 的输入件）；原件+抽取文本存档 docs/frontend/35，条款引用记 `PC-v1.<节号>`。FE-1432 入库继续挂起等 B/C 类重导批。
+
 ## Review（FE-1432b 试灌审计轮：V1.4_P0_Trial_155 包——内容真、契约错位，不入库，产出 Config 契约对照表，2026-10-08）
 
 > 交付方 155 题试灌包（自称 P0_TRIAL、M→app 标 PENDING 没装冻结）。三轮审计：① 7 条断言全真——**真题文本 155/155、answer 全有、19 renderer 齐（补上 ten-frame/estimation-canvas）、context_family 零越表**：内容态度合格；② config×parser 硬审（`audit-155-config.mjs`）：专件 122 题 **PASS 8 / FAIL 114（93%）**；③ 垫片转换再审（`convert_trial155.py`，语义缺口硬拒 22）：转换后 PASS 51 / FAIL 41——**字段错位 1/3 可机器救，答案轴错位 2/3 只能重导**。
