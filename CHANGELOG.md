@@ -29,6 +29,12 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Feat（FE-1433 qa_replay #7 重写：pin 确定性 + V2 信封——旧 DRIFT-002 版 #7 已知 FAIL 修好，Gate 8 执行器就绪，2026-10-09）
+
+> 旧脚本两处时代病：① app_rel 碰运气选题（band 漂移→大面积假失败，2026-10-07 全量回归实锤的根因同款）；② 裸 `{"response":{"answer":…}}` payload 不合现行 V2 信封。重写=**FE-1422a pin 确定性选题**（v2-catalog 按 renderer 定位 rvid→tasks/next 带 pin_resource_version_id，仅 QA child …0099）+ **现行信封**（schema_version 2.0/type/ui_revision/workspaces/interaction_events）+ **确定性 submission_id**（sha256 派生严格 UUID）+ **attempt_no 手动递增**（R15 幂等回放教训）+ **期望答案 DB 反查 rv.content.answer**（下发不含答案防泄题）。
+> #5（错/错/对→判对+单证据）/幂等（同 submission 同内容=同 attempt_id、异内容 409）/**#7（DB 反查 transfer_distance rv→pin 下发→判对→evidence_type=attempt_transfer，旧 FAIL 用例修好）** + 13 纯函数映射 + #14 防抖 = **8/8 全绿，连跑两次确定性成立**；后端 103 passed 零回归。
+> 意义=PC-v1 §11 Gate 8 执行器就绪：**155 题批（FE-1432i 已过 G1~3）的 Gate 4~7 抽样 pin E2E→Gate 8 replay→seed 入库** 流水线的最后一件工具到位。QA 卫生：全程 …0099，真实 child 零触碰。
+
 ## Review（FE-1432i 三题微增量终复检：155 题全批 Gate 1~3 机器门清零——首个过全链题批，进入 Gate 4~7 抽样资格，2026-10-09）
 
 > 交付方按复检 §3 交 3 题微增量（077/078 **换挂 number-input 保留乘除教学语义**（优于改加减的最小改动）、133 clock 3:00→4:30 消除 swap 自环）。`apply_microdelta.py` 复现合并=分发终包三批逐字段一致（3 替换+152 不变、A42/B86/C27）。
