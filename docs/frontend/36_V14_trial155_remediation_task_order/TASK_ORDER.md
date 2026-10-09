@@ -25,7 +25,7 @@
 - `direction-grid`：**不是**把 answer 换个字段名——必须重做为"走到终点格"玩法，答案 = 终点格编码（0-based，`row × cols + col`），路径走 Evidence
 - `shape-canvas`：**不是**把形状名换成任意数字——答案必须是渲染器可评估的**面积标量**，且限定 rectangle / triangle 可评估形
 - `pattern-board`：**不是**改 `evaluator_type` 字符串就结束——必须重做为 ABAB 周期延续玩法（`visible` 至少两个完整周期 + 目标位可判定）
-- `sorting-board`：分类题**必须真正换挂 `choice-grid`**（题面、config、answer 三处同步换挂），不允许挂着 sorting-board 的名字做分类的题
+- `sorting-board`：不允许挂着 sorting-board 的名字做分类的题。**注意：`choice-grid` 不在 V1.4 发布范围**（FE-1417 发布口径 19 项明确剔除 choice-grid/data-table/pictograph/timeline，组件保留运行但 Gate 顺延、无验收 parser）——分类题两条合法出路：① 改造为 sorting-board 数值升序玩法（answer=数字拼接）；② 换挂 `shape-gallery`（R12 已闭 Gate，分类放家计数语义，config 须给 `{target_kind, shapes:[{id,name,kind,color}…]}` 结构化对象）。选 ② 时 MANIFEST `renderer` 列照规列"换挂前→换挂后"
 - `clock`：必须**重新生成**符合整点/半点两档语义的题（start/target 分针 ∈ {0, 30}）
 - `estimation-canvas`：必须满足实际滑条值域与容差约束（`max ≤ 60`，tolerance 不贴值域边界）
 
@@ -36,13 +36,14 @@
 C 类问题的本质：**Schema 能通过，但实际运行时答案错误**（money `paid − price ≠ answer`、direction 坐标 1 起越界、分针 `:15` 等 18 题实证）。因此本批起验收流水线顺序固定为：
 
 ```
-audit-155-config.mjs（Gate 3 Config×Parser）
-  → Consistency Audit（PC-v1 §10 六类逐题机器校验）
-    → 才允许进入后续 Pin E2E / Judge / Evidence / Diagnosis（Gate 4~7）
-      → qa_replay（Gate 8）
+Schema（Gate 1）
+  → Consistency Audit（Gate 2，PC-v1 §10 六类逐题机器校验）
+    → audit-155-config.mjs（Gate 3 Config×Parser）
+      → 才允许进入后续 Pin E2E / Judge / Evidence / Diagnosis（Gate 4~7）
+        → qa_replay（Gate 8）
 ```
 
-一致性脚本**不得作为附加检查后置**。两道机器门任一未过的批，后续 E2E 不执行、直接退包。
+顺序与 §6 收货动作及 PC-v1 §11 编号**对齐为唯一权威口径**（Gate 2=一致性、Gate 3=Parser）。一致性脚本**不得作为附加检查后置**。两道机器门任一未过的批，后续 E2E 不执行、直接退包。
 
 ## 4. 工具归属与判定权
 
