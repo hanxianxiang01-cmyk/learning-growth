@@ -63,13 +63,13 @@ cd apps/learning-api && python3 scripts/convert_trial155.py <in.json> /tmp/conv.
 ## 3. 给交付方的重导指令（按渲染器归组）
 
 **必改（答案轴/交互语义错位，共 7 类 ~62 题）**：
-1. direction-grid：answer 改**终点格编码**（0 起，行主序），grid 坐标 0 起且 dr、dc 均非零
-2. shape-canvas：answer 改**面积数值**，target 限定 rectangle/triangle（house 等复合形删）
+1. direction-grid：answer 改**终点格编码**（0 起，行主序），grid 坐标 0 起且 dr、dc 均非零；**【R15 守卫补文】反走靶必须可达**——(2·sr−tr, 2·sc−tc) 须落在盘内（方向反转分诊靶的可达性守卫，违反=parser 拒）；建议 5×5 盘（金样例 start(2,2)→target(3,4)，反走靶 (1,0)，answer=19）
+2. shape-canvas：answer 改**面积数值**，target 限定 rectangle（house 等复合形删）【勘误：原写 rectangle/triangle 系笔误——R13 parser 仅接受 `target_shape:"rectangle"`，三角形评估不在本 Gate 范围】
 3. sorting-board：改**数值升序排列**玩法（answer=数字拼接），分类归组题移到别的渲染器
 4. pattern-board：改**ABAB 颜色周期**（token 1..5，answer=空格拼接数）；等差数列题改挂 number-input
-5. clock：目标限**整时/半点**，answer=总分钟数（6:00→360）
-6. money-board：单位统一**角**，币制 [1,5,10,50]，change 题自查 paid−price=answer（现有 3 题自相矛盾）
-7. shape-gallery / estimation-canvas / place-value / grouping-board：按 §2 各行的"重导"栏口径
+5. clock：目标限**整时/半点**，answer=总分钟数（6:00→360）；**【R17 形态补文】config.start/target 必须为数组 [h,m]**（parser readTime 拒 {hour,minute} 对象形态）
+6. money-board：单位统一**角**，币制 [1,5,10,50]；**【R18 守卫补文】price∈[5,200] 且 price%5==0 且 price%10!=0**（角位非零 5 倍数，保混淆靶互斥；整十/非 5 倍数 parser 拒）；change 题自查 paid−price=answer（现有 3 题自相矛盾）；**【边界声明】R18 实现为凑付玩法（拿币凑 price），无"付钱找零"交互——找零场景题必须改造成凑付题或换挂 number-input**
+7. shape-gallery / estimation-canvas / place-value / grouping-board：按 §2 各行的"重导"栏口径；**【R09 值域补文】grouping items∈[2,20]**；**【R04 形态补文】formula-board tokens 用 `{t,v}` 形态（t∈num|op|eq|slot），slot 需 `accept:"number"|"operator"` 且 id 全题唯一**
 
 **格式统一（全 155 题）**：
 - `content.answer` 直接给标量（去掉 `{type,value}` 包装）
