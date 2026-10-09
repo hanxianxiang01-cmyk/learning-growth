@@ -49,17 +49,24 @@ function readConfig(schema: V2TaskUiSchema):
   const groups = Array.isArray(workspace.config.groups)
     ? workspace.config.groups.map(readGroup).filter((g): g is ObjectCounterGroup => g !== null)
     : [];
-  const expected = Array.isArray(workspace.config.expected)
+  // FE-1438 双形态兼容：金题={group_id,min_count} 对象数组；交付批=与 groups 顺序平行的
+  // 数字数组（如 [5,3]）→ zip 成对象形。两种形态同语义（该组至少摆 min_count 个）。
+  const expectedRaw = Array.isArray(workspace.config.expected)
     ? (workspace.config.expected as unknown[])
-        .map(e => {
-          if (typeof e !== "object" || e === null) return null;
-          const v = e as Record<string, unknown>;
-          return typeof v.group_id === "string" && typeof v.min_count === "number"
-            ? { group_id: v.group_id, min_count: v.min_count }
-            : null;
-        })
-        .filter((e): e is ExpectedGroup => e !== null)
     : [];
+  const expected: ExpectedGroup[] = expectedRaw
+    .map((e, i): ExpectedGroup | null => {
+      if (typeof e === "number") {
+        const g = groups[i];
+        return g && Number.isInteger(e) ? { group_id: g.group_id, min_count: e } : null;
+      }
+      if (typeof e !== "object" || e === null) return null;
+      const v = e as Record<string, unknown>;
+      return typeof v.group_id === "string" && typeof v.min_count === "number"
+        ? { group_id: v.group_id, min_count: v.min_count }
+        : null;
+    })
+    .filter((e): e is ExpectedGroup => e !== null);
 
   if (groups.length === 0 || expected.length === 0) return null;
   const maxTotalCount =

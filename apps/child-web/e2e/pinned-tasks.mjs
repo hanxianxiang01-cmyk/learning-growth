@@ -78,3 +78,25 @@ export async function fetchPinnedTasks({ api, child, renderer, mode, count, cata
   }
   return tasks;
 }
+
+/**
+ * FE-1438：直接按 resource_version_id 钉题（绕过 catalog——qa_staged 抽样批不进
+ * 公开目录，见 scripts/qa_sample_ingest.py 隔离设计；服务端 pin 路径放行 published+qa_staged）。
+ */
+export async function pinTaskByRvid({ api, child, rvid }) {
+  const ctx = await pwRequest.newContext({ baseURL: api });
+  try {
+    const session = await ctx.post("/v1/learning/sessions", {
+      data: { child_id: child, subject: "math", requested_minutes: 15 }
+    });
+    const sid = (await session.json()).session_id;
+    const resp = await ctx.post("/v1/learning/tasks/next", {
+      data: { child_id: child, session_id: sid, subject: "math", pin_resource_version_id: rvid }
+    });
+    const t = await resp.json();
+    if (!t.task_instance_id) throw new Error(`pin 落题失败: ${JSON.stringify(t).slice(0, 200)}`);
+    return { task: t, sessionId: sid };
+  } finally {
+    await ctx.dispose();
+  }
+}

@@ -1,0 +1,361 @@
+{
+ "V14-P0-017": {
+  "rvid": "5ad0dea0-c29e-4ba6-b6c1-fb0a3ae806a2",
+  "renderer": "number-line",
+  "answer": 11,
+  "config": {
+   "scale": {
+    "min": 0,
+    "max": 40,
+    "tick_step": 1
+   },
+   "start_marker": {
+    "marker_id": "start",
+    "value": 8
+   },
+   "jump_size": 3,
+   "jump_count": 1,
+   "direction": "right"
+  }
+ },
+ "V14-P0-025": {
+  "rvid": "990903a6-8309-4839-b632-00da0563c000",
+  "renderer": "number-input",
+  "answer": 7,
+  "config": {
+   "min": 0,
+   "max": 200,
+   "integer_only": true
+  }
+ },
+ "V14-P0-049": {
+  "rvid": "49a404aa-208c-464e-8ed8-2cc30236c603",
+  "renderer": "column-arithmetic",
+  "answer": 75,
+  "config": {
+   "operands": [
+    47,
+    28
+   ],
+   "places": [
+    "ones",
+    "tens",
+    "hundreds"
+   ],
+   "operand_layout": "fixed"
+  }
+ },
+ "V14-P0-057": {
+  "rvid": "a4c71f3f-6e33-4b61-a5a6-4920ba6dd891",
+  "renderer": "array-board",
+  "answer": 12,
+  "config": {
+   "target_rows": 3,
+   "target_cols": 4,
+   "max_rows": 8,
+   "max_cols": 8
+  }
+ },
+ "V14-P0-121": {
+  "rvid": "c858b12d-162e-41e6-a53a-0f430c01afe7",
+  "renderer": "ruler",
+  "answer": 5,
+  "config": {
+   "max": 20,
+   "object": [
+    3,
+    8
+   ]
+  }
+ },
+ "V14-P0-001": {
+  "rvid": "8e416688-94da-41b3-ab17-9ca68f4cc498",
+  "renderer": "object-counter",
+  "answer": 8,
+  "config": {
+   "groups": [
+    {
+     "group_id": "g1",
+     "label": "左侧积木",
+     "symbol": "block",
+     "count": 5,
+     "locked": true
+    },
+    {
+     "group_id": "g2",
+     "label": "右侧积木",
+     "symbol": "block",
+     "count": 3,
+     "locked": false
+    }
+   ],
+   "expected": [
+    5,
+    3
+   ]
+  }
+ },
+ "V14-P0-009": {
+  "rvid": "ede23dd2-f28f-48be-bbd6-09342b8cc850",
+  "renderer": "bar-model",
+  "answer": 12,
+  "config": {
+   "mode": "part_whole",
+   "known": {
+    "a": 5,
+    "b": 7
+   },
+   "answer_bar": "c",
+   "max_blocks": 14
+  }
+ },
+ "V14-P0-033": {
+  "rvid": "6c5a9ff8-513b-4fd3-a001-8e0ef2d1334c",
+  "renderer": "place-value",
+  "answer": 47,
+  "config": {
+   "target": 47,
+   "pool": [
+    4,
+    7
+   ]
+  }
+ },
+ "V14-P0-041": {
+  "rvid": "20355232-881b-45d2-b161-c28a19e0da1c",
+  "renderer": "ten-frame",
+  "answer": 10,
+  "config": {
+   "target_count": 10,
+   "max_frames": 1,
+   "initial_count": 6
+  }
+ },
+ "V14-P0-065": {
+  "rvid": "e08c4f6e-2a13-448f-a9fa-4ab537d342b9",
+  "renderer": "grouping-board",
+  "answer": 3,
+  "config": {
+   "items": 12,
+   "total": 12,
+   "target_groups": 4,
+   "max_groups": 6,
+   "group_size": 3
+  }
+ },
+ "V14-P0-073": {
+  "rvid": "a72e91b1-dae0-4756-bd32-f1c714d19d6f",
+  "renderer": "formula-board",
+  "answer": 5,
+  "config": {
+   "tokens": [
+    {
+     "t": "num",
+     "v": 7
+    },
+    {
+     "t": "op",
+     "v": "+"
+    },
+    {
+     "t": "slot",
+     "id": "missing",
+     "accept": "number"
+    },
+    {
+     "t": "eq",
+     "v": "="
+    },
+    {
+     "t": "num",
+     "v": 12
+    }
+   ],
+   "answer_slot": "missing"
+  }
+ },
+ "V14-P0-081": {
+  "rvid": "c9c09c67-db0a-4d50-af6b-1612a0214753",
+  "renderer": "estimation-canvas",
+  "answer": 20,
+  "config": {
+   "reference": 10,
+   "min": 0,
+   "max": 60,
+   "expected": 20,
+   "actual": 18,
+   "target": 20,
+   "tolerance": 6
+  }
+ },
+ "V14-P0-089": {
+  "rvid": "cb95cc3b-1685-4c14-8868-185c04f7c5fa",
+  "renderer": "shape-gallery",
+  "answer": 2,
+  "config": {
+   "target_kind": "triangle",
+   "shapes": [
+    {
+     "id": "89-shape-1",
+     "name": "三角形卡1",
+     "kind": "triangle",
+     "color": "red"
+    },
+    {
+     "id": "89-shape-2",
+     "name": "圆形卡2",
+     "kind": "circle",
+     "color": "blue"
+    },
+    {
+     "id": "89-shape-3",
+     "name": "正方形卡3",
+     "kind": "square",
+     "color": "green"
+    },
+    {
+     "id": "89-shape-4",
+     "name": "长方形卡4",
+     "kind": "rectangle",
+     "color": "yellow"
+    },
+    {
+     "id": "89-shape-5",
+     "name": "三角形卡5",
+     "kind": "triangle",
+     "color": "purple"
+    },
+    {
+     "id": "89-shape-6",
+     "name": "正方形卡6",
+     "kind": "square",
+     "color": "orange"
+    }
+   ]
+  }
+ },
+ "V14-P0-097": {
+  "rvid": "5984e003-a165-4216-bb45-ac234c2029b7",
+  "renderer": "shape-canvas",
+  "answer": 6,
+  "config": {
+   "grid": 5,
+   "target_area": 6,
+   "target_shape": "rectangle",
+   "base": 2,
+   "height": 3
+  }
+ },
+ "V14-P0-105": {
+  "rvid": "9e94cdb8-eabe-4e93-830b-f860e75f31d1",
+  "renderer": "sorting-board",
+  "answer": 2468,
+  "config": {
+   "direction": "asc",
+   "items": [
+    {
+     "id": "item-1",
+     "value": 6,
+     "visual_rank": 1
+    },
+    {
+     "id": "item-2",
+     "value": 2,
+     "visual_rank": 2
+    },
+    {
+     "id": "item-3",
+     "value": 8,
+     "visual_rank": 3
+    },
+    {
+     "id": "item-4",
+     "value": 4,
+     "visual_rank": 4
+    }
+   ],
+   "initial_order": [
+    "item-1",
+    "item-2",
+    "item-3",
+    "item-4"
+   ]
+  }
+ },
+ "V14-P0-129": {
+  "rvid": "29d463dd-1c9a-4d9d-a247-637ba4963c89",
+  "renderer": "clock",
+  "answer": 210,
+  "config": {
+   "start": [
+    3,
+    0
+   ],
+   "target": [
+    3,
+    30
+   ]
+  }
+ },
+ "V14-P0-137": {
+  "rvid": "3e031184-81e4-469b-baa8-cf5fbe5138ed",
+  "renderer": "money-board",
+  "answer": 25,
+  "config": {
+   "price": 25,
+   "denominations": [
+    1,
+    5,
+    10,
+    50
+   ],
+   "target": {
+    "total": 25
+   },
+   "unit": "jiao"
+  }
+ },
+ "V14-P0-145": {
+  "rvid": "bb89e545-5ce3-435a-ae25-7c6f23788cba",
+  "renderer": "pattern-board",
+  "answer": "12",
+  "config": {
+   "visible": [
+    1,
+    2,
+    1,
+    2
+   ],
+   "blanks": 2,
+   "palette": [
+    1,
+    2
+   ]
+  }
+ },
+ "V14-P0-113": {
+  "rvid": "b4736a78-1102-4eae-8da2-24bc15cb3eed",
+  "renderer": "direction-grid",
+  "answer": 19,
+  "config": {
+   "rows": 5,
+   "cols": 5,
+   "grid": {
+    "rows": 5,
+    "cols": 5
+   },
+   "start": {
+    "row": 2,
+    "col": 2,
+    "r": 2,
+    "c": 2
+   },
+   "target": {
+    "row": 3,
+    "col": 4,
+    "r": 3,
+    "c": 4
+   }
+  }
+ }
+}

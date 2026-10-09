@@ -56,7 +56,7 @@ cd apps/learning-api && python3 scripts/convert_trial155.py <in.json> /tmp/conv.
 | renderer | 我方金样例 | 题包 | 判定 |
 |---|---|---|---|
 | number-line | `{scale:{min,max,tick_step}, start_marker:{marker_id,value}}` ans=落点值 | 同形 +jump_size/count/direction | ✅ 形状基本兼容 |
-| object-counter | `{groups:[{group_id,label,symbol,count,locked}], expected:[…]}` ans=总数 | `{objects:{symbol,count}, target, countable}` | 🟡 单组简化形，基座能吃但 R01 的分组 expected 原料缺失 |
+| object-counter | `{groups:[{group_id,label,symbol,count,locked}], expected:[…]}` ans=总数 | `{objects:{symbol,count}, target, countable}` | 🟡 单组简化形，基座能吃但 R01 的分组 expected 原料缺失。**【FE-1438 勘正】实灌批用 groups 形+`expected:[5,3]` 数字数组（与 groups 顺序平行）——组件原只认 {group_id,min_count} 对象形已修双形态兼容；今后 expected 两种形态均合法** |
 | number-input | `{min,max,integer_only}` | `{input_type,min,max,placeholder}` | ✅ |
 | column-arithmetic | `{operands:[47,28], places, operand_layout:"fixed"}` ans=结果 | 同形 +operator:"addition/subtraction" | ✅（mode 由我方 addition/subtraction 区分，题包已对齐） |
 
