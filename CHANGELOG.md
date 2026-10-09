@@ -29,6 +29,16 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Feat（FE-1438 155 题批 Gate 4~7 抽样实灌：qa_staged 隔离入库通道 + 19 renderer×1 全链 19/19 贯通，2026-10-09）
+
+> **隔离设计（任务单 §6/PC-v1 §12 精神：未过 M→app 审批的交付题不得泄入生产池）**：新增 `review_status='qa_staged'` 通道——catalog（published 过滤）与生产选题（_published_resource_for_ability）**双不可见**；仅 pin 路径放行（learning.py 状态集合 `("published","qa_staged")`）+ 路由层 403（真实 child 不可 pin）= QA child …0099 专用。Resource.status='draft' 双保险。回归锁 2 用例（inspect 源码级断言谓词只认 published / pin 集合含 qa_staged）。
+> - 选样：`qa_sample_ingest.py` 每 renderer 取 ID 最小 1 题=19 题（≥8 且 19 类全覆盖，任务单 Gate 4~7 口径），幂等按 title `[QA-Sample] <id>` 判重
+> - 实灌 `qa_sample_e2e.py`：**19/19 全链贯通**——Gate 4 pin 下发（ui_schema 含交付 config）→ Gate 5 Judge（先 999999 后期望，False/True 双符）→ Gate 6 原子证据=1 → Gate 7 错后 HINT 动作；期望答案 DB 反查防泄题
+> - 隔离红线实测双验：catalog=20（金题，QA-Sample 0 泄漏）；真实 child pin qa_staged → **403**
+> - 后端 105 passed；前端零触碰（服务层 JSON 判断，pin 缺省路径比特级不变）
+> - **UI 链补强**：`e2e/qa-sample-batch.spec.mjs`（19 条=每 renderer pin 交付题进真实前端：专件根 testid 可见+planned-renderer=0+交付题干上屏）；`pinned-tasks.mjs` 新导 `pinTaskByRvid`（直 pin 不经 catalog，适配 qa_staged）；`e2e/qa-sample-rvids.mjs/cases.json` 由 ingest 导出。**UI 抓出并修复 1 缺陷**：ObjectCounterV2 `expected` 只认 {group_id,min_count} 对象形，交付批数字数组 [5,3]（groups 平行序，语义同）被拒渲→双形态兼容 zip 修复；CONTRACT §2.2 行勘正。tsc 0 错、**全量 E2E 197/197**（178 存量零回归+新批 19）
+> - 意义：**155 题批 Gate 1~7 全部通过**（机器门+API 实灌+UI 实灌三层）；M→app 映射审批过→qa_staged 转 published+全量正式 ingest→FE-1433 replay 作 Gate 8 收官。底表 docs/governance/FE1438_QA_SAMPLE_INGEST.md。
+
 ## Feat（FE-1433 qa_replay #7 重写：pin 确定性 + V2 信封——旧 DRIFT-002 版 #7 已知 FAIL 修好，Gate 8 执行器就绪，2026-10-09）
 
 > 旧脚本两处时代病：① app_rel 碰运气选题（band 漂移→大面积假失败，2026-10-07 全量回归实锤的根因同款）；② 裸 `{"response":{"answer":…}}` payload 不合现行 V2 信封。重写=**FE-1422a pin 确定性选题**（v2-catalog 按 renderer 定位 rvid→tasks/next 带 pin_resource_version_id，仅 QA child …0099）+ **现行信封**（schema_version 2.0/type/ui_revision/workspaces/interaction_events）+ **确定性 submission_id**（sha256 派生严格 UUID）+ **attempt_no 手动递增**（R15 幂等回放教训）+ **期望答案 DB 反查 rv.content.answer**（下发不含答案防泄题）。

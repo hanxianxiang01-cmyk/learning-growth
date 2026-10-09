@@ -72,3 +72,24 @@ def test_no_pin_never_403():
 def test_v2_catalog_route_registered():
     paths = {(r.path, tuple(sorted(r.methods))) for r in content_router.routes}
     assert ("/content/v2-catalog", ("GET",)) in paths
+
+
+# ---- FE-1438 qa_staged：pin 放行 / catalog 不可见（隔离语义锁）----
+
+def test_pin_accepts_qa_staged_status():
+    """服务层 pin 分支放行状态集合必须含 qa_staged（抽样实灌隔离通道）。"""
+    import inspect
+    from app.services import learning
+    src = inspect.getsource(learning.assign_next_task)
+    assert '"published", "qa_staged"' in src or '"qa_staged"' in src
+
+
+def test_qa_staged_not_in_catalog_or_production_pool():
+    """catalog 与生产选题查询的 SQL 谓词必须仍只认 published（qa_staged 双不可见）。"""
+    import inspect
+    from app.services import learning
+    cat = inspect.getsource(learning.list_v2_catalog)
+    prod = inspect.getsource(learning._published_resource_for_ability)
+    for src in (cat, prod):
+        assert '== "published"' in src
+        assert "qa_staged" not in src

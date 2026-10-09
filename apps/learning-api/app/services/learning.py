@@ -237,9 +237,11 @@ async def assign_next_task(
     )
 
     if pin_resource_version_id is not None:
-        # QA 钉题路径：不看 band、不看排除；只守 published + V2 门控红线。
+        # QA 钉题路径：不看 band、不看排除；只守可下发状态 + V2 门控红线。
+        # published=金题/正式题；qa_staged（FE-1438）=未过 M→app 审批的 QA 抽样批——
+        # 仅本路径放行（路由层 403 保证真实 child 无法 pin），catalog/生产选题池不可见。
         pinned = await db.get(ResourceVersion, pin_resource_version_id)
-        if pinned is None or pinned.review_status != "published" or not _v2_assignable(pinned.ui_schema):
+        if pinned is None or pinned.review_status not in ("published", "qa_staged") or not _v2_assignable(pinned.ui_schema):
             return {
                 "task_instance_id": None,
                 "ability_id": None,
