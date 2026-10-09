@@ -29,6 +29,12 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Review（FE-1432i 三题微增量终复检：155 题全批 Gate 1~3 机器门清零——首个过全链题批，进入 Gate 4~7 抽样资格，2026-10-09）
+
+> 交付方按复检 §3 交 3 题微增量（077/078 **换挂 number-input 保留乘除教学语义**（优于改加减的最小改动）、133 clock 3:00→4:30 消除 swap 自环）。`apply_microdelta.py` 复现合并=分发终包三批逐字段一致（3 替换+152 不变、A42/B86/C27）。
+> **权威全链复跑（main=62df97d 工具）**：Gate 2 v2+补丁三批 0/0/0、fixtures 基线自验 gold 0/neg 恰 4；Gate 3 专件 PASS 120/FAIL **0**+基座链 35；诊断词终扫（完整 19 行 ERROR_VOCAB）越表 **0**（换挂题 pattern 落 number-input 行内）。
+> 四轮验收史定版：b 114 FAIL（真答案轴冲突）→ g 37（我方 §7 未成文）→ h 3（再两条未成文）→ **i 0**。交付方纪律四轮递进。**下一步 Gate 4~7**：抽 5%（≥8 题覆盖全 renderer）QA child …0099 pin 实灌四段（判分/Evidence/Diagnosis）→FE-1433 qa_replay（Gate 8）→正式 seed 入库；M→app 映射审批与题批解耦（pin 直发不经能力路由）。报告 docs/37/FINAL_RECHECK_FE1432i.md。
+
 ## Review（FE-1432h 增量包复检第二轮：Gate2 合并 clock 数组兼容补丁（我方工具缺陷）、Gate3 收敛 37→3——残留 3 题仍系我方守卫未成文（formula op 值域/clock swap 自环），已补 §7，2026-10-09）
 
 > 交付方按任务单交**增量整改包**（37 题重交+65 处诊断词三字段同步改，不重造整包、SHA-256 前置校验防错覆盖）+ 合并复审包。我方复现合并=与分发 reconciled_155 **逐字段一致**。
