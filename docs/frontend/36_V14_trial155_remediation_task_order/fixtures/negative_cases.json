@@ -1,0 +1,67 @@
+{
+ "questions": [
+  {
+   "question_id": "T-2",
+   "renderer_id": "number-input",
+   "context_family": "school_objects",
+   "answer": {
+    "type": "number",
+    "value": 7
+   },
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "number-input",
+      "config": {}
+     }
+    ]
+   }
+  },
+  {
+   "question_id": "T-3",
+   "renderer_id": "estimation-canvas",
+   "context_family": "school_objects",
+   "answer": 2,
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "estimation-canvas",
+      "config": {
+       "max": 40,
+       "min": 0,
+       "tolerance": 5,
+       "target": 2
+      }
+     }
+    ]
+   }
+  },
+  {
+   "question_id": "T-4",
+   "renderer_id": "number-input",
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "number-input",
+      "config": {}
+     }
+    ]
+   },
+   "answer": 3
+  },
+  {
+   "question_id": "T-5",
+   "renderer_id": "number-input",
+   "context_family": "school_objects",
+   "answer": 3,
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "number-input",
+      "config": {}
+     }
+    ]
+   }
+  }
+ ]
+}

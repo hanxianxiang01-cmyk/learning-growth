@@ -1,0 +1,114 @@
+{
+ "questions": [
+  {
+   "question_id": "G-1",
+   "renderer_id": "direction-grid",
+   "context_family": "school_objects",
+   "answer": 19,
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "direction-grid",
+      "config": {
+       "grid": {
+        "rows": 5,
+        "cols": 5
+       },
+       "start": {
+        "row": 2,
+        "col": 2
+       },
+       "target": {
+        "row": 3,
+        "col": 4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "question_id": "G-2",
+   "renderer_id": "clock",
+   "context_family": "time_schedule",
+   "answer": 360,
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "clock",
+      "config": {
+       "start": {
+        "hour": 3,
+        "minute": 0
+       },
+       "target": {
+        "hour": 6,
+        "minute": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "question_id": "G-3",
+   "renderer_id": "money-board",
+   "context_family": "shopping",
+   "answer": 15,
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "money-board",
+      "config": {
+       "denominations": [
+        1,
+        5,
+        10,
+        50
+       ],
+       "target": {
+        "price": 35,
+        "paid": 50
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "question_id": "G-4",
+   "renderer_id": "estimation-canvas",
+   "context_family": "comparison",
+   "answer": 20,
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "estimation-canvas",
+      "config": {
+       "min": 0,
+       "max": 40,
+       "target": 20,
+       "tolerance": 5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "question_id": "G-5",
+   "renderer_id": "number-input",
+   "context_family": "before_after",
+   "answer": 8,
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "number-input",
+      "config": {
+       "target": 8
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

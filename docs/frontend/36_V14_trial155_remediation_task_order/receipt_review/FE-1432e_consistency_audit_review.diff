@@ -1,0 +1,291 @@
+--- /mnt/data/consistency_audit.py	2026-10-09 06:25:10.668061174 +0000
++++ /mnt/data/consistency_audit_FE-1432e_review_candidate.py	2026-10-09 06:29:43.710514288 +0000
+@@ -1,133 +1,183 @@
+ #!/usr/bin/env python3
+-"""V1.4 题库交付包·一致性审计脚本（PC-v1 §10 六类规则的独立可运行版）
++"""FE-1432e Gate 2 一致性审计修订候选（独立零依赖；尚未替换权威仓库脚本）。
+ 
+-用法:
+-    python3 consistency_audit.py <questions.json>
+-    # questions.json 顶层含 "questions": [...]（与 trial155/v2 批格式一致），
+-    # 或直接为题目列表。
++    python3 consistency_audit_FE-1432e_review_candidate.py <questions.json>
+ 
+-退出码: 0=全通过, 1=存在违规（逐题打印）。
+-本脚本不依赖本项目代码，纯标准库，可直接随任务单发给交付方自检。
++接受顶层 questions 数组或直接题目数组；退出码 0=通过，1=存在违规，2=输入错误。
++这一版修补上传版本的包装式 answer 漏检、direction 起点自比较、
++estimation 容差触边漏检，并对缺失字段和非法时刻作保守防御性检查。
++Gate 3 Config×Parser 仍须由权威仓库复跑；本脚本不能代替 Gate 3。
+ """
+ import json
+ import sys
++from pathlib import Path
+ 
+ VOCAB_FAMILY = {
+-    "school_objects", "comparison", "before_after", "lineup_position",
+-    "shopping", "sharing", "time_schedule",
++    'school_objects', 'comparison', 'before_after', 'lineup_position',
++    'shopping', 'sharing', 'time_schedule',
+ }
+ 
+ 
+-def get_ws(q):
+-    ws = q.get("task_ui_schema", {}).get("workspaces", [])
+-    return ws[0] if ws else {}
++def is_num(v):
++    return isinstance(v, (int, float)) and not isinstance(v, bool)
+ 
+ 
+-def ans_scalar(q):
+-    a = q.get("answer")
+-    if isinstance(a, dict):
+-        a = a.get("value")
+-    return a
++def get_ws(q):
++    schema = q.get('task_ui_schema') or {}
++    ws = schema.get('workspaces', []) if isinstance(schema, dict) else []
++    return ws[0] if isinstance(ws, list) and ws and isinstance(ws[0], dict) else {}
++
++
++def coord(cfg, name):
++    obj = cfg.get(name) or {}
++    if not isinstance(obj, dict):
++        return None
++    return (obj.get('row', obj.get('r')), obj.get('col', obj.get('c')))
++
++
++def minute_value(v):
++    if isinstance(v, dict):
++        v = v.get('minute', v.get('m'))
++    elif isinstance(v, str) and ':' in v:
++        v = v.rsplit(':', 1)[1]
++    elif isinstance(v, str) and ':' not in v:
++        return None
++    if v is None:
++        return None
++    try:
++        iv = int(v)
++        if str(v).strip() not in {str(iv), f'{iv:02d}'} and not isinstance(v, int):
++            raise ValueError('not integer minute')
++        return iv
++    except (ValueError, TypeError):
++        return 'INVALID'
+ 
+ 
+ def audit(questions):
+     errs = []
+-    for q in questions:
+-        qid = q.get("question_id", "?")
+-        r = q.get("renderer_id") or get_ws(q).get("renderer")
+-        cfg = get_ws(q).get("config", {}) or {}
+-        a = ans_scalar(q)
+-
+-        # R1 answer 必须是标量（PC-v1 §4/§5：禁 {type,value} 包装入库形态）
+-        if isinstance(q.get("answer"), dict) and set(q["answer"].keys()) - {"value", "type"}:
+-            errs.append(f"{qid} [{r}] answer 含 value/type 之外的包装字段")
+-
+-        # R2 money-board: change 类 paid - price == answer；凑付类 total == price 语义
+-        if r == "money-board" and isinstance(cfg.get("target"), dict):
+-            t = cfg["target"]
+-            if "paid" in t and "price" in t and isinstance(a, (int, float)):
+-                if t["paid"] - t["price"] != a:
++    for i, q in enumerate(questions):
++        if not isinstance(q, dict):
++            errs.append(f'#{i+1}: 题目不是 JSON 对象')
++            continue
++        qid = q.get('question_id') or f'#{i+1}'
++        ws = get_ws(q)
++        r = q.get('renderer_id') or ws.get('renderer')
++        cfg = ws.get('config') or {}
++        if not isinstance(cfg, dict):
++            errs.append(f'{qid} [{r}] config 不是对象')
++            cfg = {}
++
++        # R1: 不接受 {type,value} 包装或空 answer；优先读取试灌交付格式顶层 answer。
++        # 兼容后续 content.answer 的合法标量，但两位置同时提供且冲突必须拒收。
++        root_present = 'answer' in q
++        content = q.get('content')
++        nested_present = isinstance(content, dict) and 'answer' in content
++        raw = q.get('answer') if root_present else (content.get('answer') if nested_present else None)
++        a = raw.get('value') if isinstance(raw, dict) else raw  # 仅供其他规则继续定位既有违规
++        if not (root_present or nested_present) or not (is_num(raw) or isinstance(raw, str)):
++            errs.append(f'{qid} [{r}] answer 必须为非空可判分标量，不得为 {{type,value}} 包装/空值')
++        elif isinstance(raw, str) and not raw.strip():
++            errs.append(f'{qid} [{r}] answer 字符串不得为空')
++        if root_present and nested_present and q['answer'] != content['answer']:
++            errs.append(f'{qid} [{r}] 顶层 answer 与 content.answer 冲突')
++
++        # R2: 找零数值关系。
++        if r == 'money-board' and isinstance(cfg.get('target'), dict):
++            t = cfg['target']
++            if 'paid' in t and 'price' in t:
++                if not all(is_num(v) for v in (t['paid'], t['price'])) or not is_num(a):
++                    errs.append(f'{qid} money-board: 找零题 paid/price/answer 必须为数值')
++                elif t['paid'] - t['price'] != a:
+                     errs.append(f"{qid} money-board: paid-price={t['paid'] - t['price']} ≠ answer={a}")
+ 
+-        # R3 direction-grid: 坐标 0 起且界内；非纯直线（dr、dc 均≠0）
+-        if r == "direction-grid":
+-            g = cfg.get("grid", {})
+-            rows, cols = g.get("rows"), g.get("cols")
+-            for side in ("start", "target"):
+-                s = cfg.get(side) or {}
+-                rr, cc = s.get("row", s.get("r")), s.get("col", s.get("c"))
+-                if None in (rows, cols, rr, cc):
++        # R3: 两端坐标各查一次；只有 start→target 进行一次路线计算，禁止 start→start 自比较。
++        if r == 'direction-grid':
++            grid = cfg.get('grid') or {}
++            if not isinstance(grid, dict):
++                grid = {}
++            rows, cols = grid.get('rows'), grid.get('cols')
++            if not (isinstance(rows, int) and not isinstance(rows, bool) and rows > 0 and isinstance(cols, int) and not isinstance(cols, bool) and cols > 0):
++                errs.append(f'{qid} direction-grid: grid.rows/cols 必须为正整数')
++            start, target = coord(cfg, 'start'), coord(cfg, 'target')
++            for side, c in (('start', start), ('target', target)):
++                if c is None or not all(isinstance(v, int) and not isinstance(v, bool) for v in c):
++                    errs.append(f'{qid} direction-grid: {side} 坐标缺失/非整数')
+                     continue
++                rr, cc = c
+                 if rr < 0 or cc < 0:
+-                    errs.append(f"{qid} direction-grid: {side} 坐标负值（须 0 起）")
+-                elif rr >= rows or cc >= cols:
+-                    errs.append(f"{qid} direction-grid: {side}={rr},{cc} 越界 {rows}x{cols}（疑 1 起坐标）")
+-                if rr is not None and cc is not None:
+-                    sr = (cfg.get("start") or {}).get("row", (cfg.get("start") or {}).get("r"))
+-                    sc = (cfg.get("start") or {}).get("col", (cfg.get("start") or {}).get("c"))
+-                    if None not in (sr, sc) and (rr - sr == 0 or cc - sc == 0):
+-                        errs.append(f"{qid} direction-grid: 纯直线路线（dr 或 dc=0），无转向教学点")
+-
+-        # R4 clock: 分针只允许整/半点两档
+-        if r == "clock":
+-            st = cfg.get("start", {}) or {}
+-            def bad_min(v):
+-                return v is not None and int(v) not in (0, 30)
+-            if bad_min(st.get("minute", st.get("m"))):
+-                errs.append(f"{qid} clock: start 分针 {st} 非整/半点")
+-            tgt = cfg.get("target")
+-            tm = None
+-            if isinstance(tgt, str) and ":" in tgt:
+-                tm = int(tgt.split(":")[1])
+-            elif isinstance(tgt, dict):
+-                tm = tgt.get("minute", tgt.get("m"))
+-            if bad_min(tm):
+-                errs.append(f"{qid} clock: target 分针 {tgt} 非整/半点，两档 UI 摆不出")
+-
+-        # R5 grouping-board: total 可被 group_size 整除
+-        if r == "grouping-board":
+-            gs = cfg.get("group_size") or cfg.get("groupSize")
+-            tot = cfg.get("total")
+-            if isinstance(gs, int) and gs > 0 and isinstance(tot, (int, float)):
+-                if float(tot) % gs != 0:
+-                    errs.append(f"{qid} grouping-board: total={tot} 不能被 group_size={gs} 整除")
+-
+-        # R6 pattern-board: token 拼接标量答案须个位无歧义
+-        if r == "pattern-board" and isinstance(a, int) and a >= 10:
+-            errs.append(f"{qid} pattern-board: 答案 {a} 多位数，破坏 token 拼接无歧义前提（改答案轴或换挂）")
+-
+-        # R7 estimation-canvas: 值域与容差
+-        if r == "estimation-canvas":
+-            mx = cfg.get("max")
+-            tol = cfg.get("tolerance")
+-            if isinstance(mx, (int, float)) and mx > 60:
+-                errs.append(f"{qid} estimation-canvas: max={mx} 超滑条值域 60")
+-            if isinstance(tol, (int, float)) and isinstance(mx, (int, float)) and tol >= mx:
+-                errs.append(f"{qid} estimation-canvas: tolerance={tol} 贴/超值域边界")
+-
+-        # R8 context_family 受控词表
+-        cf = q.get("context_family")
+-        if cf is not None and cf not in VOCAB_FAMILY:
+-            errs.append(f"{qid}: context_family '{cf}' 越出受控词表")
+-
++                    errs.append(f'{qid} direction-grid: {side} 坐标负值（须 0 起）')
++                elif isinstance(rows, int) and isinstance(cols, int) and (rr >= rows or cc >= cols):
++                    errs.append(f'{qid} direction-grid: {side}={rr},{cc} 越界 {rows}x{cols}（疑 1 起坐标）')
++            if start is not None and target is not None and None not in start + target:
++                if start[0] == target[0] or start[1] == target[1]:
++                    errs.append(f'{qid} direction-grid: 起点到终点为纯直线路线（dr 或 dc=0）')
++                if not is_num(a):
++                    errs.append(f'{qid} direction-grid: 终点格编码答案必须为数值标量')
++                elif isinstance(cols, int) and cols > 0 and all(isinstance(v, int) for v in target):
++                    want = target[0] * cols + target[1]
++                    if want != a:
++                        errs.append(f'{qid} direction-grid: answer={a} ≠ 终点格编码 {want}')
++
++        # R4: 时刻两档；错误输入应输出 FAIL 而不是异常退出。
++        if r == 'clock':
++            start = cfg.get('start') or {}
++            sv = minute_value(start)
++            tv = minute_value(cfg.get('target'))
++            for label, v in (('start', sv), ('target', tv)):
++                if v not in (0, 30):
++                    errs.append(f'{qid} clock: {label} 分针 {v} 非整/半点（或缺失/格式错误）')
++
++        # R5: 整除关系。
++        if r == 'grouping-board':
++            gs = cfg.get('group_size', cfg.get('groupSize'))
++            total = cfg.get('total')
++            if isinstance(gs, int) and gs > 0 and is_num(total) and float(total) % gs != 0:
++                errs.append(f'{qid} grouping-board: total={total} 不能被 group_size={gs} 整除')
++
++        # R6: token 拼接答案不能为单个多位数整型。
++        if r == 'pattern-board' and isinstance(a, int) and not isinstance(a, bool) and a >= 10:
++            errs.append(f'{qid} pattern-board: 答案 {a} 为多位整型，无法按个位 token 无歧义拼接')
++
++        # R7: 滑条上限≤60 且目标±容差不能触及/超出上下边界。
++        if r == 'estimation-canvas':
++            mx, mn, tol = cfg.get('max'), cfg.get('min', 0), cfg.get('tolerance')
++            target = cfg.get('target', a)
++            if not (is_num(mx) and 0 < mx <= 60):
++                errs.append(f'{qid} estimation-canvas: max 必填且应在 (0,60]')
++            if not (is_num(mn) and is_num(mx) and mn < mx):
++                errs.append(f'{qid} estimation-canvas: min/max 值域不合法')
++            if not (is_num(tol) and tol > 0):
++                errs.append(f'{qid} estimation-canvas: tolerance 缺失或非正')
++            elif all(is_num(v) for v in (mx, mn, target)):
++                if target - tol <= mn or target + tol >= mx:
++                    errs.append(f'{qid} estimation-canvas: 目标 {target}±{tol} 贴/超滑条边界 [{mn},{mx}]')
++
++        # R8: context_family 必填且不得越表。
++        cf = q.get('context_family')
++        if cf not in VOCAB_FAMILY:
++            errs.append(f"{qid}: context_family '{cf}' 缺失或越出受控词表")
+     return errs
+ 
+ 
+-def main():
+-    if len(sys.argv) < 2:
++def main(argv):
++    if len(argv) != 2:
+         print(__doc__)
+-        sys.exit(2)
+-    data = json.load(open(sys.argv[1], encoding="utf-8"))
+-    questions = data.get("questions") if isinstance(data, dict) else data
++        return 2
++    try:
++        data = json.loads(Path(argv[1]).read_text(encoding='utf-8'))
++    except (OSError, ValueError) as exc:
++        print(f'输入文件读取/JSON 解析失败：{exc}', file=sys.stderr)
++        return 2
++    questions = data.get('questions') if isinstance(data, dict) else data
+     if not isinstance(questions, list):
+-        print("格式错误：需为题目列表或含 questions 键", file=sys.stderr)
+-        sys.exit(2)
+-    errs = audit(questions)
+-    print(f"审计 {len(questions)} 题，违规 {len(errs)} 条")
+-    for e in errs:
+-        print("  FAIL:", e)
+-    sys.exit(1 if errs else 0)
++        print('输入格式错误：需为题目列表或含 questions 键', file=sys.stderr)
++        return 2
++    errors = audit(questions)
++    print(f'审计 {len(questions)} 题，违规 {len(errors)} 条')
++    for error in errors:
++        print('  FAIL:', error)
++    return 1 if errors else 0
+ 
+ 
+-if __name__ == "__main__":
+-    main()
++if __name__ == '__main__':
++    sys.exit(main(sys.argv))
