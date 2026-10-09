@@ -62,6 +62,29 @@
      }
     ]
    }
+  },
+  {
+   "question_id": "T-6",
+   "renderer_id": "clock",
+   "context_family": "time_schedule",
+   "answer": 30,
+   "task_ui_schema": {
+    "workspaces": [
+     {
+      "renderer": "clock",
+      "config": {
+       "start": [
+        0,
+        30
+       ],
+       "target": [
+        6,
+        30
+       ]
+      }
+     }
+    ]
+   }
   }
  ]
 }

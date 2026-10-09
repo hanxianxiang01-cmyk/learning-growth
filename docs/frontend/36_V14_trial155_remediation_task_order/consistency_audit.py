@@ -11,7 +11,7 @@ v2 修复（FE-1432e 核验 P0-A/P0-B/P1-C/P1-D，经我方独立反例+金样�
   R3 direction 仅 start→target 判直线（消除起点自比较误报）+ 终点格编码数值匹配
   R7 estimation max/min/tolerance 必填 + 目标±容差不得贴/超滑条边界
   R8 context_family 缺失也判 FAIL
-回归基线：fixtures/gold_positive.json 须 0 违规、fixtures/negative_cases.json 须恰 3 条。
+回归基线：fixtures/gold_positive.json 须 0 违规、fixtures/negative_cases.json 须恰 4 条（FE-1432h 起：新增 clock 数组锚点 G-6/T-6，原基线 3 条）。
 Gate 3 Config×Parser 仍须由权威仓库 audit-155-config.mjs 复跑；本脚本不能代替 Gate 3。
 """
 import json
@@ -42,6 +42,14 @@ def coord(cfg, name):
 
 
 def minute_value(v):
+    # FE-1432h：canonical clock config = 数组 [hour, minute]（R17 parser readTime 唯一形态）。
+    # 原 v2 兼容 dict/HH:MM 仅为审计旧 trial155；数组分支经交付方提案（reports/
+    # gate2_v2_clock_array_support_proposal.diff）验收方裁决合并。
+    if isinstance(v, list) and len(v) == 2 and all(isinstance(x, int) and not isinstance(x, bool) for x in v):
+        h, m = v
+        if not (1 <= h <= 12):
+            return 'INVALID'
+        return m
     if isinstance(v, dict):
         v = v.get('minute', v.get('m'))
     elif isinstance(v, str) and ':' in v:
