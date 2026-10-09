@@ -29,6 +29,12 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Review（FE-1432g delivery_v2 整改批权威验收：Gate 1/2 全过、Gate 3 FAIL 37——根因=我方 §7 守卫未成文，契约补齐+修复清单下发，2026-10-09）
+
+> 交付方按任务单交 155 题整改包（A42/B86/C27，C 按"B∩C 归 C"扩容并新发现 9 题内伤——处置正确）。**包完整性全项通过**：ID 与 trial155 逐一对齐、MANIFEST 155 行分类零不符、我方 Gate 2 v2 复跑三批 0 违规（自报一致）、待决项全部如实声明无虚报。
+> **Gate 3 权威复跑 PASS 85 / FAIL 37**（direction 8/clock 8/formula 8/money 7/shape-canvas 4/grouping 2），docs/37 逐题修复清单+fail_list 存档。根因诚实归责=**我方契约文档债**：§7 写于 R15~R18 未打 Gate 时代，parser 守卫/形态散在底表从未汇总——含我方**笔误**（§7 写 rectangle/triangle，R13 parser 仅收 rectangle→4 题照做被拒）与**诱导措辞**（"change 题自查 paid−price"暗示找零玩法，R18 实际只有凑付→4 题）；其余 29 题守卫/值域未成文（反走靶可达、[h,m] 数组、{t,v}、price%5/%10、items≤20）。
+> **随本 PR 偿还**：CONTRACT.md §7 七条全部补齐守卫/形态成文+两处勘误标注；新增 docs/37（README 审查报告+ERROR_VOCAB.md 19 渲染器诊断词权威表——解交付方 80 题待核项+gate3_fail_list）。立规矩入 FE-1434 输入要求：**契约 FROZEN 必须吸收 parser 守卫全集**（散在底表=没有契约）。修复清单已可按 §3 直接发交付方，37 题增量包到齐后进 Gate 4~7 抽样 pin E2E→Gate 8 replay。
+
 ## Review（FE-1432f 接收核验回环：交付方独立核验 FE-1432e 签发包——Gate 2 脚本 v1 四处缺陷坐实，v2 替换+fixture 回归基线入仓，2026-10-09）
 
 > 交付方对 FE-1432e 签发包做独立接收核验（三件套回传：核验记录 md + 修订候选脚本 + diff；已存档 docs/36 `receipt_review/`）。Word 两项核心修正（G1~G8 顺序统一、choice-grid 发布范围）**核验确认无误**；但随发 `consistency_audit.py` v1 被指出 P0 误判/漏检——我方独立复现**全部坐实**：① R3 direction 起点自比较→合法非直线题误报（金样例正例包实测 v1 误杀终点编码=19 的 G-1 题）；② R1 漏检 `{type,value}` 包装答案（PC-v1 §4 明禁仍放行）；③ R7 estimation 容差贴边未实现（2±5 于 [0,40] 放行）；④ R8 context_family 缺失放行。候选版经我方独立反例（5 例，含 v1 误报回归题）+金样例正例包（6 正例）交叉验收 **11/11 符合预期**；trial155 全量回归 216 条=155 条 R1 真阳性（trial155 全部包装式 answer，即 v2 契约禁止形状）+61 条其余——非误报膨胀。核验记录"37 条=消息数≠37 道独立题"的口径批评成立，v1 该计数作废。
