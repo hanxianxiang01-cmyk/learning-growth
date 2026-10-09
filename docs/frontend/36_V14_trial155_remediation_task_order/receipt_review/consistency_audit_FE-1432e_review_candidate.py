@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
-"""V1.4 题库交付包·一致性审计脚本 v2（Gate 2 权威工具；PC-v1 §10 规则 + FE-1432e 核验修复）
+"""FE-1432e Gate 2 一致性审计修订候选（独立零依赖；尚未替换权威仓库脚本）。
 
-用法:
-    python3 consistency_audit.py <questions.json>
-    # questions.json 顶层含 "questions": [...]（与 v2 批格式一致），或直接为题目列表。
+    python3 consistency_audit_FE-1432e_review_candidate.py <questions.json>
 
-退出码: 0=全通过, 1=存在违规, 2=输入错误。纯标准库零依赖。
-v2 修复（FE-1432e 核验 P0-A/P0-B/P1-C/P1-D，经我方独立反例+金样例正例交叉验收）：
-  R1 answer 拒 {type,value} 包装/空值（含 content.answer 双位置冲突检测）
-  R3 direction 仅 start→target 判直线（消除起点自比较误报）+ 终点格编码数值匹配
-  R7 estimation max/min/tolerance 必填 + 目标±容差不得贴/超滑条边界
-  R8 context_family 缺失也判 FAIL
-回归基线：fixtures/gold_positive.json 须 0 违规、fixtures/negative_cases.json 须恰 3 条。
-Gate 3 Config×Parser 仍须由权威仓库 audit-155-config.mjs 复跑；本脚本不能代替 Gate 3。
+接受顶层 questions 数组或直接题目数组；退出码 0=通过，1=存在违规，2=输入错误。
+这一版修补上传版本的包装式 answer 漏检、direction 起点自比较、
+estimation 容差触边漏检，并对缺失字段和非法时刻作保守防御性检查。
+Gate 3 Config×Parser 仍须由权威仓库复跑；本脚本不能代替 Gate 3。
 """
 import json
 import sys
