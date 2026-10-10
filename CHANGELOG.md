@@ -29,6 +29,12 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Feat（FE-1441 Trial-155 正式入库=FE-1439 ⑤ 收官：155 题 published + qa_staged 退役 + 金题优先排序锁——V1.4 题库线闭环，2026-10-10）
+
+> 用户授权后执行：`prod_seed_155.py` 全量 155 入库（title `[T155] <qid>` 幂等、ability 按批复 final_app_id 覆盖 **25 条改判生效**、is_transfer→transfer_distance=1 喂 #7 证据链）；qa_staged 25 条→`qa_retired`（通道关闭、历史证据保留=软删纪律）；RDS published=225、catalog=175。
+> **入库当场抓出真缺陷**：catalog order_by 无二级稳定键→T155（同 ability、difficulty 更低）顶掉金题组首位——QA 工具"catalog[0]=金题"隐式约定被生产扩容打破，19 个 E2E spec 面临全崩。修=`title NOT LIKE '[T155]%' DESC` 金题优先首要键+created_at/rvid 终序；回归锁 `test_catalog_gold_first_ordering`；E2E 口径复验首位被顶=无。**教训：生产内容扩容会改变既有工具检索空间，隐式约定必须显式化**。qa_replay #7 transfer 反查同步加 published+created_at 确定序。
+> 回归：Gate 8 **8/8**、API 全量四段实灌（切生产端点，19 样本扩**155 全量**）**155/155**、后端 **106 passed**、真实 child 抽验选题正常、UI 全量 E2E 随本 PR 流水线。**V1.4 题库线闭环**。记录 docs/governance/FE1441_PROD_SEED_155.md。
+
 ## Review（FE-1440a M30 六题整改复验：机器门全零+三要素人工复审 6/6+实灌判分链 6/6——CONTENT_REVIEW 阻断清零，FE-1439 ⑤ 放行条件齐，2026-10-10）
 
 > 交付方六题全部走**出路 A**（保 M30→app_check，改核验他人结论+纠错题）。复验链：`apply_incremental.py` 合并复现（6 替换+149 不变）→ Gate 2 三批 **0/0/0** → Gate 3 专件 FAIL **0** → **三要素人工内容复审逐题列表过**（①他人声称命题②检验动作③判定=answer；"若对填原值/若错填正确值"规则使 answer 恒=验证终值、标量 G1 维持）→ 六题 qa_staged 入库+QA child pin 实灌 **6/6 correct**。

@@ -173,7 +173,13 @@ async def list_v2_catalog(db: AsyncSession) -> list[dict]:
             select(ResourceVersion, Resource.ability_id, Resource.title)
             .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
             .where(ResourceVersion.review_status == "published")
-            .order_by(Resource.ability_id.asc(), ResourceVersion.difficulty.asc())
+            # FE-1441：金题恒先 + 确定性排序。首要键=非 [T155] 交付题（金题/其它）排前；
+            # E2E spec 依赖 catalog[renderer][0]=金题——155 交付题 published 后与金题
+            # 同 (ability,difficulty) 或 difficulty 更小时会顶掉金题首位（实锤 20 组全顶），
+            # 故金题优先必须成排序硬约束，created_at/rvid 终序保确定性。
+            .order_by(Resource.title.notlike("[T155]%").desc(),
+                      Resource.ability_id.asc(), ResourceVersion.difficulty.asc(),
+                      ResourceVersion.created_at.asc(), ResourceVersion.resource_version_id.asc())
         )
     ).all()
     out = []
