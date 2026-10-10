@@ -44,7 +44,7 @@ async def main() -> None:
             samples = (await dbc.execute(text(
                 "select rv.resource_version_id, r.title, r.ability_id, rv.content, rv.ui_schema, rv.error_models "
                 "from resource_version rv join resource r on r.resource_id=rv.resource_id "
-                "where rv.review_status='qa_staged' order by r.title"
+                "where rv.review_status='published' and r.title like '[T155]%' order by r.title"
             ))).fetchall()
         print(f"qa_staged 样本：{len(samples)} 题")
 

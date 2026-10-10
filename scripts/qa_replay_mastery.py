@@ -191,7 +191,8 @@ async def main() -> None:
         async with eng.connect() as dbc:
             row = (await dbc.execute(
                 text("select resource_version_id from resource_version "
-                     "where transfer_distance is not null limit 1"))).fetchone()
+                     "where transfer_distance is not null and review_status='published' "
+                     "order by created_at asc limit 1"))).fetchone()
         if row:
             rvid = str(row[0])
             exp = await expected_answer(eng, rvid)

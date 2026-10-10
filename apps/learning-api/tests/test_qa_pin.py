@@ -93,3 +93,14 @@ def test_qa_staged_not_in_catalog_or_production_pool():
     for src in (cat, prod):
         assert '== "published"' in src
         assert "qa_staged" not in src
+
+
+# ---- FE-1441：catalog 金题优先排序锁（155 交付题 published 后 E2E 首位稳定性）----
+
+def test_catalog_gold_first_ordering():
+    """list_v2_catalog 必须以「非 [T155] 优先」为排序首要键——
+    否则交付题（difficulty 常更低）顶掉金题组首位，19 个 E2E spec 全崩。"""
+    import inspect
+    from app.services import learning
+    src = inspect.getsource(learning.list_v2_catalog)
+    assert "notlike(\"[T155]%\")" in src and ".desc()" in src
