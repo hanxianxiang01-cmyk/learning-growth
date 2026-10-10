@@ -3,7 +3,7 @@
 ## ① PR 留痕
 docs/39 三件套（APPROVAL.md / mapping_final.csv 42 行 APPROVED / REVIEW.md 审核史）随 PR#83 合入。
 
-## ② M30 定向修复 —— ⛔ 开放阻断项
+## ② M30 定向修复 —— 🔴 指令已签发（FE-1440，docs/40/REMEDITION_ORDER.md），等交付方重交
 - 六题 CONTENT_REVIEW_REQUIRED：`V14-P0-084/088`（estimation）、`124/128`（ruler）、`147/151`（pattern）
 - 出路（二选一，逐题）：修成"待核命题+检验动作+证据"闭环题；或按实质能力重归属（同步改 source_skill_id+ability_id+溯源，需重走映射表修订）
 - 责任：交付方/教研出题，我方复审；**六题修复前 155 批不得全量转 published**
