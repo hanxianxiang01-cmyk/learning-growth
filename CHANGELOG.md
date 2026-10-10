@@ -29,6 +29,14 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+# [1.4.0] — 2026-10-10（FE-1435 立版：V1.4 Frontend P0 + Renderer Vertical Gates + Contract FROZEN）
+
+发版说明=releases/1.4.0.json；契约基线=docs/38 CONTRACT_FROZEN.md v2.0；验证=E2E 197/197、后端 105、qa_replay 8/8、CI 四门禁。以下为本版全部变更条目：
+
+## Feat（FE-1435 立版：产品 V1.4 冻结发布=仓库版本 1.4.0，2026-10-10）
+
+> 五处版本一致性升级（VERSION/package.json/apps/child-web/package.json/project_manifest/releases/index current）1.2.0→1.4.0；`releases/1.4.0.json` manifest（breaking=V2 信封/submission_id 幂等轨/契约 FROZEN 唯一权威；added=19 Vertical Gate、pin+qa_staged、验收工具链、155 批 G1~7、qa_replay#7、QA 卫生治理；known_constraints=映射审批挂起/扩产批不入库/13:44 计时口径/四 renderer 不在发布范围；verification=E2E 197、后端 105、replay 8/8、CI 四门禁）；CHANGELOG `[Unreleased]` 归档 → `[1.4.0]`。check-release/governance/data-hygiene 本地全过。**tag v1.4.0 于 PR 合入后打在 squash commit。**
+
 ## Feat（FE-1434 契约 FROZEN：V1.4 题库生产契约 v2.0 冻结——parser 守卫全集首次成文（机器提取+人工校对），取代并合并 PC-v1/docs/34/36/37/FE-1438 五源，2026-10-10）
 
 > trial155 四轮验收史（Gate3 FAIL 114→37→3→0）后两轮 40 题全因**守卫未成文**——parser 拒收条件散在 15 个 R 底表，交付方无从查、我方每轮都漏讲。本 PR 汇编 **docs/38 CONTRACT_FROZEN.md v2.0（FROZEN）**=V1.4 交付-验收唯一权威契约：§1 全局条款 G1~G7（标量/硬依赖/mode 词表/V2 信封/context_family 7 值/ID 纪律/19 项剔除 choice-grid 等）；§2 Renderer×Mode 词表（金题反查全集）；**§3 Config 守卫全集**（15 专件 `return null` 条件机器提取逐字镜像：bar-model known 恰 2 键/formula op∈{+,-}+slot[1,3]+accept/grouping items[2,20]/estimation 近似自洽+max[2,100]（Gate2 收紧 ≤60 单列注明）/gallery shapes[4,10]/canvas rectangle+area≤(grid-1)²/sorting value[1,9] 互异+initial≠平凡序/direction 0 起+反走靶可达/ruler l≥1/clock [h,m]+h∈[1,12]+m∈{0,30}+swap 自环拒/money [5,200] 角位非零 5 倍数+币含 5,10+minCoins/pattern trivial 周期拒/ten-frame[1,20]+基座链 4 含 object-counter expected **双形态**（FE-1438））；§4 诊断词全集；§5 8-Gate 链+qa_staged 通道。变更管控条款：**V1.4 冻结、守卫/形态变更必须同步修订本文+fixtures 锚点+通知交付方；源码与本文冲突以源码为准立即修订**。

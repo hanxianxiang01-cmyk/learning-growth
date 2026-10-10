@@ -1,6 +1,6 @@
 {
   "project": "Math Sprint 3 Frontend",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "status": "formal session-result closure complete; math manipulative engine pending",
   "default_skin": "math-lab",
   "built_in_skins": [
@@ -37,6 +37,10 @@
   "release_notes": "docs/10_RELEASE_NOTES_V1.2.md",
   "version_policy": "docs/12_VERSION_MANAGEMENT.md",
   "release_history": [
+    {
+      "version": "1.4.0",
+      "name": "V1.4 Frontend P0 + Renderer Vertical Gates + Contract FROZEN"
+    },
     {
       "version": "1.2.0",
       "name": "Learning Result Closure"
