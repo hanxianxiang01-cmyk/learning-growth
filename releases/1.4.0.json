@@ -1,0 +1,45 @@
+{
+  "version": "1.4.0",
+  "release_date": "2026-10-10",
+  "release_name": "V1.4 Frontend P0 + Renderer Vertical Gates + Contract FROZEN",
+  "previous_version": "1.2.0",
+  "breaking_changes": [
+    "TaskUISchema V2 + MathResponse V2 信封（V1 资源不受影响，_v2_assignable 门控红线）",
+    "attempt 提交权威轨 submission_id 幂等（同 id 异内容 409）",
+    "题库生产契约 FROZEN v2.0（docs/38）取代 PC-v1/docs34 为唯一权威"
+  ],
+  "added": [
+    "V2 Renderer 库：19 组件全部 Vertical Gate CLOSED（B5 模板流水线，E2E 197/197）",
+    "Renderer Registry Contract：23 枚举冻结 + V1/V2 分流（FE-1403）",
+    "QA 确定性钉题 pin + v2-catalog（FE-1422a）；qa_staged 隔离入库通道（FE-1438）",
+    "首页挑战入口配置化 5 能力节点（FE-1428）",
+    "qa_replay #7=Gate 8 执行器：pin 确定性+V2 信封+确定性 submission_id（FE-1433）",
+    "题库验收工具链：consistency_audit v2（Gate 2，fixtures 回归基线）+ audit-155-config.mjs（Gate 3）+ ERROR_VOCAB（诊断词权威表）（FE-1432d~i）",
+    "155 题整改批=首个通过 Gate 1~7 的题批（qa_staged 待映射审批转 published）",
+    "契约 FROZEN v2.0：parser 守卫全集首次成文（FE-1434）",
+    "QA 数据卫生治理：QA child …0099 / CI data-hygiene 门禁 / 存量污染软删重算"
+  ],
+  "changed": [
+    "E2E 永别 band 掷骰子：全量回归改 pin 选题，确定性 100%",
+    "mastery 规则回放 #5/#7/幂等 用例改真实 RDS + V2 信封（8/8）"
+  ],
+  "known_constraints": [
+    "155 题批 M01–M42→app_* 映射 TRIAL_MAPPING_PENDING_APPROVAL（审批后 qa_staged→published 正式入库）",
+    "题库扩产批（L1 2100/L2 1008）内容真但未过契约=不入库在案（docs/33）；下一批按 FROZEN v2.0 交付",
+    "13:44 前联调期 client_elapsed_ms=session 累计（耗时判定需校正，docs 在案）",
+    "choice-grid/data-table/pictograph/timeline 不在 V1.4 发布范围（无验收 parser）"
+  ],
+  "verification": {
+    "e2e": "197/197 passed（chrome-system 双皮肤）",
+    "backend_tests": "105 passed",
+    "ci_gates": "governance[+data-hygiene]/child-typecheck/child-build/backend-tests 四门禁",
+    "qa_replay": "8/8（连跑两次确定性成立）",
+    "contract_frozen": "docs/frontend/38_contract_frozen/CONTRACT_FROZEN.md v2.0"
+  },
+  "source_of_truth": {
+    "version": "VERSION",
+    "npm_version": "package.json",
+    "history": "CHANGELOG.md",
+    "release_manifest": "releases/1.4.0.json"
+  }
+}
