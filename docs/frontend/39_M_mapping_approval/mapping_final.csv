@@ -1,0 +1,43 @@
+﻿source_skill_id,source_skill_name,proposed_app_id,final_app_id,verdict,reason
+M01,数的读写与表示,app_rd,app_rd,APPROVED,
+M02,数的组成与分解,app_rd,app_rd,APPROVED,
+M03,数的大小比较,app_cond,app_cond,APPROVED,
+M04,顺序与定位,app_cond,app_cond,APPROVED,
+M05,整十整百数的认识,app_cond,app_cond,APPROVED,
+M06,估数与数量感,app_rel,app_model,APPROVED,批准改判：数量参照/表示支持模型建构；涉及非估量题另行内容复审。
+M07,两位数加法,app_rel,app_rel,APPROVED,
+M08,两位数减法,app_rel,app_rel,APPROVED,
+M09,进位加法,app_rel,app_rel,APPROVED,
+M10,退位减法,app_rel,app_rel,APPROVED,
+M11,连加连减,app_rel,app_rel,APPROVED,
+M12,加减混合,app_rel,app_rel,APPROVED,保留原案 app_rel；P0 四题为简单算式/单方向数轴跳步，不足以支持策略节点，且并非真正加减混合。
+M13,加减关系与逆运算,app_rel,app_strat,APPROVED,批准改判：加减逆运算中的未知量求解体现方法选择；两道位值题需单独核对错挂。
+M14,口算与心算策略,app_strat,app_strat,APPROVED,
+M15,相同加数与重复加法,app_rel,app_rel,APPROVED,
+M16,乘法意义,app_rel,app_rel,APPROVED,
+M17,乘法口诀应用,app_strat,app_strat,APPROVED,
+M18,乘法数量关系,app_rel,app_rel,APPROVED,
+M19,倍的认识,app_rel,app_rel,APPROVED,
+M20,平均分,app_rel,app_rel,APPROVED,
+M21,包含除,app_rel,app_rel,APPROVED,
+M22,除法意义,app_rel,app_rel,APPROVED,
+M23,乘除关系,app_rel,app_rel,APPROVED,保留原案 app_rel；P0 两题平均分，一题简单减法，一题分组，未形成全技能策略证据。
+M24,简单余数情境,app_rel,app_rel,APPROVED,
+M25,条件识别,app_cond,app_cond,APPROVED,
+M26,数量关系识别,app_rel,app_rel,APPROVED,
+M27,选择运算策略,app_strat,app_strat,APPROVED,
+M28,画图建模,app_model,app_model,APPROVED,
+M29,两步问题,app_model,app_model,APPROVED,
+M30,检验与解释,app_check,app_check,APPROVED,保留原案 app_check；技能定义为检验与解释，P0 6 题无明确检验闭环，必须修题或重归属，不能靠改字典掩盖错挂。
+M31,平面图形识别,app_rd,app_rd,APPROVED,
+M32,图形分类与属性,app_cond,app_cond,APPROVED,
+M33,图形拼组与分割,app_model,app_model,APPROVED,
+M34,方向与位置,app_model,app_model,APPROVED,
+M35,长度与刻度,app_model,app_model,APPROVED,
+M36,长度比较与估测,app_check,app_check,APPROVED,
+M37,时刻认识,app_rd,app_cond,APPROVED,批准改判：钟面时针/分针职责与时刻条件匹配。
+M38,时间先后与经过,app_check,app_rel,APPROVED,批准改判：先后与经过时间为数量关系；需保证题目显式呈现经过时间问题。
+M39,面值认识与组合,app_cond,app_cond,APPROVED,
+M40,总价与找零,app_rel,app_strat,APPROVED,批准改判：现有 155 题均为凑付/支付组合玩法，符合策略节点。
+M41,简单分类整理,app_cond,app_cond,APPROVED,
+M42,规律发现与续排,app_transfer,app_transfer,APPROVED,

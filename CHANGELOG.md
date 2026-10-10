@@ -29,6 +29,12 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Review（FE-1439 M01–M42 能力映射批复入档：42 行全 APPROVED——8 条改判建议采纳 5 保留 3，M30 保留 app_check+6 题定向整改，映射批准≠内容放行，2026-10-10）
+
+> 我方先出审核意见稿（docs/39 REVIEW.md：三方一致 0 偏差核验+8 条改判建议），负责人逐题核对后**批复（APPROVAL.md 权威版覆盖我方建议）**：采纳 M06→model/M13→strat/M37→cond/M38→rel/M40→strat，**保留 M12/M23=app_rel、M30=app_check**——纠正我方方法论偏差（"renderer 行为≠金题节点"不足以整节点改判；M30 六题错挂是题目问题不是能力定义问题，**不得改字典掩盖错挂**）。影响题数复核算实：5 改=25、8 全改=39（机器复核与批复一致）。M30 六题（124/128/084/088/147/151）= **CONTENT_REVIEW_REQUIRED**（修成检验闭环或按实质重归属，只改 ability_id 不放行）。
+> **跨批次约束入册**：本表批准范围= Trial-155，**不自动继承 3,108**（M42 在候选库 74 题中 68 题 is_transfer=false，须逐题按迁移行为复审）。
+> **执行顺序按批复 §3**（替代原 §5）：① PR 留痕（本条）→ ② M30 定向修复+M12/M13/M23 教研复核清单 → ③ qa_staged 应用 final_app_id（Resource.ability_id 语义校验，非 JSON 形状）→ ④ staging ingest+Gate 8 qa_replay（隔离测试库，不以 published 冒充）→ ⑤ 阻断项清零后转 published+全量入库+重过受影响前置 Gate。
+
 # [1.4.0] — 2026-10-10（FE-1435 立版：V1.4 Frontend P0 + Renderer Vertical Gates + Contract FROZEN）
 
 发版说明=releases/1.4.0.json；契约基线=docs/38 CONTRACT_FROZEN.md v2.0；验证=E2E 197/197、后端 105、qa_replay 8/8、CI 四门禁。以下为本版全部变更条目：
