@@ -1,5 +1,7 @@
 # V1.4 Renderer Config 契约对照表（trial155 实灌审计产出，2026-10-08）
 
+> 📦 **已归档（FE-1434，2026-10-10）**：本对照表为 trial155 时代审计产出，其 §2/§7 守卫条款已逐字并入并**由 `docs/frontend/38_contract_frozen/CONTRACT_FROZEN.md` v2.0 取代**（V1.4 唯一权威契约）。本文件保留作 trial155 四轮验收史溯源（b114→g37→h3→i0），**新的交付/验收以 FROZEN v2.0 为准**。
+
 **用途**：交付方《V1.4 P0 试灌题包 155 题》的 config/answer 形状与我方 19 个已闭
 Vertical Gate 的**实战契约**（`resource_seed_v2.py` 金题 + `*V2.ts` parser 守卫）逐渲染器对照。
 **扩产 3,108 前必须按本表对齐**——题包自身的 TaskUISchema JSON Schema 校验通过≠能进我方链，
