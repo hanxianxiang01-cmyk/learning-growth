@@ -124,11 +124,14 @@ export function BarModelV2({
   const renderBar = (bar: BarId) => {
     const value = state.bars[bar];
     const isAnswer = bar === config.answerBar;
+    // FE-1443 溢出修复：条长=value/maxBlocks 等比（轨道内），方块 flex 均分——
+    // 原固定 36px×18 格撑破 1fr 轨道、挤出 ± 控件列。
+    const widthPct = `${Math.max(2, Math.round((value / config.maxBlocks) * 100))}%`;
     return (
       <div className={`bm-bar-row ${isAnswer ? "answer" : "known"}`} key={bar} data-testid={`bm-row-${bar}`}>
         <span className="bm-bar-label">{BAR_LABELS[bar](config)}</span>
         <div className="bm-bar-track">
-          <div className="bm-bar-blocks" data-testid={`bm-bar-${bar}`}>
+          <div className="bm-bar-blocks" data-testid={`bm-bar-${bar}`} style={{ width: widthPct }}>
             {Array.from({ length: value }, (_, i) => (
               <span key={i} className="bm-block" />
             ))}
