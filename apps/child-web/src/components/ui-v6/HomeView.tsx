@@ -32,7 +32,7 @@ export function HomeView({ childId, profile, abilities, loading, starting, error
             const value = presentAbility(findAbility(node, abilities));
             return <span key={node.id} title={`${node.label}：${value.status}`} className={value.count !== null && value.count > 0 ? "has-record" : ""}><ChildIcon name={node.icon} /></span>;
           })}</div>
-          <p className="v6-home-record-note">{profile?.grade ? `${profile.grade}年级数学 · ` : ""}建议每次学习 10–15 分钟</p>
+          <p className="v6-home-record-note">{profile?.grade ? `${profile.grade.replace(/年级$/, "")}年级数学 · ` : ""}建议每次学习 10–15 分钟</p>
         </section>
         <section className="surface-card v6-home-tasks"><div className="v6-section-heading"><h2>选择一个小挑战</h2><span>先选你想练的</span></div>
           <div className="v6-task-list">{CHALLENGE_CARDS.map((card, i) => <button type="button" key={card.kind} className="v6-task-entry"

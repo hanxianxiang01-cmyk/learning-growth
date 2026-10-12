@@ -89,7 +89,9 @@ export function MathHomeScreen({ childId }: { childId: string }) {
             <h1>今天的数学任务</h1>
           </div>
           <div className="header-chip">
-            {profile?.grade ?? "2"}年级数学
+            {/* FE-1446：grade 口径兼容——库里存中文全称（"一年级"），mock/契约示例是数字（"2"）；
+              原拼接对前者产出"一年级年级数学"。剥掉尾缀"年级"再拼。 */}
+          {`${(profile?.grade ?? "2").replace(/年级$/, "")}年级数学`}
           </div>
         </header>
 
