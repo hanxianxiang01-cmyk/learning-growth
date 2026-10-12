@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * place-value V2 组件（FE-1419 R06）。runtime 装配对齐 TenFrameV2/BarModelV2：
  * rendererWorkspaceReducer（undo/history 内建）+ buildRendererEvent（UPPER_SNAKE）。
@@ -41,6 +45,7 @@ export function PlaceValueV2({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parsePlaceValueConfig(workspace.config as Record<string, unknown>) : null),
@@ -82,7 +87,7 @@ export function PlaceValueV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">位值板题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "位值板题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -128,6 +133,64 @@ export function PlaceValueV2({
 
   const undo = () => !disabled && dispatch({ type: "UNDO", event: emit("UNDO", {}) });
   const reset = () => !disabled && dispatch({ type: "RESET", event: emit("RESET", {}) });
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="place-value" title="数字站在哪一位" instruction="先点一张数字卡，再点它要去的位值框。"
+      actions={<div className="workspace-actions">
+          <button
+            type="button"
+            data-testid="pv-undo"
+            disabled={disabled || runtime.history.length === 0}
+            onClick={undo}
+          >
+            撤销
+          </button>
+          <button type="button" data-testid="pv-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="place-value-v2" className="manipulative-card place-value-v2"
+      submitTestId="pv-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      <div className="pv-slots" data-testid="pv-slots">
+        {config.places.map((place, j) => {
+          const value = state.slots[j];
+          return (
+            <button
+              type="button"
+              key={place}
+              data-testid={`pv-slot-${j}`}
+              aria-label={`${place}，${value === null ? "空位" : value}`}
+              className={`pv-slot ${value !== null ? "filled" : ""}`}
+              disabled={disabled}
+              onClick={() => tapSlot(j)}
+            >
+              <span className="pv-place-name">{place}</span>
+              <span className="pv-digit" data-testid={`pv-slot-digit-${j}`}>
+                {value ?? " "}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+<div className="pv-pool" data-testid="pv-pool">
+        {state.pool.map((digit, i) => (
+          <button
+            type="button"
+            key={`${digit}-${i}`}
+            data-testid={`pv-tile-${digit}`}
+            aria-pressed={state.picked === i}
+              aria-label={`选择数字 ${digit}`}
+              className={`pv-tile ${state.picked === i ? "picked" : ""}`}
+            disabled={disabled}
+            onClick={() => pickCard(i)}
+          >
+            {digit}
+          </button>
+        ))}
+        {state.pool.length === 0 && <span className="pv-pool-empty">牌都放好啦</span>}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card place-value-v2" data-testid="place-value-v2">

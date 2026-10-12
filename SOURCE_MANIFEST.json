@@ -1,0 +1,2784 @@
+{
+  "delivery": "V1.4 V6 full visual migration source candidate",
+  "application_version": "1.4.0",
+  "status": "Source delivery; dependency-limited validation, not merged or production accepted",
+  "original_zip": "learning-growth-main (1).zip",
+  "original_zip_sha256": "b2a925b76358fdda4164da663599ffeeb4ddb44e3225b90b19fe5b7d12c7f401",
+  "visual_reference": "V14_Full_Illustrated_UI_v6.html",
+  "visual_reference_sha256": "a346be99ffb364932bb71b94fee60395c734c529ccd5d8100d3a6ee3e8c6df66",
+  "original_file_count": 443,
+  "original_files_missing": [],
+  "changed_original_files": [
+    ".github/workflows/ci.yml",
+    ".gitignore",
+    "CHANGELOG.md",
+    "PROJECT_STATUS.md",
+    "README.md",
+    "apps/child-web/.env.example",
+    "apps/child-web/app/child/math/session/[sessionId]/page.tsx",
+    "apps/child-web/app/dev/ui-kit/page.tsx",
+    "apps/child-web/app/layout.tsx",
+    "apps/child-web/package.json",
+    "apps/child-web/src/components/learning/MathQuestionCard.tsx",
+    "apps/child-web/src/components/renderers/ArrayBoardV2.tsx",
+    "apps/child-web/src/components/renderers/BarModelV2.tsx",
+    "apps/child-web/src/components/renderers/ClockV2.tsx",
+    "apps/child-web/src/components/renderers/ColumnArithmetic.tsx",
+    "apps/child-web/src/components/renderers/DirectionGridV2.tsx",
+    "apps/child-web/src/components/renderers/EstimationCanvasV2.tsx",
+    "apps/child-web/src/components/renderers/FormulaBoardV2.tsx",
+    "apps/child-web/src/components/renderers/GroupingBoardV2.tsx",
+    "apps/child-web/src/components/renderers/MoneyBoardV2.tsx",
+    "apps/child-web/src/components/renderers/NumberInputV2.tsx",
+    "apps/child-web/src/components/renderers/NumberLineV2.tsx",
+    "apps/child-web/src/components/renderers/ObjectCounterV2.tsx",
+    "apps/child-web/src/components/renderers/PatternBoardV2.tsx",
+    "apps/child-web/src/components/renderers/PlaceValueV2.tsx",
+    "apps/child-web/src/components/renderers/RulerV2.tsx",
+    "apps/child-web/src/components/renderers/ShapeCanvasV2.tsx",
+    "apps/child-web/src/components/renderers/ShapeGalleryV2.tsx",
+    "apps/child-web/src/components/renderers/SortingBoardV2.tsx",
+    "apps/child-web/src/components/renderers/TenFrameV2.tsx",
+    "apps/child-web/src/config.ts",
+    "apps/child-web/src/features/learning/machine.ts",
+    "apps/child-web/src/features/learning/useLearningSession.ts",
+    "apps/child-web/src/features/task-renderer/TaskRenderer.tsx",
+    "apps/child-web/src/lib/runtime/sessionStore.ts",
+    "apps/child-web/src/screens/MathGrowthScreen.tsx",
+    "apps/child-web/src/screens/MathHomeScreen.tsx",
+    "apps/child-web/src/screens/MathLearningScreen.tsx",
+    "apps/child-web/src/screens/MathResultScreen.tsx",
+    "apps/child-web/src/theme/ChildSkinProvider.tsx",
+    "package.json"
+  ],
+  "added_files_excluding_this_manifest": [
+    "README_V6_FULL.md",
+    "apps/child-web/.env.v6.example",
+    "apps/child-web/app/dev/v6-clock/page.tsx",
+    "apps/child-web/app/dev/v6/page.tsx",
+    "apps/child-web/app/ui-v6.css",
+    "apps/child-web/e2e-v6/full-gallery.spec.mjs",
+    "apps/child-web/e2e/v6-clock-gallery.spec.mjs",
+    "apps/child-web/e2e/v6-clock-live.spec.mjs",
+    "apps/child-web/playwright.v6.config.mjs",
+    "apps/child-web/public/child-ui-v6/hero-exploration-lab.svg",
+    "apps/child-web/public/child-ui-v6/hero-healing.svg",
+    "apps/child-web/public/child-ui-v6/scenery-exploration-lab.svg",
+    "apps/child-web/public/child-ui-v6/scenery-healing.svg",
+    "apps/child-web/scripts/check-v6-full.mjs",
+    "apps/child-web/scripts/check-v6-migration.mjs",
+    "apps/child-web/src/components/ui-v6/ChildIcon.tsx",
+    "apps/child-web/src/components/ui-v6/ClockV6.tsx",
+    "apps/child-web/src/components/ui-v6/GrowthMap.tsx",
+    "apps/child-web/src/components/ui-v6/HomeView.tsx",
+    "apps/child-web/src/components/ui-v6/LearningChrome.tsx",
+    "apps/child-web/src/components/ui-v6/LearningFeedback.tsx",
+    "apps/child-web/src/components/ui-v6/PageFrame.tsx",
+    "apps/child-web/src/components/ui-v6/RendererFrame.tsx",
+    "apps/child-web/src/components/ui-v6/ResultView.tsx",
+    "apps/child-web/src/components/ui-v6/TaskPresentationBoundary.tsx",
+    "apps/child-web/src/components/ui-v6/V6SliceGallery.tsx",
+    "apps/child-web/src/dev/UiKitGallery.tsx",
+    "apps/child-web/src/dev/v6/V6Gallery.tsx",
+    "apps/child-web/src/dev/v6/fixtures.json",
+    "apps/child-web/src/features/task-renderer/taskResponse.ts",
+    "apps/child-web/src/features/ui-v6/abilityPresentation.ts",
+    "apps/child-web/src/features/ui-v6/clockInput.ts",
+    "apps/child-web/src/theme/uiVersion.ts",
+    "apps/child-web/src/theme/v6Tokens.ts",
+    "docs/frontend/41_v6_ui_migration/MIGRATION.md",
+    "docs/frontend/41_v6_ui_migration/PR_DESCRIPTION.md",
+    "docs/frontend/41_v6_ui_migration/TEST_REPORT.md",
+    "docs/frontend/41_v6_ui_migration/evidence/app-build.log",
+    "docs/frontend/41_v6_ui_migration/evidence/app-typecheck.log",
+    "docs/frontend/41_v6_ui_migration/evidence/baseline-typecheck.log",
+    "docs/frontend/41_v6_ui_migration/evidence/branch-check.log",
+    "docs/frontend/41_v6_ui_migration/evidence/command-results.json",
+    "docs/frontend/41_v6_ui_migration/evidence/contracts-check.log",
+    "docs/frontend/41_v6_ui_migration/evidence/diff-check.log",
+    "docs/frontend/41_v6_ui_migration/evidence/frontend-release-check.log",
+    "docs/frontend/41_v6_ui_migration/evidence/frozen-files-check.json",
+    "docs/frontend/41_v6_ui_migration/evidence/governance-check.log",
+    "docs/frontend/41_v6_ui_migration/evidence/patch-replay.json",
+    "docs/frontend/41_v6_ui_migration/evidence/pure-checks.json",
+    "docs/frontend/41_v6_ui_migration/evidence/release-check.log",
+    "docs/frontend/41_v6_ui_migration/evidence/renderers-check.log",
+    "docs/frontend/41_v6_ui_migration/evidence/syntax-check.json",
+    "docs/frontend/41_v6_ui_migration/evidence/v14-check.log",
+    "docs/frontend/42_v6_full_migration/MIGRATION.md",
+    "docs/frontend/42_v6_full_migration/PR_DESCRIPTION.md",
+    "docs/frontend/42_v6_full_migration/TEST_REPORT.md",
+    "docs/frontend/42_v6_full_migration/evidence/app-build.log",
+    "docs/frontend/42_v6_full_migration/evidence/app-typecheck.log",
+    "docs/frontend/42_v6_full_migration/evidence/branch.log",
+    "docs/frontend/42_v6_full_migration/evidence/command-results.json",
+    "docs/frontend/42_v6_full_migration/evidence/contracts.log",
+    "docs/frontend/42_v6_full_migration/evidence/frontend-release.log",
+    "docs/frontend/42_v6_full_migration/evidence/frozen-files.json",
+    "docs/frontend/42_v6_full_migration/evidence/full-static-tests.json",
+    "docs/frontend/42_v6_full_migration/evidence/governance.log",
+    "docs/frontend/42_v6_full_migration/evidence/next-v6-e2e.log",
+    "docs/frontend/42_v6_full_migration/evidence/npm-ci.exit",
+    "docs/frontend/42_v6_full_migration/evidence/npm-ci.log",
+    "docs/frontend/42_v6_full_migration/evidence/page-browser.json",
+    "docs/frontend/42_v6_full_migration/evidence/page-flow-api-calls.json",
+    "docs/frontend/42_v6_full_migration/evidence/pure-tests.json",
+    "docs/frontend/42_v6_full_migration/evidence/release.log",
+    "docs/frontend/42_v6_full_migration/evidence/renderer-browser-0-10.json",
+    "docs/frontend/42_v6_full_migration/evidence/renderer-browser-10-20.json",
+    "docs/frontend/42_v6_full_migration/evidence/renderers.log",
+    "docs/frontend/42_v6_full_migration/evidence/transpile.json",
+    "docs/frontend/42_v6_full_migration/evidence/transport-retry-identical-payload.json",
+    "docs/frontend/42_v6_full_migration/evidence/v14.log",
+    "scripts/run-child-ui.mjs",
+    "tests/v6-isolated/README.md",
+    "tests/v6-isolated/bootstrap.js",
+    "tests/v6-isolated/prepare.mjs",
+    "tests/v6-isolated/runner.py",
+    "tests/v6-isolated/test_pages.py",
+    "tests/v6-isolated/test_renderers.py"
+  ],
+  "hash_scope": "All distributed source files except SOURCE_MANIFEST.json itself. Build/cache/node_modules/font files excluded.",
+  "files": [
+    {
+      "path": ".editorconfig",
+      "bytes": 188,
+      "sha256": "a6b98ea7cb6d61ed8d430dd0dffa46c87012b5cf859d4ce7207898954951fdcd"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 155,
+      "sha256": "050693e04789b1178bc1d3e041f42be68369c5f9c748514391ffd85b8a6a0ae5"
+    },
+    {
+      "path": ".github/CODEOWNERS.example",
+      "bytes": 426,
+      "sha256": "d5b82e360fe2555cfb2a957a62b844863017ae96f095c6c8a7b110114385ecf8"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug.yml",
+      "bytes": 591,
+      "sha256": "021456115f65685052847f7a2712adf93686ae3104c20453144afaf419641470"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "bytes": 28,
+      "sha256": "1f103c6a9dd07cd13a9a6f17ace6b813f47747eb9cb7e00488cb2073caaf91bb"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/contract-change.yml",
+      "bytes": 800,
+      "sha256": "717d4d0a5044a703ce40db10f5357a4246fca16bb77fc890161942bcba7304e3"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature.yml",
+      "bytes": 751,
+      "sha256": "40cac547e03f37b819063d5853bc8223690390bb48cc779f66666271f2211f16"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "bytes": 669,
+      "sha256": "10fc021e2bdb2c52478e7aac97e6f778874143d7e4c3a06afd7fe95a9efd6334"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 2680,
+      "sha256": "31a5fc750642d49ac6f34e75ef64275509c4683bd2577f968c555033582a1ecb"
+    },
+    {
+      "path": ".github/workflows/release-artifact.yml",
+      "bytes": 947,
+      "sha256": "235eba817d1b253052ad370d05afc3ec93e384e112a7e7a4ef87f7f6e145713c"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 640,
+      "sha256": "ca0c3a3db53d03378302981ac7b246f3c7ba2e95f8303078540a56d542ad83b3"
+    },
+    {
+      "path": ".nvmrc",
+      "bytes": 3,
+      "sha256": "f14b4987904bcb5814e4459a057ed4d20f58a633152288a761214dcd28780b56"
+    },
+    {
+      "path": "AI_CONTRIBUTING.md",
+      "bytes": 1846,
+      "sha256": "4faee6831a0cb8942c55e1d14da0df357e10327bc9e415ff1370d84d13f1271d"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 104467,
+      "sha256": "b8dea9a247118ee509aeb10a8c280aed275825ca55f0e74397d3116b873db331"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 369,
+      "sha256": "b61f4f0785017ad180bd0447d2060dafce057e922b5cb4164f0f81a43b4a388b"
+    },
+    {
+      "path": "GOVERNANCE_VERSION",
+      "bytes": 6,
+      "sha256": "59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03"
+    },
+    {
+      "path": "ONBOARDING_FRONTEND.md",
+      "bytes": 4538,
+      "sha256": "f6cddb61e70da7f051bf4ee53d33ba95d34222aec97960ed88c11d6170818175"
+    },
+    {
+      "path": "PROJECT_STATUS.md",
+      "bytes": 30639,
+      "sha256": "f2e61e3cdbb0319459be843685d1998d08bed912c7f2c30d692b64096aa9eaa5"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2539,
+      "sha256": "51568b3b4d02ac46eda457533cfbded1f7a1bd1efa5ec59afcabe5df3e7fa464"
+    },
+    {
+      "path": "README_V6_FULL.md",
+      "bytes": 5178,
+      "sha256": "1974532280f481c8a889b5d5f1923b91029ae4b0057f1a84f100bd19a6d524ef"
+    },
+    {
+      "path": "ROADMAP.md",
+      "bytes": 1332,
+      "sha256": "6046c1e09ea076cd237b6407cc4ea46cbaf4723dfd62e3b5d6aed98c72105903"
+    },
+    {
+      "path": "VERSION",
+      "bytes": 6,
+      "sha256": "78b591400c56b7b67b8cb3b2b8a8e65e9093897f02ce0878e6b5405c68620fa7"
+    },
+    {
+      "path": "apps/child-web/.env.example",
+      "bytes": 788,
+      "sha256": "ba188325b6e55ae92913dd884af757d5c4ba3a96aa8880b0e3d4ac47d64571a6"
+    },
+    {
+      "path": "apps/child-web/.env.v6.example",
+      "bytes": 468,
+      "sha256": "e6731d432958a75f7b9f979f7652faafa032ca83da1177dc102c46bfa0ee7b89"
+    },
+    {
+      "path": "apps/child-web/README.md",
+      "bytes": 608,
+      "sha256": "494a91796bd945a612197e7319e2362169a3fc196d111e61c1774811bd682648"
+    },
+    {
+      "path": "apps/child-web/app/child/math/growth/page.tsx",
+      "bytes": 312,
+      "sha256": "62e38be6fab800f1fe779388ed74b5863f8bb24198f30f50ddcd0dc7471b43aa"
+    },
+    {
+      "path": "apps/child-web/app/child/math/page.tsx",
+      "bytes": 313,
+      "sha256": "2f1f177e2782cbcb8f5ebe98fd38a3102e4e60b3e2ef73d9f7188cb4df8e61c9"
+    },
+    {
+      "path": "apps/child-web/app/child/math/result/[sessionId]/page.tsx",
+      "bytes": 417,
+      "sha256": "698118af88ced8c48e1a22e2398b97d54cae9fd2f96c26be406d182e5f1e0959"
+    },
+    {
+      "path": "apps/child-web/app/child/math/session/[sessionId]/page.tsx",
+      "bytes": 531,
+      "sha256": "c03f976c7bd6e310758cb1bdf01e34fef66cfefb21d7e70342ae7fd482f28da8"
+    },
+    {
+      "path": "apps/child-web/app/dev/ui-kit/page.tsx",
+      "bytes": 218,
+      "sha256": "f6724b415cfd08f7911fce373ca0c1e5a516408572febe7d0317923943c641d5"
+    },
+    {
+      "path": "apps/child-web/app/dev/v1.3-qa/page.tsx",
+      "bytes": 4472,
+      "sha256": "d530779856c5be9ab8a4c01645c606ae62b332e9e5552d200403ab5123710ef9"
+    },
+    {
+      "path": "apps/child-web/app/dev/v1.4-qa/page.tsx",
+      "bytes": 7738,
+      "sha256": "052437cc080aa23ce42705980641c12a3ab5b75b1846428d7f9fca9496489cc6"
+    },
+    {
+      "path": "apps/child-web/app/dev/v6-clock/page.tsx",
+      "bytes": 309,
+      "sha256": "bd8f104f322e7837afee79252c5bde26450cfcf23f4d3ccd65dc4fc86896e3ed"
+    },
+    {
+      "path": "apps/child-web/app/dev/v6/page.tsx",
+      "bytes": 226,
+      "sha256": "c9287abaa4ee93f06cc7058b26a9fe244c685dbc3548749a8b292bd84f160d78"
+    },
+    {
+      "path": "apps/child-web/app/globals.css",
+      "bytes": 50306,
+      "sha256": "a0e83a088bf0d3f669f73e4779686477277d7011ad7db9f25238a4f4473fab76"
+    },
+    {
+      "path": "apps/child-web/app/layout.tsx",
+      "bytes": 589,
+      "sha256": "014c0f02a58e6d8bb9601013fbe1b01f62c1eb763511e70707b860dbd062ecac"
+    },
+    {
+      "path": "apps/child-web/app/page.tsx",
+      "bytes": 200,
+      "sha256": "d4922df43752508f16ce5394af769ed838bf9641105805b33fff3142b3181e53"
+    },
+    {
+      "path": "apps/child-web/app/ui-v6.css",
+      "bytes": 58551,
+      "sha256": "384e8750b5d6dcaa651937c2455565e27a585508933b55c0813edf92c81d4337"
+    },
+    {
+      "path": "apps/child-web/e2e-v6/full-gallery.spec.mjs",
+      "bytes": 6323,
+      "sha256": "5d05a4b4a17f1e2a87a57edb9dff448df18dc5ce79b18a8b1d7bae101e1a2c63"
+    },
+    {
+      "path": "apps/child-web/e2e/b5-column-arithmetic.spec.mjs",
+      "bytes": 13195,
+      "sha256": "796d364ca0637d6e3a7b176b02f4e3bbc9d96293147827b97988024c636cb524"
+    },
+    {
+      "path": "apps/child-web/e2e/pinned-tasks.mjs",
+      "bytes": 4549,
+      "sha256": "ddfd7360dba84831872713d81fe0a05df4dde5f86e388cea5e31d97ba591c325"
+    },
+    {
+      "path": "apps/child-web/e2e/qa-sample-batch.spec.mjs",
+      "bytes": 3918,
+      "sha256": "5765bb0a047c1c4cf004c93596e9c0b1e0b257de4f64f84954197e24642034d2"
+    },
+    {
+      "path": "apps/child-web/e2e/qa-sample-cases.json",
+      "bytes": 5859,
+      "sha256": "915a780e77fc7013f5b67c41912465f5c4403778fd95be66177f83d8deabd0ef"
+    },
+    {
+      "path": "apps/child-web/e2e/qa-sample-rvids.mjs",
+      "bytes": 1312,
+      "sha256": "50c62708aaed27c0719e840b26ef1f3c241da8dd3ade460f06a6456dd8e52a1f"
+    },
+    {
+      "path": "apps/child-web/e2e/r01-object-counter.spec.mjs",
+      "bytes": 10843,
+      "sha256": "a5775a70e4b68d99c1d5c4290441abe8d760fe0f85fd617abe12ff72c17f091a"
+    },
+    {
+      "path": "apps/child-web/e2e/r02-bar-model.spec.mjs",
+      "bytes": 9848,
+      "sha256": "22e8192d9e4d8a43705f78839fe8b827c90dc5f47803f92dfc10a7e7d848bda3"
+    },
+    {
+      "path": "apps/child-web/e2e/r04-number-input.spec.mjs",
+      "bytes": 7209,
+      "sha256": "45dc2203b1d49a4fdf0704689ae383e41f35ff90b861e60bd76ae282f14854e7"
+    },
+    {
+      "path": "apps/child-web/e2e/r06-place-value.spec.mjs",
+      "bytes": 9960,
+      "sha256": "6b2f456ed1cc347ce3af1b29741d9ef86b989692ef554bf27463a30c3d8007fa"
+    },
+    {
+      "path": "apps/child-web/e2e/r07-ten-frame.spec.mjs",
+      "bytes": 8473,
+      "sha256": "3a3fa128f1a9f51fada626c5a5bfbbe0da4c563b3db6348bac1c0ac0c0cd1762"
+    },
+    {
+      "path": "apps/child-web/e2e/r08-array-board.spec.mjs",
+      "bytes": 9124,
+      "sha256": "53becfac4f9037749fed529ccde2c99eab5f66e8172dcd384495171c8b941573"
+    },
+    {
+      "path": "apps/child-web/e2e/r09-grouping-board.spec.mjs",
+      "bytes": 11747,
+      "sha256": "db9bfff2bfddaa38cb4807a87c81d9e6ec0aedc29c3c6d58a36addff865997cc"
+    },
+    {
+      "path": "apps/child-web/e2e/r10-formula-board.spec.mjs",
+      "bytes": 9754,
+      "sha256": "1951ff4106e35c45ed8a5a1a2f4591a8308d4d129d7fb5a785e9bdc3a58399ba"
+    },
+    {
+      "path": "apps/child-web/e2e/r11-estimation-canvas.spec.mjs",
+      "bytes": 8458,
+      "sha256": "b3c40d3b4b0765cd33102ca9af363447e57d18adaa9018161bac409c9e5ca993"
+    },
+    {
+      "path": "apps/child-web/e2e/r12-shape-gallery.spec.mjs",
+      "bytes": 9379,
+      "sha256": "d2a4c1ad575daaf4ea1291437f9e89511bd0345e21a5844fc4d5edd988eeb961"
+    },
+    {
+      "path": "apps/child-web/e2e/r13-shape-canvas.spec.mjs",
+      "bytes": 8664,
+      "sha256": "63b4fd01a36360c28a6ffe3628cf34ab7b6e7a7ca5bd62a6621a92a9858765b3"
+    },
+    {
+      "path": "apps/child-web/e2e/r14-sorting-board.spec.mjs",
+      "bytes": 9089,
+      "sha256": "019f89464a3ac466ab22ce6e07b6d9f3c64e8e0a887f5d6b8713d445d1e6a4a4"
+    },
+    {
+      "path": "apps/child-web/e2e/r15-direction-grid.spec.mjs",
+      "bytes": 9339,
+      "sha256": "8ff25857cb68a3b16542c56bf497edf60be789743adfff09784d460d33238dab"
+    },
+    {
+      "path": "apps/child-web/e2e/r16-ruler.spec.mjs",
+      "bytes": 8276,
+      "sha256": "2d866df4d72524e444fe61b70f60d6a52419748950a965f49976f5e0de1060f8"
+    },
+    {
+      "path": "apps/child-web/e2e/r17-clock.spec.mjs",
+      "bytes": 7786,
+      "sha256": "baf65abf67728dfdb0137385eac1cf5529ba0129b6c7d745097d87f8da91242d"
+    },
+    {
+      "path": "apps/child-web/e2e/r18-money-board.spec.mjs",
+      "bytes": 8477,
+      "sha256": "d9bbb3b4046ea75296e231cca8efb4590cef6cd3deecb71fc03159729d8dfb67"
+    },
+    {
+      "path": "apps/child-web/e2e/r19-pattern-board.spec.mjs",
+      "bytes": 10049,
+      "sha256": "0f41cb586af30df6f450c08e5afb366c33e379c6262d2b83238baf2cbb366083"
+    },
+    {
+      "path": "apps/child-web/e2e/v6-clock-gallery.spec.mjs",
+      "bytes": 3830,
+      "sha256": "5a899a200413c4314f2ca25ac43a26d2c5e8054e6d5475af0f425dd9df987eb9"
+    },
+    {
+      "path": "apps/child-web/e2e/v6-clock-live.spec.mjs",
+      "bytes": 6475,
+      "sha256": "c1edb8496eaffa5d16fb3dd83a50893caadc742d1d641ea6a2e0b889faf61fe9"
+    },
+    {
+      "path": "apps/child-web/next-env.d.ts",
+      "bytes": 228,
+      "sha256": "9dd9d642cdb87d4d5b3173217e0c45429b3e47a6f5cf5fb0ead6c644ec5fed01"
+    },
+    {
+      "path": "apps/child-web/next.config.mjs",
+      "bytes": 378,
+      "sha256": "db7be2ef07b05a24d8fa572379b3b2cf77fd4f25807547b94f2b9e39880b78af"
+    },
+    {
+      "path": "apps/child-web/package.json",
+      "bytes": 1049,
+      "sha256": "8edab3cdfe9ee6af1ae7373bdf58b93b58aaeb525862c6318f69518d7277e4b4"
+    },
+    {
+      "path": "apps/child-web/playwright.config.mjs",
+      "bytes": 921,
+      "sha256": "91b924ab915b49e8927cf63751f77622a9d295dc6f15022a0c47b2530089afde"
+    },
+    {
+      "path": "apps/child-web/playwright.v6.config.mjs",
+      "bytes": 680,
+      "sha256": "6e2289bee0fe9378a67791d2ac96fc12dba74b1756c94d59309768012488d98f"
+    },
+    {
+      "path": "apps/child-web/public/child-ui-v6/hero-exploration-lab.svg",
+      "bytes": 1413,
+      "sha256": "3f712e826d3568d55f4d31fb9c8143abb3d69e2d537f7d1a20c3e9a9c597fcb8"
+    },
+    {
+      "path": "apps/child-web/public/child-ui-v6/hero-healing.svg",
+      "bytes": 1413,
+      "sha256": "14c5f8f6a8f12368474f5bfd1ad0c3c04a770a2814ec28496170c2b41e62b980"
+    },
+    {
+      "path": "apps/child-web/public/child-ui-v6/scenery-exploration-lab.svg",
+      "bytes": 7694,
+      "sha256": "9d2ff14adcd1d667f0c579d056ee370806a061734957ac8aa0f5293957c50605"
+    },
+    {
+      "path": "apps/child-web/public/child-ui-v6/scenery-healing.svg",
+      "bytes": 7946,
+      "sha256": "1b22fd82e047612c8c03e5de5b2cb14aac3be48aaeaedd275d42938f60b3e50d"
+    },
+    {
+      "path": "apps/child-web/scripts/audit-155-config.mjs",
+      "bytes": 2987,
+      "sha256": "0af038282fc04b535df33d4c6989a061bd195739e34c62b4d27d594fe8cdbbac"
+    },
+    {
+      "path": "apps/child-web/scripts/check-fe1403-b5.mjs",
+      "bytes": 2381,
+      "sha256": "d4d0975012aa348c9f832e9c014333052c7d4c1d01dfaa0d9b47f6b2d790c5b4"
+    },
+    {
+      "path": "apps/child-web/scripts/check-v13.mjs",
+      "bytes": 3125,
+      "sha256": "955fd00dbd2d6f5c4a8010023828adf875185309b48c89b5f7c6085c5250f96c"
+    },
+    {
+      "path": "apps/child-web/scripts/check-v14-contracts.mjs",
+      "bytes": 2456,
+      "sha256": "f33543c1c28cae0675cfa2f1f5d2d96b290d8a8f31f65585fb14e3cb09844ce9"
+    },
+    {
+      "path": "apps/child-web/scripts/check-v14-release.mjs",
+      "bytes": 3712,
+      "sha256": "38e9149f72a9a7b21b85fb0a176fb1e1a6aa17b0115c6b5720c194babd9b1ee1"
+    },
+    {
+      "path": "apps/child-web/scripts/check-v14-renderers.mjs",
+      "bytes": 2190,
+      "sha256": "71d307c4b967498ab8030a943b88db0202d9d505b554a03fa8c34b8c34aa677d"
+    },
+    {
+      "path": "apps/child-web/scripts/check-v14.mjs",
+      "bytes": 2128,
+      "sha256": "e0fb5a1f23d7884d6feb42e91a12506be4bf601ce393211815d3fff45eac5928"
+    },
+    {
+      "path": "apps/child-web/scripts/check-v6-full.mjs",
+      "bytes": 7776,
+      "sha256": "bad98eb81504f295a8382affb956b7697d3199ea0a36f35ac6490de5f3405962"
+    },
+    {
+      "path": "apps/child-web/scripts/check-v6-migration.mjs",
+      "bytes": 12708,
+      "sha256": "f47413c071c00851c82d85a7066fb64445a0bcbb484c823835d9df526c73b167"
+    },
+    {
+      "path": "apps/child-web/src/components/growth/AbilityMap.tsx",
+      "bytes": 1156,
+      "sha256": "fc9419e1e63fe4a66484742515fa4e86af2dc11889d33ba88fd8d789252fcbca"
+    },
+    {
+      "path": "apps/child-web/src/components/home/GrowthEntryCard.tsx",
+      "bytes": 499,
+      "sha256": "fb7080be4f3e3e51589328e5322e90871a12ed9d15ab19d6741b63f8cd7f6770"
+    },
+    {
+      "path": "apps/child-web/src/components/home/MathTaskCard.tsx",
+      "bytes": 858,
+      "sha256": "54c72cae27e4bc5ca80f232be99944adff35900cb9d73e12ff18e4ba88425843"
+    },
+    {
+      "path": "apps/child-web/src/components/home/TodayGoalCard.tsx",
+      "bytes": 347,
+      "sha256": "a50b70496f4c7bc9ad0a509dd8148a371f12617a14b17e84d39bd38cb1f9a0c2"
+    },
+    {
+      "path": "apps/child-web/src/components/index.ts",
+      "bytes": 857,
+      "sha256": "fc7579ab55c3132a549a5dca71830b8f6be8a7ff0377fd75f0e9aa46e21cd4db"
+    },
+    {
+      "path": "apps/child-web/src/components/learning/AnswerComposer.tsx",
+      "bytes": 1050,
+      "sha256": "4971a032babcb518dda714d1104c416033e6465080035a67cd3cac4cada37554"
+    },
+    {
+      "path": "apps/child-web/src/components/learning/CoachPanel.tsx",
+      "bytes": 1961,
+      "sha256": "e187c7552c1dff4e6d2ff00b79cf9ae64925f6978bc90bd535fca7a47b7764cc"
+    },
+    {
+      "path": "apps/child-web/src/components/learning/ManipulativeToolbar.tsx",
+      "bytes": 823,
+      "sha256": "74154672f2f53ae9747de28dcfde1f6a8acf46f5d96b44c2b90f352a61aa42bf"
+    },
+    {
+      "path": "apps/child-web/src/components/learning/MathQuestionCard.tsx",
+      "bytes": 549,
+      "sha256": "7c40e6c606643a19b64dd6c7e10878c3e08212e2b7864cd029753aff981ab093"
+    },
+    {
+      "path": "apps/child-web/src/components/learning/MathWorkspace.tsx",
+      "bytes": 1003,
+      "sha256": "5d217801f135fab7f48fdde4320fc796c3ca1db95572e5269bcf033821c50dc1"
+    },
+    {
+      "path": "apps/child-web/src/components/manipulatives/BarModel.tsx",
+      "bytes": 3131,
+      "sha256": "ef7dfd03c3f640a562cd2e29012f61939bed76bd6bc30bccc61f60feca40a0e9"
+    },
+    {
+      "path": "apps/child-web/src/components/manipulatives/NumberLine.tsx",
+      "bytes": 3255,
+      "sha256": "7c1d1f62c7050f323a720a18595c267215a170afa47ec77065d1957f88638b83"
+    },
+    {
+      "path": "apps/child-web/src/components/manipulatives/ObjectCounter.tsx",
+      "bytes": 5535,
+      "sha256": "73f3d75a78f9c29988a99a1851089e81ac04fba43f160cc311031b2e9c273685"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ArrayBoard.tsx",
+      "bytes": 50,
+      "sha256": "8ac54cc6521ec462c018ace3e3c3eb3417cba0c8230d6f663fa60bc212a01213"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ArrayBoardV2.tsx",
+      "bytes": 9823,
+      "sha256": "5de0da130b0a65958a595657de7e319833d3253e66e96de7228fd2b0786469aa"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/BarModelV2.tsx",
+      "bytes": 8513,
+      "sha256": "bb9c94c37b7135e047d3abff6d3ece8522037cdc560418088a7533a4a5ba1bef"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ChoiceGrid.tsx",
+      "bytes": 50,
+      "sha256": "0aed0388a258612e21728bb385aba7c7780dbbabb0bce89c839a7ee2d9dc0c0f"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/Clock.tsx",
+      "bytes": 45,
+      "sha256": "ff50083cb0b79b8126a6253b691449dcf507d2dce5ae82e5cc2bb7b1660cea97"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ClockV2.tsx",
+      "bytes": 8106,
+      "sha256": "933a4f29cbf956d9118d3e48b1f5bf6b2d2d6095a4e89345d1ce137dd39c6b1c"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ColumnArithmetic.tsx",
+      "bytes": 12719,
+      "sha256": "03d6fc3bea44b0e8709f6b846d827efe07ad2dd5fe83a0fbe7fe841e23a51bc4"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/DataTable.tsx",
+      "bytes": 49,
+      "sha256": "4b415f1e97b9694e9d99f67cf3ef5c7d14409500d924be204e2c661962b03004"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/DirectionGrid.tsx",
+      "bytes": 53,
+      "sha256": "fe91fc678900eda09d8df39d4caddfd52dc05939c614e558fa058f254c717192"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/DirectionGridV2.tsx",
+      "bytes": 10329,
+      "sha256": "ba8ff29b302ab1163e8e9b7f9bb0cd2f796e7171c6b733a0224a9202840f4e63"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/EstimationCanvas.tsx",
+      "bytes": 56,
+      "sha256": "86394f24acede9185c8dc92a48089b71f2164433bde6260c7529c9bd0edeb8f0"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/EstimationCanvasV2.tsx",
+      "bytes": 9476,
+      "sha256": "7038ec9095a00bb2a3cdf8855045e18aa5a287c8326616def2824eb042c1d2f4"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/FormulaBoard.tsx",
+      "bytes": 52,
+      "sha256": "59d8b41a6a55dc6ff7389c2d3914a4507aaa7e6135c6fc47ddceccd57b5f3f12"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/FormulaBoardV2.tsx",
+      "bytes": 11718,
+      "sha256": "098bf6bfdcaefb52ed219fbc4fbd74b28054fd6b3bbfc171545adfec4a6cf9c3"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/GroupingBoard.tsx",
+      "bytes": 53,
+      "sha256": "afa41c3c2437d3784cb878867eac0b5a3495f30d2be9a7b6876acb3e7cf1088f"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/GroupingBoardV2.tsx",
+      "bytes": 11804,
+      "sha256": "bc32efeaa280566c1d91225df39674bedc482d5edbe851dd61efddcb0bc60848"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/MoneyBoard.tsx",
+      "bytes": 50,
+      "sha256": "583f9df4f45700145ced331fef134c2a102e36d724d1557c8e127672e1b34686"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/MoneyBoardV2.tsx",
+      "bytes": 9951,
+      "sha256": "559d2ac9733d6e8971d5c31aafb71c87bc961701c9f0917c46b023a9e81659a7"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/NumberInputV2.tsx",
+      "bytes": 8259,
+      "sha256": "b751856606e252215dd9634055184833fd83b7f9c0de6413a6d4020739dda8f1"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/NumberLineV2.tsx",
+      "bytes": 10525,
+      "sha256": "8e67a47e5d931d57f1835135533c951e107ed93db6c784e3798a3f3299658251"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ObjectCounterV2.tsx",
+      "bytes": 14721,
+      "sha256": "7f523e4b07efda0a2f4f719adf2c24d6478bb9190f758b4f96807704421300f1"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/PatternBoard.tsx",
+      "bytes": 52,
+      "sha256": "af4bf83b39e780d8926bb89df1d9aab118a298f3b2fe07971e90c2f196ac8abf"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/PatternBoardV2.tsx",
+      "bytes": 11879,
+      "sha256": "85badf95438ad44e5f8a707faeca0f9fee3f96b1fd69f6770961bf23233c273d"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/Pictograph.tsx",
+      "bytes": 50,
+      "sha256": "b951420d08bca73849d6f18f19cb4face5ebb81368a90793fca9eb5a072c5775"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/PlaceValue.tsx",
+      "bytes": 50,
+      "sha256": "5574112cf708635ba63f5d88ab4906cceea60098a19dd554c1587eeefcfa23b7"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/PlaceValueV2.tsx",
+      "bytes": 9376,
+      "sha256": "0d3cd8e52b9953457800d72b80957f2ab42a61b6b2617ca746e6c08c72c38717"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/Ruler.tsx",
+      "bytes": 45,
+      "sha256": "43a24714d40e140cc742630ef6d1d166068a2b3e9fdc331c8b9dee4f55f645f5"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/RulerV2.tsx",
+      "bytes": 9781,
+      "sha256": "bb0481a246724b02ea430306c6bf2d323c20144573054ac4b177df8f9efa8f4c"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ShapeCanvas.tsx",
+      "bytes": 51,
+      "sha256": "0eb644447fe1afd44cfa8c70ad046ea0d5d219ebbf94c89619248c8edbeddf3c"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ShapeCanvasV2.tsx",
+      "bytes": 11906,
+      "sha256": "bea6574baf25655eabc7cd42e324f97af6ff2170ac6bba55c88abb85e557a204"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ShapeGallery.tsx",
+      "bytes": 52,
+      "sha256": "0a092bed5d06a833021104c8b472fd081cf0fe7b870677a2c6cfa7c42d7b02e4"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/ShapeGalleryV2.tsx",
+      "bytes": 11848,
+      "sha256": "24785089a0a95a4ad89bc39557e2bb06d5293314c2c759d5342c9d1cbe3ff0da"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/SortingBoard.tsx",
+      "bytes": 52,
+      "sha256": "8ae048b2d7ac36bd51387db3443f6fc23e34f902d3a3808efecd624da2253f3c"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/SortingBoardV2.tsx",
+      "bytes": 9437,
+      "sha256": "1a0ec02df2f3a387e069c7e355b9fa4b425b26ec45c837116ed54e243473cc01"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/TenFrame.tsx",
+      "bytes": 48,
+      "sha256": "62a5c445552890c36806f66b5881f40375660f65c2f45df872d23ef83f468966"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/TenFrameV2.tsx",
+      "bytes": 9545,
+      "sha256": "15cf57763028cbac8ba9e7a3656ade572df131eb1791055bc197e4ba46c73f66"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/Timeline.tsx",
+      "bytes": 48,
+      "sha256": "a647423eac863f0d3a21b5afff4b86a74b0a493ca26cbbe389c937236c2a7870"
+    },
+    {
+      "path": "apps/child-web/src/components/renderers/V2RendererLibrary.tsx",
+      "bytes": 20804,
+      "sha256": "37f730f3face291ed62cead10ce41c9be09a5306bfac2d117d52b6c518e91cc9"
+    },
+    {
+      "path": "apps/child-web/src/components/result/AbilityGrowthCard.tsx",
+      "bytes": 1358,
+      "sha256": "4be2a51deef6c7afc471bb56a78e3d489a2f782ffa3503ebe97e6b03dd2d767a"
+    },
+    {
+      "path": "apps/child-web/src/components/result/CompletionHero.tsx",
+      "bytes": 305,
+      "sha256": "3241c1939440689b40b49d804b364b48f19e7150e268f0eac4fae864f7d8022a"
+    },
+    {
+      "path": "apps/child-web/src/components/result/LearningBehaviorChecklist.tsx",
+      "bytes": 469,
+      "sha256": "517ca8b71afc55cb717e8b043a0efb479eff4fb9080984b443fd7284171afe52"
+    },
+    {
+      "path": "apps/child-web/src/components/result/NextTaskCard.tsx",
+      "bytes": 526,
+      "sha256": "eb29037a49105b88c4534bb58ba7a9fa301fd52441bff6236fde2e4cbd015b06"
+    },
+    {
+      "path": "apps/child-web/src/components/result/SessionStats.tsx",
+      "bytes": 758,
+      "sha256": "d4e9bd29123ec45c296f75cc8ff128f3ac218ebd626ce708d9d2dd11898d3075"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/ChildIcon.tsx",
+      "bytes": 1757,
+      "sha256": "a7507ad95e01b83a4cbecadbecaa0dca8d77eb44f9b2e11971eebf074e8e2f09"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/ClockV6.tsx",
+      "bytes": 11990,
+      "sha256": "10e8486b759b7614653e10088e4c15cc7585d0cf1900f71f1c4152761fb1622a"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/GrowthMap.tsx",
+      "bytes": 6513,
+      "sha256": "c090ff8e52946d3f8aa4e25f608ed176853a9a75c7d581d1fa38481527799742"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/HomeView.tsx",
+      "bytes": 4517,
+      "sha256": "81298ed12561bf3ba99ea5c763d6d93c6f33f7bdf8cd22cbf14df7ce6cd61833"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/LearningChrome.tsx",
+      "bytes": 1331,
+      "sha256": "cc5a56377fd56e458c5d9a77166737130db1badefefc1afaf262e2abce74dbdd"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/LearningFeedback.tsx",
+      "bytes": 3423,
+      "sha256": "947a6253f4c14a26379774c961c0db0e9dde9f602c5f773883a566363ffc388c"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/PageFrame.tsx",
+      "bytes": 1650,
+      "sha256": "15845f221810d6fefaa969482e0fc06f8af7f33956765aa1a48809efe87d5d54"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/RendererFrame.tsx",
+      "bytes": 3664,
+      "sha256": "4b492836ba3119c90a97e80cf68bccbdb32a8eb9c7a07bad62893b916a8825a8"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/ResultView.tsx",
+      "bytes": 5902,
+      "sha256": "7b6bf916fd4ead88d824c2186ad0c693c10ba6a77789bdd08e16bea058fd53d6"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/TaskPresentationBoundary.tsx",
+      "bytes": 729,
+      "sha256": "2af4bda5d4017abf77883a82f501c051f1cb61a717a1415027a1be550c9c32c0"
+    },
+    {
+      "path": "apps/child-web/src/components/ui-v6/V6SliceGallery.tsx",
+      "bytes": 3453,
+      "sha256": "b6ca0382a57e57eb1d7e39d5008425880ad1e94d23926374125f592705ee6f5a"
+    },
+    {
+      "path": "apps/child-web/src/components/ui/AbilityBadge.tsx",
+      "bytes": 143,
+      "sha256": "bc28e0028a7bdc839c529773516551e6e0a496692b92435e1098da92cd86aae5"
+    },
+    {
+      "path": "apps/child-web/src/components/ui/PrimaryButton.tsx",
+      "bytes": 336,
+      "sha256": "1b21326bc0e150fe96e36f26e7e6efa5cd621f07e5a246d70400a2aeac15eb84"
+    },
+    {
+      "path": "apps/child-web/src/components/ui/ProgressDots.tsx",
+      "bytes": 491,
+      "sha256": "4f019ddeb5a63e681b0aee10fb2de148660c0f5b73230289669a3c32e0c014e6"
+    },
+    {
+      "path": "apps/child-web/src/components/ui/SurfaceCard.tsx",
+      "bytes": 230,
+      "sha256": "3ae0e1902e4b8e60574867657c240d10011fee9d092d3b039967c668d3d9da28"
+    },
+    {
+      "path": "apps/child-web/src/config.ts",
+      "bytes": 1126,
+      "sha256": "6d338589dce30ddf0fa3e657ebcc220b3fc9fe49d3b4b82ebffa0ad452d8704c"
+    },
+    {
+      "path": "apps/child-web/src/dev/UiKitGallery.tsx",
+      "bytes": 4607,
+      "sha256": "9d097f1873dadf78bb3b682d2d67b70fc2326f66f1d36f4302c547b4d1fe46f7"
+    },
+    {
+      "path": "apps/child-web/src/dev/v6/V6Gallery.tsx",
+      "bytes": 3247,
+      "sha256": "f4db4fbca9fd65cf2f5ca54ef86cc0d54e5c22802cfb1c1cb396e00e8d4fa5e7"
+    },
+    {
+      "path": "apps/child-web/src/dev/v6/fixtures.json",
+      "bytes": 39325,
+      "sha256": "fa5a553a05ae7d5707f2a07c147502586f298c3389ab50f1df1bd338a086291b"
+    },
+    {
+      "path": "apps/child-web/src/features/learning/machine.ts",
+      "bytes": 3817,
+      "sha256": "7053c0f16e5e1ad4f2ed6ee3f447b9ea96194d720b5c44b3333ab014836ea003"
+    },
+    {
+      "path": "apps/child-web/src/features/learning/useLearningSession.ts",
+      "bytes": 6535,
+      "sha256": "afa67109748860245b9c9bfe00efec6253e3c3dbb2e6d6f48cbe0b0ddde12c1c"
+    },
+    {
+      "path": "apps/child-web/src/features/math-workspace/WorkspaceProvider.tsx",
+      "bytes": 4966,
+      "sha256": "d5cf5c111917e531f4c420a84aa8a0f886e9d6c84f37df22bcb5298ec172403d"
+    },
+    {
+      "path": "apps/child-web/src/features/math-workspace/index.ts",
+      "bytes": 119,
+      "sha256": "94523ab783ce9c2130a2e67c011d484e8b73070e9924bcb5fc05ad742d24e48e"
+    },
+    {
+      "path": "apps/child-web/src/features/math-workspace/model.ts",
+      "bytes": 2218,
+      "sha256": "f9c91685770b745d7c6622f18251ae32610a58bec621dbacb6a4481ea159654f"
+    },
+    {
+      "path": "apps/child-web/src/features/math-workspace/types.ts",
+      "bytes": 767,
+      "sha256": "6b32b20ff13ec026a937bf7c7b242f63e2e81f3907ef47ba9f97db7f219d149a"
+    },
+    {
+      "path": "apps/child-web/src/features/math-workspace/workspaceApi.ts",
+      "bytes": 1295,
+      "sha256": "ea1dcafacfe5d0ec9c0390fed660eaa061f8e7534b54a0f664dbe1d30c1da959"
+    },
+    {
+      "path": "apps/child-web/src/features/math-workspace/workspaceReducer.ts",
+      "bytes": 2832,
+      "sha256": "837907e04bac5bc9ce8c1714d1926d650d18a618d823fdf8e9c8723546ed9a89"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/TaskRenderer.tsx",
+      "bytes": 15848,
+      "sha256": "28f1b2ffcfcc3c9a8e47d0eec7343dc8d0b9c750c0a0d14dc7a20a5cff0837bf"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/arrayBoardV2.ts",
+      "bytes": 4701,
+      "sha256": "970a37da88ffeaf748942f457f21b9460c1c12cd26c644778f77689b05828b3d"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/barModelV2.ts",
+      "bytes": 6950,
+      "sha256": "f8b34c9900a04535f672184ed000820e8e9966244d5d78c0c465fb9dc4d5c18a"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/clockV2.ts",
+      "bytes": 5654,
+      "sha256": "788ffc22689eeee23b9236da332970bdf46e08c2127ba4c9768283545b349225"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/columnArithmetic.ts",
+      "bytes": 6009,
+      "sha256": "1adeff24725a9aa078b98d82d3efe5a981701e1ce7d030c2c786b02238e8205f"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/diagnosisAdapter.ts",
+      "bytes": 1035,
+      "sha256": "648efbd140fc7f1b8c5d1b728b098fe0e02b4bab1ebe53b09b0ed7ee3920ab97"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/directionGridV2.ts",
+      "bytes": 7964,
+      "sha256": "dd77e7d4bd16eceb2113f3187d2161b50fd686dc1bdec987e1de438d748211db"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/estimationCanvasV2.ts",
+      "bytes": 6380,
+      "sha256": "02413f6e8a2ac97ef7622ca74db5941648255924c92081ceb41d01d73324b96b"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/evaluatorRegistry.ts",
+      "bytes": 1921,
+      "sha256": "c137ee511695ce9087a737e1deb3b09d68d155902a3b543dc5d04ed838f4b250"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/formulaBoardV2.ts",
+      "bytes": 9405,
+      "sha256": "04a76ceab3599d106b7524ccaf1d0e08135c05bf5cbcf76977cc3f625afcf777"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/groupingBoardV2.ts",
+      "bytes": 6043,
+      "sha256": "f5d56e60c563c5a6b36be5e1ff0439b8bf1f46f0e68263a1b58208069b12823c"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/index.ts",
+      "bytes": 444,
+      "sha256": "1799162a7f1bfc474663c13c157868d3d5f87e6b252b7732bb8d4341e86d17f9"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/moneyBoardV2.ts",
+      "bytes": 8211,
+      "sha256": "e4d279906b7e1f4c6926d977c720184326c7f22a14b8133eab7040f093aa556e"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/nextTaskAdapter.ts",
+      "bytes": 520,
+      "sha256": "ae1aaed4226396ea3ba6424d9f74aaf2eb669334d8e7694656e296c93e9d1426"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/numberLineV2.ts",
+      "bytes": 1836,
+      "sha256": "8e0ca72dd0dc1d5a0d3869d7710d77294f664ad3437d3328b51dbe7b4c8e42a5"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/objectCounterV2.ts",
+      "bytes": 6608,
+      "sha256": "ea2d8b4aab8da4ac944c96ef8705db2915781acff1e4277a41a29cf5fb3a7309"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/patternBoardV2.ts",
+      "bytes": 9540,
+      "sha256": "b52c44702410b600b98b5e25838102e725eb49b7c4430f412cbd0dda621fdac3"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/placeValueV2.ts",
+      "bytes": 5566,
+      "sha256": "daebac5aca3137503011add84896364daad99c730f8695153a2b4d018a10bc6f"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/rendererContract.ts",
+      "bytes": 7662,
+      "sha256": "9ffc309e5bb3ce251d2d239d2172e894a10f67726301a8a31a636bb07dfa7bfd"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/rendererRegistry.ts",
+      "bytes": 13075,
+      "sha256": "f9ed1a14d44b8e59dc0a695c9dc8364775614fee532dcaa04517e7cda3556085"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/rendererRuntime.ts",
+      "bytes": 3748,
+      "sha256": "d0513557df7ebfabb57337ec070eb5f5aa41a3f5fd9fd94d3de33a98f05245e9"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/rulerV2.ts",
+      "bytes": 6057,
+      "sha256": "cbdfa6870e816155a1e6e12d2563ca12be943eea8c3f9dc507bd48b857948049"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/shapeCanvasV2.ts",
+      "bytes": 6087,
+      "sha256": "235982f4affa8a49cfd7bdfdc274b9ae35ba15c279338bebf9dad3eddc45a556"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/shapeGalleryV2.ts",
+      "bytes": 6079,
+      "sha256": "74c5a885e3dfb56a0fce24bee31d5fb47e6e840029bec582a687ca54c1da8f05"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/sortingBoardV2.ts",
+      "bytes": 8460,
+      "sha256": "2382b453efd29d4c828b292914a8bfa58646dbddaf582487a5038b755b23e33a"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/taskResponse.ts",
+      "bytes": 765,
+      "sha256": "75fe16dbdf467f12532e8bddd4e566f280d1f03915b6c3e9bc59789868d33179"
+    },
+    {
+      "path": "apps/child-web/src/features/task-renderer/tenFrameV2.ts",
+      "bytes": 3926,
+      "sha256": "f1ece1afa14e8cdacc60215aa37a07e1655818429f491538878a9bc7d5ba9987"
+    },
+    {
+      "path": "apps/child-web/src/features/ui-v6/abilityPresentation.ts",
+      "bytes": 3641,
+      "sha256": "0c3522e7468bb1ac5b3b37425323d77db5deb2086e890e7a19f5ca2ef9ce82ea"
+    },
+    {
+      "path": "apps/child-web/src/features/ui-v6/clockInput.ts",
+      "bytes": 1478,
+      "sha256": "47ee1a61672d80f5d387fa0e5e56263e482d5fc0ec534da000087d58c653e8d8"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/attemptResultNormalizer.ts",
+      "bytes": 2448,
+      "sha256": "de7a0beed3a053f7f21f3283ec7171258dd2a6b2dd987177fbfc8131fbe0661b"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/contracts.ts",
+      "bytes": 11687,
+      "sha256": "45faa445b578b2a9ab9e56550a7f89a46202261e2f1995bcc26c403448b948aa"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/hintNormalizer.ts",
+      "bytes": 2223,
+      "sha256": "2d82f51889813f86636094c787150af4e803c7a7b0c1a6feba68b4e134b625d9"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/http.ts",
+      "bytes": 3615,
+      "sha256": "e9edff4c22816978cd86b6ce606ceb5bdf34451dd9dad9063ddd68002671c261"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/index.ts",
+      "bytes": 509,
+      "sha256": "17dbd45aee133b7d869b6de05fbc0cdb81a7c7f2bdd579693c24fcbf1a72af91"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/mock.ts",
+      "bytes": 24061,
+      "sha256": "4c2bd212f7e5fe376b37931451f605954db90d5a56a6dbe75ef6649600a06712"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/sessionResultNormalizer.ts",
+      "bytes": 6130,
+      "sha256": "412cced6202843c50dc01b6e47f08783f59ff805baa2902dc93713108f0692c8"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/taskUiSchemaNormalizer.ts",
+      "bytes": 9794,
+      "sha256": "717325552c26769d4d8151bec0d112cfc63510e99e9e97ce4f3cab192c8d7a18"
+    },
+    {
+      "path": "apps/child-web/src/lib/api/v2AttemptAdapter.ts",
+      "bytes": 5908,
+      "sha256": "5da0cc5cdf664669138beba47e399393ca1a251db870afa91bf16100ab4394de"
+    },
+    {
+      "path": "apps/child-web/src/lib/challengeMapping.ts",
+      "bytes": 2897,
+      "sha256": "48e8f53a1f1c20dd2e40411089b678870ba044d580c5529e3f6ba62b24ef0ad9"
+    },
+    {
+      "path": "apps/child-web/src/lib/presentation/abilityStatus.ts",
+      "bytes": 987,
+      "sha256": "cc9236371955d05fe2dfa0d56d2933cfd2b84c432db7b8803829cb2cbf1ec289"
+    },
+    {
+      "path": "apps/child-web/src/lib/runtime/README.md",
+      "bytes": 305,
+      "sha256": "e3cc853b7143d142a9626b7e77afe1c5c1c467410b30c97fb79eb0650244cf87"
+    },
+    {
+      "path": "apps/child-web/src/lib/runtime/sessionStore.ts",
+      "bytes": 943,
+      "sha256": "6b33d0a5de356c89e028e1bcecbbccbf1c62f269e8485309abcd964fc9542d9a"
+    },
+    {
+      "path": "apps/child-web/src/screens/MathGrowthScreen.tsx",
+      "bytes": 2833,
+      "sha256": "9b6433cb573b6dcd562b252ea9a1f7e28a90d6cb4ccb38c5b068156dba59180e"
+    },
+    {
+      "path": "apps/child-web/src/screens/MathHomeScreen.tsx",
+      "bytes": 5170,
+      "sha256": "8cbc119e8103d4959a1a3f9cf90c36d74e20a591b3150e3019bc1e64fb0b7aab"
+    },
+    {
+      "path": "apps/child-web/src/screens/MathLearningScreen.tsx",
+      "bytes": 5527,
+      "sha256": "cc38b4fb3ae57918f4bc652728da8c0afc98c044e28e9d6c3b23f9a8f005f987"
+    },
+    {
+      "path": "apps/child-web/src/screens/MathResultScreen.tsx",
+      "bytes": 6778,
+      "sha256": "baf3b2157e368eb64f151badc6a092bd2fb39dd3df749db47195b684b44bb1f3"
+    },
+    {
+      "path": "apps/child-web/src/theme/ChildSkinProvider.tsx",
+      "bytes": 2885,
+      "sha256": "07c3258d47444c917ca67be4f24d58ad0d91d6263b0813efc203b794f0924ef2"
+    },
+    {
+      "path": "apps/child-web/src/theme/skins.ts",
+      "bytes": 1023,
+      "sha256": "9308782bdcc565b9faa6dc9d4444c35d0b34c55bf159d345aedefcc8f3ff3275"
+    },
+    {
+      "path": "apps/child-web/src/theme/uiVersion.ts",
+      "bytes": 265,
+      "sha256": "a864ef415931fbd99b38970e2faf39c3da86c0c05241bb8b1425b0519a9a1e09"
+    },
+    {
+      "path": "apps/child-web/src/theme/v6Tokens.ts",
+      "bytes": 1000,
+      "sha256": "99d904bc50304b7f17accdda6f6c100932b1567062d40906cafba4a728b2dd20"
+    },
+    {
+      "path": "apps/child-web/tsconfig.json",
+      "bytes": 761,
+      "sha256": "8ba4738e8d6a5bf596d4fada0f9d643b5b1a0c3eecb5ff4866dc061c1a23dab0"
+    },
+    {
+      "path": "apps/learning-api/.env.example",
+      "bytes": 227,
+      "sha256": "c5beb6ee98535e79eeb1071a6a18f09b9a2c7ce1b13fb7e294d4f120871da0f3"
+    },
+    {
+      "path": "apps/learning-api/README.md",
+      "bytes": 2161,
+      "sha256": "adde85c621d1f1a1eb9eba499f50a4fee9c158900eebe9dfad94630f0862e777"
+    },
+    {
+      "path": "apps/learning-api/alembic.ini",
+      "bytes": 631,
+      "sha256": "72f81ef30ae6d3554ad34f8542ff7cbc0c55ab41eeb7a1d8fd0e5c0cbe7d31f2"
+    },
+    {
+      "path": "apps/learning-api/app/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/learning-api/app/api/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/learning-api/app/api/content.py",
+      "bytes": 741,
+      "sha256": "8dd11e40e674dffe578cb01e2785623ff9dbcf7d376d89f98b9855d9e35d40ae"
+    },
+    {
+      "path": "apps/learning-api/app/api/curriculum.py",
+      "bytes": 604,
+      "sha256": "49c442a3e9b5d6d9feb78c5b8dd2fc7bdd6d8ae4433b1012191d38e8d3e582ac"
+    },
+    {
+      "path": "apps/learning-api/app/api/diagnosis.py",
+      "bytes": 751,
+      "sha256": "8e7091a3f63dde3a4fa5046798a4f26dba1b355d1d790f92a010c41aa12f14c5"
+    },
+    {
+      "path": "apps/learning-api/app/api/growth.py",
+      "bytes": 1003,
+      "sha256": "a1d75c78b3f8b569803328392dc472fe5388cc6e823c5d15c68537a3ce6e6d84"
+    },
+    {
+      "path": "apps/learning-api/app/api/health.py",
+      "bytes": 618,
+      "sha256": "8db795e1ccf0027b99282922f7f57fd2dfc83fdb0e4c4b52303726a04c7ddb1b"
+    },
+    {
+      "path": "apps/learning-api/app/api/hint.py",
+      "bytes": 522,
+      "sha256": "91af6b4b220700fc34bc1c03470343d572a44b638b243b75106794aea6c7c2eb"
+    },
+    {
+      "path": "apps/learning-api/app/api/learning.py",
+      "bytes": 4319,
+      "sha256": "6592166fbbb4dccc47179339a7cc76688b86f1eb366c8e5782aa39df2d4f25b6"
+    },
+    {
+      "path": "apps/learning-api/app/api/mastery.py",
+      "bytes": 677,
+      "sha256": "7e6990444f857b2f4517286d52783322bcec39793da3a34639a26f7dfd4dfa75"
+    },
+    {
+      "path": "apps/learning-api/app/api/planning.py",
+      "bytes": 938,
+      "sha256": "73a4dcba26a7021847f5740ef41825c468b6d54c65932910d8f22a9f21470e1b"
+    },
+    {
+      "path": "apps/learning-api/app/api/profile.py",
+      "bytes": 1585,
+      "sha256": "0cf44e9f5f2513a5f97f1c8f6bccfcba0e33b03faf528d9cf361deba26f29fc5"
+    },
+    {
+      "path": "apps/learning-api/app/api/routes.py",
+      "bytes": 494,
+      "sha256": "19ca62292000200a4d3272350b56851297023ee1f24ba4603a27a8610cb9665d"
+    },
+    {
+      "path": "apps/learning-api/app/content/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/learning-api/app/content/ability_seed.py",
+      "bytes": 3776,
+      "sha256": "10cebf385c8dc9be325684070ec728bc3ed4f4079188938c1f7bb3723c732299"
+    },
+    {
+      "path": "apps/learning-api/app/content/context_family.py",
+      "bytes": 1739,
+      "sha256": "53ec9fd7c6ad42c0983c47696c8e6836f231439f90141bee8f1c37b28638d82b"
+    },
+    {
+      "path": "apps/learning-api/app/content/context_family_map.py",
+      "bytes": 7014,
+      "sha256": "d9a14110158f74f4e3229be9f41932892f81e8b992ee1745b408dacd22884f1e"
+    },
+    {
+      "path": "apps/learning-api/app/content/renderer_protocol.py",
+      "bytes": 4825,
+      "sha256": "7fd17e697e3a67f9eb4f5894828952dcf6a35efd56846a7bd5cd1af8418493d7"
+    },
+    {
+      "path": "apps/learning-api/app/content/resource_seed.py",
+      "bytes": 44474,
+      "sha256": "0bcf02a3fab815f6958b1c79b25022a24e04348a05497d841c6bbd881eedd6bb"
+    },
+    {
+      "path": "apps/learning-api/app/content/resource_seed_v2.py",
+      "bytes": 44053,
+      "sha256": "8c47de3d82235b6b35a27f4f91173ff8bc39ab64565cb328dae953560678e87a"
+    },
+    {
+      "path": "apps/learning-api/app/core/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/learning-api/app/core/config.py",
+      "bytes": 1024,
+      "sha256": "b61d3fcac7368f02398a9b6f84a6996c1eea7a23f7fef787c03408541b7b5efb"
+    },
+    {
+      "path": "apps/learning-api/app/core/database.py",
+      "bytes": 1267,
+      "sha256": "1bd525677041e658fb1f9472274333fa7d1333bd72d5bed53db44e32a19fd630"
+    },
+    {
+      "path": "apps/learning-api/app/core/education_rules.py",
+      "bytes": 3794,
+      "sha256": "c6f5c13d8350a4e5d200c588a74eeeed2c2fd16c09a4595161785f48d0d1aec0"
+    },
+    {
+      "path": "apps/learning-api/app/core/logging.py",
+      "bytes": 345,
+      "sha256": "f23729d2da9d2cf7123df9c443d9eff93be2d4b6e19f70faf496e7ecfda818ad"
+    },
+    {
+      "path": "apps/learning-api/app/core/qa.py",
+      "bytes": 882,
+      "sha256": "bfa1f7ac4efc2476a59c606f5384475f2d563aa57cba2441aa213cee68521d8d"
+    },
+    {
+      "path": "apps/learning-api/app/deeptutor_mcp_tools.py",
+      "bytes": 4265,
+      "sha256": "0b1fd788a70b319348762beca09ec33a6df0fa590dc131cb261e7781bd6d13db"
+    },
+    {
+      "path": "apps/learning-api/app/main.py",
+      "bytes": 636,
+      "sha256": "a66e6a2ea460ec959885a2886ce82483b1530c73a1e6351f6d710c9afd4d1631"
+    },
+    {
+      "path": "apps/learning-api/app/models/__init__.py",
+      "bytes": 21627,
+      "sha256": "ba8ca36218eb27831172037c07b1dee9f64b91145f5734151b1c750defae1073"
+    },
+    {
+      "path": "apps/learning-api/app/schemas/__init__.py",
+      "bytes": 5970,
+      "sha256": "6b0b065c53746de5367f11da2f6f8eedb2ff416642a91d70012881120c2e6abf"
+    },
+    {
+      "path": "apps/learning-api/app/services/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/learning-api/app/services/curriculum.py",
+      "bytes": 2243,
+      "sha256": "f85137a53f42f3f53d8a799db155ac3e88cdec1618aa732d9bd013eb2d4f44a6"
+    },
+    {
+      "path": "apps/learning-api/app/services/diagnosis.py",
+      "bytes": 9671,
+      "sha256": "aa8c78e31fbfcae71d16573054a6a7364d963c2dbc62ecdb560e63e2f6b6a5a4"
+    },
+    {
+      "path": "apps/learning-api/app/services/fitband.py",
+      "bytes": 2215,
+      "sha256": "fdf422098bce9038b5a39f2f4f14e34a0b1a0b070977dd59ed0200407c7f0f37"
+    },
+    {
+      "path": "apps/learning-api/app/services/growth.py",
+      "bytes": 6730,
+      "sha256": "70b01bf2cbb57ea02181f56a00de4e7b183ee7ce213ffbed1b54de69a200246f"
+    },
+    {
+      "path": "apps/learning-api/app/services/hint.py",
+      "bytes": 2301,
+      "sha256": "459f8673bb0e8fee88dde50963e3cb65ed2993cf0aec33f996b5260f929db197"
+    },
+    {
+      "path": "apps/learning-api/app/services/learning.py",
+      "bytes": 21479,
+      "sha256": "0fc7f971902f62ab7ca5230815c7289543afe2ede89c9c4bd135bfd2a27bd1d4"
+    },
+    {
+      "path": "apps/learning-api/app/services/mastery.py",
+      "bytes": 16013,
+      "sha256": "bdc2d61d6e429a1f374250991017ec0a454b0094291370fbb7b870dc9f9ce8ed"
+    },
+    {
+      "path": "apps/learning-api/app/services/mastery_db.py",
+      "bytes": 10820,
+      "sha256": "b35354c3e44213c6d40f597dc5ed399109e5e1c9f3add1b80140ffeacd975abf"
+    },
+    {
+      "path": "apps/learning-api/app/services/planning.py",
+      "bytes": 1928,
+      "sha256": "d1ec2423996fe11ee7fea3b2da605278cc1fc2881d36857c017d8a4742cc1128"
+    },
+    {
+      "path": "apps/learning-api/app/services/profile.py",
+      "bytes": 2518,
+      "sha256": "c3430482ff7a95f2264a82a57f9c3ff538200abf2128d0c7d40a2f4819e581fe"
+    },
+    {
+      "path": "apps/learning-api/app/services/repository.py",
+      "bytes": 1087,
+      "sha256": "182a8ec0ccf50ff73a4d96c385be62a47430149778270769412cbf0cfc87d366"
+    },
+    {
+      "path": "apps/learning-api/app/services/session_result.py",
+      "bytes": 9291,
+      "sha256": "89d68c5ef88f955c80c517dea1cc5872b93d8d557f2948756768b5a23f04aeae"
+    },
+    {
+      "path": "apps/learning-api/app/services/turn_service.py",
+      "bytes": 9547,
+      "sha256": "55d641f14633f082d20d61960c301b0041d4b27d3d02d3de20591a72540cbb56"
+    },
+    {
+      "path": "apps/learning-api/migrations/env.py",
+      "bytes": 1388,
+      "sha256": "786640e041f073f92c738afbd6117f917e48eaeb140d62544cfd29b2c5b23c29"
+    },
+    {
+      "path": "apps/learning-api/migrations/script.py.mako",
+      "bytes": 467,
+      "sha256": "2e00ecf9c13b0c9aa0da34b9788f97f210cb38792db0c4bd09bdba86b26d6031"
+    },
+    {
+      "path": "apps/learning-api/openapi.yaml",
+      "bytes": 20410,
+      "sha256": "a6a571d1dc493861f9b6d134fcd03349b329e29ea2dffe96350bed68888d4a36"
+    },
+    {
+      "path": "apps/learning-api/pyproject.toml",
+      "bytes": 956,
+      "sha256": "33492fe035734b82295be1f8af11e7f521352834819b9004f96f0fa6b742b029"
+    },
+    {
+      "path": "apps/learning-api/scripts/acceptance_sprint2.py",
+      "bytes": 6906,
+      "sha256": "d1a2be0d9950322e0059733c8db79267d78d9b206eabca5657e62a435cc93a0a"
+    },
+    {
+      "path": "apps/learning-api/scripts/backfill_context_family.py",
+      "bytes": 4363,
+      "sha256": "d5800efc8ddee2486c2cfa52a19982c982d2eb4fb4a188a4ad5183d27eb454d3"
+    },
+    {
+      "path": "apps/learning-api/scripts/ci_gate.sh",
+      "bytes": 968,
+      "sha256": "b709d44193cc610c5987b3bc826f367a83bdc03bdd31ae08f507200b2ee587a4"
+    },
+    {
+      "path": "apps/learning-api/scripts/convert_question_bank.py",
+      "bytes": 9731,
+      "sha256": "a980a4c4352031b8bccb1791fb6a81bae8edac848f3eeee3628385ee93de093a"
+    },
+    {
+      "path": "apps/learning-api/scripts/convert_trial155.py",
+      "bytes": 7303,
+      "sha256": "01daf6a2bcab74af883b40b99cdce00a81c3665a77258c98491faf14ed2e907c"
+    },
+    {
+      "path": "apps/learning-api/scripts/migrate_submission_id.py",
+      "bytes": 2741,
+      "sha256": "8544600fa34dba8d5f471f821ed6e61a21ea65f4b48869de0e6323222d3c44ae"
+    },
+    {
+      "path": "apps/learning-api/scripts/prod_seed_155.py",
+      "bytes": 4517,
+      "sha256": "8a877946d27cffc1579df7e87b1cd6afb02d048462e8b5b7a081cb700864ab18"
+    },
+    {
+      "path": "apps/learning-api/scripts/qa_sample_e2e.py",
+      "bytes": 5888,
+      "sha256": "988a1f941e44d23082b0ab9cf700cf68672bce1b7a17083fc1ed33b4a46b2dea"
+    },
+    {
+      "path": "apps/learning-api/scripts/qa_sample_ingest.py",
+      "bytes": 4914,
+      "sha256": "c05687d5b8b8991a4941a2baaaa0daacecfafd4b23d8c616b98f3460463c1ba6"
+    },
+    {
+      "path": "apps/learning-api/scripts/seed_content.py",
+      "bytes": 8249,
+      "sha256": "7aeb38ae62534ed3c2be16835b52280e6ff96b3cba83fef10cbf3b609986bc56"
+    },
+    {
+      "path": "apps/learning-api/scripts/seed_demo.py",
+      "bytes": 3015,
+      "sha256": "d9b8f9eb827cfb271fd72cf3a1831f28d5678e2bb1c4084785776f9acbcd3266"
+    },
+    {
+      "path": "apps/learning-api/scripts/validate_ddl.py",
+      "bytes": 1684,
+      "sha256": "c85ed085b7c3ef7eafbf589a9e5f69549eb68471b8066a6de4dd8473d57b72c6"
+    },
+    {
+      "path": "apps/learning-api/scripts/validate_openapi.py",
+      "bytes": 2788,
+      "sha256": "291ccf19b253c831214c98b60a5b4f218189c0dcd623d667b6710d4377157a63"
+    },
+    {
+      "path": "apps/learning-api/tests/test_diagnosis_hint.py",
+      "bytes": 4590,
+      "sha256": "a89ed925839468b620c644eb9c86c71539c1d06cbe23c015f1edaca99daac45b"
+    },
+    {
+      "path": "apps/learning-api/tests/test_growth.py",
+      "bytes": 293,
+      "sha256": "a01d0ed459e4734b42c05d1900d9b95e0a7d7bdbe2f57e0b8b533a7f71d278d1"
+    },
+    {
+      "path": "apps/learning-api/tests/test_mastery.py",
+      "bytes": 13257,
+      "sha256": "b28d36925e86478796d9aed2a0fa016720b419f03b84c2309c71ff9d26599fd5"
+    },
+    {
+      "path": "apps/learning-api/tests/test_qa_pin.py",
+      "bytes": 3747,
+      "sha256": "d461c04e20343d6a5f9634f3ec24e227c9bb1f782e6054e9b2f84a77a9a689a6"
+    },
+    {
+      "path": "apps/learning-api/tests/test_renderer_protocol.py",
+      "bytes": 2643,
+      "sha256": "7a328e63831a9b2bbcc1433789211f4af53ee9cd586d825810fff90952dc515a"
+    },
+    {
+      "path": "apps/learning-api/tests/test_session_result.py",
+      "bytes": 3547,
+      "sha256": "595c02524913ccb9a222dafaf64564640ad857f8088292e4440ce0e2abf41a6b"
+    },
+    {
+      "path": "apps/learning-api/tests/test_submission_id.py",
+      "bytes": 1811,
+      "sha256": "14ff44301fa22a3869d8e73bdfd30cddf24591d45e2e92f9df615c026fc8cece"
+    },
+    {
+      "path": "apps/learning-api/tests/test_v2_contracts.py",
+      "bytes": 4354,
+      "sha256": "1c73d1942f0059dbd0b24012c0680b70e43c7a8aa49985a6fc641d334f0b6982"
+    },
+    {
+      "path": "apps/learning-api/tests/test_v2_gold_resources.py",
+      "bytes": 21663,
+      "sha256": "8e7d3391068420f8c6aa76f4db25d0d7dbb9f3e1492aa0b64b681c5db5431fb4"
+    },
+    {
+      "path": "apps/learning-api/tests/test_v2_slice.py",
+      "bytes": 2878,
+      "sha256": "d7ff54e1d710bc0dfc454c0b63a307e5b74891b53b6b58425b8c49653f530a20"
+    },
+    {
+      "path": "apps/parent-web/README.md",
+      "bytes": 63,
+      "sha256": "999b35fec757519c235b93a8e3069b5bfb73d0a8314816b9520a9c54c8e5a8d5"
+    },
+    {
+      "path": "baselines/README.md",
+      "bytes": 636,
+      "sha256": "44bf83f6a7f0045ec693ee0ad6f473b02e3a5d3e65b3bcd1470e918206df5e57"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/01_schema_postgresql_v1.3.1.sql",
+      "bytes": 12948,
+      "sha256": "a9f77e0313a913ef60f2e05d53381ec0f17e3ac04a379158fc78967f88525963"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/02_openapi_v1.3.1.yaml",
+      "bytes": 22068,
+      "sha256": "0aa30a418aed30b07213620c6af951f902289bf64a86e03037a687f3dde34e8d"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/05_Sprint_Backlog_v1.3.1.xlsx",
+      "bytes": 11637,
+      "sha256": "84c79ac5f7ae9c5377a0a7e1420bcc5939f1b736f3f21292842da2b15bfa491e"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/06_validate_backlog_summary_cache.py",
+      "bytes": 6015,
+      "sha256": "6177f75250c6eee76a97ca96b24b40f5390570ec74233fdff6140afb83ef60e6"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/ADR-0001_DeepTutor_SPI_Gate_V1.3.1.md",
+      "bytes": 2124,
+      "sha256": "984b049ea0ce3c34022ea56fd2dc5fd97cee425de432a2325029b97eac39313e"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/HISTORICAL_DOCS_SUPERSEDED_V1.3.1.md",
+      "bytes": 1938,
+      "sha256": "b7efc204f919aaac69b200ba2f35ff7f5848c39cb92b9875b515622c8d6f7caa"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/README_ARCH_REVIEW_V1.3.1.md",
+      "bytes": 1595,
+      "sha256": "ee5833215f15a8e8e7ffd78271a4efc79e051f92ca9f88692ed60d03529f711a"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/README_FROZEN_CHANGES_V1.3.1.md",
+      "bytes": 1501,
+      "sha256": "f8ca10b1e27fedfd2d75ecaff1a2eb34b1e81a985caec855e42f305f2c893441"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/SHA256SUMS",
+      "bytes": 911,
+      "sha256": "7d0901e78bfbd6362f7f39a7d668f7090d1f3e7eb12b88a0c7ba1044b2498ff6"
+    },
+    {
+      "path": "baselines/learning-core-v1.3.1/child_learning_system_V2.0_dev_frozen_baseline_V1.3.1.docx",
+      "bytes": 42250,
+      "sha256": "f37ce6c32e27fd15de7601125f48fdde30e96d62cd1446481a3e3c76dbf1d6e7"
+    },
+    {
+      "path": "docs/adr/ADR-0002-frontend-does-not-own-mastery.md",
+      "bytes": 419,
+      "sha256": "7e5c4fee17daf722a3fb0b61cf38b61e30d4c4f928e2284fcce500fd349df1c2"
+    },
+    {
+      "path": "docs/adr/ADR-0003-child-ui-no-direct-llm.md",
+      "bytes": 287,
+      "sha256": "4211276b68c617b3ca2a25cf4c826798371616cd9475db977876213f800591d1"
+    },
+    {
+      "path": "docs/adr/ADR-0004-child-built-in-skins.md",
+      "bytes": 276,
+      "sha256": "4ac3f33a3818209bb899471928e4ce2414a3dd37be375a9375047800021c6464"
+    },
+    {
+      "path": "docs/adr/ADR-0005-session-result-server-source-of-truth.md",
+      "bytes": 331,
+      "sha256": "2c9fd69d73f34323d1d6e2c8a660767ae82780ec649048dfa17d72ce85a187b4"
+    },
+    {
+      "path": "docs/adr/ADR-0006-git-is-working-source-of-truth.md",
+      "bytes": 288,
+      "sha256": "ba621a02a9596339723b57eeb519cf7fa4f59151fcc83e889e0630a017b7846d"
+    },
+    {
+      "path": "docs/adr/ADR-0007-branch-naming-and-sync-strategy.md",
+      "bytes": 1213,
+      "sha256": "5b5390d1215c51a974430b8d45f3cde675c180ef23bc19272f486816c5c644af"
+    },
+    {
+      "path": "docs/adr/README.md",
+      "bytes": 257,
+      "sha256": "66cfb30c702580b1cb0d0b86cf70f3e1d1653932390783e2cd5cf5b8e475adf9"
+    },
+    {
+      "path": "docs/backend/01_V13_MASTERY_CLOSURE_IMPLEMENTATION.md",
+      "bytes": 10029,
+      "sha256": "99e0b8c224a5fc9e9a48ee07cd73729a3411df1c5dc9c69eadb2a6e10ffdfd45"
+    },
+    {
+      "path": "docs/frontend/01_COMPONENT_IMPLEMENTATION.md",
+      "bytes": 844,
+      "sha256": "2e2c0bcf3076023ca668f6d3d4f435fa44e5cf5d46decbbe49ad4aed5e747b3f"
+    },
+    {
+      "path": "docs/frontend/02_STATE_MACHINE.md",
+      "bytes": 1391,
+      "sha256": "89d7bdb4570aa5b536da2d8cab1ef25958334dc7362800928f01d1753adafd9f"
+    },
+    {
+      "path": "docs/frontend/03_API_MAPPING.md",
+      "bytes": 2898,
+      "sha256": "72e44293aea4607aa9d8981225e51e669e603dbbbaf382f7d2fa8f8dd958bf2f"
+    },
+    {
+      "path": "docs/frontend/04_SPRINT3_ACCEPTANCE.md",
+      "bytes": 2052,
+      "sha256": "5ee8a1909ad291e6292b317738d9a18c287335b9bc49bd5317e04148283da403"
+    },
+    {
+      "path": "docs/frontend/05_VALIDATION_REPORT.md",
+      "bytes": 2521,
+      "sha256": "bf3590dd815f0a9e7b20e69e37fa112772516fd16447334b79227ebc41684782"
+    },
+    {
+      "path": "docs/frontend/06_FRONTEND_MODULE_MAP.md",
+      "bytes": 1518,
+      "sha256": "601d4dc8e67d7025757f783de86217fd3a0032cb5e8a568660c50a1ba099ab25"
+    },
+    {
+      "path": "docs/frontend/07_NEXT_DEVELOPMENT_ROADMAP.md",
+      "bytes": 424,
+      "sha256": "106ad08505341bb61c793398ebb95339085dcb51cdbeeabb7e5db158991e9512"
+    },
+    {
+      "path": "docs/frontend/08_HANDOVER_GUIDE.md",
+      "bytes": 3018,
+      "sha256": "ffba535853b04956c0956bf750a98b17ba0bd3b0a390aeeeed0c38f2f02f8258"
+    },
+    {
+      "path": "docs/frontend/09_PROJECT_STATUS.md",
+      "bytes": 1009,
+      "sha256": "947855fc8b6cef7238b80d5c2991bd3eec8a9e913ec7a12782f06ec30a60e4c7"
+    },
+    {
+      "path": "docs/frontend/10_RELEASE_NOTES_V1.2.md",
+      "bytes": 1149,
+      "sha256": "62623666c5a33350ad63233021a503d5902e22370cfa7acbac3d8dc8cc5f9fb5"
+    },
+    {
+      "path": "docs/frontend/11_SESSION_RESULT_INTEGRATION.md",
+      "bytes": 1766,
+      "sha256": "1750d3d90183faf32f0b75d67a2a2871d34e8e20645fe08afe45551667ed9ff3"
+    },
+    {
+      "path": "docs/frontend/12_VERSION_MANAGEMENT.md",
+      "bytes": 2705,
+      "sha256": "99780658076ec794788f3d56af6b347a25c72afd6210f665c584b36c58d39836"
+    },
+    {
+      "path": "docs/frontend/13_MIGRATION_V1.1_TO_V1.2.md",
+      "bytes": 1148,
+      "sha256": "28d1960ccd533fbaabea099c5bd42af01b3562031eae1519e742ba46bc034267"
+    },
+    {
+      "path": "docs/frontend/14_KNOWN_ISSUES_V1.2.md",
+      "bytes": 1082,
+      "sha256": "1feb2381fbf4162b12ed64e271ca373f606fef2d088ced27ec86229df2240999"
+    },
+    {
+      "path": "docs/frontend/15_RELEASE_CHECKLIST.md",
+      "bytes": 862,
+      "sha256": "b196028e911f938e502d8af6b05ec1d23355037ce7215d65c8ebcd619ac45296"
+    },
+    {
+      "path": "docs/frontend/16_RELEASE_HISTORY.md",
+      "bytes": 577,
+      "sha256": "f52d7ae809ac78a98d833a53d7819efdc85dfab5115cd206ce43a110bd4a7b2d"
+    },
+    {
+      "path": "docs/frontend/17_RELEASE_NOTES_V1.3.md",
+      "bytes": 1339,
+      "sha256": "5d9d39184b47b0331b67b773590d2ebe19b9a067639faa0e21fc2b300507421b"
+    },
+    {
+      "path": "docs/frontend/18_TASK_UI_SCHEMA_V1.md",
+      "bytes": 645,
+      "sha256": "a462bdc766e0fe7fec040ee1561c50ce0dc5fa0bb4e848bdc29300c11801d06e"
+    },
+    {
+      "path": "docs/frontend/19_V1.3_QA_ACCEPTANCE.md",
+      "bytes": 1151,
+      "sha256": "48e758938e6b719d2340bd4f068b00ab63543810d007461d57c34ed3d1d692d5"
+    },
+    {
+      "path": "docs/frontend/20_BACKEND_CONTRACT_DEPENDENCIES_V1.3.md",
+      "bytes": 1126,
+      "sha256": "2bce56c0998a1815fe699b6db35ab569fccdf349033ff167c1208100f2db14cf"
+    },
+    {
+      "path": "docs/frontend/21_MIGRATION_V1.2_TO_V1.3.md",
+      "bytes": 1193,
+      "sha256": "c6429fbcfba4ad53f70b9f31cb6458acc68f92cdafad70b143cddd49932ce74b"
+    },
+    {
+      "path": "docs/frontend/22_KNOWN_ISSUES_V1.3.md",
+      "bytes": 1000,
+      "sha256": "aa7ef0b3df8d695b0a8710d0df106a4a1810286273e242b805d3f663e5958e45"
+    },
+    {
+      "path": "docs/frontend/23_MASTERY_CLOSURE_FRONTEND_CONTRACT.md",
+      "bytes": 1259,
+      "sha256": "42432a3d6da6e6ceaf4f0301a51fb0514f49f93edcaccac6fad2b732e02fac64"
+    },
+    {
+      "path": "docs/frontend/24_MASTERY_FRONTEND_BACKEND_INTEGRATION.md",
+      "bytes": 5166,
+      "sha256": "15f9b1231ddf311755d9e9ed9c5f3a8843d37e260aba5f37e0f5527e3a62bffa"
+    },
+    {
+      "path": "docs/frontend/25_V1.4_FRONTEND_IMPLEMENTATION.md",
+      "bytes": 2353,
+      "sha256": "2b7c402078609854021a5214306363660853f64a68184f58aa6ec8f3c0d0df67"
+    },
+    {
+      "path": "docs/frontend/26_V1.4_P0_ARCHITECTURE_CONTRACT.md",
+      "bytes": 2466,
+      "sha256": "baaa4c9e38f7d776e6976b40a11f35bca1b7eb24dfa269ab076af0ce17cf1f23"
+    },
+    {
+      "path": "docs/frontend/27_V1.4_VALIDATION_REPORT.md",
+      "bytes": 1142,
+      "sha256": "c1f710ea80376514584aeaaa6f55b0d3b88d3d6adcc5127fe183123db5b51ca6"
+    },
+    {
+      "path": "docs/frontend/28_RENDERER_REGISTRY_CONTRACT.md",
+      "bytes": 7586,
+      "sha256": "546fc9afe351342146eb198b896001b1d6ab796818d1a901fb218016303c7ef9"
+    },
+    {
+      "path": "docs/frontend/29_V2_CONTRACTS_EXECUTABLE_FREEZE.md",
+      "bytes": 6235,
+      "sha256": "668af3550da2f05825cc3a20b0e1b1be961fa5bbc610e0e4636465f070eedf78"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/README.md",
+      "bytes": 5101,
+      "sha256": "3af6c36bd4cc2a0f7b1bee2337dd5c07c6348a31f3a0ff4fdf77618ec4f4b4b9"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_18_Renderers_Master_Spec.txt",
+      "bytes": 2633,
+      "sha256": "751c65deedb23bd9d41d699ebea0ed05d5516c6dc203f1028a0a845d8b28d0cd"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_array-board_Renderer_Spec.txt",
+      "bytes": 3010,
+      "sha256": "6438760cc427cc27769c8e98b4ccdbabfcf9d8f570c53201ff3a3dc54ded8b1e"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_choice-grid_Renderer_Spec.txt",
+      "bytes": 3028,
+      "sha256": "ecaca5013ab18ab9d9a3cff60d53130ef122d595506e7f55e4db676d3882fdb3"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_clock_Renderer_Spec.txt",
+      "bytes": 2972,
+      "sha256": "eeffed60610ab6a515107d48afbff4a3872d7a168d6a7c96cebdf93d74ec4839"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_data-table_Renderer_Spec.txt",
+      "bytes": 3007,
+      "sha256": "de1d655dd6a57b3c1e1fd13e5b6aa8a7456760093e2625a552a12cee57bde23b"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_direction-grid_Renderer_Spec.txt",
+      "bytes": 3001,
+      "sha256": "e30021a2fac11593307cdb482471030a00e9a67e49aad38c1267e2e1b9b193f4"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_estimation-canvas_Renderer_Spec.txt",
+      "bytes": 3021,
+      "sha256": "1765544411ae9cb803027082d74ba42d3166d4507021c966697504e79601f002"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_formula-board_Renderer_Spec.txt",
+      "bytes": 3027,
+      "sha256": "9db16e66a66a875deaff1fe0a525824dbf5a8d5e307e4e2516e8dfe5b3a6fa94"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_grouping-board_Renderer_Spec.txt",
+      "bytes": 3014,
+      "sha256": "e60d3765a49ad9ffc3f1ffbb426968aa3a2d8fa5aa246645bf2fd78504ad97fd"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_money-board_Renderer_Spec.txt",
+      "bytes": 3021,
+      "sha256": "9f63c36a3cc1a4b1bec642427a65c7a92a97709ae949291e2bb14050d442fbf7"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_pattern-board_Renderer_Spec.txt",
+      "bytes": 3015,
+      "sha256": "0973c71efbb5f5965437c709de9aa57eb1325db90999fe72122bc28ae592f23f"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_pictograph_Renderer_Spec.txt",
+      "bytes": 3011,
+      "sha256": "05868d1dcf25d30cdd402c99422da3e01342e44b245b5cf54bde5c3581490c54"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_place-value_Renderer_Spec.txt",
+      "bytes": 2994,
+      "sha256": "677baf3cf67c876b45c15ce70a96ca73972e32c76488402b160b665e3a231c63"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_ruler_Renderer_Spec.txt",
+      "bytes": 2957,
+      "sha256": "0dbec93d9fba0010b258e010af2a1821affe07381aa19cfffd2e2d862e07ae07"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_shape-canvas_Renderer_Spec.txt",
+      "bytes": 3044,
+      "sha256": "95c2ac774473ec18f5d680dae1d50e8ec59785f01914a6f9ff2422b2d5140a6e"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_shape-gallery_Renderer_Spec.txt",
+      "bytes": 3025,
+      "sha256": "1df97688c103e884cedd689bdea3b20125aaae7559b6badf7457beeaaa812dcc"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_sorting-board_Renderer_Spec.txt",
+      "bytes": 3008,
+      "sha256": "95e2b164ede8637597ec43cc0232c76a2b72356374f951556c67138f4dc8f471"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_ten-frame_Renderer_Spec.txt",
+      "bytes": 2990,
+      "sha256": "7c9feea21d20b1114e9cdfe799f8f195033d946e1753c25e5e9e484fdc2e1fec"
+    },
+    {
+      "path": "docs/frontend/30_V14_18_renderers_pack/V1.4_timeline_Renderer_Spec.txt",
+      "bytes": 2984,
+      "sha256": "63b7c88da2bea70d1fc5304e9c983fcfe4834ab90d48869f1eaa250c31e7be4c"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/README.md",
+      "bytes": 4981,
+      "sha256": "cdc68799c95ceb924a9fed937ee245d1648f81ddec29ad87e80f3e72fb4a078a"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/V1.4 Renderer Development Task Breakdown.docx",
+      "bytes": 209061,
+      "sha256": "3d04fca293414c8909c8c5fbee633be74228af019578096a29d235f216c21027"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/V1.4 Renderer Semantic Completion Matrix（19 Renderer）.docx",
+      "bytes": 49544,
+      "sha256": "bd9d8c73aeda057fad70b076f47d6da7ab5c4c3202cb81c0e367391872a7b48d"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/V1.4 Renderer Semantic Completion → Development Gap Matrix.docx",
+      "bytes": 59889,
+      "sha256": "fbd7567941e8bafea006a9a0f10cf5cede5b95ec2d2360d49836a236fdffeaf5"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/gap_matrix.txt",
+      "bytes": 15988,
+      "sha256": "d9b6e3d8ef399ed12a89ea619b241e18874899e1a340675cd6c35ee87e0a946d"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/sem_matrix.txt",
+      "bytes": 19103,
+      "sha256": "af7aed3f8e86a1f8f01befbc796242e17ec7d2ea5ae661db0478fee7cb9f5ede"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/task_breakdown.txt",
+      "bytes": 17037,
+      "sha256": "a74cd1a9241aa67d60da4ac8e305049110c66270fde68d99dcbb69b1a611cabe"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/task_table.txt",
+      "bytes": 8628,
+      "sha256": "18e2ebb75687f56a7c154e19f77067339ca0d309398424f1ce3c2fb7ecd9f826"
+    },
+    {
+      "path": "docs/frontend/31_V14_Semantic_Completion_Pack/开发任务表.xlsx",
+      "bytes": 14563,
+      "sha256": "6549dcca7a542418d5d78a88c3a5f649f4d406b0da3594264d9d2aeb4b07a2e4"
+    },
+    {
+      "path": "docs/frontend/32_V14_renderer_completed_pack/README.md",
+      "bytes": 6703,
+      "sha256": "40fdc8c6eb4397fa1bdac098eddfab7521a2f30bcae620bfa7dd9f17c644f532"
+    },
+    {
+      "path": "docs/frontend/32_V14_renderer_completed_pack/V1.4_RENDERER_DEVELOPMENT_COMPLETED.md",
+      "bytes": 2150,
+      "sha256": "556761996cac42d220b14d132dcf614c8fc8fbfe8466f43d53396923ccf69045"
+    },
+    {
+      "path": "docs/frontend/33_V14_question_bank_L1_2100_L2_1008/ORIGINAL_README.md",
+      "bytes": 285,
+      "sha256": "4768d61e842ada3f298258bd73439bdbb7084ba945663d47baaea2fc3b89123b"
+    },
+    {
+      "path": "docs/frontend/33_V14_question_bank_L1_2100_L2_1008/README.md",
+      "bytes": 5484,
+      "sha256": "3faa965d61d3e349a721fab91283e8bf5f1998dfaa4f7a08e42daedf193b68fb"
+    },
+    {
+      "path": "docs/frontend/33_V14_question_bank_L1_2100_L2_1008/REVIEW_CONCLUSION.md",
+      "bytes": 1389,
+      "sha256": "54505037c94249c653a890ba0e3982487bfce2932a3f97836a1f4331e0279b03"
+    },
+    {
+      "path": "docs/frontend/33_V14_question_bank_L1_2100_L2_1008/V1.4_Question_Bank_L1_2100_L2_1008.json",
+      "bytes": 2797109,
+      "sha256": "23ba58ab14b6fb91ec27cf69f8f1466cb3f452ec529c6983964b3c468ddf0831"
+    },
+    {
+      "path": "docs/frontend/33_V14_question_bank_L1_2100_L2_1008/V1.4_Question_Bank_L1_2100_L2_1008.xlsx",
+      "bytes": 271325,
+      "sha256": "d127ccd52cf4c9085a74430f72aa926780906a460ba5e803f6ea406fa61246cc"
+    },
+    {
+      "path": "docs/frontend/34_V14_trial155_contract_audit/CONTRACT.md",
+      "bytes": 14043,
+      "sha256": "dcd9b848b0eadefd5d67e58b85d864bd014d57619bc789b77f2d02e0e6d98946"
+    },
+    {
+      "path": "docs/frontend/34_V14_trial155_contract_audit/README.md",
+      "bytes": 2717,
+      "sha256": "72128117258df0f8ab56144aca646f8bbc413a478daddfdb9674ce67e0613546"
+    },
+    {
+      "path": "docs/frontend/35_V14_production_contract_v1/README.md",
+      "bytes": 3128,
+      "sha256": "5a80900e94d4590ffdf55f3355a88b8625b76ca600f46925187acdbea0c5ae1a"
+    },
+    {
+      "path": "docs/frontend/35_V14_production_contract_v1/V1.4_Question_Bank_Production_Contract_v1.0.docx",
+      "bytes": 45263,
+      "sha256": "0c0923e252cb7c966ea9f2a467da78a409542b5b68c9342911368648f5fac02d"
+    },
+    {
+      "path": "docs/frontend/35_V14_production_contract_v1/extracted_text.md",
+      "bytes": 12011,
+      "sha256": "f2aaa5ab74670833e095788927c7b03632844b4c1c433a56a5a74add957db412"
+    },
+    {
+      "path": "docs/frontend/36_V14_trial155_remediation_task_order/TASK_ORDER.md",
+      "bytes": 7008,
+      "sha256": "d043a966ce52912d38edb030c9b9328fe278ef3eb81448b05d8026ff56a3f843"
+    },
+    {
+      "path": "docs/frontend/36_V14_trial155_remediation_task_order/consistency_audit.py",
+      "bytes": 9787,
+      "sha256": "e0d3347043a06f9445ffd79fb4ddc2c57e779e537ef68fd4fac3dfa478d5c616"
+    },
+    {
+      "path": "docs/frontend/36_V14_trial155_remediation_task_order/fixtures/gold_positive.json",
+      "bytes": 2173,
+      "sha256": "984426b24abc1cf6b4d780c3e6105c732bb2f9370d78eceb9110f3efea003ad9"
+    },
+    {
+      "path": "docs/frontend/36_V14_trial155_remediation_task_order/fixtures/negative_cases.json",
+      "bytes": 1431,
+      "sha256": "34f9869e0ed6fe71e3cf4a012c64a361b254e87dd395a4ab91f67212ff0fb27a"
+    },
+    {
+      "path": "docs/frontend/36_V14_trial155_remediation_task_order/receipt_review/FE-1432e_consistency_audit_review.diff",
+      "bytes": 14555,
+      "sha256": "42dca019a8bf408155d0387ac1e936081860e607b34f2cb79f291403dc7ec860"
+    },
+    {
+      "path": "docs/frontend/36_V14_trial155_remediation_task_order/receipt_review/FE-1432e_签收核验记录.md",
+      "bytes": 4719,
+      "sha256": "2eea25c1bb9c6a1c45c9d6bdee0ac95f01c988550abb7a0acfd73696013179b0"
+    },
+    {
+      "path": "docs/frontend/36_V14_trial155_remediation_task_order/receipt_review/consistency_audit_FE-1432e_review_candidate.py",
+      "bytes": 8782,
+      "sha256": "7ce946fcc5c0e7b40219beb7b364742a3150e877b2cf12734e2f275f190c94e1"
+    },
+    {
+      "path": "docs/frontend/37_V14_delivery_v2_gate3_review/ERROR_VOCAB.md",
+      "bytes": 1921,
+      "sha256": "c802f51abceb48370ee3a9c08e8311a4fccbffd5d53b06b8f13a551b5ae4c079"
+    },
+    {
+      "path": "docs/frontend/37_V14_delivery_v2_gate3_review/FINAL_RECHECK_FE1432i.md",
+      "bytes": 3111,
+      "sha256": "cfb91a66b891d30a43b995a17948aa8ed9730e9bff3cc46a725f40b6e352ec65"
+    },
+    {
+      "path": "docs/frontend/37_V14_delivery_v2_gate3_review/README.md",
+      "bytes": 7241,
+      "sha256": "a876d5314024bb842e6a21b99d93c5d9636c62c34282208c7a558c06e4d1485f"
+    },
+    {
+      "path": "docs/frontend/37_V14_delivery_v2_gate3_review/RECHECK_FE1432h.md",
+      "bytes": 3827,
+      "sha256": "ae1832a55999bd710899402114f3db98771b0ac6ea1621ab1472b91c85d42ed8"
+    },
+    {
+      "path": "docs/frontend/37_V14_delivery_v2_gate3_review/gate3_fail_list.txt",
+      "bytes": 1038,
+      "sha256": "168acbae5c7accea3893cb0d4aeedf4839dfce0233e408d75da3822fefe49d53"
+    },
+    {
+      "path": "docs/frontend/38_contract_frozen/CONTRACT_FROZEN.md",
+      "bytes": 11563,
+      "sha256": "89b4f6b3fb5fe4b33d71f1b91ae5048253775be175ebec0cd5c416079369e8a7"
+    },
+    {
+      "path": "docs/frontend/38_contract_frozen/README.md",
+      "bytes": 1037,
+      "sha256": "c66d93d71b511c76cc7acf7266d95d9f8a6fb7cbca20f841bd90b1ccc5358939"
+    },
+    {
+      "path": "docs/frontend/39_M_mapping_approval/APPROVAL.md",
+      "bytes": 4083,
+      "sha256": "1a12e95cd068a4575550d50aed34dbd84c1fa933e2905181fe7f8ba54c5aeba6"
+    },
+    {
+      "path": "docs/frontend/39_M_mapping_approval/EXECUTION.md",
+      "bytes": 2443,
+      "sha256": "0e8eb77ba5e6592337232a8d4612042cde9bd48ef1374029c5b93ea592143458"
+    },
+    {
+      "path": "docs/frontend/39_M_mapping_approval/REVIEW.md",
+      "bytes": 4337,
+      "sha256": "2156fec398ee7603d1640daf8ba33a6219bb8eadd9495a9a73ce2ccad385d88a"
+    },
+    {
+      "path": "docs/frontend/39_M_mapping_approval/mapping_final.csv",
+      "bytes": 2992,
+      "sha256": "2101e2b875ee111790cd065b4677a05ee61e65bb5a07648ea0a37ffd544337ed"
+    },
+    {
+      "path": "docs/frontend/40_M30_remediation_order/RECHECK_FE1440a.md",
+      "bytes": 2836,
+      "sha256": "f93e65ea50ab54b16e14087abe5d6f6dd812deb1e631da54743381471350823a"
+    },
+    {
+      "path": "docs/frontend/40_M30_remediation_order/REMEDITION_ORDER.md",
+      "bytes": 4203,
+      "sha256": "17e4f4c7646fb927686c126a816165a96f556b4c729fd664456fb3ca14b871fa"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/MIGRATION.md",
+      "bytes": 13386,
+      "sha256": "44f29f2816920b005c917369e02314ef3227386b25aa7efb593943a6edce473b"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/PR_DESCRIPTION.md",
+      "bytes": 2057,
+      "sha256": "8cfbebe0aa58772c3c59c6b01aa9c10d31550a6bad366ad2108a9866d901f80a"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/TEST_REPORT.md",
+      "bytes": 4562,
+      "sha256": "e4016e0549f22f62fe8dbfcaf8ae7b2ed01bf241fc28bcfd911b105d7b04b492"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/app-build.log",
+      "bytes": 506,
+      "sha256": "3967d4d54f075b3069e9e8d10d9d515fe6f2e3cd5cbd9adc298f70f022cdf9ad"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/app-typecheck.log",
+      "bytes": 1109,
+      "sha256": "f7f3e7b85588977d02aa7cbe19306a44b663b73fe298d3e0d9d3fe8207da5b0e"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/baseline-typecheck.log",
+      "bytes": 1109,
+      "sha256": "f7f3e7b85588977d02aa7cbe19306a44b663b73fe298d3e0d9d3fe8207da5b0e"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/branch-check.log",
+      "bytes": 133,
+      "sha256": "6407a2d069bc3cceaaaccb6cca0dbb10fe25d2221d4d78658355ad987f38b14b"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/command-results.json",
+      "bytes": 1274,
+      "sha256": "95ad7d25ddf250bf80a0a29f1c07d344f2edbdf97e902ce6d760d31311a5444f"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/contracts-check.log",
+      "bytes": 52,
+      "sha256": "2b80e6796cb14b661849756153713e8913c16014325105c2c81196624879b734"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/diff-check.log",
+      "bytes": 67,
+      "sha256": "e006895a5a86efe7f1588a49056d7f172dd36fe0a395d97b6d176a05908b861c"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/frontend-release-check.log",
+      "bytes": 239,
+      "sha256": "63fe84f011380543a2eef61f5656e4096e6518e4920f3a1126ac5988385162d5"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/frozen-files-check.json",
+      "bytes": 2199,
+      "sha256": "c281a7bea11858b72ce6c065f0ffe8053c930fccd65f892f8932bdc597a363fb"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/governance-check.log",
+      "bytes": 218,
+      "sha256": "41a07574ad7d92ce6baede8ca63486503c4f3c1efe93a020d1a2c062cf08c2aa"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/patch-replay.json",
+      "bytes": 336,
+      "sha256": "bc8beedbfa1a8cd7b12584cd916efeb84640fdb1ef2285dc83262cca112a89bc"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/pure-checks.json",
+      "bytes": 3973,
+      "sha256": "80b32dc5f5a9d80269ff7ff6ed26fe185af379b00930f81badcdfd6fe13abc35"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/release-check.log",
+      "bytes": 104,
+      "sha256": "6f06c8f49c625dd4bf1ab9841c44dfa5c5031a663278d5287e218a026fb7994c"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/renderers-check.log",
+      "bytes": 90,
+      "sha256": "f39def0406c934213b9ec5f0c82254705d4968411a54bda332269b2471870dcb"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/syntax-check.json",
+      "bytes": 2961,
+      "sha256": "c67e788eb48caafdcbf5e837f7e38cfa077fdec7cf53c97cd2534818b72c6c83"
+    },
+    {
+      "path": "docs/frontend/41_v6_ui_migration/evidence/v14-check.log",
+      "bytes": 207,
+      "sha256": "4fa49820fbe92e385fbb179e1f313f6e77b1710d28a19489a1faaed309e46038"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/MIGRATION.md",
+      "bytes": 6061,
+      "sha256": "7ad17bee02ab2e4de33004cb38f2d3816b7edb63421003d670225bc12354d065"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/PR_DESCRIPTION.md",
+      "bytes": 775,
+      "sha256": "51f0a63b75b379ee763a1ec801d708715fd5d3b12522de6eb1618d55f81f8406"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/TEST_REPORT.md",
+      "bytes": 5819,
+      "sha256": "1d1bbf9581399899f18bd5f97f594c330bed0e7c5695d00e700f447231e88415"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/app-build.log",
+      "bytes": 520,
+      "sha256": "b77c851d3c7e567830466c4ee7c95ce650e4900377165b00deddb15162ed4202"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/app-typecheck.log",
+      "bytes": 1123,
+      "sha256": "ad5419cd95e2918185607640e79f2feb96ae17b88cbd676dcb4252057ae8d697"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/branch.log",
+      "bytes": 142,
+      "sha256": "e7fe5680012b781c36500587735d56ed096feea3810b09331cfedbfe66fad6a7"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/command-results.json",
+      "bytes": 2227,
+      "sha256": "756db583c72be0b31baa98f3c5f190d3e5dc9c2dff5e876c511604f7376d1a2f"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/contracts.log",
+      "bytes": 142,
+      "sha256": "cdb3d682ef4f151296f658566902d27b38fdbd284d82bfadc85fbb89feb0c990"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/frontend-release.log",
+      "bytes": 325,
+      "sha256": "b386ada2fbe40055c55cad0c40a5ec0e7f1a6cdbb02c17cd76df9e379775f533"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/frozen-files.json",
+      "bytes": 41038,
+      "sha256": "a29837d4c57f309d5431e2ab75a0d69d0c2e811ec865383d129b81ab30ee69d9"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/full-static-tests.json",
+      "bytes": 4648,
+      "sha256": "b3ec1a518867e50fca756293f8a39cf96941df0c45940bafe2e49c416fbbfacc"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/governance.log",
+      "bytes": 218,
+      "sha256": "41a07574ad7d92ce6baede8ca63486503c4f3c1efe93a020d1a2c062cf08c2aa"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/next-v6-e2e.log",
+      "bytes": 607,
+      "sha256": "10319dbda9a532ea508319818f562eb445572719e610022ef4d6b400cdaf4eb6"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/npm-ci.exit",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/npm-ci.log",
+      "bytes": 270,
+      "sha256": "23bc89f4a5b573f07be94cf06dfc64386861a6b302cd82e0e3584e4fb8afc024"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/page-browser.json",
+      "bytes": 1092,
+      "sha256": "4c0efb2379eef33119822c435386d6fdabb476353025e1e61f19916dd008bb6e"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/page-flow-api-calls.json",
+      "bytes": 11650,
+      "sha256": "81c0db66903df4b16b1831a628d999d1e248022938184d2109616dd2fece1b00"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/pure-tests.json",
+      "bytes": 3973,
+      "sha256": "a4a163f9055ef3312d0448e35a316305e946c022fd47f36f60999b742d9c2f82"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/release.log",
+      "bytes": 104,
+      "sha256": "6f06c8f49c625dd4bf1ab9841c44dfa5c5031a663278d5287e218a026fb7994c"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/renderer-browser-0-10.json",
+      "bytes": 97672,
+      "sha256": "118b01ca78a753a835663852ff5ef36020158146ad719eb6424b8a0f4e79f42a"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/renderer-browser-10-20.json",
+      "bytes": 79588,
+      "sha256": "45ee5d6c0ceb7e2020b61e4cae507a93ec42293c435cafd98231493d258b2767"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/renderers.log",
+      "bytes": 180,
+      "sha256": "60081efa374940e835059f7cb8cee40e542d9db2355791cbc0af349c01fce9e7"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/transpile.json",
+      "bytes": 238,
+      "sha256": "e05163d5afd32bbdc474df1a771e3dfaf2e24112b2915408f87c573e76c5b998"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/transport-retry-identical-payload.json",
+      "bytes": 6258,
+      "sha256": "9974a5f091d2b08ef0594af66a5aec709cf8523bc81147471944d0c2305ce829"
+    },
+    {
+      "path": "docs/frontend/42_v6_full_migration/evidence/v14.log",
+      "bytes": 207,
+      "sha256": "4fa49820fbe92e385fbb179e1f313f6e77b1710d28a19489a1faaed309e46038"
+    },
+    {
+      "path": "docs/frontend/README.md",
+      "bytes": 1618,
+      "sha256": "afe0e6f4654fe46a928f8d82709a73a45068185969e4ad6f715e0480d7fd57f6"
+    },
+    {
+      "path": "docs/governance/B5_E2E_VERTICAL_GATE.md",
+      "bytes": 7066,
+      "sha256": "5ff3e52ab31d00ed4efb709bf8fe846ef5163254d3ae1b4f579be9285e41168f"
+    },
+    {
+      "path": "docs/governance/BRANCH_AND_PR_POLICY.md",
+      "bytes": 1968,
+      "sha256": "b7d3ebb78f71c607187496ec71731605e8a0eea9d0edbf3e1eeec1c45f039e0b"
+    },
+    {
+      "path": "docs/governance/CONTEXT_FAMILY_VOCABULARY.md",
+      "bytes": 11768,
+      "sha256": "ab594f7340c832e8845da5659958692364346ab5b85d96d0995749d2012a4727"
+    },
+    {
+      "path": "docs/governance/CONTRACT_DRIFT_REGISTER.md",
+      "bytes": 1592,
+      "sha256": "64355bbd6e535bcebb4c01703fbce80e96beee4cfe5260052aaeb867104c070c"
+    },
+    {
+      "path": "docs/governance/FE1438_QA_SAMPLE_INGEST.md",
+      "bytes": 3127,
+      "sha256": "ddc66b26d8d7a35d8ce0f46abf4cc3a3fb5f2f3e81f812f4803f4d56b560a9b1"
+    },
+    {
+      "path": "docs/governance/FE1441_PROD_SEED_155.md",
+      "bytes": 2731,
+      "sha256": "a7c5622565310f5423a9a236af56c3b4625ebe8ec862a0321607b014ac9017ef"
+    },
+    {
+      "path": "docs/governance/GATE0_BASELINE_DIFF.md",
+      "bytes": 8889,
+      "sha256": "d462d06f160bc4528492a95482f649a54bda6867b21f16eff1f322383b4aa2f9"
+    },
+    {
+      "path": "docs/governance/GITHUB_BRANCH_PROTECTION_CHECKLIST.md",
+      "bytes": 7027,
+      "sha256": "4a9bd6941e66077f72f5bc909e0a9be25100e6effa51fa4786e7e74fa889e24c"
+    },
+    {
+      "path": "docs/governance/GITHUB_SETUP.md",
+      "bytes": 966,
+      "sha256": "f2abdcde61f31b3065c1a22931558e63e6455ad4955805b21d81dfd8011e95b3"
+    },
+    {
+      "path": "docs/governance/ONBOARDING.md",
+      "bytes": 408,
+      "sha256": "b7d6dfcf44f67c29ca82153313f46a67d912b13cc43103d50dc9725df89e4e72"
+    },
+    {
+      "path": "docs/governance/OWNERSHIP.md",
+      "bytes": 776,
+      "sha256": "d7099c9c76b85a38899f584bb6954b96efc2d4a32454a434497594740ba9e0a2"
+    },
+    {
+      "path": "docs/governance/QA_CONTAMINATION_AUDIT_2026-10-04.csv",
+      "bytes": 35063,
+      "sha256": "c627189e96d605f8d8140dbf52c420f400e7cf4f96919f1e27baca928b9e6b51"
+    },
+    {
+      "path": "docs/governance/QA_DATA_HYGIENE.md",
+      "bytes": 2268,
+      "sha256": "871b32428c3e742d7d915b86b4796280ffeda1f272e968b383cc09c4bc25cd16"
+    },
+    {
+      "path": "docs/governance/QA_PINNED_TASK_PROPOSAL.md",
+      "bytes": 4529,
+      "sha256": "f44a22ca3aae5daca743f93f2c8aaca66eb9ef27e46e644d4237b89c3799cafa"
+    },
+    {
+      "path": "docs/governance/R01_OBJECTCOUNTER_VERTICAL_GATE.md",
+      "bytes": 3397,
+      "sha256": "96ffa572bac5ac9545648f8ddb722ad7f71133a019eef0e1047abad82494cf71"
+    },
+    {
+      "path": "docs/governance/R02_BARMODEL_VERTICAL_GATE.md",
+      "bytes": 3679,
+      "sha256": "dfbe6cb04fe10871e8f5602f8512568058f9186ae4323ee756d54dcf0977f585"
+    },
+    {
+      "path": "docs/governance/R04_NUMBERINPUT_VERTICAL_GATE.md",
+      "bytes": 2740,
+      "sha256": "5e58d9e80677370d180be2543b61635acc9bfde0351c748f38de394a9ac352e7"
+    },
+    {
+      "path": "docs/governance/R06_PLACEVALUE_VERTICAL_GATE.md",
+      "bytes": 3387,
+      "sha256": "ace790926ff579cf07444e9e26e1f069bf19acbfac33f22f55b6e625f1eaa253"
+    },
+    {
+      "path": "docs/governance/R07_TENFRAME_VERTICAL_GATE.md",
+      "bytes": 3114,
+      "sha256": "422d443a150fba473653960119033cebfc6b284324d9e81f883168069f47807b"
+    },
+    {
+      "path": "docs/governance/R08_ARRAYBOARD_VERTICAL_GATE.md",
+      "bytes": 3240,
+      "sha256": "ab28d63ef227229a79e7be69e38f952157e4a12feb8dda719ac24cab13763306"
+    },
+    {
+      "path": "docs/governance/R09_GROUPINGBOARD_VERTICAL_GATE.md",
+      "bytes": 3409,
+      "sha256": "017714991ed15329167bf415f510d5e642f692f1c14582ec56d03f3d1a16b27d"
+    },
+    {
+      "path": "docs/governance/R10_FORMULABOARD_VERTICAL_GATE.md",
+      "bytes": 3746,
+      "sha256": "410a86f77569bd053a0eacc785721e07f3e4b1fd1c96730362b159a7f1c42d9b"
+    },
+    {
+      "path": "docs/governance/R11_ESTIMATIONCANVAS_VERTICAL_GATE.md",
+      "bytes": 3861,
+      "sha256": "f88fd7611563002b176148ae818c76c4e821ca46fffe5df78ccfbc5ca5cbe707"
+    },
+    {
+      "path": "docs/governance/R12_SHAPEGALLERY_VERTICAL_GATE.md",
+      "bytes": 3803,
+      "sha256": "c409929b7e1d150be8a50cec8f83be6f1ea748645767428d65afcbde06157553"
+    },
+    {
+      "path": "docs/governance/R13_SHAPECANVAS_VERTICAL_GATE.md",
+      "bytes": 4157,
+      "sha256": "a4132283295218c3ba1cccc4db1ebc352246447db26c12bc346a971c799ca043"
+    },
+    {
+      "path": "docs/governance/R14_SORTINGBOARD_VERTICAL_GATE.md",
+      "bytes": 4599,
+      "sha256": "fbf4ea2f6d50e7ec3e094564179ca4b7c061bee8825f81ab9f192b2af95ce9da"
+    },
+    {
+      "path": "docs/governance/R15_DIRECTIONGRID_VERTICAL_GATE.md",
+      "bytes": 4881,
+      "sha256": "2d3dc9bc948b9887de542837e2457989a3a65ebd9b67bc5b384d0563ed73056a"
+    },
+    {
+      "path": "docs/governance/R16_RULER_VERTICAL_GATE.md",
+      "bytes": 4472,
+      "sha256": "bea18de23654f88ffbdad3cf539cbf4fb7b171602d4bb182a42b26cf05a44225"
+    },
+    {
+      "path": "docs/governance/R17_CLOCK_VERTICAL_GATE.md",
+      "bytes": 4172,
+      "sha256": "4459d7eccf5c4f94ed0e4b85d63f8008cde82c2434d073f57f3f304ec7c5c022"
+    },
+    {
+      "path": "docs/governance/R18_MONEYBOARD_VERTICAL_GATE.md",
+      "bytes": 4417,
+      "sha256": "5e95fac68c3f4a0e8d0c4e1730ef6148b568162d4933dbd92175cc42e6a43f62"
+    },
+    {
+      "path": "docs/governance/R19_PATTERNBOARD_VERTICAL_GATE.md",
+      "bytes": 4589,
+      "sha256": "cf710b1313745616a416564f366ad2bf987fc6c617ffee1ad1bbd68698d978c1"
+    },
+    {
+      "path": "docs/governance/RELEASE_PROCESS.md",
+      "bytes": 462,
+      "sha256": "08253ef1e7376fb854918a39bece84c022d6f402d003c90a4046ec01afedad99"
+    },
+    {
+      "path": "docs/governance/REVIEW_CONTEXT_DECISION_MATRIX.md",
+      "bytes": 6259,
+      "sha256": "0d7a5fc2174cf8c0c8e63a75f82ff49783fd594c6e1f0fcbbd3274768624d33a"
+    },
+    {
+      "path": "docs/governance/V13_CLOSURE_CONTRACTS.md",
+      "bytes": 5911,
+      "sha256": "1522b3aae017473040ad52bc7167ed50c055b19b57e349acae1007d24d56be01"
+    },
+    {
+      "path": "docs/governance/VERSIONING.md",
+      "bytes": 903,
+      "sha256": "cf92bebb701fd5c54d59676fe471adb93a0c79c986f155bbd0c9b65fb3cd5427"
+    },
+    {
+      "path": "docs/governance/WORKER_HANDOFF_PROTOCOL.md",
+      "bytes": 549,
+      "sha256": "3f227ddcd4d758dea708c918b74b1b16f55388b9ddfe6303595d057da6af0a4d"
+    },
+    {
+      "path": "docs/governance/WORKFLOW.md",
+      "bytes": 1354,
+      "sha256": "fa4a698888c9423c8c60ed1457dbc163f09ea6bf33bf02b380d946c41f25b028"
+    },
+    {
+      "path": "docs/qa/系统验收报告_2026-09-29.md",
+      "bytes": 8539,
+      "sha256": "e7e3e766192f5aee71a4fc36679d4b82940a465c7e7121016487f1110d135958"
+    },
+    {
+      "path": "docs/releases/GIT_READY_GOVERNANCE_V1.0.md",
+      "bytes": 665,
+      "sha256": "9e99abc6262d57086d5b576f4a48e6c34e454e53716fc7a52665e453247feb89"
+    },
+    {
+      "path": "openapi/README.md",
+      "bytes": 401,
+      "sha256": "900f6c28e4047611f986c6c57bc54e92d1383a906e736abb08cb3c9798e420e5"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 20001,
+      "sha256": "be261e3c5b7ba5a882aa2ca1e88c6ecc8dd4d540cc28331edc4b492006a9e3bf"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1526,
+      "sha256": "cd8f3dbe9b089901a4c3c6912f92450451ae0ec9f28d49ea87c9d17613965b2b"
+    },
+    {
+      "path": "packages/contracts/README.md",
+      "bytes": 908,
+      "sha256": "7765fbef69d9c26676ef1369dff3bbb38a584951954226e03778539405eda370"
+    },
+    {
+      "path": "packages/contracts/contracts/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "packages/contracts/contracts/validate.py",
+      "bytes": 3959,
+      "sha256": "c25476ba3a261e5cd446a5fa6f126828a1f977816c69290ff702dea7f9dad83f"
+    },
+    {
+      "path": "packages/contracts/examples/b5-column-arithmetic-attempt.json",
+      "bytes": 981,
+      "sha256": "3cdcd42aec46f6ffa973d54fee15189b0bb997666bccda160f787d1d1d458c7e"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 76,
+      "sha256": "24c455a74449a3b28ab1d37e66272d995874ab124072ac1870f52effda19cde4"
+    },
+    {
+      "path": "packages/contracts/samples/response/e4_valid.json",
+      "bytes": 444,
+      "sha256": "72d82f85525fe7eccbf83333e9077461637db4e994123274aab314e83a38d648"
+    },
+    {
+      "path": "packages/contracts/samples/response/illegal_client_selfgraded.json",
+      "bytes": 403,
+      "sha256": "42936cf8318a35196e0b06dbc253e6d2aeeec6feb35b05972f32d25212f11190"
+    },
+    {
+      "path": "packages/contracts/samples/ui_schema/a5_valid.json",
+      "bytes": 789,
+      "sha256": "0cdeed5da0d4dbed1268d9d263db2500d19a55730e7428aa827855216f3b8918"
+    },
+    {
+      "path": "packages/contracts/samples/ui_schema/b5_valid.json",
+      "bytes": 864,
+      "sha256": "5e38570aed40c6bd464519627196a785f1add2cba1e1ee6e0a6edae45b3906e9"
+    },
+    {
+      "path": "packages/contracts/samples/ui_schema/d5_valid.json",
+      "bytes": 994,
+      "sha256": "6edde1b4320d836de39fc7b5a8c8c8e6d6c80d6f3a27471588477e8e80efb0fd"
+    },
+    {
+      "path": "packages/contracts/samples/ui_schema/e4_valid.json",
+      "bytes": 805,
+      "sha256": "4379352afa0921cc35a341e5f038c452ca329e1ed61736a58306c4fa543f2c3c"
+    },
+    {
+      "path": "packages/contracts/samples/ui_schema/f6_valid.json",
+      "bytes": 960,
+      "sha256": "630ca0149d8328503dea31b3844d408732feac098dc52ffdde14ab66790e14de"
+    },
+    {
+      "path": "packages/contracts/samples/ui_schema/illegal_renderer_alias.json",
+      "bytes": 479,
+      "sha256": "1d20a1002bd0761a64ad9d17c6f5f475c80dab5412e934994d60a58941acb1a9"
+    },
+    {
+      "path": "packages/contracts/schemas/math-response-v2.schema.json",
+      "bytes": 2267,
+      "sha256": "058c8059eb09b3c691623ef28735f87995e5a2e919fe3ade5f48abe93e20eb10"
+    },
+    {
+      "path": "packages/contracts/schemas/task-ui-schema-v2.schema.json",
+      "bytes": 2953,
+      "sha256": "7731bd4731bf90901658e2e79f88dbdf6c0fa7e705017a8db6a57a23a61d0c62"
+    },
+    {
+      "path": "packages/math-ui/README.md",
+      "bytes": 59,
+      "sha256": "5f609e883efbe3f0d4d77c227528cd79464ae0da1cdc85afc34cf79f41c2c7c8"
+    },
+    {
+      "path": "packages/math-ui/package.json",
+      "bytes": 74,
+      "sha256": "2b018d0d028b6650dd0847680e903e8abbf710970b11ea5fb41aad71dc098480"
+    },
+    {
+      "path": "packages/skin-runtime/README.md",
+      "bytes": 60,
+      "sha256": "0d2e354f666f7acd25ebcd60c0c8cfb11784b70b537c1edbd5521fa694de5315"
+    },
+    {
+      "path": "packages/skin-runtime/package.json",
+      "bytes": 79,
+      "sha256": "f2a6ef1ae93f63bccca2d2b8c238c53cfc1019d03d57811236ea2dc72f360603"
+    },
+    {
+      "path": "project_manifest.json",
+      "bytes": 2001,
+      "sha256": "78442ba9f6b0ea6b1670cc59af33630e1608dad88fde83b52a63ac2ca1cdde71"
+    },
+    {
+      "path": "releases/1.0.0.json",
+      "bytes": 627,
+      "sha256": "87e447730d46eeeb3b4ad47e5eff2f533d2aa5698051dcdc5c71987bfdf531c0"
+    },
+    {
+      "path": "releases/1.1.0.json",
+      "bytes": 571,
+      "sha256": "dbdff72d76e60dc4f8d3f7425385aa714a4454eb096e71e2eb72f08083358381"
+    },
+    {
+      "path": "releases/1.2.0.json",
+      "bytes": 1271,
+      "sha256": "2f79a6278820e8af33d4af779e60a502a8031410bcb868a6b0fba413d3974335"
+    },
+    {
+      "path": "releases/1.4.0.json",
+      "bytes": 2557,
+      "sha256": "53d2723f898d9a1251b73b526654a952d3a298ee26e506db0ce687807d17e130"
+    },
+    {
+      "path": "releases/index.json",
+      "bytes": 606,
+      "sha256": "3635f21191c5e9e49fb76a2240f771e7c6e5ae2eeaea3343cca889c0090056f2"
+    },
+    {
+      "path": "scripts/bootstrap-git.sh",
+      "bytes": 401,
+      "sha256": "2f917af70d2e8898f1add40ad23ce15718c823b3076378d699f4fd4bd8cd1953"
+    },
+    {
+      "path": "scripts/check-branch-name.mjs",
+      "bytes": 1740,
+      "sha256": "afece40b5c0ae27948bded22a41f5bf667a7cecae5fdb7ff46156c9afcd7ab34"
+    },
+    {
+      "path": "scripts/check-data-hygiene.mjs",
+      "bytes": 2728,
+      "sha256": "4e9999dcea3bbe4aa3cad7c824317cf36fb6ebdff0e480d37f2f14f300366e2f"
+    },
+    {
+      "path": "scripts/check-governance.mjs",
+      "bytes": 928,
+      "sha256": "2f9127b3d58bf097b702ce317f6318b8861ff4d56bb75bb9d09711e9afd7eb7c"
+    },
+    {
+      "path": "scripts/check-release.mjs",
+      "bytes": 1388,
+      "sha256": "a911577aac0bc02a73918019c8e7f12b5e8190ec0ad47c7e29c57c8e1d7fced2"
+    },
+    {
+      "path": "scripts/dev-both.sh",
+      "bytes": 2107,
+      "sha256": "96801d9b0008cb9fe5d7e3a8597fda13c8efd6934255a0c20eb91d4e2dbdf3eb"
+    },
+    {
+      "path": "scripts/integration-smoke.mts",
+      "bytes": 5766,
+      "sha256": "683b34d42bab21c6ba5b8fb269751052eee430c891c41b98a4af1766b8595e0d"
+    },
+    {
+      "path": "scripts/qa_child_setup.py",
+      "bytes": 3819,
+      "sha256": "a4ee5a34c8e62eea1f83a8c8a13dfff51356740702a660cc91fad36b19176d07"
+    },
+    {
+      "path": "scripts/qa_cleanup_contamination.py",
+      "bytes": 7539,
+      "sha256": "a6f8dd0859d3ff4baaae0c7e0492f354e77f087a2ced669369bb1e436b00750d"
+    },
+    {
+      "path": "scripts/qa_replay_mastery.py",
+      "bytes": 10727,
+      "sha256": "2bb3372a2df8ac980c9e4837f90372a40601ca3cb8b5eff08ac55476745f7ac3"
+    },
+    {
+      "path": "scripts/run-child-ui.mjs",
+      "bytes": 4257,
+      "sha256": "b52cff20841269ea4d66fdf6b2c028b248b070234fe3ca8ff61a111f68e719ec"
+    },
+    {
+      "path": "tests/v6-isolated/README.md",
+      "bytes": 1791,
+      "sha256": "a5c1d93c3b987f99eb6bed905ecf6d7ccae6fcdc32d9fa23230a6a249d2f94f8"
+    },
+    {
+      "path": "tests/v6-isolated/bootstrap.js",
+      "bytes": 4710,
+      "sha256": "803ec7bc3cc21fb0650877dc421ed0829f19a35b987e05c52d754fabfd405948"
+    },
+    {
+      "path": "tests/v6-isolated/prepare.mjs",
+      "bytes": 3719,
+      "sha256": "8a9541bdedf1edc42e588ea00bc745cae722d3192df17d2070cf4a7536497ccb"
+    },
+    {
+      "path": "tests/v6-isolated/runner.py",
+      "bytes": 2753,
+      "sha256": "fe020f48b181b95d37d8ea80389887501747a6db572473a860df5b06b746d830"
+    },
+    {
+      "path": "tests/v6-isolated/test_pages.py",
+      "bytes": 11658,
+      "sha256": "ec0b8ccea32745322547ccca31e07a66e08710d494d02c3f62f16910e4de093c"
+    },
+    {
+      "path": "tests/v6-isolated/test_renderers.py",
+      "bytes": 8253,
+      "sha256": "8286805f5d12d847df19f9fe82de842ebe4eef52b33af5a2c0de32aba7cbce75"
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "scope": "Migration inventory and executable presentation/launcher assertions; NOT full TypeScript/Next/DB validation",
+  "compiler": "5.8.3",
+  "pass": 38,
+  "fail": 0,
+  "results": [
+    {
+      "name": "twenty original examples cover all nineteen frozen release renderer IDs",
+      "status": "PASS"
+    },
+    {
+      "name": "object-counter: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "bar-model: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "number-line: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "number-input: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "column-arithmetic: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "place-value: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "ten-frame: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "array-board: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "grouping-board: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "formula-board: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "estimation-canvas: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "shape-gallery: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "shape-canvas: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "sorting-board: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "direction-grid: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "ruler: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "clock: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "money-board: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "pattern-board: explicit V6 branch and existing legacy branch remain",
+      "status": "PASS"
+    },
+    {
+      "name": "fixture workspace IDs and response metadata exist without a live seed",
+      "status": "PASS"
+    },
+    {
+      "name": "canonical seven-node order, no phantom forty-two live abilities",
+      "status": "PASS"
+    },
+    {
+      "name": "missing ability displays unknown rather than a fabricated zero level",
+      "status": "PASS"
+    },
+    {
+      "name": "zero evidence does not claim stable mastery even when API trend says stable",
+      "status": "PASS"
+    },
+    {
+      "name": "raw API level and evidence count are preserved",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown trend fails soft without throwing or computing mastery",
+      "status": "PASS"
+    },
+    {
+      "name": "canonical ID has priority over explicitly mapped legacy aliases",
+      "status": "PASS"
+    },
+    {
+      "name": "names do not borrow another ability record",
+      "status": "PASS"
+    },
+    {
+      "name": "application defaults to V6 and real repository skin ID",
+      "status": "PASS"
+    },
+    {
+      "name": "launch defaults explicitly select HTTP; preview requires explicit mock",
+      "status": "PASS"
+    },
+    {
+      "name": "launcher keeps skins in separate Next build directories",
+      "status": "PASS"
+    },
+    {
+      "name": "build/start flags use identical selected UI/skin build directory",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy rollback is explicit, not a hidden fallback",
+      "status": "PASS"
+    },
+    {
+      "name": "launcher rejects invalid options and credential URLs",
+      "status": "PASS"
+    },
+    {
+      "name": "all V6 gallery routes remain gated in production",
+      "status": "PASS"
+    },
+    {
+      "name": "home/growth/result have real screen-level V6 branches",
+      "status": "PASS"
+    },
+    {
+      "name": "hint_usage is rendered as unique levels, never labeled as request count in V6",
+      "status": "PASS"
+    },
+    {
+      "name": "decorative assets exist for both skins; no prototype judge is imported",
+      "status": "PASS"
+    }
+  ]
+}

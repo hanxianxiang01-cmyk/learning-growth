@@ -1,0 +1,62 @@
+[
+  {
+    "name": "branch-check",
+    "command": "npm run branch:check",
+    "exit_code": 0,
+    "seconds": 0.14
+  },
+  {
+    "name": "governance-check",
+    "command": "npm run governance:check",
+    "exit_code": 0,
+    "seconds": 0.16
+  },
+  {
+    "name": "release-check",
+    "command": "npm run release:check",
+    "exit_code": 0,
+    "seconds": 0.12
+  },
+  {
+    "name": "v14-check",
+    "command": "npm run child:v14:check",
+    "exit_code": 0,
+    "seconds": 0.22
+  },
+  {
+    "name": "renderers-check",
+    "command": "node apps/child-web/scripts/check-v14-renderers.mjs",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "contracts-check",
+    "command": "node apps/child-web/scripts/check-v14-contracts.mjs",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "frontend-release-check",
+    "command": "node apps/child-web/scripts/check-v14-release.mjs",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "diff-check",
+    "command": "git diff --check",
+    "exit_code": 0,
+    "seconds": 0.0
+  },
+  {
+    "name": "app-typecheck",
+    "command": "npm run child:typecheck",
+    "exit_code": 2,
+    "seconds": 0.78
+  },
+  {
+    "name": "app-build",
+    "command": "npm run child:build",
+    "exit_code": 127,
+    "seconds": 0.19
+  }
+]

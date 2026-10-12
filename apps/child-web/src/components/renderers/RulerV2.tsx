@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * ruler V2 组件（FE-1429 R16，Batch E 起手）。runtime 装配对齐 DirectionGridV2。
  *
@@ -41,6 +45,7 @@ export function RulerV2({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseRulerConfig(workspace.config as Record<string, unknown>) : null),
@@ -82,7 +87,7 @@ export function RulerV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">量尺题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "量尺题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -127,6 +132,52 @@ export function RulerV2({
 
   const ticks = Array.from({ length: config.max + 1 }, (_, i) => i);
   const pct = (v: number) => `${(v / config.max) * 100}%`;
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="ruler" title="找到两端，量一量" instruction="先点物体左端对应的刻度，再点右端对应的刻度。尺子可以左右滑动。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="rl-clear" className="rl-clear" disabled={disabled || state.marks.length === 0} onClick={clearMarks}>
+            清标记
+          </button>
+          <button type="button" data-testid="rl-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="rl-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="ruler-v2" className="manipulative-card ruler-v2"
+      submitTestId="rl-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={state.marks.length === 2 ? `两个标记相隔 ${Math.abs(state.marks[1] - state.marks[0])} 格` : `已经放了 ${state.marks.length} 个标记`}>
+      <div className="v6-ruler-scroll"><div className="rl-ruler" style={{ width: Math.max(624, config.max * 48), minWidth: Math.max(624, config.max * 48) }} data-testid="rl-ruler">
+        <div
+          className="rl-object"
+          data-testid="rl-object"
+          data-left={config.left}
+          data-right={config.right}
+          style={{ left: pct(config.left), width: pct(config.right - config.left) }}
+        >
+          <span aria-hidden="true" className="v6-pencil-body" />
+        </div>
+        <div className="rl-ticks" data-testid="rl-ticks">
+          {ticks.map(v => (
+            <button
+              key={v}
+              type="button"
+              data-testid={`rl-tick-${v}`}
+              data-value={v}
+              aria-label={`刻度 ${v}${markAt(v) ? "，已标记" : ""}`}
+              style={{ left: pct(v) }}
+              className={`rl-tick ${v % 5 === 0 ? "major" : "minor"} ${markAt(v)}`}
+              disabled={disabled}
+              onClick={() => clickTick(v)}
+            >
+              <span className="rl-num">{v}</span>
+            </button>
+          ))}
+        </div>
+      </div></div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card ruler-v2" data-testid="ruler-v2">

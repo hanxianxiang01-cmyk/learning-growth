@@ -1,12 +1,14 @@
 # Learning Growth System
 
+> **本次 V6 全量视觉迁移请先读 [`README_V6_FULL.md`](README_V6_FULL.md)。** 默认 V6 双皮肤，19 个生产 Renderer；构建/真实后端验收仍待执行。
+
 儿童学习成长系统 Git-ready 协作仓库。
 
 ## 当前稳定应用版本
 
 ```text
-Child Web: 1.2.0
-Release: Learning Result Closure
+Child Web: 1.4.0
+Release: see PROJECT_STATUS.md and releases/1.4.0.json
 ```
 
 ## 当前仓库治理版本
@@ -117,7 +119,7 @@ npm run child:build
 
 ---
 
-## Current Priority
+## Historical Priority (当前状态以 PROJECT_STATUS.md 为准)
 
 当前 V1.2 已完成正式 Session Result 结果闭环。
 

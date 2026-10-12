@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * formula-board V2 组件（FE-1420 R10）。runtime 装配对齐 PlaceValueV2/TenFrameV2：
  * rendererWorkspaceReducer + buildRendererEvent。
@@ -43,6 +47,7 @@ export function FormulaBoardV2({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseFormulaConfig(workspace.config as Record<string, unknown>) : null),
@@ -84,7 +89,7 @@ export function FormulaBoardV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">算式板题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "算式板题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -154,6 +159,76 @@ export function FormulaBoardV2({
 
   const undo = () => !disabled && dispatch({ type: "UNDO", event: emit("UNDO", {}) });
   const reset = () => !disabled && dispatch({ type: "RESET", event: emit("RESET", {}) });
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="formula-board" title="把算式补完整" instruction="先点要填写的位置，再选择数字或运算符号。"
+      actions={<div className="workspace-actions">
+          <button
+            type="button"
+            data-testid="fb-undo"
+            disabled={disabled || runtime.history.length === 0}
+            onClick={undo}
+          >
+            撤销
+          </button>
+          <button type="button" data-testid="fb-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="formula-board-v2" className="manipulative-card formula-board-v2"
+      submitTestId="fb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      <div className="fb-formula" data-testid="fb-formula">
+        {config.tokens.map((token, i) => {
+          if (token.t === "num") return <span key={i} className="fb-num" data-testid={`fb-num-${token.v}`}>{token.v}</span>;
+          if (token.t === "op") return <span key={i} className="fb-op">{token.v}</span>;
+          if (token.t === "eq") return <span key={i} className="fb-eq">=</span>;
+          const filledValue = state.filled[token.id];
+          return (
+            <button
+              type="button"
+              key={i}
+              data-testid={`fb-slot-${token.id}`}
+              aria-label={`填写位置 ${i + 1}，${filledValue ?? "待填写"}`}
+              aria-pressed={state.activeSlot === token.id}
+              className={`fb-slot ${filledValue !== undefined ? "filled" : ""} ${state.activeSlot === token.id ? "active" : ""}`}
+              disabled={disabled}
+              onClick={() => activate(token.id)}
+            >
+              {filledValue ?? "○"}
+            </button>
+          );
+        })}
+      </div>
+{activeToken && (
+        <div className="fb-keypad" data-testid="fb-keypad">
+          {activeToken.accept === "operator" ? (
+            <>
+              <button type="button" data-testid="fb-op-plus" className="fb-key op" disabled={disabled} onClick={() => pressOperator("+")}>＋</button>
+              <button type="button" data-testid="fb-op-minus" className="fb-key op" disabled={disabled} onClick={() => pressOperator("-")}>－</button>
+            </>
+          ) : (
+            <>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(key => (
+                <button
+                  type="button"
+                  key={key}
+                  data-testid={`fb-key-${key}`}
+                  className="fb-key"
+                  disabled={disabled}
+                  onClick={() => pressNumber(key)}
+                >
+                  {key}
+                </button>
+              ))}
+            </>
+          )}
+          <button type="button" data-testid="fb-clear" className="fb-key clear" disabled={disabled} onClick={clearSlot}>
+            清空
+          </button>
+        </div>
+      )}
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card formula-board-v2" data-testid="formula-board-v2">

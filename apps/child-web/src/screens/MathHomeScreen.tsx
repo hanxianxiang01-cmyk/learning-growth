@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getLearningApi } from "@/src/lib/api";
 import {
@@ -15,7 +15,13 @@ import {
   TodayGoalCard
 } from "@/src/components";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { HomeView } from "@/src/components/ui-v6/HomeView";
+
 export function MathHomeScreen({ childId }: { childId: string }) {
+  const { uiVersion } = useChildUi();
+  const startLock = useRef(false);
+  const [reload, setReload] = useState(0);
   const api = getLearningApi();
   const router = useRouter();
   const [profile, setProfile] = useState<LearnerProfile | null>(null);
@@ -25,16 +31,21 @@ export function MathHomeScreen({ childId }: { childId: string }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setError(null);
+    setProfile(null);
+    setAbilities([]);
     Promise.all([api.getProfile(childId), api.getAbilities(childId)])
-      .then(([p, a]) => {
-        setProfile(p);
-        setAbilities(a);
-      })
-      .catch(err => setError(err instanceof Error ? err.message : "加载失败"))
-      .finally(() => setLoading(false));
-  }, [api, childId]);
+      .then(([p, a]) => { if (active) { setProfile(p); setAbilities(a); } })
+      .catch(err => { if (active) setError(err instanceof Error ? err.message : "加载失败"); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [api, childId, reload]);
 
   const start = async (challenge: ChallengeKind) => {
+    if (startLock.current || loading) return;
+    startLock.current = true;
     // FE-1428：challenge 即卡片 kind；能力解析走 challengeMapping（关键词优先，app_* 兜底）
     setStarting(true);
     setError(null);
@@ -55,6 +66,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "创建学习会话失败");
+      startLock.current = false;
       setStarting(false);
     }
   };
@@ -64,6 +76,9 @@ export function MathHomeScreen({ childId }: { childId: string }) {
     abilities.find(a =>
       a.ability_id === developingId || a.name === developingId
     ) ?? profile?.active_abilities?.[0] ?? abilities[0];
+
+  if (uiVersion === "v6") return <HomeView childId={childId} profile={profile} abilities={abilities}
+    loading={loading} starting={starting} error={error} onStart={start} onReload={() => setReload(n => n + 1)} />;
 
   return (
     <main className="page-shell">

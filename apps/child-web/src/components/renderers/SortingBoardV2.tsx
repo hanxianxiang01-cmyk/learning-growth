@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * sorting-board V2 组件（FE-1426 R14）。runtime 装配对齐 ShapeGalleryV2。
  *
@@ -44,6 +48,7 @@ export function SortingBoardV2({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseSortingConfig(workspace.config as Record<string, unknown>) : null),
@@ -85,7 +90,7 @@ export function SortingBoardV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">排序板题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "排序板题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -140,6 +145,45 @@ export function SortingBoardV2({
   const reset = () =>
     !disabled && config &&
     dispatch({ type: "SET_STATE", state: initialSortingV2State(config), event: emit("RESET", {}) });
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="sorting-board" title="让数字排排队" instruction="从小到大排：先点一张卡，再点另一张卡，两张就交换。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="sb-undo-swap" className="sb-undo-swap" disabled={disabled || state.swaps.length === 0} onClick={undoSwap}>
+            退回上次交换
+          </button>
+          <button type="button" data-testid="sb-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="sb-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="sorting-board-v2" className="manipulative-card sorting-board-v2"
+      submitTestId="sb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`已经交换 ${state.swaps.length} 次`}>
+      <div className="sb-cards" data-testid="sb-cards">
+        {state.order.map((id, i) => {
+          const item = itemOf(id);
+          return (
+            <button
+              key={id}
+              type="button"
+              data-testid={`sb-card-${i}`}
+              data-value={item.value}
+              aria-pressed={state.selected === id}
+              aria-label={`数字 ${item.value}，第 ${i + 1} 张卡`}
+              className={state.selected === id ? "sb-card picked" : "sb-card"}
+              disabled={disabled}
+              onClick={() => clickCard(id)}
+              style={{ fontSize: `${RANK_FONT[item.visual_rank] ?? 18}px` }}
+            >
+              {item.value}
+            </button>
+          );
+        })}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card sorting-board-v2" data-testid="sorting-board-v2">

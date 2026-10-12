@@ -13,7 +13,8 @@
     "e2e": "playwright test --config=playwright.config.mjs",
     "v1.4:renderers:check": "node scripts/check-v14-renderers.mjs",
     "v1.4:contracts:check": "node scripts/check-v14-contracts.mjs",
-    "v1.4:release:check": "node scripts/check-v14-release.mjs"
+    "v1.4:release:check": "node scripts/check-v14-release.mjs",
+    "v6:e2e": "playwright test --config=playwright.v6.config.mjs"
   },
   "dependencies": {
     "next": "^14.2.0",

@@ -1,0 +1,3023 @@
+{
+  "harness": {
+    "react": "19.1.1",
+    "reactDOM": "19.1.1",
+    "scope": "isolated real components; substituted Next navigation, inlined local SVG and fixture fetch; NOT a Next build or live backend test"
+  },
+  "browser": "144.0.7559.96",
+  "results": [
+    {
+      "fixture": "number-line-jump_sequence",
+      "renderer": "number-line",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "30",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729489203-725ef87a8acaa8",
+            "event_type": "JUMP_CREATED",
+            "occurred_at": "2026-10-11T14:38:09.203Z",
+            "task_instance_id": "v6-dev-fixture-0",
+            "renderer_id": "number-line",
+            "capability_id": "jump",
+            "target_id": "main",
+            "payload": {
+              "from": 20,
+              "to": 25
+            }
+          },
+          {
+            "event_id": "evt-1791729489265-8af4487232b03",
+            "event_type": "JUMP_CREATED",
+            "occurred_at": "2026-10-11T14:38:09.265Z",
+            "task_instance_id": "v6-dev-fixture-0",
+            "renderer_id": "number-line",
+            "capability_id": "jump",
+            "target_id": "main",
+            "payload": {
+              "from": 25,
+              "to": 30
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "start": 20,
+              "end": 30,
+              "jumps": [
+                {
+                  "jump_id": "jump-1",
+                  "from": 20,
+                  "to": 25
+                },
+                {
+                  "jump_id": "jump-2",
+                  "from": 25,
+                  "to": 30
+                }
+              ]
+            }
+          }
+        ],
+        "v2_response_type": "number_line",
+        "v2_ui_revision": "v6-dev-0-number-line"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "35",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729489203-725ef87a8acaa8",
+            "event_type": "JUMP_CREATED",
+            "occurred_at": "2026-10-11T14:38:09.203Z",
+            "task_instance_id": "v6-dev-fixture-0",
+            "renderer_id": "number-line",
+            "capability_id": "jump",
+            "target_id": "main",
+            "payload": {
+              "from": 20,
+              "to": 25
+            }
+          },
+          {
+            "event_id": "evt-1791729489265-8af4487232b03",
+            "event_type": "JUMP_CREATED",
+            "occurred_at": "2026-10-11T14:38:09.265Z",
+            "task_instance_id": "v6-dev-fixture-0",
+            "renderer_id": "number-line",
+            "capability_id": "jump",
+            "target_id": "main",
+            "payload": {
+              "from": 25,
+              "to": 30
+            }
+          },
+          {
+            "event_id": "evt-1791729489733-d06c88702e673",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:09.733Z",
+            "task_instance_id": "v6-dev-fixture-0",
+            "renderer_id": "number-line",
+            "capability_id": "reset",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729489816-0cad2b774a8858",
+            "event_type": "JUMP_CREATED",
+            "occurred_at": "2026-10-11T14:38:09.816Z",
+            "task_instance_id": "v6-dev-fixture-0",
+            "renderer_id": "number-line",
+            "capability_id": "jump",
+            "target_id": "main",
+            "payload": {
+              "from": 20,
+              "to": 25
+            }
+          },
+          {
+            "event_id": "evt-1791729489867-6970abba6054f8",
+            "event_type": "JUMP_CREATED",
+            "occurred_at": "2026-10-11T14:38:09.867Z",
+            "task_instance_id": "v6-dev-fixture-0",
+            "renderer_id": "number-line",
+            "capability_id": "jump",
+            "target_id": "main",
+            "payload": {
+              "from": 25,
+              "to": 30
+            }
+          },
+          {
+            "event_id": "evt-1791729489916-0900632985a66",
+            "event_type": "JUMP_CREATED",
+            "occurred_at": "2026-10-11T14:38:09.916Z",
+            "task_instance_id": "v6-dev-fixture-0",
+            "renderer_id": "number-line",
+            "capability_id": "jump",
+            "target_id": "main",
+            "payload": {
+              "from": 30,
+              "to": 35
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "start": 20,
+              "end": 35,
+              "jumps": [
+                {
+                  "jump_id": "jump-3",
+                  "from": 20,
+                  "to": 25
+                },
+                {
+                  "jump_id": "jump-4",
+                  "from": 25,
+                  "to": 30
+                },
+                {
+                  "jump_id": "jump-5",
+                  "from": 30,
+                  "to": 35
+                }
+              ]
+            }
+          }
+        ],
+        "v2_response_type": "number_line",
+        "v2_ui_revision": "v6-dev-0-number-line"
+      }
+    },
+    {
+      "fixture": "column-arithmetic-addition",
+      "renderer": "column-arithmetic",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "74",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729490436-83ebda57481af8",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.436Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "hundreds",
+              "value": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729490449-6dde1419db44d8",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.449Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "tens",
+              "value": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729490458-55a077581a7cf",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.458Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "ones",
+              "value": 4
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "result_digits": [
+                {
+                  "place": "ones",
+                  "value": 4
+                },
+                {
+                  "place": "tens",
+                  "value": 7
+                },
+                {
+                  "place": "hundreds",
+                  "value": 0
+                }
+              ],
+              "carries": [
+                {
+                  "from_place": "ones",
+                  "to_place": "tens",
+                  "value": 0
+                },
+                {
+                  "from_place": "tens",
+                  "to_place": "hundreds",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        ],
+        "v2_response_type": "column_arithmetic",
+        "v2_ui_revision": "v6-dev-1-column-arithmetic"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "75",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729490436-83ebda57481af8",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.436Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "hundreds",
+              "value": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729490449-6dde1419db44d8",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.449Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "tens",
+              "value": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729490458-55a077581a7cf",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.458Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "ones",
+              "value": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729490898-1c006ca883f5e",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:10.898Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "reset",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729490956-1075cfebd3fd4",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.956Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "hundreds",
+              "value": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729490965-2ba2058fd6b24",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.965Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "tens",
+              "value": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729490973-ff660b4893ffa8",
+            "event_type": "DIGIT_ENTERED",
+            "occurred_at": "2026-10-11T14:38:10.973Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "input_digit",
+            "target_id": "main",
+            "payload": {
+              "place": "ones",
+              "value": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729491015-9dcbe26bf015b8",
+            "event_type": "CARRY_CREATED",
+            "occurred_at": "2026-10-11T14:38:11.015Z",
+            "task_instance_id": "v6-dev-fixture-1",
+            "renderer_id": "column-arithmetic",
+            "capability_id": "place_carry",
+            "target_id": "main",
+            "payload": {
+              "from_place": "ones",
+              "to_place": "tens",
+              "value": 1
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "result_digits": [
+                {
+                  "place": "ones",
+                  "value": 5
+                },
+                {
+                  "place": "tens",
+                  "value": 7
+                },
+                {
+                  "place": "hundreds",
+                  "value": 0
+                }
+              ],
+              "carries": [
+                {
+                  "from_place": "ones",
+                  "to_place": "tens",
+                  "value": 1
+                },
+                {
+                  "from_place": "tens",
+                  "to_place": "hundreds",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        ],
+        "v2_response_type": "column_arithmetic",
+        "v2_ui_revision": "v6-dev-1-column-arithmetic"
+      }
+    },
+    {
+      "fixture": "object-counter-count_compose",
+      "renderer": "object-counter",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "6",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729491514-d8752f93e21718",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.514Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491581-17d5afc64b0848",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.581Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491614-a9e1eb0cf796",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.614Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491648-517c0179a1e65",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.648Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491699-8bb595f7f9ea98",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.699Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g2",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491731-4a0f5e1fccd28",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.731Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g2",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "groups": [
+                {
+                  "group_id": "g1",
+                  "label": "红气球",
+                  "count": 4
+                },
+                {
+                  "group_id": "g2",
+                  "label": "蓝气球",
+                  "count": 2
+                }
+              ],
+              "total": 6
+            }
+          }
+        ],
+        "v2_response_type": "object_count",
+        "v2_ui_revision": "v6-dev-2-object-counter"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "7",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729491514-d8752f93e21718",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.514Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491581-17d5afc64b0848",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.581Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491614-a9e1eb0cf796",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.614Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491648-517c0179a1e65",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.648Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491699-8bb595f7f9ea98",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.699Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g2",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729491731-4a0f5e1fccd28",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:11.731Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g2",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729492181-0ffe529cb51cd",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:12.181Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "reset",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729492266-27a160bc94df7",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:12.266Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729492297-50b30e71dff01",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:12.297Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729492333-23f3500acb7648",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:12.333Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729492380-91a74274ee0e1",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:12.380Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g1",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729492414-d446b96d1cfbc",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:12.414Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g2",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729492447-1cbdbf4bbc7508",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:12.447Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g2",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729492480-8ce72f881fd56",
+            "event_type": "COUNT_ADDED",
+            "occurred_at": "2026-10-11T14:38:12.480Z",
+            "task_instance_id": "v6-dev-fixture-2",
+            "renderer_id": "object-counter",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "group_id": "g2",
+              "delta": 1,
+              "with_group_id": ""
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "groups": [
+                {
+                  "group_id": "g1",
+                  "label": "红气球",
+                  "count": 4
+                },
+                {
+                  "group_id": "g2",
+                  "label": "蓝气球",
+                  "count": 3
+                }
+              ],
+              "total": 7
+            }
+          }
+        ],
+        "v2_response_type": "object_count",
+        "v2_ui_revision": "v6-dev-2-object-counter"
+      }
+    },
+    {
+      "fixture": "number-input-numeric_answer",
+      "renderer": "number-input",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "4",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729492934-5ab7ecdcea9738",
+            "event_type": "NUMBER_INPUT_CHANGED",
+            "occurred_at": "2026-10-11T14:38:12.934Z",
+            "task_instance_id": "v6-dev-fixture-3",
+            "renderer_id": "number-input",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "text": "4"
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "answer": 4,
+              "input_history": [
+                {
+                  "text": "4",
+                  "at": "2026-10-11T14:38:12.934Z"
+                }
+              ]
+            }
+          }
+        ],
+        "v2_response_type": "number_input",
+        "v2_ui_revision": "v6-dev-3-number-input"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "5",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729492934-5ab7ecdcea9738",
+            "event_type": "NUMBER_INPUT_CHANGED",
+            "occurred_at": "2026-10-11T14:38:12.934Z",
+            "task_instance_id": "v6-dev-fixture-3",
+            "renderer_id": "number-input",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "text": "4"
+            }
+          },
+          {
+            "event_id": "evt-1791729493336-79b6279ad498c",
+            "event_type": "NUMBER_INPUT_CHANGED",
+            "occurred_at": "2026-10-11T14:38:13.336Z",
+            "task_instance_id": "v6-dev-fixture-3",
+            "renderer_id": "number-input",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "text": ""
+            }
+          },
+          {
+            "event_id": "evt-1791729493396-a1ed9904da5a68",
+            "event_type": "NUMBER_INPUT_CHANGED",
+            "occurred_at": "2026-10-11T14:38:13.396Z",
+            "task_instance_id": "v6-dev-fixture-3",
+            "renderer_id": "number-input",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "text": "5"
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "answer": 5,
+              "input_history": [
+                {
+                  "text": "4",
+                  "at": "2026-10-11T14:38:12.934Z"
+                },
+                {
+                  "text": "",
+                  "at": "2026-10-11T14:38:13.336Z"
+                },
+                {
+                  "text": "5",
+                  "at": "2026-10-11T14:38:13.396Z"
+                }
+              ]
+            }
+          }
+        ],
+        "v2_response_type": "number_input",
+        "v2_ui_revision": "v6-dev-3-number-input"
+      }
+    },
+    {
+      "fixture": "ten-frame-quantity_structure",
+      "renderer": "ten-frame",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "9",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729493915-9643ae9c19a118",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:13.915Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 0,
+              "count": 1,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729493947-2d23776f9b4898",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:13.947Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 1,
+              "count": 2,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729493982-3aa2384583b1e",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:13.982Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 2,
+              "count": 3,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494015-478e2284189e3",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.015Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 3,
+              "count": 4,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494049-32539c5b6872f",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.049Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 4,
+              "count": 5,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494099-ec15ba069f0f68",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.099Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 5,
+              "count": 6,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494150-9f2cd5f53e0a08",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.150Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 6,
+              "count": 7,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494182-efde638a5669e",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.182Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 7,
+              "count": 8,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494232-d73f00f2ea77e",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.232Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 8,
+              "count": 9,
+              "tens": 0
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "tens": 0,
+              "current_frame_count": 9,
+              "total": 9
+            }
+          }
+        ],
+        "v2_response_type": "ten_frame",
+        "v2_ui_revision": "v6-dev-4-ten-frame"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "13",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729493915-9643ae9c19a118",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:13.915Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 0,
+              "count": 1,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729493947-2d23776f9b4898",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:13.947Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 1,
+              "count": 2,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729493982-3aa2384583b1e",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:13.982Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 2,
+              "count": 3,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494015-478e2284189e3",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.015Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 3,
+              "count": 4,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494049-32539c5b6872f",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.049Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 4,
+              "count": 5,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494099-ec15ba069f0f68",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.099Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 5,
+              "count": 6,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494150-9f2cd5f53e0a08",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.150Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 6,
+              "count": 7,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494182-efde638a5669e",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.182Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 7,
+              "count": 8,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494232-d73f00f2ea77e",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.232Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 8,
+              "count": 9,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494648-bc38b0b55249d8",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:14.648Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "reset",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729494731-2ad8847b459e7",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.731Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 0,
+              "count": 1,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494764-ce24fcc0f99bd",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.764Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 1,
+              "count": 2,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494798-3103351c8567f8",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.798Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 2,
+              "count": 3,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494831-dda88b066256f8",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.831Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 3,
+              "count": 4,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494865-5fedae224fdd9",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.865Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 4,
+              "count": 5,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494898-544dde5bf1fb3",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.898Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 5,
+              "count": 6,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494933-5759fcea44ad9",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.933Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 6,
+              "count": 7,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729494984-3ceb0c2c4228b8",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:14.984Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 7,
+              "count": 8,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729495016-a7060781a9c1a",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.016Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 8,
+              "count": 9,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729495065-7982e85d30bc48",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.065Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 9,
+              "count": 10,
+              "tens": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729495114-d6940c09cf175",
+            "event_type": "MAKE_TEN_COMPLETED",
+            "occurred_at": "2026-10-11T14:38:15.114Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "tens": 1,
+              "total": 10
+            }
+          },
+          {
+            "event_id": "evt-1791729495164-28a5ef8526d6f",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.164Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 0,
+              "count": 1,
+              "tens": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729495216-c30585123890d",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.216Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 1,
+              "count": 2,
+              "tens": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729495248-7e199f2883a598",
+            "event_type": "COUNTER_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.248Z",
+            "task_instance_id": "v6-dev-fixture-4",
+            "renderer_id": "ten-frame",
+            "capability_id": "fill",
+            "target_id": "main",
+            "payload": {
+              "index": 2,
+              "count": 3,
+              "tens": 1
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "tens": 1,
+              "current_frame_count": 3,
+              "total": 13
+            }
+          }
+        ],
+        "v2_response_type": "ten_frame",
+        "v2_ui_revision": "v6-dev-4-ten-frame"
+      }
+    },
+    {
+      "fixture": "bar-model-part_whole",
+      "renderer": "bar-model",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "7",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729495729-86e5c46862e4c",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.729Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729495782-739a85079cb67",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.782Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729495815-53dd11320fc2f8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.815Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729495851-05cb8032d97868",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.851Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729495885-297032ef0b466",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.885Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729495931-b1a6591c02c92",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.931Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729495965-97b6c7e0f9b42",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.965Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729495997-1900de1ff9d2c",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.997Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729496032-557fd92f05902",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.032Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729496067-6afa656d0a8658",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.067Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729496114-1069cdde5a50a8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.114Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729496167-55defc5d1f8a88",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.167Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729496214-ef869d53616b98",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.214Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729496248-6543b2692836f8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.248Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 6
+            }
+          },
+          {
+            "event_id": "evt-1791729496283-e934d707102968",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.283Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 7
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "bars": {
+                "a": 5,
+                "b": 3,
+                "c": 7
+              },
+              "answer_bar": "c",
+              "answer": 7,
+              "structure": {
+                "status": "FAIL",
+                "error": "calc",
+                "relation": "part_whole"
+              }
+            }
+          }
+        ],
+        "v2_response_type": "bar_model",
+        "v2_ui_revision": "v6-dev-5-bar-model"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "8",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729495729-86e5c46862e4c",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.729Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729495782-739a85079cb67",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.782Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729495815-53dd11320fc2f8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.815Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729495851-05cb8032d97868",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.851Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729495885-297032ef0b466",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.885Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729495931-b1a6591c02c92",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.931Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729495965-97b6c7e0f9b42",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.965Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729495997-1900de1ff9d2c",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:15.997Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729496032-557fd92f05902",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.032Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729496067-6afa656d0a8658",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.067Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729496114-1069cdde5a50a8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.114Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729496167-55defc5d1f8a88",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.167Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729496214-ef869d53616b98",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.214Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729496248-6543b2692836f8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.248Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 6
+            }
+          },
+          {
+            "event_id": "evt-1791729496283-e934d707102968",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.283Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729496733-63694da50f209",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:16.733Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "reset",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729496815-4a26545fe3ce18",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.815Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729496848-c455c04d35a9a8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.848Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729496883-c6276097f050a",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.883Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729496930-38199e6c900128",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.930Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729496963-c2683660eb7ea8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.963Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "a",
+              "blocks": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729496998-e5dfde581de79",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:16.998Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729497030-26599c09c40b78",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.030Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729497064-9288996424e81",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.064Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "b",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729497100-e3802adb5e20f8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.100Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729497153-bf9723acc12ab8",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.153Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729497200-e3bc1c0f59ca6",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.200Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729497231-b6defd659bf9a",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.231Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729497264-c0b07756e8c0b",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.264Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729497297-6b29ce3d8c0828",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.297Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 6
+            }
+          },
+          {
+            "event_id": "evt-1791729497330-6a08c77ce03358",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.330Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729497363-8ed13ee02272a",
+            "event_type": "BAR_BLOCK_ADDED",
+            "occurred_at": "2026-10-11T14:38:17.363Z",
+            "task_instance_id": "v6-dev-fixture-5",
+            "renderer_id": "bar-model",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "bar": "c",
+              "blocks": 8
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "bars": {
+                "a": 5,
+                "b": 3,
+                "c": 8
+              },
+              "answer_bar": "c",
+              "answer": 8,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "relation": "part_whole"
+              }
+            }
+          }
+        ],
+        "v2_response_type": "bar_model",
+        "v2_ui_revision": "v6-dev-5-bar-model"
+      }
+    },
+    {
+      "fixture": "place-value-place_value_build",
+      "renderer": "place-value",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "253",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729497881-4ebb91abd5cb88",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:17.881Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 2,
+              "index": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729497914-15522a914f904",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:17.914Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "百",
+              "digit": 2,
+              "slot": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729497949-20acc3342a6a28",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:17.949Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 5,
+              "index": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729498000-e75fc748516818",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:18.000Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "十",
+              "digit": 5,
+              "slot": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729498050-c7dc6de12cd94",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:18.050Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 3,
+              "index": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729498121-2b13f14adf2a38",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:18.121Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "个",
+              "digit": 3,
+              "slot": 2
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "slots": [
+                2,
+                5,
+                3
+              ],
+              "pool_remaining": [],
+              "answer": 253,
+              "target_digits": [
+                3,
+                5,
+                2
+              ],
+              "structure": {
+                "status": "FAIL",
+                "error": "place_confusion",
+                "place_value": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "place_value",
+        "v2_ui_revision": "v6-dev-6-place-value"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "352",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729497881-4ebb91abd5cb88",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:17.881Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 2,
+              "index": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729497914-15522a914f904",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:17.914Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "百",
+              "digit": 2,
+              "slot": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729497949-20acc3342a6a28",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:17.949Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 5,
+              "index": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729498000-e75fc748516818",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:18.000Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "十",
+              "digit": 5,
+              "slot": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729498050-c7dc6de12cd94",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:18.050Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 3,
+              "index": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729498121-2b13f14adf2a38",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:18.121Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "个",
+              "digit": 3,
+              "slot": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729498616-f4221d21da61f",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:18.616Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729498699-06464d850fe4d",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:18.699Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 3,
+              "index": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729498734-49e5d96f7d4448",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:18.734Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "百",
+              "digit": 3,
+              "slot": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729498766-f48738dece79b",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:18.766Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 5,
+              "index": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729498799-d01ae473307a6",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:18.799Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "十",
+              "digit": 5,
+              "slot": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729498833-6f0bc918f05f38",
+            "event_type": "DIGIT_PICKED",
+            "occurred_at": "2026-10-11T14:38:18.833Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "digit": 2,
+              "index": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729498867-2e0e98e5c5b77",
+            "event_type": "DIGIT_PLACED",
+            "occurred_at": "2026-10-11T14:38:18.867Z",
+            "task_instance_id": "v6-dev-fixture-6",
+            "renderer_id": "place-value",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "place": "个",
+              "digit": 2,
+              "slot": 2
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "slots": [
+                3,
+                5,
+                2
+              ],
+              "pool_remaining": [],
+              "answer": 352,
+              "target_digits": [
+                3,
+                5,
+                2
+              ],
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "place_value": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "place_value",
+        "v2_ui_revision": "v6-dev-6-place-value"
+      }
+    },
+    {
+      "fixture": "formula-board-unknown_number",
+      "renderer": "formula-board",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "4",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729499364-360f32f1e8f328",
+            "event_type": "SLOT_ACTIVATED",
+            "occurred_at": "2026-10-11T14:38:19.364Z",
+            "task_instance_id": "v6-dev-fixture-7",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "box"
+            }
+          },
+          {
+            "event_id": "evt-1791729499417-3155e0b5948558",
+            "event_type": "NUMBER_FILLED",
+            "occurred_at": "2026-10-11T14:38:19.417Z",
+            "task_instance_id": "v6-dev-fixture-7",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "box",
+              "value": 4,
+              "key": 4
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "filled": {
+                "box": 4
+              },
+              "answer": 4,
+              "structure": {
+                "status": "FAIL",
+                "error": "relation",
+                "equation": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "formula_board",
+        "v2_ui_revision": "v6-dev-7-formula-board"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "5",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729499364-360f32f1e8f328",
+            "event_type": "SLOT_ACTIVATED",
+            "occurred_at": "2026-10-11T14:38:19.364Z",
+            "task_instance_id": "v6-dev-fixture-7",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "box"
+            }
+          },
+          {
+            "event_id": "evt-1791729499417-3155e0b5948558",
+            "event_type": "NUMBER_FILLED",
+            "occurred_at": "2026-10-11T14:38:19.417Z",
+            "task_instance_id": "v6-dev-fixture-7",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "box",
+              "value": 4,
+              "key": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729499834-cc235c21be5ff",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:19.834Z",
+            "task_instance_id": "v6-dev-fixture-7",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729499914-54fa928c35f548",
+            "event_type": "SLOT_ACTIVATED",
+            "occurred_at": "2026-10-11T14:38:19.914Z",
+            "task_instance_id": "v6-dev-fixture-7",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "box"
+            }
+          },
+          {
+            "event_id": "evt-1791729499947-4bae207ba6ed68",
+            "event_type": "NUMBER_FILLED",
+            "occurred_at": "2026-10-11T14:38:19.947Z",
+            "task_instance_id": "v6-dev-fixture-7",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "box",
+              "value": 5,
+              "key": 5
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "filled": {
+                "box": 5
+              },
+              "answer": 5,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "equation": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "formula_board",
+        "v2_ui_revision": "v6-dev-7-formula-board"
+      }
+    },
+    {
+      "fixture": "formula-board-unknown_operator",
+      "renderer": "formula-board",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "+",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729500546-50a079449e579",
+            "event_type": "SLOT_ACTIVATED",
+            "occurred_at": "2026-10-11T14:38:20.546Z",
+            "task_instance_id": "v6-dev-fixture-8",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "op0"
+            }
+          },
+          {
+            "event_id": "evt-1791729500602-acc509f0586aa",
+            "event_type": "OPERATOR_FILLED",
+            "occurred_at": "2026-10-11T14:38:20.602Z",
+            "task_instance_id": "v6-dev-fixture-8",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "op0",
+              "value": "+"
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "filled": {
+                "op0": "+"
+              },
+              "answer": "+",
+              "structure": {
+                "status": "FAIL",
+                "error": "operator",
+                "equation": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "formula_board",
+        "v2_ui_revision": "v6-dev-8-formula-board"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "-",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729500546-50a079449e579",
+            "event_type": "SLOT_ACTIVATED",
+            "occurred_at": "2026-10-11T14:38:20.546Z",
+            "task_instance_id": "v6-dev-fixture-8",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "op0"
+            }
+          },
+          {
+            "event_id": "evt-1791729500602-acc509f0586aa",
+            "event_type": "OPERATOR_FILLED",
+            "occurred_at": "2026-10-11T14:38:20.602Z",
+            "task_instance_id": "v6-dev-fixture-8",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "op0",
+              "value": "+"
+            }
+          },
+          {
+            "event_id": "evt-1791729501032-147c19901c8f18",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:21.032Z",
+            "task_instance_id": "v6-dev-fixture-8",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729501115-f4c6f8d9dfa5b",
+            "event_type": "SLOT_ACTIVATED",
+            "occurred_at": "2026-10-11T14:38:21.115Z",
+            "task_instance_id": "v6-dev-fixture-8",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "op0"
+            }
+          },
+          {
+            "event_id": "evt-1791729501148-8290f8b46ba14",
+            "event_type": "OPERATOR_FILLED",
+            "occurred_at": "2026-10-11T14:38:21.148Z",
+            "task_instance_id": "v6-dev-fixture-8",
+            "renderer_id": "formula-board",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "slot": "op0",
+              "value": "-"
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "filled": {
+                "op0": "-"
+              },
+              "answer": "-",
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "equation": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "formula_board",
+        "v2_ui_revision": "v6-dev-8-formula-board"
+      }
+    },
+    {
+      "fixture": "array-board-array_structure",
+      "renderer": "array-board",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "8",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729501612-ca5b4d80a1257",
+            "event_type": "ARRAY_ROW_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.612Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 1,
+              "columns": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729501648-1f090f2e1cbd08",
+            "event_type": "ARRAY_ROW_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.648Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729501681-094b5892c8d8f",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.681Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729501713-f8d9501eee0798",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.713Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729501746-e96503f39616b8",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.746Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729501779-3332137724a88",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.779Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 4
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "rows": 2,
+              "columns": 4,
+              "product": 8,
+              "answer": 8,
+              "target_structure": {
+                "rows": 3,
+                "columns": 4
+              },
+              "structure": {
+                "status": "FAIL",
+                "error": "count",
+                "array": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "array_board",
+        "v2_ui_revision": "v6-dev-9-array-board"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "12",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729501612-ca5b4d80a1257",
+            "event_type": "ARRAY_ROW_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.612Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 1,
+              "columns": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729501648-1f090f2e1cbd08",
+            "event_type": "ARRAY_ROW_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.648Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729501681-094b5892c8d8f",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.681Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729501713-f8d9501eee0798",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.713Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729501746-e96503f39616b8",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.746Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729501779-3332137724a88",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:21.779Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729502164-cb5ca4fd216ce",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:22.164Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "reset",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729502247-d3f5ea7b7705a",
+            "event_type": "ARRAY_ROW_ADDED",
+            "occurred_at": "2026-10-11T14:38:22.247Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 1,
+              "columns": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729502279-3c4e7868ae3a38",
+            "event_type": "ARRAY_ROW_ADDED",
+            "occurred_at": "2026-10-11T14:38:22.279Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 2,
+              "columns": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729502312-ee685f03a0457",
+            "event_type": "ARRAY_ROW_ADDED",
+            "occurred_at": "2026-10-11T14:38:22.312Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 3,
+              "columns": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729502346-4f33bf3e2c3f1",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:22.346Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 3,
+              "columns": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729502380-9904e48fcd0cd8",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:22.380Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 3,
+              "columns": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729502414-787cef3ab7f5e8",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:22.414Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 3,
+              "columns": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729502446-44a5f3565beb48",
+            "event_type": "ARRAY_COL_ADDED",
+            "occurred_at": "2026-10-11T14:38:22.446Z",
+            "task_instance_id": "v6-dev-fixture-9",
+            "renderer_id": "array-board",
+            "capability_id": "add_object",
+            "target_id": "main",
+            "payload": {
+              "rows": 3,
+              "columns": 4
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "rows": 3,
+              "columns": 4,
+              "product": 12,
+              "answer": 12,
+              "target_structure": {
+                "rows": 3,
+                "columns": 4
+              },
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "array": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "array_board",
+        "v2_ui_revision": "v6-dev-9-array-board"
+      }
+    }
+  ]
+}
