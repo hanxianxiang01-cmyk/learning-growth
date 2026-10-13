@@ -1,0 +1,9 @@
+{
+  "same_submission_id": true,
+  "payload_identical": false,
+  "old_envelope_sha256": "2b3319fae36fe581e34e87d5a393bb23f7f7e928a777a5bc27cd235e930dafe0",
+  "new_envelope_sha256": "97e59160f8170cbec1792bed8b41f989e16bf414657a3128b1e9a8fe51a8d5e1",
+  "same_id_different_payload_yields_conflict_409_under_record_attempt": true,
+  "impact": "In-flight legacy retry may conflict after deploying SAFE-01 sanitizer; coordinate rollout/drain or immutable submit snapshot",
+  "real_db_tested": false
+}

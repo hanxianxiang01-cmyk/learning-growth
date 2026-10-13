@@ -1,0 +1,32 @@
+{
+  "syntax_transpile_checks": [
+    {
+      "file": "apps/child-web/src/features/math-interaction/implementationPolicy.ts",
+      "status": "PASS",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/child-web/src/features/math-interaction/TaskRendererImplementationBoundary.tsx",
+      "status": "PASS",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/child-web/src/features/math-interaction/NumberInputKernelPilot.tsx",
+      "status": "PASS",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/TaskRenderer.tsx",
+      "status": "PASS",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/child-web/src/lib/api/v2AttemptAdapter.ts",
+      "status": "PASS",
+      "diagnostics": []
+    }
+  ],
+  "pass": 5,
+  "total": 5,
+  "full_typecheck": false
+}
