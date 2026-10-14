@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -30,6 +31,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -44,7 +47,8 @@ export function MoneyBoardV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -144,6 +148,16 @@ export function MoneyBoardV2({
         </div>}
       testId="money-board-v2" className="manipulative-card money-board-v2"
       submitTestId="mb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`台面上：${totalText}`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="money-board"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyAddCoin": a => addCoin(a.denominationJiao as number),
+          "applyRemoveCoin": a => removeCoin(a.denominationJiao as number)
+        }}
+      />}
       <div className="mb-price" data-testid="mb-price">
         商品价：{Math.floor(config.price / 10)}元{config.price % 10}角
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -26,6 +27,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -40,7 +43,8 @@ export function TenFrameV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -152,6 +156,15 @@ export function TenFrameV2({
         </div>}
       testId="ten-frame-v2" className="manipulative-card ten-frame-v2"
       submitTestId="tf-submit" submitDisabled={disabled || verdict === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`现在一共有 ${totalOf(state)} 个`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="ten-frame"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyCell": a => tapCell(a.cellIndex as number)
+        }}
+      />}
       {state.tens > 0 && (
         <div className="tf-tens" data-testid="tf-tens">
           {Array.from({ length: state.tens }, (_, i) => (

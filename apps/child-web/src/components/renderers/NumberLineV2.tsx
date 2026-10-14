@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -21,6 +22,8 @@ import {
 } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -65,7 +68,8 @@ export function NumberLineV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const arrowId = `v6-jump-${useId().replace(/:/g, "")}`;
@@ -173,6 +177,15 @@ export function NumberLineV2({
         </div>}
       testId="number-line-v2" className="manipulative-card number-line"
       submitTestId="number-line-v2-submit" submitDisabled={disabled || endpointAnswer(runtime.present) === null} locked={disabled} onSubmit={onSubmit} summary={`现在到 ${runtime.present.current ?? "起点待定"}`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="number-line"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyJump": a => jump(a.toTick as number)
+        }}
+      />}
       <div className="v6-number-line-scroll"><div className="v6-number-line-track" style={{width: Math.max(104, v6LineValues.length * 52)}}>
        <svg className="v6-jump-arcs" viewBox={`0 0 ${Math.max(104, v6LineValues.length * 52)} 100`} aria-hidden="true">
          <defs><marker id={arrowId} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 8,4 0,8" fill="var(--v6-theme)" /></marker></defs>

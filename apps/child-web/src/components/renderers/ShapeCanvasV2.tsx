@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -29,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -46,7 +49,8 @@ export function ShapeCanvasV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -163,6 +167,15 @@ export function ShapeCanvasV2({
         </div>}
       testId="shape-canvas-v2" className="manipulative-card shape-canvas-v2"
       submitTestId="sc-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`已经选择 ${v.length} 个顶点`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="shape-canvas"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyAddPoint": a => clickPoint(a.x as number, a.y as number)
+        }}
+      />}
       <div className="v6-geometry-scroll"><svg
         data-testid="sc-board"
         width={side}

@@ -30,6 +30,10 @@ jobs:
       - run: npm run child:typecheck
       - name: V6 pure-module and full migration inventory checks
         run: npm run child:v6:check
+      # A5 cannot be certified by V6's static gallery alone: 16 actual V6
+      # domains + the opt-in React mount AST are independently tested here.
+      - name: MIK-A5 isolated domain and 16 Renderer wiring contracts
+        run: node scripts/check-mik-a5-review.mjs
 
   child-build:
     runs-on: ubuntu-latest

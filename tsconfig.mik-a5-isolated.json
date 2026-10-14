@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target":"ES2022","module":"commonjs","moduleResolution":"node","jsx":"react-jsx",
+    "strict":true,"skipLibCheck":true,"noEmit":false,"esModuleInterop":true,
+    "rootDir":".","outDir":"dist/isolated","lib":["ES2022","DOM"],
+    "types":[],"noUnusedLocals":false,"noUnusedParameters":false
+  },
+  "include":[
+    "apps/child-web/src/features/task-renderer/interaction/kernel/*.ts",
+    "apps/child-web/src/features/task-renderer/interaction/kernel/*.tsx",
+    "tests/shims/*.d.ts"
+  ]
+}

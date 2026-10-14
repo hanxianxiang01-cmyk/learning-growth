@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame, ShapeSymbol } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -31,6 +32,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -52,7 +55,8 @@ export function ShapeGalleryV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -177,6 +181,17 @@ export function ShapeGalleryV2({
         </div>}
       testId="shape-gallery-v2" className="manipulative-card shape-gallery-v2"
       submitTestId="sg-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`家里现在有 ${state.home.length} 个图形`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="shape-gallery"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applySelect": a => clickShape(a.shapeId as string),
+          "applyPlaceHome": a => placeHome(),
+          "applyReturnHome": a => returnShape(a.shapeId as string)
+        }}
+      />}
       <div className="sg-wall" data-testid="sg-wall">
         {config.shapes.map(s => {
           const inHome = state.home.includes(s.id);

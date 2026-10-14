@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -31,6 +32,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -45,7 +48,8 @@ export function FormulaBoardV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -177,6 +181,17 @@ export function FormulaBoardV2({
         </div>}
       testId="formula-board-v2" className="manipulative-card formula-board-v2"
       submitTestId="fb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="formula-board"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyActivate": a => activate(a.slotId as string),
+          "applyNumberKey": a => pressNumber(a.digit as number),
+          "applyOperatorKey": a => pressOperator(a.symbol as "+" | "-")
+        }}
+      />}
       <div className="fb-formula" data-testid="fb-formula">
         {config.tokens.map((token, i) => {
           if (token.t === "num") return <span key={i} className="fb-num" data-testid={`fb-num-${token.v}`}>{token.v}</span>;

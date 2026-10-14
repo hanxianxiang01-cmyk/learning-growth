@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -29,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -43,7 +46,8 @@ export function PlaceValueV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -151,6 +155,16 @@ export function PlaceValueV2({
         </div>}
       testId="place-value-v2" className="manipulative-card place-value-v2"
       submitTestId="pv-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="place-value"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyPick": a => pickCard(a.poolIndex as number),
+          "applySlot": a => tapSlot(a.slotIndex as number)
+        }}
+      />}
       <div className="pv-slots" data-testid="pv-slots">
         {config.places.map((place, j) => {
           const value = state.slots[j];

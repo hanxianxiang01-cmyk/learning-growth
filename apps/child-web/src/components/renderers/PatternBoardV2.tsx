@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -30,6 +31,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -53,7 +56,8 @@ export function PatternBoardV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -136,6 +140,17 @@ export function PatternBoardV2({
     }
   };
 
+  // A5 direct target drop: explicit chosen slot, with the existing domain action
+  // and one native semantic event. Does not add a hidden selection event.
+  const dropToken = (slot: number, token: number) => {
+    if (disabled) return;
+    const result = applyReplaceAt(state, config, slot, token);
+    if (!result.ok) return;
+    dispatch({ type: "SET_STATE", state: result.state,
+      event: emit(state.beads[slot] === null ? "PATTERN_BEAD_PLACED" : "PATTERN_BEAD_REPLACED",
+        { slot, from: state.beads[slot], token }) });
+  };
+
   const clearBead = (slot: number) => {
     if (disabled) return;
     const result = applyClearAt(state, slot);
@@ -185,6 +200,15 @@ export function PatternBoardV2({
         </div>}
       testId="pattern-board-v2" className="manipulative-card pattern-board-v2"
       submitTestId="pb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="pattern-board"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyReplaceAt": a => dropToken(a.blankIndex as number, a.token as number)
+        }}
+      />}
       <div className="pb-strip" data-testid="pb-strip">
         {beadsView.map((b, i) => {
           const blank = b.token === null;

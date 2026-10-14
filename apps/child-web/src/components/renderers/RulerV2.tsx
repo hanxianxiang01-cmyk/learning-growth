@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -29,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -43,7 +46,8 @@ export function RulerV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -148,6 +152,15 @@ export function RulerV2({
         </div>}
       testId="ruler-v2" className="manipulative-card ruler-v2"
       submitTestId="rl-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={state.marks.length === 2 ? `两个标记相隔 ${Math.abs(state.marks[1] - state.marks[0])} 格` : `已经放了 ${state.marks.length} 个标记`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="ruler"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyPlaceMark": a => clickTick(a.tick as number)
+        }}
+      />}
       <div className="v6-ruler-scroll"><div className="rl-ruler" style={{ width: Math.max(624, config.max * 48), minWidth: Math.max(624, config.max * 48) }} data-testid="rl-ruler">
         <div
           className="rl-object"

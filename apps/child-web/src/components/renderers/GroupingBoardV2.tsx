@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -29,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -43,7 +46,8 @@ export function GroupingBoardV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -164,6 +168,16 @@ export function GroupingBoardV2({
         </div>}
       testId="grouping-board-v2" className="manipulative-card grouping-board-v2"
       submitTestId="gb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`还没分 ${state.pool} 个 · 已圈 ${state.groups.length} 组`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="grouping-board"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyAddItem": a => giveItem(a.groupIndex as number),
+          "applyRemoveItem": a => takeItem(a.groupIndex as number)
+        }}
+      />}
       <div className="gb-pool" data-testid="gb-pool">
         <span className="gb-pool-label">还没分：</span>
         <div className="gb-pool-items">

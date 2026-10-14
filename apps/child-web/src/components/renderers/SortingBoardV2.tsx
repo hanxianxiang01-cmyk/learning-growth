@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -29,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -46,7 +49,8 @@ export function SortingBoardV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -161,6 +165,16 @@ export function SortingBoardV2({
         </div>}
       testId="sorting-board-v2" className="manipulative-card sorting-board-v2"
       submitTestId="sb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`已经交换 ${state.swaps.length} 次`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="sorting-board"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applySelectCard": a => clickCard(a.cardId as string),
+          "applySwap": a => clickCard(a.targetCardId as string)
+        }}
+      />}
       <div className="sb-cards" data-testid="sb-cards">
         {state.order.map((id, i) => {
           const item = itemOf(id);

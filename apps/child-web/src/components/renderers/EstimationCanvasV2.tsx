@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame, ReferenceObjects } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -30,6 +31,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -44,7 +47,8 @@ export function EstimationCanvasV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -146,6 +150,15 @@ export function EstimationCanvasV2({
         </div>}
       testId="estimation-canvas-v2" className="manipulative-card estimation-canvas-v2"
       submitTestId="ec-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={state.estimate === null ? undefined : `我估计：${state.estimate}`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="estimation-canvas"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyEstimate": a => moveEstimate(a.value as number)
+        }}
+      />}
       <div className="v6-estimation-scene"><ReferenceObjects count={config.reference} label="参照的一组" /><ReferenceObjects count={config.actual} label="待估的一组" hiddenCount /></div>
 <input
         type="range"

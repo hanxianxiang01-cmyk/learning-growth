@@ -1,6 +1,7 @@
 "use client";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
 import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
 
 
@@ -29,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -49,7 +52,8 @@ export function BarModelV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
   const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
@@ -179,6 +183,15 @@ export function BarModelV2({
         </div>}
       testId="bar-model-v2" className="manipulative-card bar-model-v2"
       submitTestId="bm-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="bar-model"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyBarDelta": a => changeBar((["a","b","c"] as const)[a.barIndex as number], a.delta as number)
+        }}
+      />}
       <div className="bm-bars" data-testid="bm-bars">
         {(["a", "b", "c"] as BarId[]).map(renderBar)}
       </div>
