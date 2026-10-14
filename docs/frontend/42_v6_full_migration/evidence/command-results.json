@@ -1,0 +1,98 @@
+[
+  {
+    "name": "pure-tests",
+    "command": "node apps/child-web/scripts/check-v6-migration.mjs",
+    "status": "PASS",
+    "exit": 0,
+    "duration_seconds": 1.64,
+    "log": "pure-tests.json"
+  },
+  {
+    "name": "full-static-tests",
+    "command": "node apps/child-web/scripts/check-v6-full.mjs",
+    "status": "PASS",
+    "exit": 0,
+    "duration_seconds": 0.46,
+    "log": "full-static-tests.json"
+  },
+  {
+    "name": "governance",
+    "command": "npm run governance:check",
+    "status": "PASS",
+    "exit": 0,
+    "duration_seconds": 0.27,
+    "log": "governance.log"
+  },
+  {
+    "name": "release",
+    "command": "npm run release:check",
+    "status": "PASS",
+    "exit": 0,
+    "duration_seconds": 0.17,
+    "log": "release.log"
+  },
+  {
+    "name": "v14",
+    "command": "npm run child:v14:check",
+    "status": "PASS",
+    "exit": 0,
+    "duration_seconds": 0.31,
+    "log": "v14.log"
+  },
+  {
+    "name": "renderers",
+    "command": "npm --workspace @learning/child-web run v1.4:renderers:check",
+    "status": "PASS",
+    "exit": 0,
+    "duration_seconds": 0.17,
+    "log": "renderers.log"
+  },
+  {
+    "name": "contracts",
+    "command": "npm --workspace @learning/child-web run v1.4:contracts:check",
+    "status": "PASS",
+    "exit": 0,
+    "duration_seconds": 0.18,
+    "log": "contracts.log"
+  },
+  {
+    "name": "frontend-release",
+    "command": "npm --workspace @learning/child-web run v1.4:release:check",
+    "status": "PASS",
+    "exit": 0,
+    "duration_seconds": 0.19,
+    "log": "frontend-release.log"
+  },
+  {
+    "name": "app-typecheck",
+    "command": "npm run child:typecheck",
+    "status": "BLOCKED",
+    "exit": 2,
+    "duration_seconds": 1.5,
+    "log": "app-typecheck.log"
+  },
+  {
+    "name": "app-build",
+    "command": "npm run child:build",
+    "status": "BLOCKED",
+    "exit": 127,
+    "duration_seconds": 0.31,
+    "log": "app-build.log"
+  },
+  {
+    "name": "next-v6-e2e",
+    "command": "npm run child:v6:e2e",
+    "status": "BLOCKED",
+    "exit": 1,
+    "duration_seconds": 1.81,
+    "log": "next-v6-e2e.log"
+  },
+  {
+    "name": "branch",
+    "command": "npm run branch:check",
+    "status": "BLOCKED",
+    "exit": 1,
+    "duration_seconds": 0.2,
+    "log": "branch.log"
+  }
+]

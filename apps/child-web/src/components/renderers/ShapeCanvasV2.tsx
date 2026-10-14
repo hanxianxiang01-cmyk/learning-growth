@@ -1,5 +1,10 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * shape-canvas V2 组件（FE-1425 R13）。runtime 装配对齐 ShapeGalleryV2。
  *
@@ -25,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -42,8 +49,10 @@ export function ShapeCanvasV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseShapeCanvasConfig(workspace.config as Record<string, unknown>) : null),
@@ -85,7 +94,7 @@ export function ShapeCanvasV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">图形画布题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "图形画布题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -142,6 +151,82 @@ export function ShapeCanvasV2({
   const px = (p: { x: number; y: number }) => ({ cx: PAD + p.x * CELL, cy: PAD + p.y * CELL });
   const polyPoints = v.map(p => `${PAD + p.x * CELL},${PAD + p.y * CELL}`).join(" ");
   const area = v.length >= 3 ? polygonArea(v) : null;
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="shape-canvas" title="点出顶点，围成图形" instruction="按顺序点顶点，用自己的方法围出题目中的图形。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="sc-remove" disabled={disabled || v.length === 0} onClick={removeLast}>
+            撤一个点
+          </button>
+          <button type="button" data-testid="sc-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="sc-reset" disabled={disabled} onClick={reset}>
+            清空
+          </button>
+        </div>}
+      testId="shape-canvas-v2" className="manipulative-card shape-canvas-v2"
+      submitTestId="sc-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`已经选择 ${v.length} 个顶点`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="shape-canvas"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyAddPoint": a => clickPoint(a.x as number, a.y as number)
+        }}
+      />}
+      <div className="v6-geometry-scroll"><svg
+        data-testid="sc-board"
+        width={side}
+        height={side}
+        className="sc-board" viewBox={`0 0 ${side} ${side}`}
+        role="group"
+        aria-label="点阵画图板"
+      >
+        {Array.from({ length: config.grid }, (_, i) => (
+          <line key={`h${i}`} className="sc-line" x1={PAD} y1={PAD + i * CELL} x2={PAD + span} y2={PAD + i * CELL} />
+        ))}
+        {Array.from({ length: config.grid }, (_, i) => (
+          <line key={`v${i}`} className="sc-line" x1={PAD + i * CELL} y1={PAD} x2={PAD + i * CELL} y2={PAD + span} />
+        ))}
+        {v.length >= 3 && (
+          <polygon data-testid="sc-polygon" points={polyPoints} className="sc-polygon" />
+        )}
+        {Array.from({ length: config.grid }, (_, gy) =>
+          Array.from({ length: config.grid }, (_, gx) => {
+            const taken = v.some(p => p.x === gx && p.y === gy);
+            return (
+              <g key={`p-${gx}-${gy}`}>
+              <circle cx={PAD + gx * CELL} cy={PAD + gy * CELL} r={23}
+                className="sc-peg-target" style={{ pointerEvents: "none" }} />
+              <circle
+                cx={PAD + gx * CELL}
+                cy={PAD + gy * CELL}
+                r={23}
+                className="sc-peg-target"
+                data-testid={`sc-peg-${gx}-${gy}`}
+                role="button" tabIndex={disabled ? -1 : 0}
+                aria-label={`横向 ${gx}，纵向 ${gy}${taken ? "，已选择" : ""}`} aria-disabled={disabled}
+                onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); clickPoint(gx, gy); } }}
+                onClick={() => clickPoint(gx, gy)}
+              /></g>
+            );
+          })
+        )}
+        {v.map((p, i) => (
+          <g key={`vp-${i}`} pointerEvents="none">
+            <circle {...px(p)} r={11} className="sc-vertex" data-testid={`sc-vertex-${i}`} />
+            <text x={px(p).cx} y={px(p).cy} className="sc-vertex-index" dy={5} textAnchor="middle">{i + 1}</text>
+          </g>
+        ))}
+      </svg>
+<div className="sc-meta" data-testid="sc-meta">
+        已点 <strong data-testid="sc-vertex-count">{v.length}</strong> 个顶点
+        {area !== null && <> · 面积 <strong data-testid="sc-area">{area}</strong></>}
+      </div></div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card shape-canvas-v2" data-testid="shape-canvas-v2">

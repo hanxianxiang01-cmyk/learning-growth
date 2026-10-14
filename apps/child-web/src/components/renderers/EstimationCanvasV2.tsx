@@ -1,5 +1,10 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
+import { RendererFrame, ReferenceObjects } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * estimation-canvas V2 组件（FE-1423 R11）。runtime 装配对齐 GroupingBoardV2。
  *
@@ -26,6 +31,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -40,8 +47,10 @@ export function EstimationCanvasV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseEstimationConfig(workspace.config as Record<string, unknown>) : null),
@@ -84,7 +93,7 @@ export function EstimationCanvasV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">估算画布题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "估算画布题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -128,6 +137,60 @@ export function EstimationCanvasV2({
   const reset = () =>
     !disabled && config &&
     dispatch({ type: "SET_STATE", state: initialEstimationV2State(), event: emit("RESET", {}) });
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="estimation-canvas" title="先观察，再估一估" instruction="对照参照数量，用滑条估一个数，再选择你的想法。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="ec-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="ec-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="estimation-canvas-v2" className="manipulative-card estimation-canvas-v2"
+      submitTestId="ec-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={state.estimate === null ? undefined : `我估计：${state.estimate}`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="estimation-canvas"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyEstimate": a => moveEstimate(a.value as number)
+        }}
+      />}
+      <div className="v6-estimation-scene"><ReferenceObjects count={config.reference} label="参照的一组" /><ReferenceObjects count={config.actual} label="待估的一组" hiddenCount /></div>
+<input
+        type="range"
+        min={0}
+        max={config.max}
+        step={1}
+        value={state.estimate ?? 0}
+        disabled={disabled}
+        data-testid="ec-slider"
+        aria-label="估算滑条"
+        onChange={e => moveEstimate(Number(e.target.value))}
+      />
+<div className="ec-estimate-value" data-testid="ec-estimate-value">
+        {state.estimate === null ? "还没拖动" : state.estimate}
+      </div>
+<div className="ec-reasons" data-testid="ec-reasons">
+        {ESTIMATION_REASONS.map(r => (
+          <button
+            key={r.id}
+            type="button"
+            data-testid={`ec-reason-${r.id}`}
+            aria-pressed={state.reason === r.id}
+            className={state.reason === r.id ? "ec-reason chosen" : "ec-reason"}
+            disabled={disabled}
+            onClick={() => pickReason(r.id)}
+          >
+            {r.label}
+          </button>
+        ))}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card estimation-canvas-v2" data-testid="estimation-canvas-v2">

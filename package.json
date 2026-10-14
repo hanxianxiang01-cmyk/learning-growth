@@ -16,7 +16,14 @@
     "branch:check": "node scripts/check-branch-name.mjs",
     "check": "npm run governance:check && npm run branch:check && npm run release:check && npm run child:typecheck && npm run child:v14:check",
     "child:v14:check": "npm --workspace @learning/child-web run v1.4:check",
-    "hygiene:check": "node scripts/check-data-hygiene.mjs"
+    "hygiene:check": "node scripts/check-data-hygiene.mjs",
+    "child:v6:lab": "node scripts/run-child-ui.mjs --skin exploration-lab",
+    "child:v6:healing": "node scripts/run-child-ui.mjs --skin healing",
+    "child:v6:preview": "node scripts/run-child-ui.mjs --api mock",
+    "child:legacy": "node scripts/run-child-ui.mjs --legacy",
+    "child:v6:check": "node apps/child-web/scripts/check-v6-migration.mjs && node apps/child-web/scripts/check-v6-full.mjs",
+    "child:v6:e2e": "npm --workspace @learning/child-web run v6:e2e",
+    "child:v6:isolated:prepare": "node tests/v6-isolated/prepare.mjs"
   },
   "engines": {
     "node": ">=22"

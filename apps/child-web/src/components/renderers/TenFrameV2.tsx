@@ -1,5 +1,10 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * ten-frame V2 组件（FE-1416 R07）。runtime 装配对齐 NumberLineV2/ColumnArithmetic：
  * rendererWorkspaceReducer（undo/history 内建）+ buildRendererEvent（UPPER_SNAKE）。
@@ -22,6 +27,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -36,8 +43,10 @@ export function TenFrameV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseTenFrameConfig(workspace.config as Record<string, unknown>) : null),
@@ -77,7 +86,7 @@ export function TenFrameV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">十格框题配置不完整，暂时无法开始。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "十格框题配置不完整，暂时无法开始。"}</div>;
   }
 
   const emit = (eventType: string, capability: string, payload: Record<string, string | number | boolean | null>) =>
@@ -134,6 +143,76 @@ export function TenFrameV2({
   const reset = () => !disabled && dispatch({ type: "RESET", event: emit("RESET", "reset", {}) });
 
   const currentFrameCells = Array.from({ length: 10 }, (_, i) => i);
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="ten-frame" title="摆满十格，组成一个十" instruction="点格子放圆片；满十个后，可以打包，也可以再拆开。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="tf-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="tf-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="ten-frame-v2" className="manipulative-card ten-frame-v2"
+      submitTestId="tf-submit" submitDisabled={disabled || verdict === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`现在一共有 ${totalOf(state)} 个`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="ten-frame"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyCell": a => tapCell(a.cellIndex as number)
+        }}
+      />}
+      {state.tens > 0 && (
+        <div className="tf-tens" data-testid="tf-tens">
+          {Array.from({ length: state.tens }, (_, i) => (
+            <span key={i} className="tf-bundle">十×1</span>
+          ))}
+        </div>
+      )}
+<div className="tf-frame" data-testid="tf-current-frame">
+        {currentFrameCells.map(i => {
+          const filled = i < state.count; // count===10 时 i<10 恒真=满框
+          return (
+            <button
+              key={i}
+              type="button"
+              data-testid={`tf-cell-${i}`}
+              className={`tf-cell ${filled ? "filled" : ""}`}
+              disabled={disabled || state.count === 10}
+              aria-label={`第${i + 1}格`}
+              onClick={() => tapCell(i)}
+            >
+              {filled ? "●" : "○"}
+            </button>
+          );
+        })}
+      </div>
+<div className="tf-actions">
+        <button
+          type="button"
+          data-testid="tf-make-ten"
+          className="secondary-button"
+          disabled={disabled || state.count !== 10 || state.tens >= config.maxFrames}
+          onClick={makeTen}
+        >
+          打包成十
+        </button>
+        <button
+          type="button"
+          data-testid="tf-break-ten"
+          className="secondary-button"
+          disabled={disabled || state.tens === 0}
+          onClick={breakTen}
+        >
+          拆开一袋
+        </button>
+        <span data-testid="tf-total">现在一共 {totalOf(state)} 个</span>
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card ten-frame-v2" data-testid="ten-frame-v2">

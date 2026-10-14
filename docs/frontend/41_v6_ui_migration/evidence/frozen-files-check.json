@@ -1,0 +1,67 @@
+[
+  {
+    "path": "VERSION",
+    "unchanged": true,
+    "sha256": "78b591400c56b7b67b8cb3b2b8a8e65e9093897f02ce0878e6b5405c68620fa7"
+  },
+  {
+    "path": "package.json",
+    "unchanged": true,
+    "sha256": "c20a8f2f979580236936c8eab100fd3a2187eaf23d5e1356cfacd1c97e49fe6c"
+  },
+  {
+    "path": "package-lock.json",
+    "unchanged": true,
+    "sha256": "be261e3c5b7ba5a882aa2ca1e88c6ecc8dd4d540cc28331edc4b492006a9e3bf"
+  },
+  {
+    "path": "apps/child-web/package.json",
+    "unchanged": true,
+    "sha256": "a0635be33b98e1cd96540a753dbc6f6024268fbe6d3f3982c9c6213e82e354b9"
+  },
+  {
+    "path": "apps/child-web/src/lib/api/contracts.ts",
+    "unchanged": true,
+    "sha256": "45faa445b578b2a9ab9e56550a7f89a46202261e2f1995bcc26c403448b948aa"
+  },
+  {
+    "path": "apps/child-web/src/lib/api/http.ts",
+    "unchanged": true,
+    "sha256": "e9edff4c22816978cd86b6ce606ceb5bdf34451dd9dad9063ddd68002671c261"
+  },
+  {
+    "path": "apps/child-web/src/lib/api/v2AttemptAdapter.ts",
+    "unchanged": true,
+    "sha256": "5da0cc5cdf664669138beba47e399393ca1a251db870afa91bf16100ab4394de"
+  },
+  {
+    "path": "apps/child-web/src/features/task-renderer/clockV2.ts",
+    "unchanged": true,
+    "sha256": "788ffc22689eeee23b9236da332970bdf46e08c2127ba4c9768283545b349225"
+  },
+  {
+    "path": "apps/child-web/src/features/task-renderer/rendererRuntime.ts",
+    "unchanged": true,
+    "sha256": "d0513557df7ebfabb57337ec070eb5f5aa41a3f5fd9fd94d3de33a98f05245e9"
+  },
+  {
+    "path": "apps/child-web/src/features/task-renderer/rendererContract.ts",
+    "unchanged": true,
+    "sha256": "9ffc309e5bb3ce251d2d239d2172e894a10f67726301a8a31a636bb07dfa7bfd"
+  },
+  {
+    "path": "apps/child-web/src/features/task-renderer/rendererRegistry.ts",
+    "unchanged": true,
+    "sha256": "f9ed1a14d44b8e59dc0a695c9dc8364775614fee532dcaa04517e7cda3556085"
+  },
+  {
+    "path": "apps/child-web/src/features/task-renderer/evaluatorRegistry.ts",
+    "unchanged": true,
+    "sha256": "c137ee511695ce9087a737e1deb3b09d68d155902a3b543dc5d04ed838f4b250"
+  },
+  {
+    "path": "apps/learning-api/app/services/learning.py",
+    "unchanged": true,
+    "sha256": "0fc7f971902f62ab7ca5230815c7289543afe2ede89c9c4bd135bfd2a27bd1d4"
+  }
+]

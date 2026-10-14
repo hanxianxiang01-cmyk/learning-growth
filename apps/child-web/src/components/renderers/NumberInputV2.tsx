@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * number-input V2 renderer（FE-1415 R04）——SEM-1413 / Gap R04。
  *
@@ -63,6 +67,7 @@ export function NumberInputV2({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => parseNumberInputConfig((workspace?.config ?? {}) as Record<string, unknown>),
@@ -108,7 +113,7 @@ export function NumberInputV2({
   }, [answer, events, workspace, schema.ui_revision, schema.response_contract.response_type]);
 
   if (!workspace || workspace.renderer !== "number-input") {
-    return <div className="surface-card unsupported-task">数字输入题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "数字输入题配置不完整。"}</div>;
   }
 
   const onChange = (next: string) => {
@@ -134,6 +139,35 @@ export function NumberInputV2({
       ].slice(-100)
     );
   };
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="number-input" title="写下你的答案" instruction="可以用键盘输入，也可以点下面的数字键。"
+      actions={undefined}
+      testId="number-input-v2" className="manipulative-card number-input-v2"
+      submitTestId="ni-submit" submitDisabled={disabled || answer === null} locked={disabled} onSubmit={onSubmit} summary={answer === null ? undefined : `我的答案：${answer}`}>
+      <label className="ni-field">
+        <span className="sr-only">我的答案</span>
+        <input
+          data-testid="ni-input"
+          inputMode={config.integerOnly ? "numeric" : "decimal"}
+          value={text}
+          disabled={disabled}
+          placeholder={
+            config.min !== null && config.max !== null
+              ? `${config.min} ~ ${config.max}`
+              : "输入数字"
+          }
+          onChange={event => onChange(event.target.value)}
+        />
+      </label>
+<div className="v6-number-keypad" aria-label="数字键盘">
+ {[1,2,3,4,5,6,7,8,9,0].map(n=><button type="button" key={n} disabled={disabled} onClick={()=>onChange(text+String(n))} data-testid={`v6-key-${n}`}>{n}</button>)}
+ {!config.integerOnly && <button type="button" disabled={disabled} onClick={()=>onChange(text+".")}>.</button>}
+ {(config.min === null || config.min < 0) && <button type="button" disabled={disabled} onClick={()=>onChange(text.startsWith("-")?text.slice(1):"-"+text)}>正负号</button>}
+ <button type="button" disabled={disabled || !text} onClick={()=>onChange(text.slice(0,-1))} data-testid="v6-key-backspace">退一位</button>
+ <button type="button" disabled={disabled || !text} onClick={()=>onChange("")} data-testid="v6-key-clear">清空</button></div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card number-input-v2" data-testid="number-input-v2">

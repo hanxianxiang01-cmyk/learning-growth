@@ -18,11 +18,11 @@ const release = [
 assert(runtime.includes("RENDERER_STATES") && runtime.includes("canTransition"), "state contract missing");
 assert(runtime.includes("createSemanticEvent") && runtime.includes("buildRendererEvidence"), "semantic event/evidence contract missing");
 assert(evaluator.includes("RENDERER_EVALUATORS"), "evaluator registry missing");
-// FE-1417 采纳边界：V2 契约入口校验在 TaskRenderer；Evidence/Evaluation 注入在
-// **提交时刻的 adapter**（attempt_no 为真实值）。交付原方案 handleResponseChange
-// 更新时刻注入 attempt_no 恒=1，属缺陷，未采纳——断言相应指向 adapter 注入。
+// SAFE-01 P2: V2 契约入口校验在 TaskRenderer；提交时刻仅注入 Evidence。
+// 后端独占 Judge/正确性/分数与 Mastery；禁止随请求透传本地 evaluation。
 assert(taskRenderer.includes("assertTaskUiSchemaV2"), "TaskUISchema gate missing in TaskRenderer");
-assert(adapter.includes("buildRendererEvidence") && adapter.includes("getRendererEvaluator"), "evidence/evaluation submit-time injection missing");
+assert(adapter.includes("buildRendererEvidence") && adapter.includes("runtime_status"), "SAFE-01 submit-time evidence missing");
+assert(!adapter.includes("getRendererEvaluator") && !/\bevaluation\s*[:,=]\s*getRendererEvaluator/.test(adapter), "SAFE-01 local evaluation must not be submitted");
 assert(adapter.includes("stableSubmissionId") && adapter.includes("request.submission_id ??"), "submission id is not stable/idempotent");
 assert(adapter.includes("|${attemptNo}|"), "submission id must depend on attempt_no (no cross-retry collision)");
 assert(contracts.includes("submission_id?: string"), "submission_id missing from AttemptRequest");

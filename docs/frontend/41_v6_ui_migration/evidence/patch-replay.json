@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "input_zip_sha256": "b2a925b76358fdda4164da663599ffeeb4ddb44e3225b90b19fe5b7d12c7f401",
+  "method": "fresh extract -> git apply --check -> git apply -> byte comparison for all tracked files",
+  "files_compared": 480,
+  "mismatches": [],
+  "at": "2026-10-11T07:24:39.178438+00:00",
+  "remote_pr_created": false
+}

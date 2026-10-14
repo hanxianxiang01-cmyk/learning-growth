@@ -1,0 +1,24 @@
+{
+  "schema": "safe01-evidence/1",
+  "source": "provided 443-file baseline",
+  "execution": "patched TypeScript transpiled and executed; HTTP request intercepted via fetch stub; no network",
+  "cases": [
+    {
+      "id": "C1_clean",
+      "config_has_expected": false,
+      "wire_expected_answer_paths": [],
+      "evaluation_forwarded": false
+    },
+    {
+      "id": "C2_injected_expected",
+      "config_has_expected": true,
+      "wire_expected_answer_paths": [],
+      "evaluation_forwarded": false
+    }
+  ],
+  "assertions_passed": 12,
+  "unsafe_path_blocked": true,
+  "backend_judge_checked_by_source_only": true,
+  "database_write_tested": false,
+  "logging_pipeline_tested": false
+}

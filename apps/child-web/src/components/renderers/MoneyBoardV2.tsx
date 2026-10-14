@@ -1,5 +1,10 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * money-board V2 组件（FE-1431 R18，Batch E 第三题）。runtime 装配对齐 ClockV2。
  *
@@ -26,6 +31,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -40,8 +47,10 @@ export function MoneyBoardV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseMoneyConfig(workspace.config as Record<string, unknown>) : null),
@@ -83,7 +92,7 @@ export function MoneyBoardV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">付钱题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "付钱题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -126,6 +135,64 @@ export function MoneyBoardV2({
   const reset = () =>
     !disabled &&
     dispatch({ type: "SET_STATE", state: initialMoneyV2State(), event: emit("MONEY_RESET", {}) });
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="money-board" title="试着付出正好的钱" instruction="点钱包里的钱放到台面上。需要调整时，可以取回。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="mb-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="mb-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="money-board-v2" className="manipulative-card money-board-v2"
+      submitTestId="mb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`台面上：${totalText}`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="money-board"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyAddCoin": a => addCoin(a.denominationJiao as number),
+          "applyRemoveCoin": a => removeCoin(a.denominationJiao as number)
+        }}
+      />}
+      <div className="mb-price" data-testid="mb-price">
+        商品价：{Math.floor(config.price / 10)}元{config.price % 10}角
+      </div>
+<div className="mb-wallet" data-testid="mb-wallet">
+        {config.denominations.map(d => (
+          <div key={d} className="mb-unit" data-testid={`mb-unit-${d}`}>
+            <button
+              type="button"
+              data-testid={`mb-add-${d}`}
+              className="mb-coin"
+              disabled={disabled}
+              onClick={() => addCoin(d)}
+            >
+              {unitLabel(d)}
+            </button>
+            <div className="mb-on-table" data-testid={`mb-count-${d}`}>
+              {Array.from({ length: state.counts[d] ?? 0 }, (_, i) => (
+                <span key={i} className="mb-chip">{unitLabel(d)}</span>
+              ))}
+              {(state.counts[d] ?? 0) === 0 ? <span className="mb-muted">—</span> : null}
+            </div>
+            <button
+              type="button"
+              data-testid={`mb-remove-${d}`}
+              className="mb-return"
+              disabled={disabled || (state.counts[d] ?? 0) === 0}
+              onClick={() => removeCoin(d)}
+            >
+              取回
+            </button>
+          </div>
+        ))}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card money-board-v2" data-testid="money-board-v2">

@@ -1,0 +1,37 @@
+{
+  "candidate_status": "review_only",
+  "claimed_base_sha": "504a93d66f24d7b784e5eeed8e5763e69bf14e1d",
+  "base_commit_not_authenticatable_from_git_archive_alone": true,
+  "input_zips": [
+    {
+      "name": "FE1445_V6_Full_Source_504a93d.zip",
+      "sha256": "9121511e8f1e89b6b0fc21f978d344c0c7044a630c2ec25d03516b9c94e7b7bf"
+    },
+    {
+      "name": "MIK_SAFE01_Spike_Candidate_Source_2026-10-13.zip",
+      "sha256": "6c4bf28150736502a9354d4db417e16db4c239c798d9a111ca23f831e27fb9d0"
+    },
+    {
+      "name": "MIK_A5_16_React_AllInOne_Candidate_2026-10-14.zip",
+      "sha256": "023c8a0c19f02b57daa38941c5adb37951703259107a84c59cbaa1f95bb61015"
+    }
+  ],
+  "docs43_same_bytes_across_inputs": true,
+  "docs43_file_sha256": {
+    "README.md": "dc32a8024ed195eaa7a2e010aa89e81c87878ea4b0b08f557713349480cad50a",
+    "ROUTER_SPIKE.md": "3fdc7f17ef989feb3b70288bcfc7c2bf4251ffaf5187694263c9f156673b1789",
+    "SAFE01_AUDIT.md": "59e411d801e0ee0bf619db850ba08fd42989b44de41ccb44b5e00c7ae46ae7b8",
+    "SAFE01_FINAL_VERDICT.md": "d49e695bbe880b0a65dbcbb8240087055222280479d2668c05ec4331ceb39304",
+    "evidence/build_status.txt": "7e17f6282fdd2f4112e41d1d10af99d49819c2fdccca464c5847c38bb44cf85c",
+    "evidence/router_policy.json": "1d936c8d0f00f976504aa891f3f038e4e05cc097f48b606e0f7759e6286bc377",
+    "evidence/safe01_backend.json": "5871bece53ba12ee8e3a0fa8a77b48f722589e388f0eb0f56c9d5da2ce99b971",
+    "evidence/safe01_baseline.json": "cf9e01d56e931901044fe84ac54b316d9ff1e5c98ee101186a061f7623d61c47",
+    "evidence/safe01_candidate.json": "80d6cf64ca1b668c42eb3f7d44b8eb00794cb775a0f3af8bdb989ebcf5cb140f",
+    "evidence/safe01_idempotency.json": "5eff5f74aafaa98b600a1f699ef8f2926e094aab29ba11d51b2ca0df3dc46556",
+    "evidence/syntax.json": "882e838fac796416a99acabf6390f042addf460db6f2a2b14050269ced768d78"
+  },
+  "branch": "not_pushed_or_merged",
+  "live_qa": "not_run",
+  "legacy_197": "not_run",
+  "react_next_build": "not_run_local_dependency_blocked"
+}

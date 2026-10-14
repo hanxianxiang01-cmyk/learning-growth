@@ -1,5 +1,10 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * array-board V2 组件（FE-1421 R08）。runtime 装配对齐 FormulaBoardV2：
  * rendererWorkspaceReducer + buildRendererEvent。
@@ -24,6 +29,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -38,8 +45,10 @@ export function ArrayBoardV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseArrayBoardConfig(workspace.config as Record<string, unknown>) : null),
@@ -81,7 +90,7 @@ export function ArrayBoardV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">阵列板题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "阵列板题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, capability: string, payload: Record<string, string | number | boolean | null>) =>
@@ -126,6 +135,59 @@ export function ArrayBoardV2({
 
   const undo = () => !disabled && dispatch({ type: "UNDO", event: emit("UNDO", "undo", {}) });
   const reset = () => !disabled && dispatch({ type: "RESET", event: emit("RESET", "reset", {}) });
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="array-board" title="排出整齐的阵列" instruction="加减行和列，看看横着有几排，每排有几个。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="ab-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="ab-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="array-board-v2" className="manipulative-card array-board-v2"
+      submitTestId="ab-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`现在是 ${state.rows} 行、${state.cols} 列`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="array-board"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyRowDelta": a => changeRow(a.delta as number),
+          "applyColDelta": a => changeCol(a.delta as number)
+        }}
+      />}
+      <div className="ab-controls">
+        <div className="ab-control-row">
+          <span>行（横排）</span>
+          <div>
+            <button type="button" data-testid="ab-row-minus" disabled={disabled || state.rows === 0} onClick={() => changeRow(-1)} aria-label="减一行">−</button>
+            <strong data-testid="ab-rows">{state.rows}</strong>
+            <button type="button" data-testid="ab-row-plus" disabled={disabled || state.rows >= config.maxRows} onClick={() => changeRow(1)} aria-label="加一行">＋</button>
+          </div>
+        </div>
+        <div className="ab-control-row">
+          <span>列（竖排）</span>
+          <div>
+            <button type="button" data-testid="ab-col-minus" disabled={disabled || state.cols === 0} onClick={() => changeCol(-1)} aria-label="减一列">−</button>
+            <strong data-testid="ab-cols">{state.cols}</strong>
+            <button type="button" data-testid="ab-col-plus" disabled={disabled || state.cols >= config.maxCols} onClick={() => changeCol(1)} aria-label="加一列">＋</button>
+          </div>
+        </div>
+      </div>
+<div
+        className="ab-grid"
+        data-testid="ab-grid"
+        style={{ gridTemplateColumns: `repeat(${Math.max(state.cols, 1)}, 48px)` }}
+      >
+        {Array.from({ length: state.rows * state.cols }, (_, i) => (
+          <span key={i} className="ab-dot" data-testid={`ab-cell-${i}`} />
+        ))}
+        {state.rows * state.cols === 0 && <span className="ab-empty-hint">先加一行、再加一列</span>}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card array-board-v2" data-testid="array-board-v2">

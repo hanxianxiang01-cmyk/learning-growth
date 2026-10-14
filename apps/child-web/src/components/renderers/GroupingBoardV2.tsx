@@ -1,5 +1,10 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * grouping-board V2 组件（FE-1422 R09）。runtime 装配对齐 ArrayBoardV2。
  *
@@ -25,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -39,8 +46,10 @@ export function GroupingBoardV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseGroupingConfig(workspace.config as Record<string, unknown>) : null),
@@ -83,7 +92,7 @@ export function GroupingBoardV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">分组板题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "分组板题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -146,6 +155,88 @@ export function GroupingBoardV2({
   const reset = () =>
     !disabled && config &&
     dispatch({ type: "SET_STATE", state: initialGroupingV2State(config), event: emit("RESET", {}) });
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="grouping-board" title="把物体分一分" instruction="先圈组，再把物体逐个分进去。检查每组的数量。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="gb-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="gb-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="grouping-board-v2" className="manipulative-card grouping-board-v2"
+      submitTestId="gb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`还没分 ${state.pool} 个 · 已圈 ${state.groups.length} 组`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="grouping-board"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyAddItem": a => giveItem(a.groupIndex as number),
+          "applyRemoveItem": a => takeItem(a.groupIndex as number)
+        }}
+      />}
+      <div className="gb-pool" data-testid="gb-pool">
+        <span className="gb-pool-label">还没分：</span>
+        <div className="gb-pool-items">
+          {Array.from({ length: state.pool }, (_, i) => (
+            <span key={i} className="gb-candy" />
+          ))}
+        </div>
+        <strong data-testid="gb-pool-count">{state.pool}</strong>
+      </div>
+<div className="gb-groups" data-testid="gb-groups">
+        {state.groups.map((size, j) => (
+          <div className="gb-group" key={j} data-testid={`gb-group-${j}`}>
+            <span className="gb-group-name">第{j + 1}组</span>
+            <div className="gb-group-items">
+              {Array.from({ length: size }, (_, i) => (
+                <span key={i} className="gb-candy in-group" data-testid={`gb-candy-${j}-${i}`} />
+              ))}
+            </div>
+            <div className="gb-group-actions">
+              <button
+                type="button"
+                data-testid={`gb-take-${j}`}
+                disabled={disabled || size === 0}
+                onClick={() => takeItem(j)}
+                aria-label="收回一颗"
+              >
+                −
+              </button>
+              <strong data-testid={`gb-group-count-${j}`}>{size}</strong>
+              <button
+                type="button"
+                data-testid={`gb-give-${j}`}
+                disabled={disabled || state.pool === 0}
+                onClick={() => giveItem(j)}
+                aria-label="发一颗"
+              >
+                ＋
+              </button>
+              <button
+                type="button"
+                data-testid={`gb-dismiss-${j}`}
+                className="gb-dismiss"
+                disabled={disabled || size > 0}
+                onClick={() => removeGroup(j)}
+                aria-label="解散这组"
+              >
+                解散
+              </button>
+            </div>
+          </div>
+        ))}
+        {state.groups.length < config.maxGroups && (
+          <button type="button" className="gb-new-group" data-testid="gb-add-group" disabled={disabled} onClick={addGroup}>
+            ＋圈一个组
+          </button>
+        )}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card grouping-board-v2" data-testid="grouping-board-v2">

@@ -1,5 +1,10 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
+import { RendererFrame, ShapeSymbol } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * shape-gallery V2 组件（FE-1424 R12）。runtime 装配对齐 EstimationCanvasV2。
  *
@@ -27,6 +32,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -48,8 +55,10 @@ export function ShapeGalleryV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseShapeGalleryConfig(workspace.config as Record<string, unknown>) : null),
@@ -91,7 +100,7 @@ export function ShapeGalleryV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">图形画廊题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "图形画廊题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -159,6 +168,82 @@ export function ShapeGalleryV2({
     dispatch({ type: "SET_STATE", state: initialShapeGalleryV2State(), event: emit("RESET", {}) });
 
   const kindOfHome = (id: string) => config.shapes.find(s => s.id === id)?.kind ?? "unknown";
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="shape-gallery" title="帮图形找到家" instruction="先选择一个图形，再把它放进家里。放进去后也能拿回来。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="sg-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="sg-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="shape-gallery-v2" className="manipulative-card shape-gallery-v2"
+      submitTestId="sg-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`家里现在有 ${state.home.length} 个图形`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="shape-gallery"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applySelect": a => clickShape(a.shapeId as string),
+          "applyPlaceHome": a => placeHome(),
+          "applyReturnHome": a => returnShape(a.shapeId as string)
+        }}
+      />}
+      <div className="sg-wall" data-testid="sg-wall">
+        {config.shapes.map(s => {
+          const inHome = state.home.includes(s.id);
+          return (
+            <button
+              key={s.id}
+              type="button"
+              data-testid={`sg-shape-${s.id}`}
+              className={
+                inHome
+                  ? "sg-shape in-home"
+                  : state.selected === s.id
+                    ? "sg-shape picked"
+                    : "sg-shape"
+              }
+              aria-pressed={state.selected === s.id}
+              aria-label={`${s.name}${inHome ? "，已放进家里" : ""}`}
+              disabled={disabled || inHome}
+              onClick={() => clickShape(s.id)}
+              style={{ color: s.color }}
+            >
+              <span className="sg-shape-glyph"><ShapeSymbol kind={s.kind} /></span>
+              <span className="sg-shape-name">{s.name}</span>
+            </button>
+          );
+        })}
+      </div>
+<div className={`sg-home ${selectedShape ? "waiting" : ""}`} data-testid="sg-home">
+        <span className="sg-home-label">{SHAPE_KIND_LABELS[config.targetKind]}的家</span>
+        <div className="sg-home-items" data-testid="sg-home-items">
+          {state.home.map(id => (
+            <button
+              key={id}
+              type="button"
+              data-testid={`sg-home-${id}`}
+              className="sg-home-item" aria-label={`取回${config.shapes.find(s => s.id === id)?.name ?? "图形"}`}
+              disabled={disabled}
+              onClick={e => {
+                e.stopPropagation();
+                returnShape(id);
+              }}
+            >
+              <ShapeSymbol kind={kindOfHome(id)} />
+            </button>
+          ))}
+          {state.home.length === 0 && <span className="sg-home-empty">还空着</span>}
+        </div>
+        <button type="button" className="v6-place-home" data-testid="v6-sg-place-home" disabled={disabled || !selectedShape} onClick={placeHome}>把选中的图形放进来</button>
+        <strong data-testid="sg-home-count">{state.home.length}</strong>
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card shape-gallery-v2" data-testid="shape-gallery-v2">

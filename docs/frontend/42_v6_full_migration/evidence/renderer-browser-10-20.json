@@ -1,0 +1,2559 @@
+{
+  "harness": {
+    "react": "19.1.1",
+    "reactDOM": "19.1.1",
+    "scope": "isolated real components; substituted Next navigation, inlined local SVG and fixture fetch; NOT a Next build or live backend test"
+  },
+  "browser": "144.0.7559.96",
+  "results": [
+    {
+      "fixture": "grouping-board-equal_groups",
+      "renderer": "grouping-board",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "6",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729518130-453c6234ae6b98",
+            "event_type": "GROUP_CREATED",
+            "occurred_at": "2026-10-11T14:38:38.130Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "groups": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729518197-661fbd0f3990f8",
+            "event_type": "GROUP_CREATED",
+            "occurred_at": "2026-10-11T14:38:38.197Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "groups": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729518232-dfca968bb5d618",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.232Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 1,
+              "pool": 11
+            }
+          },
+          {
+            "event_id": "evt-1791729518287-1154464f963d",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.287Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 2,
+              "pool": 10
+            }
+          },
+          {
+            "event_id": "evt-1791729518330-40726c1daf5638",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.330Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 3,
+              "pool": 9
+            }
+          },
+          {
+            "event_id": "evt-1791729518364-94e5e73a694c58",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.364Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 4,
+              "pool": 8
+            }
+          },
+          {
+            "event_id": "evt-1791729518399-488729e86791d8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.399Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 5,
+              "pool": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729518448-99798754703468",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.448Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 6,
+              "pool": 6
+            }
+          },
+          {
+            "event_id": "evt-1791729518499-fd81c2691a2908",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.499Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 1,
+              "pool": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729518547-0b863eb6fbc398",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.547Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 2,
+              "pool": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729518599-fa6d6fd945c6b8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.599Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 3,
+              "pool": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729518650-64302107b1917",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.650Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 4,
+              "pool": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729518696-21b506f01bc6c8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.696Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 5,
+              "pool": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729518730-3b7986fc27eff",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.730Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 6,
+              "pool": 0
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "groups": [
+                6,
+                6
+              ],
+              "pool_remaining": 0,
+              "answer": 6,
+              "target_groups": 3,
+              "items": 12,
+              "structure": {
+                "status": "FAIL",
+                "error": "count",
+                "equal_groups": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "grouping_board",
+        "v2_ui_revision": "v6-dev-10-grouping-board"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "4",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729518130-453c6234ae6b98",
+            "event_type": "GROUP_CREATED",
+            "occurred_at": "2026-10-11T14:38:38.130Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "groups": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729518197-661fbd0f3990f8",
+            "event_type": "GROUP_CREATED",
+            "occurred_at": "2026-10-11T14:38:38.197Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "groups": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729518232-dfca968bb5d618",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.232Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 1,
+              "pool": 11
+            }
+          },
+          {
+            "event_id": "evt-1791729518287-1154464f963d",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.287Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 2,
+              "pool": 10
+            }
+          },
+          {
+            "event_id": "evt-1791729518330-40726c1daf5638",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.330Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 3,
+              "pool": 9
+            }
+          },
+          {
+            "event_id": "evt-1791729518364-94e5e73a694c58",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.364Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 4,
+              "pool": 8
+            }
+          },
+          {
+            "event_id": "evt-1791729518399-488729e86791d8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.399Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 5,
+              "pool": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729518448-99798754703468",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.448Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 6,
+              "pool": 6
+            }
+          },
+          {
+            "event_id": "evt-1791729518499-fd81c2691a2908",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.499Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 1,
+              "pool": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729518547-0b863eb6fbc398",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.547Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 2,
+              "pool": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729518599-fa6d6fd945c6b8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.599Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 3,
+              "pool": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729518650-64302107b1917",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.650Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 4,
+              "pool": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729518696-21b506f01bc6c8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.696Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 5,
+              "pool": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729518730-3b7986fc27eff",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:38.730Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 6,
+              "pool": 0
+            }
+          },
+          {
+            "event_id": "evt-1791729519198-f9c81abfd73e3",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:39.198Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729519282-9e06c9bf6ea9e8",
+            "event_type": "GROUP_CREATED",
+            "occurred_at": "2026-10-11T14:38:39.282Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "groups": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729519330-5b93bd0999c7f8",
+            "event_type": "GROUP_CREATED",
+            "occurred_at": "2026-10-11T14:38:39.330Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "groups": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729519365-e2a99029c663f8",
+            "event_type": "GROUP_CREATED",
+            "occurred_at": "2026-10-11T14:38:39.365Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "groups": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729519416-620b4db1ae6498",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.416Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 1,
+              "pool": 11
+            }
+          },
+          {
+            "event_id": "evt-1791729519464-ff4c8cf85e21d",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.464Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 2,
+              "pool": 10
+            }
+          },
+          {
+            "event_id": "evt-1791729519513-d42add8d5b31c8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.513Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 3,
+              "pool": 9
+            }
+          },
+          {
+            "event_id": "evt-1791729519547-fff04259e45048",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.547Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 0,
+              "count": 4,
+              "pool": 8
+            }
+          },
+          {
+            "event_id": "evt-1791729519580-9e62831b0a3138",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.580Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 1,
+              "pool": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729519633-0085d4c3d6b6a8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.633Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 2,
+              "pool": 6
+            }
+          },
+          {
+            "event_id": "evt-1791729519681-aba1596efb9198",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.681Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 3,
+              "pool": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729519731-9a9f8ddef7f678",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.731Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 1,
+              "count": 4,
+              "pool": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729519763-1b22d428312f68",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.763Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 2,
+              "count": 1,
+              "pool": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729519796-b16e0c21aaf548",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.796Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 2,
+              "count": 2,
+              "pool": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729519830-d015a0765368a8",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.830Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 2,
+              "count": 3,
+              "pool": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729519863-107b865c28caf",
+            "event_type": "ITEM_ADDED",
+            "occurred_at": "2026-10-11T14:38:39.863Z",
+            "task_instance_id": "v6-dev-fixture-10",
+            "renderer_id": "grouping-board",
+            "capability_id": "grouping",
+            "target_id": "main",
+            "payload": {
+              "group": 2,
+              "count": 4,
+              "pool": 0
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "groups": [
+                4,
+                4,
+                4
+              ],
+              "pool_remaining": 0,
+              "answer": 4,
+              "target_groups": 3,
+              "items": 12,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "equal_groups": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "grouping_board",
+        "v2_ui_revision": "v6-dev-10-grouping-board"
+      }
+    },
+    {
+      "fixture": "estimation-canvas-estimation_range",
+      "renderer": "estimation-canvas",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "30",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729520392-d2da5f19294b38",
+            "event_type": "ESTIMATE_CHANGED",
+            "occurred_at": "2026-10-11T14:38:40.392Z",
+            "task_instance_id": "v6-dev-fixture-11",
+            "renderer_id": "estimation-canvas",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "estimate": 30,
+              "step": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729520431-08c8868b8f2dd",
+            "event_type": "REASON_SELECTED",
+            "occurred_at": "2026-10-11T14:38:40.431Z",
+            "task_instance_id": "v6-dev-fixture-11",
+            "renderer_id": "estimation-canvas",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "reason": "use_reference"
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "estimate": 30,
+              "reason": "use_reference",
+              "adjust_history": [
+                30
+              ],
+              "reference": 10,
+              "answer": 30,
+              "structure": {
+                "status": "FAIL",
+                "error": "too_low",
+                "close": false
+              }
+            }
+          }
+        ],
+        "v2_response_type": "estimation_canvas",
+        "v2_ui_revision": "v6-dev-11-estimation-canvas"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "40",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729520392-d2da5f19294b38",
+            "event_type": "ESTIMATE_CHANGED",
+            "occurred_at": "2026-10-11T14:38:40.392Z",
+            "task_instance_id": "v6-dev-fixture-11",
+            "renderer_id": "estimation-canvas",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "estimate": 30,
+              "step": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729520431-08c8868b8f2dd",
+            "event_type": "REASON_SELECTED",
+            "occurred_at": "2026-10-11T14:38:40.431Z",
+            "task_instance_id": "v6-dev-fixture-11",
+            "renderer_id": "estimation-canvas",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "reason": "use_reference"
+            }
+          },
+          {
+            "event_id": "evt-1791729520865-4f6405f2f4177",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:40.865Z",
+            "task_instance_id": "v6-dev-fixture-11",
+            "renderer_id": "estimation-canvas",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729520926-88c028845618c",
+            "event_type": "ESTIMATE_CHANGED",
+            "occurred_at": "2026-10-11T14:38:40.926Z",
+            "task_instance_id": "v6-dev-fixture-11",
+            "renderer_id": "estimation-canvas",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "estimate": 40,
+              "step": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729520964-b56327280e389",
+            "event_type": "REASON_SELECTED",
+            "occurred_at": "2026-10-11T14:38:40.964Z",
+            "task_instance_id": "v6-dev-fixture-11",
+            "renderer_id": "estimation-canvas",
+            "capability_id": "answer_input",
+            "target_id": "main",
+            "payload": {
+              "reason": "use_reference"
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "estimate": 40,
+              "reason": "use_reference",
+              "adjust_history": [
+                40
+              ],
+              "reference": 10,
+              "answer": 40,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "close": null
+              }
+            }
+          }
+        ],
+        "v2_response_type": "estimation_canvas",
+        "v2_ui_revision": "v6-dev-11-estimation-canvas"
+      }
+    },
+    {
+      "fixture": "shape-gallery-shape_classification",
+      "renderer": "shape-gallery",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "1",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729521496-33f4a1fdab742",
+            "event_type": "SHAPE_SELECTED",
+            "occurred_at": "2026-10-11T14:38:41.496Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "r1",
+              "kind": "rectangle"
+            }
+          },
+          {
+            "event_id": "evt-1791729521529-156d879242a658",
+            "event_type": "SHAPE_PLACED",
+            "occurred_at": "2026-10-11T14:38:41.529Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "r1",
+              "kind": "rectangle",
+              "target": false
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "selected": null,
+              "home": [
+                "r1"
+              ],
+              "home_kinds": [
+                "rectangle"
+              ],
+              "answer": 1,
+              "structure": {
+                "status": "FAIL",
+                "error": "attribute_confusion",
+                "classification": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "shape_gallery",
+        "v2_ui_revision": "v6-dev-12-shape-gallery"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "3",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729521496-33f4a1fdab742",
+            "event_type": "SHAPE_SELECTED",
+            "occurred_at": "2026-10-11T14:38:41.496Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "r1",
+              "kind": "rectangle"
+            }
+          },
+          {
+            "event_id": "evt-1791729521529-156d879242a658",
+            "event_type": "SHAPE_PLACED",
+            "occurred_at": "2026-10-11T14:38:41.529Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "r1",
+              "kind": "rectangle",
+              "target": false
+            }
+          },
+          {
+            "event_id": "evt-1791729521948-ec3325fa9364f",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:41.948Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729522031-ea0017667d46c8",
+            "event_type": "SHAPE_SELECTED",
+            "occurred_at": "2026-10-11T14:38:42.031Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "s1",
+              "kind": "square"
+            }
+          },
+          {
+            "event_id": "evt-1791729522064-106e795abbed68",
+            "event_type": "SHAPE_PLACED",
+            "occurred_at": "2026-10-11T14:38:42.064Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "s1",
+              "kind": "square",
+              "target": true
+            }
+          },
+          {
+            "event_id": "evt-1791729522096-0b2b27b6859dc8",
+            "event_type": "SHAPE_SELECTED",
+            "occurred_at": "2026-10-11T14:38:42.096Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "s2",
+              "kind": "square"
+            }
+          },
+          {
+            "event_id": "evt-1791729522131-dd8d79bda08b3",
+            "event_type": "SHAPE_PLACED",
+            "occurred_at": "2026-10-11T14:38:42.131Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "s2",
+              "kind": "square",
+              "target": true
+            }
+          },
+          {
+            "event_id": "evt-1791729522164-0b2f3f729a4ad8",
+            "event_type": "SHAPE_SELECTED",
+            "occurred_at": "2026-10-11T14:38:42.164Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "s3",
+              "kind": "square"
+            }
+          },
+          {
+            "event_id": "evt-1791729522198-3e53099a61c66",
+            "event_type": "SHAPE_PLACED",
+            "occurred_at": "2026-10-11T14:38:42.198Z",
+            "task_instance_id": "v6-dev-fixture-12",
+            "renderer_id": "shape-gallery",
+            "capability_id": "select",
+            "target_id": "main",
+            "payload": {
+              "shape": "s3",
+              "kind": "square",
+              "target": true
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "selected": null,
+              "home": [
+                "s1",
+                "s2",
+                "s3"
+              ],
+              "home_kinds": [
+                "square",
+                "square",
+                "square"
+              ],
+              "answer": 3,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "classification": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "shape_gallery",
+        "v2_ui_revision": "v6-dev-12-shape-gallery"
+      }
+    },
+    {
+      "fixture": "shape-canvas-shape_drawing",
+      "renderer": "shape-canvas",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "1",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729522712-1424183a00a04",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:42.712Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 0,
+              "y": 0,
+              "order": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729522747-ff1f7652549738",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:42.747Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 1,
+              "y": 0,
+              "order": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729522780-bdbc6859821328",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:42.780Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 1,
+              "y": 1,
+              "order": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729522814-626a2fb86558c8",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:42.814Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 0,
+              "y": 1,
+              "order": 4
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "vertices": [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 1,
+                  "y": 0
+                },
+                {
+                  "x": 1,
+                  "y": 1
+                },
+                {
+                  "x": 0,
+                  "y": 1
+                }
+              ],
+              "vertex_count": 4,
+              "area": 1,
+              "right_angles": 4,
+              "answer": 1,
+              "structure": {
+                "status": "FAIL",
+                "error": "wrong_size",
+                "target_shape": "rectangle",
+                "target_area": 6
+              }
+            }
+          }
+        ],
+        "v2_response_type": "shape_canvas",
+        "v2_ui_revision": "v6-dev-13-shape-canvas"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "6",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729522712-1424183a00a04",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:42.712Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 0,
+              "y": 0,
+              "order": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729522747-ff1f7652549738",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:42.747Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 1,
+              "y": 0,
+              "order": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729522780-bdbc6859821328",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:42.780Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 1,
+              "y": 1,
+              "order": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729522814-626a2fb86558c8",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:42.814Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 0,
+              "y": 1,
+              "order": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729523247-1e5fb4f4e4f08",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:43.247Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729523330-3349f113d9a288",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:43.330Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 0,
+              "y": 0,
+              "order": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729523363-5553e8810585d8",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:43.363Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 3,
+              "y": 0,
+              "order": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729523437-5734be8a2ba408",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:43.437Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 3,
+              "y": 2,
+              "order": 3
+            }
+          },
+          {
+            "event_id": "evt-1791729523481-8d1b090649805",
+            "event_type": "SHAPE_POINT_ADDED",
+            "occurred_at": "2026-10-11T14:38:43.481Z",
+            "task_instance_id": "v6-dev-fixture-13",
+            "renderer_id": "shape-canvas",
+            "capability_id": "draw",
+            "target_id": "main",
+            "payload": {
+              "x": 0,
+              "y": 2,
+              "order": 4
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "vertices": [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 3,
+                  "y": 0
+                },
+                {
+                  "x": 3,
+                  "y": 2
+                },
+                {
+                  "x": 0,
+                  "y": 2
+                }
+              ],
+              "vertex_count": 4,
+              "area": 6,
+              "right_angles": 4,
+              "answer": 6,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "target_shape": "rectangle",
+                "target_area": 6
+              }
+            }
+          }
+        ],
+        "v2_response_type": "shape_canvas",
+        "v2_ui_revision": "v6-dev-13-shape-canvas"
+      }
+    },
+    {
+      "fixture": "sorting-board-ordering",
+      "renderer": "sorting-board",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "1742",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729524029-eab722599eda3",
+            "event_type": "SORT_CARD_SELECTED",
+            "occurred_at": "2026-10-11T14:38:44.029Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {
+              "card": "c1",
+              "value": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729524066-3d7362c02df3d8",
+            "event_type": "SORT_CARD_SWAPPED",
+            "occurred_at": "2026-10-11T14:38:44.066Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {
+              "from": 0,
+              "to": 1,
+              "swap": 1
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "order": [
+                "c2",
+                "c1",
+                "c3",
+                "c4"
+              ],
+              "order_values": [
+                1,
+                7,
+                4,
+                2
+              ],
+              "swaps": [
+                [
+                  0,
+                  1
+                ]
+              ],
+              "swap_count": 1,
+              "answer": 1742,
+              "structure": {
+                "status": "FAIL",
+                "error": "disordered",
+                "ordering": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "sorting_board",
+        "v2_ui_revision": "v6-dev-14-sorting-board"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "1247",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729524029-eab722599eda3",
+            "event_type": "SORT_CARD_SELECTED",
+            "occurred_at": "2026-10-11T14:38:44.029Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {
+              "card": "c1",
+              "value": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729524066-3d7362c02df3d8",
+            "event_type": "SORT_CARD_SWAPPED",
+            "occurred_at": "2026-10-11T14:38:44.066Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {
+              "from": 0,
+              "to": 1,
+              "swap": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729524513-bc289556eb972",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:44.513Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729524597-84bbb80415952",
+            "event_type": "SORT_CARD_SELECTED",
+            "occurred_at": "2026-10-11T14:38:44.597Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {
+              "card": "c1",
+              "value": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729524631-aabf383cb80b7",
+            "event_type": "SORT_CARD_SWAPPED",
+            "occurred_at": "2026-10-11T14:38:44.631Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {
+              "from": 0,
+              "to": 1,
+              "swap": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729524664-4d87b552f863f",
+            "event_type": "SORT_CARD_SELECTED",
+            "occurred_at": "2026-10-11T14:38:44.664Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {
+              "card": "c1",
+              "value": 7
+            }
+          },
+          {
+            "event_id": "evt-1791729524697-c1ae31ddd38a58",
+            "event_type": "SORT_CARD_SWAPPED",
+            "occurred_at": "2026-10-11T14:38:44.697Z",
+            "task_instance_id": "v6-dev-fixture-14",
+            "renderer_id": "sorting-board",
+            "capability_id": "sort",
+            "target_id": "main",
+            "payload": {
+              "from": 1,
+              "to": 3,
+              "swap": 2
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "order": [
+                "c2",
+                "c4",
+                "c3",
+                "c1"
+              ],
+              "order_values": [
+                1,
+                2,
+                4,
+                7
+              ],
+              "swaps": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ]
+              ],
+              "swap_count": 2,
+              "answer": 1247,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "ordering": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "sorting_board",
+        "v2_ui_revision": "v6-dev-14-sorting-board"
+      }
+    },
+    {
+      "fixture": "direction-grid-route_navigation",
+      "renderer": "direction-grid",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "13",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729525179-f3eebb0130eda8",
+            "event_type": "PATH_EXTENDED",
+            "occurred_at": "2026-10-11T14:38:45.179Z",
+            "task_instance_id": "v6-dev-fixture-15",
+            "renderer_id": "direction-grid",
+            "capability_id": "navigate",
+            "target_id": "main",
+            "payload": {
+              "from": "2,2",
+              "to": "2,3",
+              "step": 1
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "path": [
+                "2,2",
+                "2,3"
+              ],
+              "directions": [
+                "right"
+              ],
+              "move_count": 1,
+              "turns": 0,
+              "current": {
+                "r": 2,
+                "c": 3
+              },
+              "target": {
+                "r": 3,
+                "c": 4
+              },
+              "answer": 13,
+              "structure": {
+                "status": "FAIL",
+                "error": "wrong_position",
+                "detour": null,
+                "distance_to_target": 2,
+                "reached": false
+              }
+            }
+          }
+        ],
+        "v2_response_type": "direction_grid",
+        "v2_ui_revision": "v6-dev-15-direction-grid"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "19",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729525179-f3eebb0130eda8",
+            "event_type": "PATH_EXTENDED",
+            "occurred_at": "2026-10-11T14:38:45.179Z",
+            "task_instance_id": "v6-dev-fixture-15",
+            "renderer_id": "direction-grid",
+            "capability_id": "navigate",
+            "target_id": "main",
+            "payload": {
+              "from": "2,2",
+              "to": "2,3",
+              "step": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729525619-f36da47d5cf48",
+            "event_type": "PATH_CLEARED",
+            "occurred_at": "2026-10-11T14:38:45.619Z",
+            "task_instance_id": "v6-dev-fixture-15",
+            "renderer_id": "direction-grid",
+            "capability_id": "navigate",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729525699-e4e5bc4369f038",
+            "event_type": "PATH_EXTENDED",
+            "occurred_at": "2026-10-11T14:38:45.699Z",
+            "task_instance_id": "v6-dev-fixture-15",
+            "renderer_id": "direction-grid",
+            "capability_id": "navigate",
+            "target_id": "main",
+            "payload": {
+              "from": "2,2",
+              "to": "2,3",
+              "step": 1
+            }
+          },
+          {
+            "event_id": "evt-1791729525749-a7e09ae5cc5bc",
+            "event_type": "PATH_EXTENDED",
+            "occurred_at": "2026-10-11T14:38:45.749Z",
+            "task_instance_id": "v6-dev-fixture-15",
+            "renderer_id": "direction-grid",
+            "capability_id": "navigate",
+            "target_id": "main",
+            "payload": {
+              "from": "2,3",
+              "to": "2,4",
+              "step": 2
+            }
+          },
+          {
+            "event_id": "evt-1791729525798-30a065c4b2c6a8",
+            "event_type": "PATH_EXTENDED",
+            "occurred_at": "2026-10-11T14:38:45.798Z",
+            "task_instance_id": "v6-dev-fixture-15",
+            "renderer_id": "direction-grid",
+            "capability_id": "navigate",
+            "target_id": "main",
+            "payload": {
+              "from": "2,4",
+              "to": "3,4",
+              "step": 3
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "path": [
+                "2,2",
+                "2,3",
+                "2,4",
+                "3,4"
+              ],
+              "directions": [
+                "right",
+                "right",
+                "down"
+              ],
+              "move_count": 3,
+              "turns": 1,
+              "current": {
+                "r": 3,
+                "c": 4
+              },
+              "target": {
+                "r": 3,
+                "c": 4
+              },
+              "answer": 19,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "detour": false,
+                "distance_to_target": 0,
+                "reached": true
+              }
+            }
+          }
+        ],
+        "v2_response_type": "direction_grid",
+        "v2_ui_revision": "v6-dev-15-direction-grid"
+      }
+    },
+    {
+      "fixture": "clock-time_setting",
+      "renderer": "clock",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "300",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729526364-f75bcddb478cd8",
+            "event_type": "CLOCK_HOUR_SET",
+            "occurred_at": "2026-10-11T14:38:46.364Z",
+            "task_instance_id": "v6-dev-fixture-16",
+            "renderer_id": "clock",
+            "capability_id": "set_time",
+            "target_id": "main",
+            "payload": {
+              "from": 3,
+              "to": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729526396-6db2874da604",
+            "event_type": "CLOCK_HOUR_SET",
+            "occurred_at": "2026-10-11T14:38:46.396Z",
+            "task_instance_id": "v6-dev-fixture-16",
+            "renderer_id": "clock",
+            "capability_id": "set_time",
+            "target_id": "main",
+            "payload": {
+              "from": 4,
+              "to": 5
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "h": 5,
+              "m": 0,
+              "time_text": "5:00",
+              "adjust_history": [
+                [
+                  "hour",
+                  3,
+                  4
+                ],
+                [
+                  "hour",
+                  4,
+                  5
+                ]
+              ],
+              "answer": 300,
+              "structure": {
+                "status": "FAIL",
+                "error": "wrong_time",
+                "delta_minutes": -60
+              }
+            }
+          }
+        ],
+        "v2_response_type": "clock",
+        "v2_ui_revision": "v6-dev-16-clock"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "360",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729526364-f75bcddb478cd8",
+            "event_type": "CLOCK_HOUR_SET",
+            "occurred_at": "2026-10-11T14:38:46.364Z",
+            "task_instance_id": "v6-dev-fixture-16",
+            "renderer_id": "clock",
+            "capability_id": "set_time",
+            "target_id": "main",
+            "payload": {
+              "from": 3,
+              "to": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729526396-6db2874da604",
+            "event_type": "CLOCK_HOUR_SET",
+            "occurred_at": "2026-10-11T14:38:46.396Z",
+            "task_instance_id": "v6-dev-fixture-16",
+            "renderer_id": "clock",
+            "capability_id": "set_time",
+            "target_id": "main",
+            "payload": {
+              "from": 4,
+              "to": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729526850-76e9d2011aa4e",
+            "event_type": "RESET",
+            "occurred_at": "2026-10-11T14:38:46.850Z",
+            "task_instance_id": "v6-dev-fixture-16",
+            "renderer_id": "clock",
+            "capability_id": "set_time",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729526933-d81f805d909eb8",
+            "event_type": "CLOCK_HOUR_SET",
+            "occurred_at": "2026-10-11T14:38:46.933Z",
+            "task_instance_id": "v6-dev-fixture-16",
+            "renderer_id": "clock",
+            "capability_id": "set_time",
+            "target_id": "main",
+            "payload": {
+              "from": 3,
+              "to": 4
+            }
+          },
+          {
+            "event_id": "evt-1791729526981-c5a37fb8a43f8",
+            "event_type": "CLOCK_HOUR_SET",
+            "occurred_at": "2026-10-11T14:38:46.981Z",
+            "task_instance_id": "v6-dev-fixture-16",
+            "renderer_id": "clock",
+            "capability_id": "set_time",
+            "target_id": "main",
+            "payload": {
+              "from": 4,
+              "to": 5
+            }
+          },
+          {
+            "event_id": "evt-1791729527014-94d9b3b0a3bb88",
+            "event_type": "CLOCK_HOUR_SET",
+            "occurred_at": "2026-10-11T14:38:47.014Z",
+            "task_instance_id": "v6-dev-fixture-16",
+            "renderer_id": "clock",
+            "capability_id": "set_time",
+            "target_id": "main",
+            "payload": {
+              "from": 5,
+              "to": 6
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "h": 6,
+              "m": 0,
+              "time_text": "6:00",
+              "adjust_history": [
+                [
+                  "hour",
+                  3,
+                  4
+                ],
+                [
+                  "hour",
+                  4,
+                  5
+                ],
+                [
+                  "hour",
+                  5,
+                  6
+                ]
+              ],
+              "answer": 360,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "delta_minutes": 0
+              }
+            }
+          }
+        ],
+        "v2_response_type": "clock",
+        "v2_ui_revision": "v6-dev-16-clock"
+      }
+    },
+    {
+      "fixture": "money-board-payment",
+      "renderer": "money-board",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "30",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729527547-3304f4c85b0ef",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:47.547Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 1,
+              "total": 10
+            }
+          },
+          {
+            "event_id": "evt-1791729527580-80a89942f4ee",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:47.580Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 2,
+              "total": 20
+            }
+          },
+          {
+            "event_id": "evt-1791729527614-0639f08c54a36",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:47.614Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 3,
+              "total": 30
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "counts": {
+                "10": 3
+              },
+              "coins": 3,
+              "total": 30,
+              "total_text": "3元0角",
+              "selection_history": [
+                [
+                  10,
+                  1
+                ],
+                [
+                  10,
+                  1
+                ],
+                [
+                  10,
+                  1
+                ]
+              ],
+              "answer": 30,
+              "price": 35,
+              "structure": {
+                "status": "FAIL",
+                "error": "underpaid",
+                "diff": -5,
+                "uses_extra": null,
+                "min_coins": 4
+              }
+            }
+          }
+        ],
+        "v2_response_type": "money_board",
+        "v2_ui_revision": "v6-dev-17-money-board"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "35",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729527547-3304f4c85b0ef",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:47.547Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 1,
+              "total": 10
+            }
+          },
+          {
+            "event_id": "evt-1791729527580-80a89942f4ee",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:47.580Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 2,
+              "total": 20
+            }
+          },
+          {
+            "event_id": "evt-1791729527614-0639f08c54a36",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:47.614Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 3,
+              "total": 30
+            }
+          },
+          {
+            "event_id": "evt-1791729528082-d81ecd231cae88",
+            "event_type": "MONEY_RESET",
+            "occurred_at": "2026-10-11T14:38:48.082Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729528185-5593d8d9a627a",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:48.185Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 1,
+              "total": 10
+            }
+          },
+          {
+            "event_id": "evt-1791729528232-83502bdbfa4148",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:48.232Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 2,
+              "total": 20
+            }
+          },
+          {
+            "event_id": "evt-1791729528280-5954b7564f1ce8",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:48.280Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 10,
+              "label": "1元",
+              "count": 3,
+              "total": 30
+            }
+          },
+          {
+            "event_id": "evt-1791729528333-c7d2f3f3acfec8",
+            "event_type": "MONEY_COIN_ADDED",
+            "occurred_at": "2026-10-11T14:38:48.333Z",
+            "task_instance_id": "v6-dev-fixture-17",
+            "renderer_id": "money-board",
+            "capability_id": "compose_groups",
+            "target_id": "main",
+            "payload": {
+              "denomination": 5,
+              "label": "5角",
+              "count": 1,
+              "total": 35
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "counts": {
+                "5": 1,
+                "10": 3
+              },
+              "coins": 4,
+              "total": 35,
+              "total_text": "3元5角",
+              "selection_history": [
+                [
+                  10,
+                  1
+                ],
+                [
+                  10,
+                  1
+                ],
+                [
+                  10,
+                  1
+                ],
+                [
+                  5,
+                  1
+                ]
+              ],
+              "answer": 35,
+              "price": 35,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "diff": 0,
+                "uses_extra": false,
+                "min_coins": 4
+              }
+            }
+          }
+        ],
+        "v2_response_type": "money_board",
+        "v2_ui_revision": "v6-dev-17-money-board"
+      }
+    },
+    {
+      "fixture": "pattern-board-pattern_extension",
+      "renderer": "pattern-board",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "22",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729528913-25e77d70da0e6",
+            "event_type": "PATTERN_BEAD_PLACED",
+            "occurred_at": "2026-10-11T14:38:48.913Z",
+            "task_instance_id": "v6-dev-fixture-18",
+            "renderer_id": "pattern-board",
+            "capability_id": "extend_pattern",
+            "target_id": "main",
+            "payload": {
+              "slot": 0,
+              "token": 2,
+              "color": "蓝"
+            }
+          },
+          {
+            "event_id": "evt-1791729528947-dbb990ec5272d8",
+            "event_type": "PATTERN_BEAD_PLACED",
+            "occurred_at": "2026-10-11T14:38:48.947Z",
+            "task_instance_id": "v6-dev-fixture-18",
+            "renderer_id": "pattern-board",
+            "capability_id": "extend_pattern",
+            "target_id": "main",
+            "payload": {
+              "slot": 1,
+              "token": 2,
+              "color": "蓝"
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "visible": [
+                1,
+                2,
+                1,
+                2
+              ],
+              "beads": [
+                2,
+                2
+              ],
+              "pattern_text": "1 2 1 2 2 2",
+              "period": 2,
+              "attempt_history": [
+                [
+                  0,
+                  null,
+                  2
+                ],
+                [
+                  1,
+                  null,
+                  2
+                ]
+              ],
+              "answer": 22,
+              "structure": {
+                "status": "FAIL",
+                "error": "rule_ignored",
+                "changed_once": null,
+                "expected": [
+                  1,
+                  2
+                ]
+              }
+            }
+          }
+        ],
+        "v2_response_type": "pattern_board",
+        "v2_ui_revision": "v6-dev-18-pattern-board"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "12",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729528913-25e77d70da0e6",
+            "event_type": "PATTERN_BEAD_PLACED",
+            "occurred_at": "2026-10-11T14:38:48.913Z",
+            "task_instance_id": "v6-dev-fixture-18",
+            "renderer_id": "pattern-board",
+            "capability_id": "extend_pattern",
+            "target_id": "main",
+            "payload": {
+              "slot": 0,
+              "token": 2,
+              "color": "蓝"
+            }
+          },
+          {
+            "event_id": "evt-1791729528947-dbb990ec5272d8",
+            "event_type": "PATTERN_BEAD_PLACED",
+            "occurred_at": "2026-10-11T14:38:48.947Z",
+            "task_instance_id": "v6-dev-fixture-18",
+            "renderer_id": "pattern-board",
+            "capability_id": "extend_pattern",
+            "target_id": "main",
+            "payload": {
+              "slot": 1,
+              "token": 2,
+              "color": "蓝"
+            }
+          },
+          {
+            "event_id": "evt-1791729529397-77f88ccc4d1f28",
+            "event_type": "PATTERN_RESET",
+            "occurred_at": "2026-10-11T14:38:49.397Z",
+            "task_instance_id": "v6-dev-fixture-18",
+            "renderer_id": "pattern-board",
+            "capability_id": "extend_pattern",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729529479-8f7a5419698e58",
+            "event_type": "PATTERN_BEAD_PLACED",
+            "occurred_at": "2026-10-11T14:38:49.479Z",
+            "task_instance_id": "v6-dev-fixture-18",
+            "renderer_id": "pattern-board",
+            "capability_id": "extend_pattern",
+            "target_id": "main",
+            "payload": {
+              "slot": 0,
+              "token": 1,
+              "color": "黄"
+            }
+          },
+          {
+            "event_id": "evt-1791729529512-855d1ee6a837f",
+            "event_type": "PATTERN_BEAD_PLACED",
+            "occurred_at": "2026-10-11T14:38:49.512Z",
+            "task_instance_id": "v6-dev-fixture-18",
+            "renderer_id": "pattern-board",
+            "capability_id": "extend_pattern",
+            "target_id": "main",
+            "payload": {
+              "slot": 1,
+              "token": 2,
+              "color": "蓝"
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "visible": [
+                1,
+                2,
+                1,
+                2
+              ],
+              "beads": [
+                1,
+                2
+              ],
+              "pattern_text": "1 2 1 2 1 2",
+              "period": 2,
+              "attempt_history": [
+                [
+                  0,
+                  null,
+                  1
+                ],
+                [
+                  1,
+                  null,
+                  2
+                ]
+              ],
+              "answer": 12,
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "changed_once": false,
+                "expected": null
+              }
+            }
+          }
+        ],
+        "v2_response_type": "pattern_board",
+        "v2_ui_revision": "v6-dev-18-pattern-board"
+      }
+    },
+    {
+      "fixture": "ruler-measurement",
+      "renderer": "ruler",
+      "status": "PASS",
+      "checks": [
+        "empty-submit-blocked",
+        "valid-wrong-submits-original-payload",
+        "skin-change-preserves-state-events",
+        "768-390-320-width-state-and-overflow",
+        "external-disable-preserves-and-locks",
+        "native-reset-restores-initial-readiness",
+        "correct-answer-and-payload"
+      ],
+      "wrong": {
+        "schema_version": "1.0",
+        "answer": "8",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729530046-02c4bdda4415a",
+            "event_type": "RULER_MARK_SET",
+            "occurred_at": "2026-10-11T14:38:50.046Z",
+            "task_instance_id": "v6-dev-fixture-19",
+            "renderer_id": "ruler",
+            "capability_id": "measure",
+            "target_id": "main",
+            "payload": {
+              "value": 0,
+              "index": 1,
+              "restarting": false
+            }
+          },
+          {
+            "event_id": "evt-1791729530084-f14c3d184bc168",
+            "event_type": "RULER_MARK_SET",
+            "occurred_at": "2026-10-11T14:38:50.084Z",
+            "task_instance_id": "v6-dev-fixture-19",
+            "renderer_id": "ruler",
+            "capability_id": "measure",
+            "target_id": "main",
+            "payload": {
+              "value": 8,
+              "index": 2,
+              "restarting": false
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "marks": [
+                0,
+                8
+              ],
+              "span": 8,
+              "reading": 8,
+              "answer": 8,
+              "object": {
+                "left": 3,
+                "right": 8,
+                "length": 5
+              },
+              "structure": {
+                "status": "FAIL",
+                "error": "from_zero_reading",
+                "aligned": null,
+                "diff_to_length": 3
+              }
+            }
+          }
+        ],
+        "v2_response_type": "ruler",
+        "v2_ui_revision": "v6-dev-19-ruler"
+      },
+      "correct": {
+        "schema_version": "1.0",
+        "answer": "5",
+        "interaction_events": [
+          {
+            "event_id": "evt-1791729530046-02c4bdda4415a",
+            "event_type": "RULER_MARK_SET",
+            "occurred_at": "2026-10-11T14:38:50.046Z",
+            "task_instance_id": "v6-dev-fixture-19",
+            "renderer_id": "ruler",
+            "capability_id": "measure",
+            "target_id": "main",
+            "payload": {
+              "value": 0,
+              "index": 1,
+              "restarting": false
+            }
+          },
+          {
+            "event_id": "evt-1791729530084-f14c3d184bc168",
+            "event_type": "RULER_MARK_SET",
+            "occurred_at": "2026-10-11T14:38:50.084Z",
+            "task_instance_id": "v6-dev-fixture-19",
+            "renderer_id": "ruler",
+            "capability_id": "measure",
+            "target_id": "main",
+            "payload": {
+              "value": 8,
+              "index": 2,
+              "restarting": false
+            }
+          },
+          {
+            "event_id": "evt-1791729530588-11b491b65a3de8",
+            "event_type": "RULER_MARKS_CLEARED",
+            "occurred_at": "2026-10-11T14:38:50.588Z",
+            "task_instance_id": "v6-dev-fixture-19",
+            "renderer_id": "ruler",
+            "capability_id": "measure",
+            "target_id": "main",
+            "payload": {}
+          },
+          {
+            "event_id": "evt-1791729530668-994214ce5457b8",
+            "event_type": "RULER_MARK_SET",
+            "occurred_at": "2026-10-11T14:38:50.668Z",
+            "task_instance_id": "v6-dev-fixture-19",
+            "renderer_id": "ruler",
+            "capability_id": "measure",
+            "target_id": "main",
+            "payload": {
+              "value": 3,
+              "index": 1,
+              "restarting": false
+            }
+          },
+          {
+            "event_id": "evt-1791729530717-4f11958af8dd38",
+            "event_type": "RULER_MARK_SET",
+            "occurred_at": "2026-10-11T14:38:50.717Z",
+            "task_instance_id": "v6-dev-fixture-19",
+            "renderer_id": "ruler",
+            "capability_id": "measure",
+            "target_id": "main",
+            "payload": {
+              "value": 8,
+              "index": 2,
+              "restarting": false
+            }
+          }
+        ],
+        "v2_workspaces": [
+          {
+            "workspace_id": "main",
+            "data": {
+              "marks": [
+                3,
+                8
+              ],
+              "span": 5,
+              "reading": 8,
+              "answer": 5,
+              "object": {
+                "left": 3,
+                "right": 8,
+                "length": 5
+              },
+              "structure": {
+                "status": "PASS",
+                "error": null,
+                "aligned": true,
+                "diff_to_length": 0
+              }
+            }
+          }
+        ],
+        "v2_response_type": "ruler",
+        "v2_ui_revision": "v6-dev-19-ruler"
+      }
+    }
+  ]
+}

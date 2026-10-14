@@ -5,6 +5,8 @@ import { AnswerComposer } from "@/src/components/learning/AnswerComposer";
 import { ColumnArithmetic } from "@/src/components/renderers/ColumnArithmetic";
 import { NumberLineV2 } from "@/src/components/renderers/NumberLineV2";
 import { NumberInputV2 } from "@/src/components/renderers/NumberInputV2";
+import { NumberInputKernelPilot } from "@/src/features/math-interaction/NumberInputKernelPilot";
+import { TaskRendererImplementationBoundary } from "@/src/features/math-interaction/TaskRendererImplementationBoundary";
 import { ObjectCounterV2 } from "@/src/components/renderers/ObjectCounterV2";
 import { BarModelV2 } from "@/src/components/renderers/BarModelV2";
 import { PlaceValueV2 } from "@/src/components/renderers/PlaceValueV2";
@@ -43,26 +45,7 @@ import type {
   V2TaskUiSchema
 } from "@/src/lib/api/contracts";
 
-export function createEmptyTaskResponse(): TaskResponse {
-  return { schema_version: "1.0", answer: "", interaction_events: [] };
-}
-
-export function isTaskResponseReady(
-  response: TaskResponse,
-  task?: TaskInstance
-) {
-  const hasAnswer = String(response.answer ?? "").trim().length > 0;
-  if (!hasAnswer) return false;
-
-  if (task?.ui_schema.schema_version === "2.0") {
-    return Array.isArray(response.v2_workspaces) && response.v2_workspaces.length > 0;
-  }
-
-  if (task?.ui_schema.response_schema.representation_required) {
-    return Boolean(response.representation);
-  }
-  return true;
-}
+export { createEmptyTaskResponse, isTaskResponseReady } from "./taskResponse";
 
 type CommonRendererProps = {
   task: TaskInstance;
@@ -174,13 +157,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <NumberLineV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:number-line`}
+          taskInstanceId={task.task_instance_id} rendererId="number-line" uiRevision={schema.ui_revision}
+          legacy={<NumberLineV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<NumberLineV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -216,13 +212,13 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <NumberInputV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:number-input`}
           taskInstanceId={task.task_instance_id}
-          schema={schema}
-          response={response}
-          disabled={disabled}
-          onResponseChange={onResponseChange}
-          onSubmit={onSubmit}
+          rendererId="number-input"
+          uiRevision={schema.ui_revision}
+          legacy={<NumberInputV2 {...commonV2Props} />}
+          kernel={<NumberInputKernelPilot {...commonV2Props} />}
         />
       </>
     );
@@ -248,13 +244,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <TenFrameV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:ten-frame`}
+          taskInstanceId={task.task_instance_id} rendererId="ten-frame" uiRevision={schema.ui_revision}
+          legacy={<TenFrameV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<TenFrameV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -264,13 +273,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <BarModelV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:bar-model`}
+          taskInstanceId={task.task_instance_id} rendererId="bar-model" uiRevision={schema.ui_revision}
+          legacy={<BarModelV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<BarModelV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -280,13 +302,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <PlaceValueV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:place-value`}
+          taskInstanceId={task.task_instance_id} rendererId="place-value" uiRevision={schema.ui_revision}
+          legacy={<PlaceValueV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<PlaceValueV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -296,13 +331,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <FormulaBoardV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:formula-board`}
+          taskInstanceId={task.task_instance_id} rendererId="formula-board" uiRevision={schema.ui_revision}
+          legacy={<FormulaBoardV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<FormulaBoardV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -312,13 +360,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <ArrayBoardV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:array-board`}
+          taskInstanceId={task.task_instance_id} rendererId="array-board" uiRevision={schema.ui_revision}
+          legacy={<ArrayBoardV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<ArrayBoardV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -328,13 +389,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <GroupingBoardV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:grouping-board`}
+          taskInstanceId={task.task_instance_id} rendererId="grouping-board" uiRevision={schema.ui_revision}
+          legacy={<GroupingBoardV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<GroupingBoardV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -344,13 +418,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <EstimationCanvasV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:estimation-canvas`}
+          taskInstanceId={task.task_instance_id} rendererId="estimation-canvas" uiRevision={schema.ui_revision}
+          legacy={<EstimationCanvasV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<EstimationCanvasV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -360,13 +447,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <ShapeGalleryV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:shape-gallery`}
+          taskInstanceId={task.task_instance_id} rendererId="shape-gallery" uiRevision={schema.ui_revision}
+          legacy={<ShapeGalleryV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<ShapeGalleryV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -376,13 +476,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <ShapeCanvasV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:shape-canvas`}
+          taskInstanceId={task.task_instance_id} rendererId="shape-canvas" uiRevision={schema.ui_revision}
+          legacy={<ShapeCanvasV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<ShapeCanvasV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -392,13 +505,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <SortingBoardV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:sorting-board`}
+          taskInstanceId={task.task_instance_id} rendererId="sorting-board" uiRevision={schema.ui_revision}
+          legacy={<SortingBoardV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<SortingBoardV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -408,13 +534,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <DirectionGridV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:direction-grid`}
+          taskInstanceId={task.task_instance_id} rendererId="direction-grid" uiRevision={schema.ui_revision}
+          legacy={<DirectionGridV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<DirectionGridV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -424,13 +563,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <RulerV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:ruler`}
+          taskInstanceId={task.task_instance_id} rendererId="ruler" uiRevision={schema.ui_revision}
+          legacy={<RulerV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<RulerV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -456,13 +608,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <MoneyBoardV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:money-board`}
+          taskInstanceId={task.task_instance_id} rendererId="money-board" uiRevision={schema.ui_revision}
+          legacy={<MoneyBoardV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<MoneyBoardV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -472,13 +637,26 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
     return (
       <>
         <MathQuestionCard prompt={schema.prompt.text} goal={task.goal} />
-        <PatternBoardV2
+        <TaskRendererImplementationBoundary
+          key={`${task.task_instance_id}:${schema.ui_revision}:pattern-board`}
+          taskInstanceId={task.task_instance_id} rendererId="pattern-board" uiRevision={schema.ui_revision}
+          legacy={<PatternBoardV2
           taskInstanceId={task.task_instance_id}
           schema={schema}
           response={response}
           disabled={disabled}
           onResponseChange={onResponseChange}
           onSubmit={onSubmit}
+        />}
+          kernel={<PatternBoardV2
+          taskInstanceId={task.task_instance_id}
+          schema={schema}
+          response={response}
+          disabled={disabled}
+          onResponseChange={onResponseChange}
+          onSubmit={onSubmit}
+          naturalEnabled
+        />}
         />
       </>
     );
@@ -492,8 +670,7 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
   return (
     <div className="surface-card unsupported-task" data-testid="planned-renderer">
       <strong>这个学习工具还在开发中</strong>
-      <p className="muted">当前 Renderer 已注册，但尚未开放下发。</p>
-      <small className="renderer-debug">Renderer: {rendererId}</small>
+      <p className="muted">这项学习工具暂时没有准备好，请返回任务后再试。</p>
     </div>
   );
 }
@@ -508,8 +685,7 @@ export function TaskRenderer(props: CommonRendererProps) {
       return (
         <div className="surface-card unsupported-task" data-testid="planned-renderer">
           <strong>这个学习工具还在开发中</strong>
-          <p className="muted">当前 Renderer 已注册，但尚未开放下发。</p>
-          <small className="renderer-debug">Renderer: {rendererId}</small>
+          <p className="muted">这项学习工具暂时没有准备好，请返回任务后再试。</p>
         </div>
       );
     }
@@ -534,7 +710,6 @@ export function TaskRenderer(props: CommonRendererProps) {
     <div className="surface-card unsupported-task">
       <strong>这道题暂时需要新的学习工具</strong>
       <p className="muted">题目已经保留，不会丢失。请稍后再试。</p>
-      <small className="renderer-debug">Renderer: {descriptor.renderer_id}</small>
     </div>
   );
 }

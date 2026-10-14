@@ -5,7 +5,6 @@
 
 import type { TaskInstance, TaskResponse, AttemptRequest, V2TaskUiSchema, V2RendererWorkspace, InteractionEvent } from "./contracts";
 import { buildRendererEvidence, createRendererRuntimeState, type RendererSemanticEvent } from "@/src/features/task-renderer/rendererContract";
-import { getRendererEvaluator } from "@/src/features/task-renderer/evaluatorRegistry";
 
 /**
  * stable submission_id —— 必须为合法 UUID（后端 learning.py `uuid.UUID(str(...))` 校验，
@@ -41,7 +40,10 @@ export function stableSubmissionId(taskInstanceId: string, attemptNo: number, ui
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`;
 }
 
-/** 提交时刻把 Evidence/Evaluation 注入 workspace data（attempt_no 为真实值）。 */
+/** SAFE-01: only learner events/state go on the wire.
+ * MathResponse V2 explicitly forbids client correctness/score claims;
+ * only DB ResourceVersion.content.answer is authoritative for Judge.
+ */
 function enrichWorkspaceData(
   data: Record<string, unknown>,
   workspace: V2RendererWorkspace,
@@ -55,8 +57,10 @@ function enrichWorkspaceData(
   runtime.status = "SUBMITTED";
   runtime.events = events as RendererSemanticEvent[];
   const evidence = buildRendererEvidence(taskInstanceId, workspace, runtime, answer);
-  const evaluation = getRendererEvaluator(workspace.renderer)({ answer, evidence, config: workspace.config });
-  return { ...data, evidence, evaluation, runtime_status: runtime.status };
+  // Remove legacy evaluation even when a renderer accidentally included it.
+  // Do not forward local scores, expected_answer or diagnosis-like judgments.
+  const { evaluation: _ignoredEvaluation, ...observations } = data;
+  return { ...observations, evidence, runtime_status: runtime.status };
 }
 
 type V2EnvelopeResponse = {
@@ -89,9 +93,8 @@ export function buildAttemptPayload(task: TaskInstance | undefined, request: Att
           data: workspace.initial_state
         }));
 
-  // FE-1417：Evidence/Evaluation 注入（语义边界：renderer 只给 What happened，
-  // 不做 mastery/diagnosis 判断；generic evaluator 的 expected 来自 task.content 下发？——
-  // config 无 expected_answer 时 evaluator 返回 NOT_EVALUATED，属合法前端弱判）。
+  // SAFE-01：保留 Evidence，不再提交本地 Evaluation / expected_answer / score。
+  // 资源正确答案仍由服务端 content.answer 读取；客户端没有判分权。
   const workspaces = baseWorkspaces.map(w => {
     const declared = schema.workspaces.find(ws => ws.workspace_id === w.workspace_id);
     if (!declared) return w;

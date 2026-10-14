@@ -434,12 +434,14 @@ a{color:inherit}
 
 /* FE-1418 BarModel V2 (R02) */
 .bar-model-v2 .bm-bars{display:flex;flex-direction:column;gap:12px;margin:12px 0}
-.bm-bar-row{display:grid;grid-template-columns:120px 1fr auto;align-items:center;gap:12px}
+/* FE-1443：方块按轨道/max_blocks 等分缩放（18 格×36px 曾撑破 1fr 轨道挤出 ± 控件列）；
+   minmax(0,1fr)+min-width:0 允许轨道收缩。条长=整条轨道×value/max——长度对比即数量对比。 */
+.bm-bar-row{display:grid;grid-template-columns:110px minmax(0,1fr) auto;align-items:center;gap:12px}
 .bm-bar-row.answer .bm-bar-label{color:var(--cm-primary,#2d7a68);font-weight:700}
 .bm-bar-label{font-size:14px;color:var(--cm-text-2,#5c7280)}
-.bm-bar-track{min-height:44px;display:flex;align-items:center}
-.bm-bar-blocks{display:flex;gap:4px;min-width:44px}
-.bm-block{width:36px;height:36px;border-radius:9px;background:var(--cm-primary,#2d7a68);box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+.bm-bar-track{min-height:44px;display:flex;align-items:center;min-width:0;max-width:100%;overflow:hidden}
+.bm-bar-blocks{display:flex;gap:4px;width:var(--bm-width,100%);max-width:100%;min-width:0}
+.bm-block{flex:1 1 0;min-width:6px;height:36px;border-radius:9px;background:var(--cm-primary,#2d7a68);box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
 .bm-bar-row.answer .bm-block{background:var(--cm-secondary,#d98324)}
 .bm-bar-controls{display:flex;align-items:center;gap:8px}
 .bm-bar-controls button{width:38px;height:38px;border-radius:10px;border:2px solid var(--border-subtle,#dbe4e8);background:var(--cm-surface,#fff);font-size:20px;font-weight:800;cursor:pointer;color:var(--cm-text-1,#20323d)}
@@ -636,3 +638,28 @@ a{color:inherit}
 .pb-evaluation{margin:8px 0 14px;padding:10px 13px;border-radius:12px;background:#f1f5f7;font-size:14px;color:var(--cm-text-2,#5c7280)}
 .pb-evaluation.pass{background:color-mix(in srgb,var(--cm-success,#2f9e63) 12%,white);color:var(--cm-success,#2f9e63);font-weight:700}
 .pb-evaluation.fail{background:color-mix(in srgb,var(--cm-warning,#d98324) 14%,white)}
+
+/* MIK A5 opt-in natural interaction controls; V6 default unaffected. */
+/* 16 renderers, visually compatible with both V1.4 skins; renderer owns color tokens. */
+.a5-panel{--a5-border:var(--cm-border,#c9d8de);--a5-main:var(--cm-primary,#287370);--a5-soft:var(--cm-primary-soft,#edf5f2);--a5-surface:var(--cm-surface,#fff);color:var(--cm-text,#2a3d47);background:var(--a5-surface);border:1px solid var(--a5-border);border-radius:18px;padding:14px;max-width:100%;touch-action:pan-y}
+.a5-head{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}.a5-title{font-size:1.05rem;font-weight:800}.a5-instructions{font-size:.9rem;color:var(--cm-text-2,#586d78)}
+.a5-sources,.a5-targets,.a5-selections{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.a5-panel button{font:inherit;line-height:1.3;border-radius:12px;min-height:44px;min-width:44px;padding:8px 12px;cursor:pointer;color:inherit;overflow-wrap:anywhere}
+.a5-panel button:focus-visible,.a5-panel input:focus-visible{outline:3px solid var(--a5-main);outline-offset:3px}.a5-panel button:disabled{opacity:.5;cursor:not-allowed}
+.a5-source{background:var(--a5-soft);border:2px solid var(--a5-main);font-weight:700;cursor:grab;user-select:none}.a5-source.is-selected{outline:3px solid var(--a5-main);outline-offset:3px}.a5-source:active{cursor:grabbing}
+.a5-target{background:var(--a5-surface);border:2px dashed var(--a5-border)}.a5-target:hover{border-color:var(--a5-main);background:var(--a5-soft)}.a5-select{border:1px solid var(--a5-border);background:var(--a5-surface)}
+.a5-preview{pointer-events:none;position:fixed;z-index:60;transform:translate(-50%,-50%);font-size:32px;color:var(--a5-main);filter:drop-shadow(0 2px 5px #607a7977)}
+.a5-status{min-height:20px;font-size:.84rem;color:var(--cm-text-2,#586d78)}.a5-range-standalone{display:flex;flex-direction:column;gap:8px;margin:14px 4px}.a5-range-standalone input{width:100%;touch-action:pan-y}.a5-panel input[type=text]{font:inherit;border:2px solid var(--a5-border);border-radius:10px;min-height:46px;padding:7px 9px;max-width:100%}
+.a5-direction-grid,.a5-shape-canvas{display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr))}.a5-ten-frame .a5-target{min-width:50px}
+@media(max-width:520px){.a5-panel{padding:10px;border-radius:13px}.a5-panel button{padding:9px;max-width:100%}.a5-sources,.a5-targets{gap:6px}}
+@media(prefers-reduced-motion:reduce){.a5-panel *{transition:none!important;animation:none!important}}
+/* For headless binding onto the original 16 math renderer DOM (no replacement UI). */
+[data-a5-existing-renderer] [data-a5-source]{touch-action:none;user-select:none;cursor:grab}
+[data-a5-existing-renderer] [data-a5-source]:focus-visible,
+[data-a5-existing-renderer] [data-a5-drop]:focus-visible{outline:3px solid var(--cm-primary,#287370);outline-offset:3px}
+
+/* FE-1447: The task-pinned Router is a direct child of V6's CSS Grid.
+ * Grid items default to min-width:auto (min-content), which lets fixed-width
+ * number-lines/rulers/grids expand the page instead of their own scrollports.
+ * Shrink only the routing shell; do not clip its children or their focus rings.
+ * Required in BOTH legacy and kernel branches, including 320px viewports. */
+.mik-implementation-route { min-width:0; width:100%; max-width:100%; }

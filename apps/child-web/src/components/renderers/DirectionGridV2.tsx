@@ -1,5 +1,10 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { A5LivePanel } from "@/src/features/task-renderer/interaction/kernel/A5LivePanel";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * direction-grid V2 组件（FE-1427 R15，Batch D 收官）。runtime 装配对齐 SortingBoardV2。
  *
@@ -25,6 +30,8 @@ import {
 import { buildRendererEvent, createRendererWorkspaceState, rendererWorkspaceReducer } from "@/src/features/task-renderer/rendererRuntime";
 
 type Props = {
+  /** MIK A5: task-pinned opt-in, legacy and V6 default unchanged. */
+  naturalEnabled?: boolean;
   taskInstanceId: string;
   schema: V2TaskUiSchema;
   response: TaskResponse;
@@ -39,8 +46,10 @@ export function DirectionGridV2({
   response,
   disabled,
   onResponseChange,
-  onSubmit
+  onSubmit,
+  naturalEnabled
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseDirectionConfig(workspace.config as Record<string, unknown>) : null),
@@ -84,7 +93,7 @@ export function DirectionGridV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">方向网格题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "方向网格题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -138,6 +147,61 @@ export function DirectionGridV2({
     if (r === cur.r && c === cur.c) return "walker";
     return visited.has(`${r},${c}`) ? "visited" : "";
   };
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="direction-grid" title="看清方向，走一走" instruction="点相邻的格子走一步。星星是目标，圆点是你现在的位置。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="dg-undo-move" className="dg-undo-move" disabled={disabled || state.steps.length <= 1} onClick={undoMove}>
+            退一步
+          </button>
+          <button type="button" data-testid="dg-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="dg-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="direction-grid-v2" className="manipulative-card direction-grid-v2"
+      submitTestId="dg-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={`已经走了 ${state.steps.length - 1} 步`}>
+      {naturalEnabled && <A5LivePanel
+        rendererId="direction-grid"
+        state={state} config={config}
+        taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
+        disabled={disabled}
+        handlers={{
+          "applyMoveTo": a => clickCell(a.r as number, a.c as number)
+        }}
+      />}
+      <div className="v6-geometry-scroll"><div
+        className="dg-grid"
+        data-testid="dg-grid"
+        style={{ gridTemplateColumns: `repeat(${config.cols}, 1fr)` }}
+      >
+        {Array.from({ length: config.rows * config.cols }, (_, i) => {
+          const r = Math.floor(i / config.cols);
+          const c = i % config.cols;
+          const role = cellRole(r, c);
+          return (
+            <button
+              key={i}
+              type="button"
+              data-testid={`dg-cell-${r}-${c}`}
+              data-role={role}
+              aria-label={`第 ${r + 1} 行、第 ${c + 1} 列${r === cur.r && c === cur.c ? "，当前位置" : ""}${r === config.target.r && c === config.target.c ? "，目标" : ""}`}
+              className={`dg-cell ${role}`.trim()}
+              disabled={disabled}
+              onClick={() => clickCell(r, c)}
+            >
+              {r === cur.r && c === cur.c ? "●" :
+               r === config.target.r && c === config.target.c ? "☆" :
+               r === config.start.r && c === config.start.c ? "起" :
+               visited.has(`${r},${c}`) ? "·" : ""}
+            </button>
+          );
+        })}
+      </div></div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card direction-grid-v2" data-testid="direction-grid-v2">
