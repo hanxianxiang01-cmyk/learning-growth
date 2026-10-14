@@ -656,3 +656,10 @@ a{color:inherit}
 [data-a5-existing-renderer] [data-a5-source]{touch-action:none;user-select:none;cursor:grab}
 [data-a5-existing-renderer] [data-a5-source]:focus-visible,
 [data-a5-existing-renderer] [data-a5-drop]:focus-visible{outline:3px solid var(--cm-primary,#287370);outline-offset:3px}
+
+/* FE-1447: The task-pinned Router is a direct child of V6's CSS Grid.
+ * Grid items default to min-width:auto (min-content), which lets fixed-width
+ * number-lines/rulers/grids expand the page instead of their own scrollports.
+ * Shrink only the routing shell; do not clip its children or their focus rings.
+ * Required in BOTH legacy and kernel branches, including 320px viewports. */
+.mik-implementation-route { min-width:0; width:100%; max-width:100%; }

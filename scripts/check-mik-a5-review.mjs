@@ -13,9 +13,10 @@ const localTsc=resolve(root,'node_modules/.bin/tsc');
 const tsc=existsSync(localTsc)?localTsc:'tsc';
 const gates=[
  ['MIK-A5 scoped strict TypeScript',tsc,['-p','tsconfig.mik-a5-isolated.json']],
- ['MIK-A5 166 source/actual-domain checks',process.execPath,['--test',
+ ['MIK-A5 domain, renderer wiring and responsive Router contracts',process.execPath,['--test',
   'tests/a5-16/natural-intent.test.cjs','tests/a5-16/scene-16.test.cjs',
-  'tests/a5-16/react-handler.test.cjs','tests/spikes/mik-a5-live/live-domain-and-wiring.test.cjs']],
+  'tests/a5-16/react-handler.test.cjs','tests/spikes/mik-a5-live/live-domain-and-wiring.test.cjs',
+  'tests/spikes/mik-a5-live/router-width-contract.test.cjs']],
  ['SAFE-01 envelope audit',process.execPath,['tests/spikes/safe01-envelope-audit.cjs']],
  ['Task-pinned Router policy',process.execPath,['tests/spikes/implementation-policy.test.cjs']],
  ['V1.4 contract gate',process.execPath,['apps/child-web/scripts/check-v14-contracts.mjs']],

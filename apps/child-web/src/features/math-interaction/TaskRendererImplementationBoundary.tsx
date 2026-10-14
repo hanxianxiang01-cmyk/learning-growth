@@ -55,7 +55,7 @@ export function TaskRendererImplementationBoundary(props: {
     当前练习使用的交互版本暂时不可用。原题和作答记录没有被自动切换，请稍后重试。
   </div>;
   // No internal flags or technical diagnostics in child-facing text.
-  return <div data-testid="mik-route" data-mik-implementation={decision.version}>
+  return <div className="mik-implementation-route" data-testid="mik-route" data-mik-implementation={decision.version}>
     {decision.version === 'kernel' ? kernel : legacy}
   </div>;
 }
