@@ -179,7 +179,7 @@ export function NumberLineV2({
       submitTestId="number-line-v2-submit" submitDisabled={disabled || endpointAnswer(runtime.present) === null} locked={disabled} onSubmit={onSubmit} summary={`现在到 ${runtime.present.current ?? "起点待定"}`}>
       {naturalEnabled && <A5LivePanel
         rendererId="number-line"
-        state={state} config={config}
+        state={runtime.present} config={config}
         taskInstanceId={taskInstanceId} uiRevision={schema.ui_revision}
         disabled={disabled}
         handlers={{
