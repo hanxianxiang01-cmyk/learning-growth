@@ -1,0 +1,10 @@
+{
+  "pass": 19,
+  "failed": 0,
+  "routing_proven": true,
+  "ui_browser_run": false,
+  "submitting_to_backend": false,
+  "active_pilot_ids": [
+    "number-input"
+  ]
+}

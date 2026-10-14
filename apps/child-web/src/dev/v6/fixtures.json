@@ -1,0 +1,1400 @@
+[
+  {
+    "id": "number-line-jump_sequence",
+    "renderer": "number-line",
+    "title": "数轴跳跳跳（V2链）",
+    "expected": "35",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-0",
+      "ability_id": "app_rel",
+      "difficulty": 3,
+      "goal": "用数轴跳步表征等步长连续增加",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-0-number-line",
+        "prompt": {
+          "text": "从20出发，每次向右跳5，跳3次，终点是多少？"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "number-line",
+            "renderer_version": "1.0",
+            "mode": "jump_sequence",
+            "config": {
+              "scale": {
+                "min": 0,
+                "max": 50,
+                "tick_step": 5
+              },
+              "start_marker": {
+                "marker_id": "start",
+                "value": 20
+              }
+            },
+            "initial_state": {
+              "jumps": []
+            },
+            "capabilities": [
+              "jump",
+              "place_marker",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "snap_to_tick": true,
+              "auto_complete_jumps": false
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "number_line",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "jumps"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "column-arithmetic-addition",
+    "renderer": "column-arithmetic",
+    "title": "图书馆的新书（竖式 V2 链）",
+    "expected": "75",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-1",
+      "ability_id": "app_rel",
+      "difficulty": 4,
+      "goal": "用竖式表征两位数进位加法的过程与结果",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-1-column-arithmetic",
+        "prompt": {
+          "text": "图书角原来有47本书，这周又买来28本。现在一共有多少本书？用竖式算，填好进位。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "column-arithmetic",
+            "renderer_version": "1.0",
+            "mode": "addition",
+            "config": {
+              "operands": [
+                47,
+                28
+              ],
+              "places": [
+                "ones",
+                "tens",
+                "hundreds"
+              ],
+              "operand_layout": "fixed"
+            },
+            "initial_state": {
+              "result_digits": [],
+              "carries": []
+            },
+            "capabilities": [
+              "input_digit",
+              "place_carry",
+              "edit_carry",
+              "step_submit",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "digit_min": 0,
+              "digit_max": 9,
+              "carry_autofill": false
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "column_arithmetic",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "result_digits",
+            "carries"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "object-counter-count_compose",
+    "renderer": "object-counter",
+    "title": "气球合起来（V2 链 R01）",
+    "expected": "7",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-2",
+      "ability_id": "app_rel",
+      "difficulty": 1,
+      "goal": "用物体组表征部分-整体合成（先摆后合，答案=总数）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-2-object-counter",
+        "prompt": {
+          "text": "小雨有4个红气球，又拿来了3个蓝气球。把两堆合起来数一数，一共有多少个气球？"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "object-counter",
+            "renderer_version": "1.0",
+            "mode": "count_compose",
+            "config": {
+              "groups": [
+                {
+                  "group_id": "g1",
+                  "label": "红气球",
+                  "symbol": "🎈",
+                  "count": 0,
+                  "locked": false
+                },
+                {
+                  "group_id": "g2",
+                  "label": "蓝气球",
+                  "symbol": "🎈",
+                  "count": 0,
+                  "locked": false
+                }
+              ],
+              "expected": [
+                {
+                  "group_id": "g1",
+                  "min_count": 4
+                },
+                {
+                  "group_id": "g2",
+                  "min_count": 3
+                }
+              ],
+              "max_total_count": 12
+            },
+            "initial_state": {
+              "groups": [
+                {
+                  "group_id": "g1",
+                  "label": "红气球",
+                  "symbol": "🎈",
+                  "count": 0
+                },
+                {
+                  "group_id": "g2",
+                  "label": "蓝气球",
+                  "symbol": "🎈",
+                  "count": 0
+                }
+              ]
+            },
+            "capabilities": [
+              "add_object",
+              "remove_object",
+              "compose_groups",
+              "decompose_group",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "max_total_count": 12
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "object_count",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "groups",
+            "total"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "number-input-numeric_answer",
+    "renderer": "number-input",
+    "title": "还剩几只鸟（V2 链 R04）",
+    "expected": "5",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-3",
+      "ability_id": "app_rel",
+      "difficulty": 1,
+      "goal": "从动作情境抽象出减法并直接给出数量答案",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-3-number-input",
+        "prompt": {
+          "text": "树枝上停着7只小鸟，扑棱棱飞走了2只。还剩几只？把答案写在框里。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "number-input",
+            "renderer_version": "1.0",
+            "mode": "numeric_answer",
+            "config": {
+              "min": 0,
+              "max": 20,
+              "integer_only": true
+            },
+            "initial_state": {
+              "answer": null
+            },
+            "capabilities": [
+              "answer_input"
+            ],
+            "constraints": {
+              "integer_only": true
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "number_input",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "answer"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "ten-frame-quantity_structure",
+    "renderer": "ten-frame",
+    "title": "把糖果装进袋（V2 链 R07）",
+    "expected": "13",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-4",
+      "ability_id": "app_rel",
+      "difficulty": 2,
+      "goal": "用十格框表征 20 以内数的十与一结构（补十打包）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-4-ten-frame",
+        "prompt": {
+          "text": "妈妈买了13颗糖。先在十格框里摆出来，摆满十个就打包装成一袋，剩下的散着放。摆好后提交。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "ten-frame",
+            "renderer_version": "1.0",
+            "mode": "quantity_structure",
+            "config": {
+              "target_count": 13,
+              "max_frames": 2
+            },
+            "initial_state": {
+              "tens": 0,
+              "count": 0
+            },
+            "capabilities": [
+              "fill",
+              "grouping",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "continuous_fill": true
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "ten_frame",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "tens",
+            "current_frame_count"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "bar-model-part_whole",
+    "renderer": "bar-model",
+    "title": "画条形图算一共（V2 链 R02）",
+    "expected": "8",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-5",
+      "ability_id": "app_model",
+      "difficulty": 1,
+      "goal": "用条形图表征部分-整体关系（先摆已知，再摆整体）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-5-bar-model",
+        "prompt": {
+          "text": "小雨有5颗红星星，又画了3颗黄星星。把两根部分条摆出来，再把整体条摆得和加起来一样长。一共几颗？"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "bar-model",
+            "renderer_version": "1.0",
+            "mode": "part_whole",
+            "config": {
+              "mode": "part_whole",
+              "known": {
+                "a": 5,
+                "b": 3
+              },
+              "answer_bar": "c",
+              "max_blocks": 12
+            },
+            "initial_state": {
+              "bars": {
+                "a": 0,
+                "b": 0,
+                "c": 0
+              },
+              "answerTouched": false
+            },
+            "capabilities": [
+              "add_object",
+              "remove_object",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "structure": "whole_gt_parts"
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "bar_model",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "bars",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "place-value-place_value_build",
+    "renderer": "place-value",
+    "title": "数字卡回家（V2 链 R06）",
+    "expected": "352",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-6",
+      "ability_id": "app_rd",
+      "difficulty": 2,
+      "goal": "按数位把数字放到正确位置（位值结构感知）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-6-place-value",
+        "prompt": {
+          "text": "数字卡 3、5、2 走丢了。把它们放回百、十、个的框里，组成 352。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "place-value",
+            "renderer_version": "1.0",
+            "mode": "place_value_build",
+            "config": {
+              "target": 352,
+              "pool": [
+                2,
+                5,
+                3
+              ]
+            },
+            "initial_state": {
+              "pool": [
+                2,
+                5,
+                3
+              ],
+              "slots": [
+                null,
+                null,
+                null
+              ],
+              "picked": null
+            },
+            "capabilities": [
+              "select",
+              "answer_input",
+              "undo",
+              "reset",
+              "highlight",
+              "focus"
+            ],
+            "constraints": {
+              "pool_multiset_equals_target_digits": true
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "place_value",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "slots",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "formula-board-unknown_number",
+    "renderer": "formula-board",
+    "title": "方框里藏了几（V2 链 R10）",
+    "expected": "5",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-7",
+      "ability_id": "app_strat",
+      "difficulty": 2,
+      "goal": "用等式关系求未知加数（方程思想萌芽）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-7-formula-board",
+        "prompt": {
+          "text": "盒子里有一些弹珠，外面又有4颗。一共有9颗。□+4=9，方框里藏了几？点亮圆圈填数字。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "formula-board",
+            "renderer_version": "1.0",
+            "mode": "unknown_number",
+            "config": {
+              "tokens": [
+                {
+                  "t": "slot",
+                  "id": "box",
+                  "accept": "number"
+                },
+                {
+                  "t": "op",
+                  "v": "+"
+                },
+                {
+                  "t": "num",
+                  "v": 4
+                },
+                {
+                  "t": "eq"
+                },
+                {
+                  "t": "num",
+                  "v": 9
+                }
+              ],
+              "answer_slot": "box",
+              "max_number": 20
+            },
+            "initial_state": {
+              "filled": {},
+              "activeSlot": null
+            },
+            "capabilities": [
+              "answer_input",
+              "highlight",
+              "focus",
+              "reset",
+              "undo"
+            ],
+            "constraints": {
+              "equation_sides_max_one_op": true
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "formula_board",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "filled",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "formula-board-unknown_operator",
+    "renderer": "formula-board",
+    "title": "加号还是减号（V2 链 R10）",
+    "expected": "-",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-8",
+      "ability_id": "app_strat",
+      "difficulty": 2,
+      "goal": "按数量变化选择正确的运算符号",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-8-formula-board",
+        "prompt": {
+          "text": "鱼缸里有7条鱼，游走了一些剩下几条？看图列式 7○2=5。圆圈里该点加号还是减号？"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "formula-board",
+            "renderer_version": "1.0",
+            "mode": "unknown_operator",
+            "config": {
+              "tokens": [
+                {
+                  "t": "num",
+                  "v": 7
+                },
+                {
+                  "t": "slot",
+                  "id": "op0",
+                  "accept": "operator"
+                },
+                {
+                  "t": "num",
+                  "v": 2
+                },
+                {
+                  "t": "eq"
+                },
+                {
+                  "t": "num",
+                  "v": 5
+                }
+              ],
+              "answer_slot": "op0",
+              "max_number": 20
+            },
+            "initial_state": {
+              "filled": {},
+              "activeSlot": null
+            },
+            "capabilities": [
+              "answer_input",
+              "highlight",
+              "focus",
+              "reset",
+              "undo"
+            ],
+            "constraints": {
+              "equation_sides_max_one_op": true
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "formula_board",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "filled",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "array-board-array_structure",
+    "renderer": "array-board",
+    "title": "排队做操（V2 链 R08）",
+    "expected": "12",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-9",
+      "ability_id": "app_model",
+      "difficulty": 1,
+      "goal": "用行列阵列表征几个几（3排×每排4人=12）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-9-array-board",
+        "prompt": {
+          "text": "小朋友排队做操，每排站4人，站了3排。用行列把队伍排出来（先想横的几排、竖的几人），数一数一共几人？"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "array-board",
+            "renderer_version": "1.0",
+            "mode": "array_structure",
+            "config": {
+              "target_rows": 3,
+              "target_cols": 4,
+              "max_rows": 8,
+              "max_cols": 8
+            },
+            "initial_state": {
+              "rows": 0,
+              "cols": 0
+            },
+            "capabilities": [
+              "add_object",
+              "remove_object",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "rows_le_max": 8,
+              "cols_le_max": 8
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "array_board",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "rows",
+            "columns",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "grouping-board-equal_groups",
+    "renderer": "grouping-board",
+    "title": "把糖分给小朋友（V2 链 R09）",
+    "expected": "4",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-10",
+      "ability_id": "app_rel",
+      "difficulty": 3,
+      "goal": "主动建组+逐组分发，建立等分（平均）概念",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-10-grouping-board",
+        "prompt": {
+          "text": "12颗糖要平均分给3个小朋友。圈出3个组，把糖一颗一颗发完，每人都要一样多。每人几颗？"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "grouping-board",
+            "renderer_version": "1.0",
+            "mode": "equal_groups",
+            "config": {
+              "items": 12,
+              "target_groups": 3,
+              "max_groups": 6
+            },
+            "initial_state": {
+              "groups": [],
+              "pool": 12
+            },
+            "capabilities": [
+              "grouping",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "items_equal_groups": true
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "grouping_board",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "groups",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "estimation-canvas-estimation_range",
+    "renderer": "estimation-canvas",
+    "title": "书架上大约有多少本书",
+    "expected": "40",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-11",
+      "ability_id": "app_model",
+      "difficulty": 2,
+      "goal": "用参照量估算总数并四舍五入到整十",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-11-estimation-canvas",
+        "prompt": {
+          "text": "书店阿姨数到一半记下了：这一摞是 10 本。整个书架上的书比这一摞多得多。拖动滑条估一估书架上大约有多少本，再选一选你是怎么想的。（答案估到最接近的整十）"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "estimation-canvas",
+            "renderer_version": "1.0",
+            "mode": "estimation_range",
+            "config": {
+              "reference": 10,
+              "max": 60,
+              "expected": 40,
+              "actual": 38,
+              "tolerance": 6
+            },
+            "initial_state": {
+              "estimate": null,
+              "reason": null,
+              "adjust_history": []
+            },
+            "capabilities": [
+              "answer_input",
+              "highlight",
+              "focus",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "round_to_nearest_ten": true
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "estimation_canvas",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "estimate",
+            "reason",
+            "adjust_history",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "shape-gallery-shape_classification",
+    "renderer": "shape-gallery",
+    "title": "给正方形找一个家",
+    "expected": "3",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-12",
+      "ability_id": "app_cond",
+      "difficulty": 1,
+      "goal": "按边与角的属性识别并分类正方形（计数验证）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-12-shape-gallery",
+        "prompt": {
+          "text": "美术角的图形墙上有 6 个图形邻居混住了。把所有的**正方形**点起来，放进下面「正方形的家」里——长方形、圆形的朋友可不是正方形哦。数一数家里最后有几个图形。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "shape-gallery",
+            "renderer_version": "1.0",
+            "mode": "shape_classification",
+            "config": {
+              "target_kind": "square",
+              "shapes": [
+                {
+                  "id": "s1",
+                  "name": "红正方形",
+                  "kind": "square",
+                  "color": "#d64545"
+                },
+                {
+                  "id": "r1",
+                  "name": "蓝长方形",
+                  "kind": "rectangle",
+                  "color": "#3b6fb5"
+                },
+                {
+                  "id": "s2",
+                  "name": "绿正方形",
+                  "kind": "square",
+                  "color": "#2f9e63"
+                },
+                {
+                  "id": "c1",
+                  "name": "黄圆形",
+                  "kind": "circle",
+                  "color": "#d9a520"
+                },
+                {
+                  "id": "s3",
+                  "name": "紫正方形",
+                  "kind": "square",
+                  "color": "#7a5aa8"
+                },
+                {
+                  "id": "r2",
+                  "name": "橙长方形",
+                  "kind": "rectangle",
+                  "color": "#d98324"
+                }
+              ]
+            },
+            "initial_state": {
+              "selected": null,
+              "home": []
+            },
+            "capabilities": [
+              "select",
+              "highlight",
+              "focus",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "target_members": 3,
+              "decoys": 3
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "shape_gallery",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "home",
+            "home_kinds",
+            "structure",
+            "selected"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "shape-canvas-shape_drawing",
+    "renderer": "shape-canvas",
+    "title": "钉子板上画一个长方形",
+    "expected": "6",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-13",
+      "ability_id": "app_model",
+      "difficulty": 2,
+      "goal": "用点阵顶点表征长方形（直角+面积约束）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-13-shape-canvas",
+        "prompt": {
+          "text": "钉子板上按顺序点 4 个钉子，围出一个**长方形**，要正好盖住 6 个格子（面积=6）。点错了可以「撤一个点」。画好后提交，答案填它的面积。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "shape-canvas",
+            "renderer_version": "1.0",
+            "mode": "shape_drawing",
+            "config": {
+              "grid": 5,
+              "target_area": 6,
+              "target_shape": "rectangle"
+            },
+            "initial_state": {
+              "vertices": []
+            },
+            "capabilities": [
+              "drag",
+              "resize",
+              "undo",
+              "reset",
+              "highlight",
+              "focus",
+              "draw"
+            ],
+            "constraints": {
+              "vertex_count": 4,
+              "right_angles": 4,
+              "area": 6
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "shape_canvas",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "vertices",
+            "area",
+            "right_angles",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "sorting-board-ordering",
+    "renderer": "sorting-board",
+    "title": "把数字卡从小到大排好",
+    "expected": "1247",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-14",
+      "ability_id": "app_rd",
+      "difficulty": 2,
+      "goal": "按数值维度（非视觉大小）比较并排序",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-14-sorting-board",
+        "prompt": {
+          "text": "桌上四张数字卡排得乱七八糟：7、1、4、2（卡片上的字有大有小，那是画的，别上当）。点两张卡把它们交换位置，把数字**从小到大**排好，答案按顺序写出这四个数字组成的数。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "sorting-board",
+            "renderer_version": "1.0",
+            "mode": "ordering",
+            "config": {
+              "direction": "asc",
+              "items": [
+                {
+                  "id": "c1",
+                  "value": 7,
+                  "visual_rank": 2
+                },
+                {
+                  "id": "c2",
+                  "value": 1,
+                  "visual_rank": 4
+                },
+                {
+                  "id": "c3",
+                  "value": 4,
+                  "visual_rank": 1
+                },
+                {
+                  "id": "c4",
+                  "value": 2,
+                  "visual_rank": 3
+                }
+              ],
+              "initial_order": [
+                "c1",
+                "c2",
+                "c3",
+                "c4"
+              ]
+            },
+            "initial_state": {
+              "order": [
+                "c1",
+                "c2",
+                "c3",
+                "c4"
+              ],
+              "selected": null,
+              "swaps": []
+            },
+            "capabilities": [
+              "drag",
+              "undo",
+              "reset",
+              "sort",
+              "answer_input"
+            ],
+            "constraints": {
+              "direction": "asc",
+              "cards": 4
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "sorting_board",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "order",
+            "order_values",
+            "swaps",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "direction-grid-route_navigation",
+    "renderer": "direction-grid",
+    "title": "从起点走到星星格",
+    "expected": "19",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-15",
+      "ability_id": "app_model",
+      "difficulty": 1,
+      "goal": "按位置关系（下行右移）规划并走出路线",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-15-direction-grid",
+        "prompt": {
+          "text": "校园地图上小人站在中间格子（起点），**图书馆**在它的下面一行、右边两格（☆ 格）。点小人旁边（上/下/左/右）的格子一步一步走过去，走到了提交。答案填 ☆ 格的编号：从上到下、从左到右按行编号，第一格是 0（第 4 行第 5 列 = 3×5+4）。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "direction-grid",
+            "renderer_version": "1.0",
+            "mode": "route_navigation",
+            "config": {
+              "rows": 5,
+              "cols": 5,
+              "start": {
+                "r": 2,
+                "c": 2
+              },
+              "target": {
+                "r": 3,
+                "c": 4
+              }
+            },
+            "initial_state": {
+              "steps": [
+                {
+                  "r": 2,
+                  "c": 2
+                }
+              ]
+            },
+            "capabilities": [
+              "navigate",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "grid": "5x5",
+              "adjacent_only": true
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "direction_grid",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "path",
+            "directions",
+            "turns",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "clock-time_setting",
+    "renderer": "clock",
+    "title": "把钟拨到 6 点",
+    "expected": "360",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-16",
+      "ability_id": "app_cond",
+      "difficulty": 2,
+      "goal": "区分时针/分针职责并按整时口径拨钟",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-16-clock",
+        "prompt": {
+          "text": "钟面上现在是 **3:00**。动画片 **6:00** 开始播出——把时针（短针）和分针（长针）拨到 6 点整。点钟面上的数字拨短针，点下面「整点 / 半点」拨长针。答案用**分钟**表示 6 点（从 12 点走起一共几分钟，如 1 点=60）。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "clock",
+            "renderer_version": "1.0",
+            "mode": "time_setting",
+            "config": {
+              "start": [
+                3,
+                0
+              ],
+              "target": [
+                6,
+                0
+              ]
+            },
+            "initial_state": {
+              "h": 3,
+              "m": 0,
+              "adjust_history": []
+            },
+            "capabilities": [
+              "set_time",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "granularity": "hour_only"
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "clock",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "h",
+            "m",
+            "adjust_history",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "money-board-payment",
+    "renderer": "money-board",
+    "title": "给练习本付钱",
+    "expected": "35",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-17",
+      "ability_id": "app_strat",
+      "difficulty": 2,
+      "goal": "用不同面值组合凑出给定金额（元角换算）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-17-money-board",
+        "prompt": {
+          "text": "一本练习本 **3 元 5 角**。钱包里有 1 角、5 角、1 元、5 元四种钱：点一档就拿出一枚放到台面上，点「取回」放回去。凑出**正好** 3 元 5 角（不能多不能少）。答案用**角**表示你付了多少（1 元=10 角）。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "money-board",
+            "renderer_version": "1.0",
+            "mode": "payment",
+            "config": {
+              "price": 35,
+              "denominations": [
+                1,
+                5,
+                10,
+                50
+              ]
+            },
+            "initial_state": {
+              "counts": {},
+              "selection_history": []
+            },
+            "capabilities": [
+              "compose_groups",
+              "decompose_group",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "price_jiao": 35,
+              "coins_max": 12
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "money_board",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "counts",
+            "coins",
+            "total",
+            "selection_history",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "pattern-board-pattern_extension",
+    "renderer": "pattern-board",
+    "title": "花边接着摆",
+    "expected": "12",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-18",
+      "ability_id": "app_rel",
+      "difficulty": 1,
+      "goal": "识别 AB 交替周期并延续到后续空位",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-18-pattern-board",
+        "prompt": {
+          "text": "联欢会的花边是按规律串的：**黄、蓝、黄、蓝**……后面还缺 2 颗珠子。看看它是怎么**轮流**排的，从调色板点颜色把空格补上（点已放的珠子可以抠掉重放）。答案把后 2 颗按顺序写成一个两位数：黄=1，蓝=2（例：先黄后蓝=12）。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "pattern-board",
+            "renderer_version": "1.0",
+            "mode": "pattern_extension",
+            "config": {
+              "visible": [
+                1,
+                2,
+                1,
+                2
+              ],
+              "blanks": 2,
+              "palette": [
+                1,
+                2
+              ]
+            },
+            "initial_state": {
+              "beads": [
+                null,
+                null
+              ],
+              "attempt_history": []
+            },
+            "capabilities": [
+              "extend_pattern",
+              "select",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "period": 2,
+              "blanks": 2
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "pattern_board",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "beads",
+            "attempt_history",
+            "period",
+            "structure"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "ruler-measurement",
+    "renderer": "ruler",
+    "title": "量一量铅笔有多长",
+    "expected": "5",
+    "task": {
+      "task_instance_id": "v6-dev-fixture-19",
+      "ability_id": "app_model",
+      "difficulty": 1,
+      "goal": "用两标记间隔量物体长度（非零起点刻度读取）",
+      "strategy_policy": {},
+      "ui_schema": {
+        "schema_version": "2.0",
+        "ui_revision": "v6-dev-19-ruler",
+        "prompt": {
+          "text": "铅笔躺在尺子上，左头对着刻度 **3**，右头对着刻度 **8**（注意：它不是从 0 开始的）。先点左头对的刻度放一个标记，再点右头对的刻度放第二个标记，两个标记之间就是铅笔的长度（厘米）。答案填这个长度。"
+        },
+        "workspaces": [
+          {
+            "workspace_id": "main",
+            "renderer": "ruler",
+            "renderer_version": "1.0",
+            "mode": "measurement",
+            "config": {
+              "max": 20,
+              "object": [
+                3,
+                8
+              ]
+            },
+            "initial_state": {
+              "marks": []
+            },
+            "capabilities": [
+              "measure",
+              "answer_input",
+              "undo",
+              "reset"
+            ],
+            "constraints": {
+              "object_span": 5,
+              "left_offset": 3
+            }
+          }
+        ],
+        "response_contract": {
+          "response_type": "ruler",
+          "required_fields": [
+            "workspaces",
+            "answer"
+          ],
+          "evidence_targets": [
+            "marks",
+            "span",
+            "reading",
+            "structure"
+          ]
+        }
+      }
+    }
+  }
+]

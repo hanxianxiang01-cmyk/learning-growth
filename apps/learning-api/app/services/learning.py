@@ -8,7 +8,11 @@
 """
 from __future__ import annotations
 
+import hashlib
 import uuid
+from datetime import datetime, timezone
+
+_EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -113,6 +117,52 @@ def _v2_assignable(ui_schema: object) -> bool:
     return True
 
 
+# FE-1442 生产选题公平策略版本（strategy_policy 溯源字段值；回滚=还原本函数旧排序）。
+SELECTION_POLICY_VERSION = "v1.4-fe1442"
+RECENT_WINDOW = 20  # 跨 Session 近期避让窗口：当前 child 最近 N 次不同题下发
+
+
+async def _child_assignment_history(db: AsyncSession, *, child_id, ability_id: str) -> dict:
+    """task_instance 聚合的个人下发历史（零新表）：
+    resource_version_id → {count, last_at}。"""
+    rows = (
+        await db.execute(
+            select(
+                TaskInstance.resource_version_id,
+                func.count().label("cnt"),
+                func.max(TaskInstance.assigned_at).label("last_at"),
+            )
+            .where(TaskInstance.child_id == child_id, TaskInstance.ability_id == ability_id)
+            .group_by(TaskInstance.resource_version_id)
+        )
+    ).all()
+    return {r[0]: {"count": r[1], "last_at": r[2]} for r in rows}
+
+
+def _pick_fair(*, pool: list, history: dict, recent_ids: set, child_id, salt: str) -> tuple:
+    """P0 未见 → P1 非近期 → P2 近期回退；同层按 少曝光→久未发→有界哈希 决胜。
+    返回 (rv, selection_reason)。"""
+
+    def _key(rv):
+        h = history.get(rv.resource_version_id)
+        count = h["count"] if h else 0
+        last = h["last_at"] if h and h["last_at"] else _EPOCH
+        tie = hashlib.sha256(f"{child_id}|{rv.resource_version_id}|{salt}".encode()).hexdigest()
+        return (count, last, tie)
+
+    unseen = [rv for rv in pool if rv.resource_version_id not in history]
+    if unseen:
+        return min(unseen, key=_key), "UNSEEN_PRIORITY"
+    not_recent = [rv for rv in pool if rv.resource_version_id not in recent_ids]
+    if not_recent:
+        return min(not_recent, key=_key), "LOW_EXPOSURE"
+    return min(pool, key=_key), "RECENT_FALLBACK"
+
+
+def _dt_min():
+    return _EPOCH
+
+
 async def _published_resource_for_ability(
     db: AsyncSession,
     *,
@@ -121,45 +171,71 @@ async def _published_resource_for_ability(
     band_max: int,
     fallback_to_lowest: bool,
     exclude_resource_version_ids: set | None = None,
-) -> ResourceVersion | None:
-    """取某能力「fit_band 内」的已发布资源；带内无题且 fallback_to_lowest 时，
-    退到该能力「最低难度」已发布资源（保证指定能力一定有题可练）。
+    child_id=None,
+) -> tuple[ResourceVersion | None, dict]:
+    """FE-1442 公平选题（裁决 A）：目标带 P0/P1/P2 分层优先 → 带内「无任何已发布资源」
+    且 fallback_to_lowest 才退到该能力最低难度（BAND_FALLBACK/TARGET_BAND_EMPTY）。
 
-    exclude_resource_version_ids：本 session 已出过的题，取下一题时排除，
-    避免「答对后点下一题仍是同一道题」。
+    严格区分：题目重复（含本 session 用尽、跨 session 近期用尽）≠ 难度带无题。
+    - 带内有题但全部被 session 排除 → (None, {"reason": "SESSION_POOL_EXHAUSTED"})，不跨带；
+    - 近期窗口用尽 → 带内 P2 RECENT_FALLBACK，不跨带；
+    - 只有目标带 pool 本身为空才允许兜底，且兜底候选同样过 session 排除。
 
-    V2 门控：planned renderer 的 V2 资源不可下发（多取候选后在应用层过滤）。"""
+    旧行为（created_at 头名常胜）废弃；同层决胜=少曝光→久未发→有界哈希（零全表 random）。
+    返回 (rv, meta)，meta 供 strategy_policy 溯源。"""
     exclude = exclude_resource_version_ids or set()
-    base_where = [
-        Resource.ability_id == ability_id,
-        ResourceVersion.review_status == "published",
-    ]
-    if exclude:
-        base_where.append(ResourceVersion.resource_version_id.notin_(exclude))
+    salt = uuid.uuid4().hex
 
-    async def _first_assignable(stmt) -> ResourceVersion | None:
-        rows = (await db.execute(stmt.limit(50))).scalars().all()
-        return next((rv for rv in rows if _v2_assignable(rv.ui_schema)), None)
+    def _base(band=None, with_exclude=True):
+        where = [
+            Resource.ability_id == ability_id,
+            ResourceVersion.review_status == "published",
+        ]
+        if band is not None:
+            where += [ResourceVersion.difficulty >= band[0], ResourceVersion.difficulty <= band[1]]
+        if exclude and with_exclude:
+            where.append(ResourceVersion.resource_version_id.notin_(exclude))
+        return select(ResourceVersion).join(Resource, Resource.resource_id == ResourceVersion.resource_id).where(*where)
 
-    row = await _first_assignable(
-        select(ResourceVersion)
-        .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
-        .where(
-            *base_where,
-            ResourceVersion.difficulty >= band_min,
-            ResourceVersion.difficulty <= band_max,
-        )
-        .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
-    )
-    if row is not None or not fallback_to_lowest:
-        return row
+    async def _assignable_rows(stmt) -> list:
+        rows = (await db.execute(stmt.limit(200))).scalars().all()
+        return [rv for rv in rows if _v2_assignable(rv.ui_schema)]
 
-    return await _first_assignable(
-        select(ResourceVersion)
-        .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
-        .where(*base_where)
-        .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
-    )
+    history: dict = {}
+    recent_ids: set = set()
+    if child_id is not None:
+        history = await _child_assignment_history(db, child_id=child_id, ability_id=ability_id)
+        recent_ids = {
+            rid for rid, _ in sorted(history.items(), key=lambda kv: kv[1]["last_at"] or _dt_min(), reverse=True)[:RECENT_WINDOW]
+        }
+
+    # 带内全量（不含 session 排除）与带内可用（含排除）——SEL-04：题目重复≠带空
+    band_pool_all = await _assignable_rows(_base(band=(band_min, band_max), with_exclude=False))
+    band_pool = [rv for rv in band_pool_all if rv.resource_version_id not in exclude]
+    if band_pool:
+        rv, reason = _pick_fair(pool=band_pool, history=history, recent_ids=recent_ids, child_id=child_id, salt=salt)
+        return rv, {"selection_reason": reason, "requested_band": [band_min, band_max]}
+    if band_pool_all:
+        # 带内有题但全被本 session 排除 → 耗尽语义（SEL-04），绝不借道跨带
+        return None, {"reason": "SESSION_POOL_EXHAUSTED", "requested_band": [band_min, band_max]}
+
+    if not fallback_to_lowest:
+        return None, {"reason": "TARGET_BAND_EMPTY", "requested_band": [band_min, band_max]}
+
+    # 目标带无任何已发布资源 → 显式 BAND_FALLBACK（裁决 A：保留既有最低难度兜底，不引入新调度）
+    any_pool = await _assignable_rows(_base())
+    if not any_pool:
+        return None, {"reason": "ABILITY_POOL_EMPTY", "requested_band": [band_min, band_max]}
+    by_diff = sorted(any_pool, key=lambda rv: rv.difficulty)
+    lo = by_diff[0].difficulty
+    tier = [rv for rv in by_diff if rv.difficulty == lo]
+    rv, reason = _pick_fair(pool=tier, history=history, recent_ids=recent_ids, child_id=child_id, salt=salt)
+    return rv, {
+        "selection_reason": reason,
+        "fallback_reason": "TARGET_BAND_EMPTY",
+        "band_fallback": True,
+        "requested_band": [band_min, band_max],
+    }
 
 
 async def list_v2_catalog(db: AsyncSession) -> list[dict]:
@@ -220,16 +296,18 @@ async def assign_next_task(
 ) -> dict:
     """取下一题并落 task_instance，返回 OpenAPI TaskInstance 结构。
 
-    - 显式 ability_id（前端挑战卡片 → 能力映射）：优先 fit_band 内选题，
-      带内无题退到该能力最低难度（保证指定能力一定有题）。
+    - 显式 ability_id（前端挑战卡片 → 能力映射）：FE-1442 公平选题——目标带内
+      P0 未见→P1 低曝光→P2 近期回退；带内**无任何已发布资源**才显式 BAND_FALLBACK
+      退到该能力最低难度（裁决 A：题目重复≠带空，带空前先 SESSION_POOL_EXHAUSTED）。
     - 未指定：候选能力 level 升序，取「fit_band 内有已发布资源」的第一个（原行为）。
     - pin_resource_version_id（FE-1422a，QA 确定性钉题）：**仅 QA child 可用**
       （403 校验在路由层）；命中 published + V2-assignable 资源则直接落题，
-      绕过 fit_band / session 排除。缺省时行为与原逻辑比特级一致。
+      绕过 fit_band / session 排除。**Pin 路径不进公平采样（SEL-11）**。
     """
     selected_ability: str | None = None
     rv: ResourceVersion | None = None
     band_min = band_max = 1
+    sel_meta: dict | None = None
 
     # 本 session 已出过的资源版本：取下一题时排除，避免「答对后点下一题仍是同一道」。
     assigned_rvs = set(
@@ -265,44 +343,41 @@ async def assign_next_task(
         level = state.level if state else 0
         confidence = float(state.confidence) if state else 0.0
         band_min, band_max = compute_fit_band(level=level, confidence=confidence)
-        rv = await _published_resource_for_ability(
+        # FE-1442：单次调用内含 带内公平(P0/P1/P2) → SESSION_POOL_EXHAUSTED /
+        # 带空才 BAND_FALLBACK；旧「解除排除再查」重试废弃（近期用尽走带内 P2 语义）。
+        rv, sel_meta = await _published_resource_for_ability(
             db,
             ability_id=ability_id,
             band_min=band_min,
             band_max=band_max,
             fallback_to_lowest=True,
             exclude_resource_version_ids=assigned_rvs,
+            child_id=child_id,
         )
-        # 该能力新题已耗尽（全部被排除）→ 解除排除，允许重复，避免死锁。
-        if rv is None:
-            rv = await _published_resource_for_ability(
-                db,
-                ability_id=ability_id,
-                band_min=band_min,
-                band_max=band_max,
-                fallback_to_lowest=True,
-            )
         if rv is not None:
             selected_ability = ability_id
     else:
         candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
+        sel_meta = None
         for aid in candidates:
             state = await db.get(AbilityState, {"child_id": child_id, "ability_id": aid})
             level = state.level if state else 0
             confidence = float(state.confidence) if state else 0.0
             bmin, bmax = compute_fit_band(level=level, confidence=confidence)
 
-            row = await _published_resource_for_ability(
+            row, meta = await _published_resource_for_ability(
                 db,
                 ability_id=aid,
                 band_min=bmin,
                 band_max=bmax,
                 fallback_to_lowest=False,
                 exclude_resource_version_ids=assigned_rvs,
+                child_id=child_id,
             )
             if row is not None:
                 selected_ability = aid
                 rv = row
+                sel_meta = meta
                 band_min, band_max = bmin, bmax
                 break
 
@@ -313,7 +388,9 @@ async def assign_next_task(
             "difficulty": None,
             "ui_schema": None,
             "strategy_policy": None,
-            "reason": "no_published_resource_in_band",
+            # FE-1442：透出精确耗尽语义（SESSION_POOL_EXHAUSTED / TARGET_BAND_EMPTY /
+            # ABILITY_POOL_EMPTY）；无尝试记录时保持旧 reason。
+            "reason": (sel_meta or {}).get("reason") or "no_published_resource_in_band",
         }
 
     # evidence_role / task_purpose 属于 Task Assignment（不是 Resource 本身）：
@@ -340,6 +417,18 @@ async def assign_next_task(
             "evidence_role": evidence_role,
             "task_purpose": task_purpose,
             **({"pinned": True} if pin_resource_version_id is not None else {}),
+            # FE-1442 溯源：策略版本+选择原因+（兜底时）请求带与实际难度。
+            # assigned_difficulty 恒=真实资源难度（Mastery 读它，约束 2 已核）。
+            **({
+                "selection_policy": SELECTION_POLICY_VERSION,
+                "selection_reason": sel_meta.get("selection_reason"),
+            } if sel_meta else {}),
+            **({
+                "band_fallback": True,
+                "fallback_reason": sel_meta.get("fallback_reason"),
+                "requested_band": sel_meta.get("requested_band"),
+                "selected_difficulty": rv.difficulty,
+            } if sel_meta and sel_meta.get("band_fallback") else {}),
         },
     )
     db.add(task)

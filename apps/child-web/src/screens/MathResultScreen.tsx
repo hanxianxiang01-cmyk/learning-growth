@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getLearningApi } from "@/src/lib/api";
 import type { SessionResult } from "@/src/lib/api/contracts";
 import {
@@ -59,6 +59,9 @@ function buildFallbackResult(
   };
 }
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { ResultView } from "@/src/components/ui-v6/ResultView";
+
 export function MathResultScreen({
   childId,
   sessionId
@@ -66,20 +69,26 @@ export function MathResultScreen({
   childId: string;
   sessionId: string;
 }) {
+  const { uiVersion } = useChildUi();
   const api = useMemo(() => getLearningApi(), []);
   const [result, setResult] = useState<SessionResult | null>(null);
   const [status, setStatus] = useState<ResultStatus>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const loadSequence = useRef(0);
+
   const load = useCallback(async () => {
+    const sequence = ++loadSequence.current;
     setStatus("loading");
     setErrorMessage(null);
 
     try {
       const data = await api.getSessionResult(sessionId);
+      if (sequence !== loadSequence.current) return;
       setResult(data);
       setStatus("success");
     } catch (error) {
+      if (sequence !== loadSequence.current) return;
       const snapshot = loadSessionSnapshot(sessionId);
 
       if (snapshot) {
@@ -102,7 +111,11 @@ export function MathResultScreen({
 
   useEffect(() => {
     void load();
+    return () => { loadSequence.current += 1; };
   }, [load]);
+
+  if (uiVersion === "v6") return <ResultView childId={childId} result={result} status={status}
+    errorMessage={errorMessage} onReload={load} />;
 
   if (status === "loading") {
     return (

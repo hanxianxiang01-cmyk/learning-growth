@@ -11,6 +11,7 @@ export default function Page({
   const childId = searchParams.child_id ?? config.defaultChildId;
   return (
     <MathLearningScreen
+      key={`${childId}:${params.sessionId}`}
       childId={childId}
       sessionId={params.sessionId}
       abilityId={searchParams.ability_id}

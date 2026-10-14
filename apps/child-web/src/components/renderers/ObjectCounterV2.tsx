@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 import { useEffect, useMemo, useReducer, useRef } from "react";
 import type { TaskResponse, V2TaskUiSchema } from "@/src/lib/api/contracts";
 import {
@@ -82,6 +86,8 @@ export function ObjectCounterV2({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
+  const decomposeCounter = useRef(0);
   const config = useMemo(() => readConfig(schema), [schema]);
   const workspace = schema.workspaces[0];
   const initial = useMemo(
@@ -125,7 +131,7 @@ export function ObjectCounterV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">点子图题配置不完整，暂时无法开始。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "点子图题配置不完整，暂时无法开始。"}</div>;
   }
 
   const cfg: ObjectCounterV2Config = { maxTotalCount: config.maxTotalCount };
@@ -172,7 +178,6 @@ export function ObjectCounterV2({
       target_group_id: targetId
     });
 
-  const decomposeCounter = useRef(0);
   const decompose = (groupId: string) => {
     decomposeCounter.current += 1;
     const newGroup: ObjectCounterGroup = {
@@ -199,6 +204,72 @@ export function ObjectCounterV2({
   // add 时传 with 参数；E2E 断言 payload 键存在即可）。
   const evaluation = evaluateStructure(runtime.present, config.expected);
   const answer = answerOf(runtime.present);
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="object-counter" title="摆一摆，数一数" instruction="把物体放进组里。也可以合起来，或拆出一部分。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="oc-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="oc-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="object-counter-v2" className="manipulative-card object-counter-v2"
+      submitTestId="oc-submit" submitDisabled={disabled || (evaluation !== "PASS" && evaluation !== "FAIL")} locked={disabled} onSubmit={onSubmit} summary={`现在一共有 ${total(runtime.present)} 个`}>
+      <div className="oc-groups">
+        {runtime.present.groups.map(group => {
+          const merged = group.composed_into;
+          return (
+            <div
+              key={group.group_id}
+              className={`oc-group ${merged ? "is-merged" : ""}`}
+              data-testid={`oc-group-${group.group_id}`}
+            >
+              <div className="oc-group-head">
+                <strong>{group.label}</strong>
+                <span className="oc-count">{group.count}</span>
+                {group.locked && <span className="oc-locked">题目给定</span>}
+                {merged && <span className="oc-merged">已并入{merged}（{group.composed_count}）</span>}
+              </div>
+              <div className="oc-objects" aria-label={`${group.label}里的物体`}>
+                {Array.from({ length: group.count }, (_, i) => (
+                  <span key={i} className="oc-object">{group.symbol}</span>
+                ))}
+                {group.count === 0 && <span className="oc-empty-hint">空</span>}
+              </div>
+              {!group.locked && !merged && (
+                <div className="oc-group-actions">
+                  <button type="button" data-testid={`oc-add-${group.group_id}`} disabled={disabled} onClick={() => add(group.group_id, null)}>
+                    ＋1
+                  </button>
+                  <button type="button" data-testid={`oc-remove-${group.group_id}`} disabled={disabled || group.count === 0} onClick={() => remove(group.group_id)}>
+                    －1
+                  </button>
+                  <button type="button" data-testid={`oc-decompose-${group.group_id}`} disabled={disabled || group.count === 0} onClick={() => decompose(group.group_id)}>
+                    拆出1个
+                  </button>
+                  {runtime.present.groups
+                    .filter(other => other.group_id !== group.group_id && !other.composed_into)
+                    .map(other => (
+                      <button
+                        key={other.group_id}
+                        type="button"
+                        data-testid={`oc-compose-${group.group_id}-into-${other.group_id}`}
+                        disabled={disabled || group.count === 0}
+                        onClick={() => compose(group.group_id, other.group_id)}
+                      >
+                        并入「{other.label}」
+                      </button>
+                    ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card object-counter-v2" data-testid="object-counter-v2">

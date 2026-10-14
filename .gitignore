@@ -45,3 +45,10 @@ test-results/
 playwright-report/
 .next-
 .next-*
+
+# V6 local verification and per-skin build artifacts
+.cache/
+**/.next-v6-*/
+**/.next-legacy-*/
+apps/child-web/test-results-v6/
+apps/child-web/playwright-report-v6/

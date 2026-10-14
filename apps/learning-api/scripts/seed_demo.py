@@ -44,7 +44,7 @@ async def seed(db) -> None:
                 child_id=DEMO_CHILD_ID,
                 guardian_id=DEMO_GUARDIAN_ID,
                 nickname="小明",
-                grade="一年级",
+                grade="二年级",
                 status="active",
             )
         )

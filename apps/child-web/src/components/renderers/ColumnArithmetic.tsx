@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 import { useEffect, useMemo, useReducer, useRef } from "react";
 import type { InteractionEvent, TaskResponse, V2TaskUiSchema } from "@/src/lib/api/contracts";
 import {
@@ -60,6 +64,7 @@ export function ColumnArithmetic({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
   const config = useMemo(() => readConfig(schema), [schema]);
   const workspace = schema.workspaces[0];
   const initial = useMemo(
@@ -109,7 +114,7 @@ export function ColumnArithmetic({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">竖式题配置不完整，暂时无法开始。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "竖式题配置不完整，暂时无法开始。"}</div>;
   }
 
   const emit = (
@@ -162,6 +167,73 @@ export function ColumnArithmetic({
 
   const evaluation = evaluateColumnArithmetic(config, runtime.present);
   const columns = [...config.places].reverse();
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="column-arithmetic" title="把每一位算清楚" instruction="按位填写结果；需要进位时，点一下对应的进位按钮。"
+      actions={<div className="workspace-actions">
+          <button type="button" disabled={disabled} onClick={undo}>撤销</button>
+          <button type="button" disabled={disabled} onClick={reset}>重置</button>
+        </div>}
+      testId="column-arithmetic" className="manipulative-card column-arithmetic"
+      submitTestId="v6-renderer-submit" submitDisabled={disabled || (evaluation.status !== "PASS" && evaluation.status !== "FAIL")} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      <div className="column-arithmetic-board"><div className="column-place-header" aria-hidden="true">{columns.map(place => <span key={place}>{PLACE_LABEL[place]}位</span>)}</div>
+        {config.operands.map((operand, index) => (
+          <div className="column-number-row" key={`operand-${index}`}>
+            <span className="column-row-label">{index === 0 ? "" : "+"}</span>
+            <div className="column-number">
+              {columns.map(place => (
+                <span key={place}>{Math.floor(Math.abs(operand) / placePower(place)) % 10}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <div className="column-operation-row">
+          <span className="column-row-label">结果</span>
+          <div className="column-number result-row">
+            {columns.map(place => {
+              const digit = runtime.present.result_digits.find(item => item.place === place)?.value;
+              return (
+                <label key={place} className="column-cell">
+                  <span className="sr-only">{PLACE_LABEL[place]}位结果</span>
+                  <input
+                    aria-label={`${PLACE_LABEL[place]}位结果`}
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit ?? ""}
+                    disabled={disabled}
+                    onChange={event => setDigit(place, event.target.value.replace(/\D/g, ""))}
+                  />
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="carry-row">
+          <span className="column-row-label">进位</span>
+          <div className="column-number">
+            {columns.map(place => {
+              const carry = runtime.present.carries.find(item => item.to_place === place);
+              if (!carry) return <span key={place} className="carry-cell empty">·</span>;
+              return (
+                <button
+                  key={place}
+                  type="button"
+                  className={`carry-cell ${carry.value ? "is-on" : ""}`}
+                  disabled={disabled}
+                  aria-label={`${PLACE_LABEL[carry.from_place]}位进位到${PLACE_LABEL[carry.to_place]}位`}
+                  onClick={() => setCarry(carry.from_place)}
+                >
+                  {carry.value}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card column-arithmetic" data-testid="column-arithmetic">

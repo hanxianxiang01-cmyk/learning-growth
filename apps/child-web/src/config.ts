@@ -1,6 +1,8 @@
 import type { ChildMathSkin } from "@/src/theme/skins";
 
 export const config = {
+  // V6 is the delivery default. Set legacy explicitly and restart/rebuild to roll back.
+  childUiVersion: (process.env.NEXT_PUBLIC_CHILD_UI_VERSION === "legacy" ? "legacy" : "v6") as "legacy" | "v6",
   apiMode:
     process.env.NEXT_PUBLIC_LEARNING_API_MODE === "http" ? "http" : "mock",
   apiBaseUrl:

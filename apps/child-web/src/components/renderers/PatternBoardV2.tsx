@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * pattern-board V2 组件（FE-1436 R19，Batch E 收官）。runtime 装配对齐 MoneyBoardV2。
  *
@@ -51,6 +55,7 @@ export function PatternBoardV2({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parsePatternConfig(workspace.config as Record<string, unknown>) : null),
@@ -93,7 +98,7 @@ export function PatternBoardV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">规律板题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "规律板题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, payload: Record<string, string | number | boolean | null>) =>
@@ -167,6 +172,56 @@ export function PatternBoardV2({
     }
     setActiveSlot(beadIdx);
   };
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="pattern-board" title="观察规律，接着摆" instruction="看看前面怎样重复，再选择颜色补上空位；已放的珠子可以取下。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="pb-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="pb-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="pattern-board-v2" className="manipulative-card pattern-board-v2"
+      submitTestId="pb-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      <div className="pb-strip" data-testid="pb-strip">
+        {beadsView.map((b, i) => {
+          const blank = b.token === null;
+          const active = !b.fixed && !blank && b.slot - config.visible.length === activeSlot() && state.beads[b.slot - config.visible.length] !== null;
+          return (
+            <button
+              key={b.fixed ? `v${i}` : `b${i}`}
+              type="button"
+              data-testid={b.fixed ? undefined : `pb-blank-${i - config.visible.length}`}
+              aria-label={`${b.fixed ? "给定" : "填写"}第 ${i + 1} 颗，${blank ? "空位" : TOKEN_COLOR[b.token as number]?.label ?? b.token}`}
+              className={`pb-bead ${b.fixed ? "fixed" : ""} ${blank ? "blank" : ""} ${active ? "active" : ""}`.trim()}
+              style={!blank ? { background: TOKEN_COLOR[b.token as number]?.bg } : undefined}
+              disabled={disabled || b.fixed || blank}
+              onClick={() => !blank && !b.fixed && clickBead(b.slot - config.visible.length)}
+            >
+              {blank ? "?" : <span className="v6-bead-label">{TOKEN_COLOR[b.token as number]?.label ?? b.token}</span>}
+            </button>
+          );
+        })}
+      </div>
+<div className="pb-palette" data-testid="pb-palette">
+        {config.palette.map(t => (
+          <button
+            key={t}
+            type="button"
+            data-testid={`pb-token-${t}`}
+            className="pb-token"
+            style={{ background: TOKEN_COLOR[t]?.bg }}
+            disabled={disabled}
+            onClick={() => pickToken(t)}
+          >
+            {TOKEN_COLOR[t]?.label ?? t}
+          </button>
+        ))}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card pattern-board-v2" data-testid="pattern-board-v2">

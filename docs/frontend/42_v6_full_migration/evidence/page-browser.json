@@ -1,0 +1,42 @@
+{
+  "harness": {
+    "react": "19.1.1",
+    "reactDOM": "19.1.1",
+    "scope": "isolated real components; substituted Next navigation, inlined local SVG and fixture fetch; NOT a Next build or live backend test"
+  },
+  "browser": "144.0.7559.96",
+  "tests": [
+    {
+      "name": "home-api-bound-five-challenges-both-skins-1280-390-320",
+      "status": "PASS"
+    },
+    {
+      "name": "growth-seven-nodes-selection-responsive-detail-and-zero-records",
+      "status": "PASS"
+    },
+    {
+      "name": "empty-ability-data-not-fabricated-or-locked",
+      "status": "PASS"
+    },
+    {
+      "name": "loading-api-failure-and-retry",
+      "status": "PASS"
+    },
+    {
+      "name": "real-http-client-mocked-fetch-home-clock-wrong-hint-retry-correct-result",
+      "status": "PASS"
+    },
+    {
+      "name": "uncertain-network-failure-locks-and-retransmits-identical-submission",
+      "status": "PASS"
+    },
+    {
+      "name": "result-unavailable-retry-without-fabricated-statistics",
+      "status": "PASS"
+    },
+    {
+      "name": "runtime-errors",
+      "status": "PASS"
+    }
+  ]
+}

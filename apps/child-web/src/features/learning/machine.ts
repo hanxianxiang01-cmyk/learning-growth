@@ -5,7 +5,7 @@ import type {
   TaskInstance,
   TaskResponse
 } from "@/src/lib/api/contracts";
-import { createEmptyTaskResponse } from "@/src/features/task-renderer";
+import { createEmptyTaskResponse } from "@/src/features/task-renderer/taskResponse";
 
 export type LearningStatus =
   | "idle"
@@ -143,7 +143,9 @@ export function learningReducer(
       return {
         ...state,
         status: "answering",
-        response: { ...state.response, answer: "" }
+        // Retry is a continuation, not a new task; preserve the full V2 answer/workspace.
+        response: state.response,
+        error: null
       };
 
     case "ERROR":
