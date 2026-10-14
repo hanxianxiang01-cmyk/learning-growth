@@ -115,7 +115,7 @@ def _scorable(evidences: list[Evidence]) -> list[Evidence]:
 
 def derive_correctness(evidences: list[Evidence], window: int = CI_WINDOW) -> DimensionResult:
     """正确率：最近 window 条可评分证据，要求 ≥3 resource、≥2 session。"""
-    scorable = _scorable(evidences)[:window]
+    scorable = _scorable(evidences)[-window:]
     if not scorable:
         return DimensionResult.insufficient("no_scorable_evidence")
     rv = _distinct_resource_versions(scorable)
@@ -129,7 +129,7 @@ def derive_correctness(evidences: list[Evidence], window: int = CI_WINDOW) -> Di
 
 def derive_independence(evidences: list[Evidence], window: int = CI_WINDOW) -> DimensionResult:
     """独立性：最近 window 条可评分证据的 effective_independence 均值，同 C 的覆盖要求。"""
-    scorable = _scorable(evidences)[:window]
+    scorable = _scorable(evidences)[-window:]
     if not scorable:
         return DimensionResult.insufficient("no_scorable_evidence")
     rv = _distinct_resource_versions(scorable)

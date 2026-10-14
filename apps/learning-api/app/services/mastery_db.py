@@ -38,7 +38,10 @@ async def _load_evidences(
                 MasteryEvidence.child_id == child_id,
                 MasteryEvidence.ability_id == ability_id,
                 MasteryEvidence.valid.is_(True),
-            )
+            ).order_by(MasteryEvidence.occurred_at.asc())
+            # BUG-1448：derive_* 的"最近 window 条"依赖加载序；无 ORDER BY 时
+            # DB 返回物理序不可依赖；统一约定 occurred_at 升序（老→新），
+            # 全链"最近"一律取尾部切片（derive_*[-window:] / decide_review[-window:]）。
         )
     ).scalars().all()
 
