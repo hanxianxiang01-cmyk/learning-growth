@@ -51,6 +51,14 @@ async def start_session(
     }
 
 
+# FE-1453 R2 裁决⑤：app_transfer 属观察项能力——题池稀疏（8 题全难度≥3，L0 带[1,1]
+# 恒空），且迁移证据语义特殊（transfer_distance 角色）。**不自动纳入未开启能力的
+# 虚拟引入范围**；但已有真实 ability_state 行的孩子继续正常参与排序，显式指定
+# （挑战卡 plan.target / ability_id）与 QA pin 通道不受本约束——"除非正式策略
+# 明确允许"的口子保留在调用方显式意图里。
+AUTO_INTRODUCE_EXCLUDED_ABILITIES = frozenset({"app_transfer"})
+
+
 async def _published_assignable_abilities(db: AsyncSession) -> set[str]:
     """存在 ≥1 条 published 且 V2 可下发资源的能力集合（FE-1453 候选宇宙）。
 
@@ -72,7 +80,8 @@ async def _candidate_abilities(
 ) -> list[tuple[str, bool]]:
     """候选能力（有序）：优先 plan.target，否则 FE-1453 统一修复 ITEM01-01/02——
 
-    候选宇宙 = 已有 ability_state 行 ∪ 有已发布可下发资源但未开启的能力（**虚拟 L0**）。
+    候选宇宙 = 已有 ability_state 行 ∪ 有已发布可下发资源但未开启的能力（**虚拟 L0**），
+    观察项能力（AUTO_INTRODUCE_EXCLUDED_ABILITIES）不参与虚拟引入、真实行不受限。
     共同根因是"已有行≠完整候选集"：零行账号 auto 分支原永远空池（冷启动死锁），
     已有行的孩子又只会训练已开启能力（视野锁死）。虚拟能力按 level 0 / confidence 0
     参与排序（真实行 (0,0) 在前保可解释性，其后按 ability_id 稳定终序）——
@@ -105,10 +114,13 @@ async def _candidate_abilities(
         )
     ).all()
     real = [(aid, (level, float(conf)), False) for aid, level, conf in rows]
-    virtual = [
-        (aid, (0, 0.0), True)
-        for aid in sorted(await _published_assignable_abilities(db) - {r[0] for r in real})
-    ]
+    # 虚拟引入宇宙 = 有已发布可下发资源的未开启能力，减去观察项排除集（R2 裁决⑤）
+    virtual_universe = (
+        await _published_assignable_abilities(db)
+        - {r[0] for r in real}
+        - AUTO_INTRODUCE_EXCLUDED_ABILITIES
+    )
+    virtual = [(aid, (0, 0.0), True) for aid in sorted(virtual_universe)]
     # 真实 (0,0) 行在前、虚拟 (0,0) 其后，终序 ability_id 稳定
     ordered = sorted(real + virtual, key=lambda t: (t[1][0], t[1][1], t[2], t[0]))
     return [(aid, virt) for aid, _, virt in ordered]
