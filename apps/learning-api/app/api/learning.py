@@ -10,11 +10,42 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.qa import is_qa_child
-from app.services.learning import assign_next_task, request_hint, start_session, submit_attempt
+from app.services.learning import (
+    assign_next_task,
+    request_hint,
+    start_session,
+    submit_attempt,
+    trace_next_selection,
+)
 from app.services.session_result import get_session_result
 from app.services.turn_service import SubmissionConflict
 
 router = APIRouter(prefix="/learning", tags=["learning"])
+
+
+@router.get("/selection-trace")
+async def selection_trace(
+    child_id: str = "",
+    session_id: str = "",
+    ability_id: str | None = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """QA-ITEM-01 只读选题追踪（QA-ITEM-01 §4.2『新增 QA-only 只读追踪，不改变排序行为』）。
+
+    **仅限 QA 测试池 child**（403，与 pin 同红线）；纯读，不落 TaskInstance、零写入。
+    输出候选池/fit_band/排除集/预测选中项；QA 侧与真实 tasks/next 对账。
+    """
+    if not is_qa_child(child_id):
+        raise HTTPException(status_code=403, detail="selection-trace 仅限 QA 测试池 child 使用")
+    try:
+        return await trace_next_selection(
+            db,
+            child_id=uuid.UUID(str(child_id)),
+            session_id=uuid.UUID(str(session_id)),
+            ability_id=ability_id,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
 
 @router.get("/sessions/{session_id}/result")

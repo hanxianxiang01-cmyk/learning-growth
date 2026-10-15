@@ -22,7 +22,7 @@ from app.models import (
     ResourceVersion,
     TaskInstance,
 )
-from app.core.education_rules import SESSION_TASK_GOAL
+from app.core.education_rules import RULE_VERSION, SESSION_TASK_GOAL
 from app.services.fitband import compute_fit_band
 from app.services.turn_service import record_attempt
 
@@ -357,6 +357,116 @@ async def assign_next_task(
         "resource_version_id": rv.resource_version_id,
         "goal": rv.content.get("goal") if isinstance(rv.content, dict) else None,
         "plan_id": session.plan_id if session else None,
+    }
+
+
+async def trace_next_selection(
+    db: AsyncSession,
+    *,
+    child_id: uuid.UUID,
+    session_id: uuid.UUID,
+    ability_id: str | None = None,
+) -> dict:
+    """QA-ITEM-01 只读选题追踪（QA-only 端点消费）：镜像生产自选分支的过滤/排序决策，
+    输出候选池、逐能力 fit_band、排除集与预测选中项。**不落 TaskInstance、零写入**。
+
+    对账语义：QA 侧比较 trace.predicted_selected 与随后真实 tasks/next 的返回，
+    一致=追踪可信（生产分支未漂移）；不一致=以实发为准并标记 mismatch（追踪只读承诺不破）。
+    """
+    assigned_rvs = set(
+        (
+            await db.execute(
+                select(TaskInstance.resource_version_id).where(
+                    TaskInstance.session_id == session_id
+                )
+            )
+        ).scalars().all()
+    )
+
+    if ability_id:
+        candidate_abilities = [ability_id]
+        mode = "explicit_ability"
+    else:
+        candidate_abilities = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
+        mode = "auto"
+
+    states = {
+        row.ability_id: row
+        for row in (
+            await db.execute(select(AbilityState).where(AbilityState.child_id == child_id))
+        ).scalars().all()
+    }
+
+    per_ability: list[dict] = []
+    predicted = None
+    predicted_band = None
+    for aid in candidate_abilities:
+        st = states.get(aid)
+        level = st.level if st else 0
+        confidence = float(st.confidence) if st else 0.0
+        trend = st.trend if st else None
+        bmin, bmax = compute_fit_band(level=level, confidence=confidence)
+
+        # 与 _published_resource_for_ability(auto 分支) 同条件取带内候选（limit 对齐 50）
+        rows = (
+            await db.execute(
+                select(ResourceVersion, Resource.title)
+                .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+                .where(
+                    Resource.ability_id == aid,
+                    ResourceVersion.review_status == "published",
+                    *([ResourceVersion.resource_version_id.notin_(assigned_rvs)] if assigned_rvs else []),
+                    ResourceVersion.difficulty >= bmin,
+                    ResourceVersion.difficulty <= bmax,
+                )
+                .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
+                .limit(50)
+            )
+        ).all()
+        assignable = [(rv, title) for rv, title in rows if _v2_assignable(rv.ui_schema)]
+        first = assignable[0] if assignable else None
+        entry = {
+            "ability_id": aid,
+            "level": level,
+            "confidence": confidence,
+            "trend": trend,
+            "fit_band": [bmin, bmax],
+            "eligible_pool_size": len(assignable),
+            "eligible_head": [
+                {
+                    "resource_version_id": str(rv.resource_version_id),
+                    "difficulty": rv.difficulty,
+                    "title": title,
+                    "transfer_distance": rv.transfer_distance,
+                }
+                for rv, title in assignable[:8]
+            ],
+            "filtered_out_of_band": len(rows) - len(assignable),
+        }
+        per_ability.append(entry)
+        if predicted is None and first is not None:
+            rv, title = first
+            predicted = {
+                "resource_version_id": str(rv.resource_version_id),
+                "ability_id": aid,
+                "difficulty": rv.difficulty,
+                "title": title,
+            }
+            predicted_band = [bmin, bmax]
+
+    return {
+        "mode": mode,
+        "session_id": str(session_id),
+        "recent_assigned_excluded": [str(x) for x in sorted(assigned_rvs, key=str)],
+        "policy_version": RULE_VERSION,
+        "per_ability": per_ability,
+        "predicted_selected": predicted,
+        "predicted_fit_band": predicted_band,
+        "predicted_reason": (
+            f"first ability in candidate order with band-eligible assignable resource; "
+            f"ordered by difficulty asc, created_at asc"
+        ) if predicted else "no_published_resource_in_band",
+        "read_only": True,
     }
 
 
