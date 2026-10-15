@@ -147,7 +147,7 @@ def derive_stability(evidences: list[Evidence]) -> DimensionResult:
         e for e in evidences
         if e.evidence_type in ("attempt_standard", "retention_check")
         and e.correctness is not None
-    ][:STABILITY_WINDOW]
+    ][-STABILITY_WINDOW:]
     if not eligible:
         return DimensionResult.insufficient("no_eligible_evidence")
     rv = _distinct_resource_versions(eligible)
@@ -167,7 +167,7 @@ def derive_transfer(evidences: list[Evidence]) -> DimensionResult:
     eligible = [
         e for e in evidences
         if e.evidence_type == "attempt_transfer" and e.correctness is not None
-    ][:TRANSFER_WINDOW_MAX]
+    ][-TRANSFER_WINDOW_MAX:]
     if len(eligible) < TRANSFER_MIN_ROWS:
         return DimensionResult.insufficient("too_few_transfer_rows")
     if _distinct_contexts(eligible) < TRANSFER_MIN_CONTEXT_FAMILIES:
