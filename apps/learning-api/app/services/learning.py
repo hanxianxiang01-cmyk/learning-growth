@@ -51,28 +51,73 @@ async def start_session(
     }
 
 
+async def _published_assignable_abilities(db: AsyncSession) -> set[str]:
+    """存在 ≥1 条 published 且 V2 可下发资源的能力集合（FE-1453 候选宇宙）。
+
+    与生产下发门控同一 `_v2_assignable` 判定；扫描 published 全量（当前 225 版本级，
+    每请求一次、应用层过滤，与 `_first_assignable` 同口径，不用方言表达式）。
+    """
+    rows = (
+        await db.execute(
+            select(Resource.ability_id, ResourceVersion.ui_schema)
+            .join(ResourceVersion, ResourceVersion.resource_id == Resource.resource_id)
+            .where(ResourceVersion.review_status == "published")
+        )
+    ).all()
+    return {aid for aid, ui in rows if _v2_assignable(ui)}
+
+
 async def _candidate_abilities(
     db: AsyncSession, *, child_id: uuid.UUID, session_id: uuid.UUID
-) -> list[str]:
-    """候选能力列表（有序）：优先 plan.target，兜底 child 按 level 升序的能力。"""
+) -> list[tuple[str, bool]]:
+    """候选能力（有序）：优先 plan.target，否则 FE-1453 统一修复 ITEM01-01/02——
+
+    候选宇宙 = 已有 ability_state 行 ∪ 有已发布可下发资源但未开启的能力（**虚拟 L0**）。
+    共同根因是"已有行≠完整候选集"：零行账号 auto 分支原永远空池（冷启动死锁），
+    已有行的孩子又只会训练已开启能力（视野锁死）。虚拟能力按 level 0 / confidence 0
+    参与排序（真实行 (0,0) 在前保可解释性，其后按 ability_id 稳定终序）——
+    **不写 ability_state、不产 Mastery 证据**；孩子首次作答由
+    persist_mastery_state 既有逻辑自然落行，转为真实状态参与后续排序。
+    返回 [(ability_id, is_virtual)]。
+    """
     session = await db.get(LearningSession, session_id)
     if session and session.plan_id:
         plan = await db.get(LearningPlan, session.plan_id)
         if plan and plan.target_ability_ids:
-            return [aid for aid in plan.target_ability_ids]
+            states = {
+                row.ability_id: (row.level, float(row.confidence))
+                for row in (
+                    await db.execute(
+                        select(AbilityState).where(AbilityState.child_id == child_id)
+                    )
+                ).scalars().all()
+            }
+            out = []
+            for aid in plan.target_ability_ids:
+                lvl, conf = states.get(aid, (0, 0.0))
+                out.append((aid, (lvl, conf), aid not in states))
+            return [(aid, virt) for aid, _, virt in out]
 
-    result = await db.execute(
-        select(AbilityState.ability_id)
-        .where(AbilityState.child_id == child_id)
-        .order_by(AbilityState.level.asc(), AbilityState.confidence.asc())
-    )
-    return [row[0] for row in result.all()]
+    rows = (
+        await db.execute(
+            select(AbilityState.ability_id, AbilityState.level, AbilityState.confidence)
+            .where(AbilityState.child_id == child_id)
+        )
+    ).all()
+    real = [(aid, (level, float(conf)), False) for aid, level, conf in rows]
+    virtual = [
+        (aid, (0, 0.0), True)
+        for aid in sorted(await _published_assignable_abilities(db) - {r[0] for r in real})
+    ]
+    # 真实 (0,0) 行在前、虚拟 (0,0) 其后，终序 ability_id 稳定
+    ordered = sorted(real + virtual, key=lambda t: (t[1][0], t[1][1], t[2], t[0]))
+    return [(aid, virt) for aid, _, virt in ordered]
 
 
 async def _pick_ability(db: AsyncSession, *, child_id: uuid.UUID, session_id: uuid.UUID) -> str | None:
     """从候选能力里选「有已发布资源」的第一个（不考虑难度带，仅保证有题）。"""
     candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
-    for aid in candidates:
+    for aid, _virt in candidates:
         has_published = (
             await db.execute(
                 select(ResourceVersion.resource_version_id)
@@ -286,10 +331,15 @@ async def assign_next_task(
             selected_ability = ability_id
     else:
         candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
-        for aid in candidates:
-            state = await db.get(AbilityState, {"child_id": child_id, "ability_id": aid})
-            level = state.level if state else 0
-            confidence = float(state.confidence) if state else 0.0
+        for aid, is_virtual in candidates:
+            if is_virtual:
+                # FE-1453 虚拟 L0：必查库（真实行可能在候选计算后新出现——理论上不发生，
+                # 保守起见仍按 flag 视 level0/conf0；建行只发生在 persist_mastery_state）
+                level, confidence = 0, 0.0
+            else:
+                state = await db.get(AbilityState, {"child_id": child_id, "ability_id": aid})
+                level = state.level if state else 0
+                confidence = float(state.confidence) if state else 0.0
             bmin, bmax = compute_fit_band(level=level, confidence=confidence)
 
             row = await _published_resource_for_ability(
