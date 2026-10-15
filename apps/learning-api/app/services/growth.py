@@ -22,6 +22,9 @@ from app.models import (
     MasteryEvidence,
 )
 
+# 周期"观察中"样本线（原 build_snapshot 内魔法数 8 提为常量，口径不变）
+MIN_PERIOD_EVIDENCE = 8
+
 
 async def build_snapshot(
     db: AsyncSession,
@@ -67,10 +70,12 @@ async def build_snapshot(
         "average_level": (
             round(sum(s.level for s in states) / len(states), 2) if states else 0.0
         ),
+        # BUG-1449：样本不足判定持久化进 metrics。
+        # 原实现在此定义局部名 insufficient_period_sample、build_report 自由引用
+        # → NameError；凡周期证据 <8 的 /v1/reports/monthly 必 500。
+        # 判定随快照落库，报告只读不算，避免跨函数隐式耦合。
+        "insufficient_sample": len(ev_count) < MIN_PERIOD_EVIDENCE,
     }
-
-    # 样本不足口径：用「周期内新增证据」判断；能力状态的 evidence_count 是累计值，两者区分开
-    insufficient_period_sample = len(ev_count) < 8
 
     snap = GrowthSnapshot(
         child_id=child_id,
@@ -96,7 +101,8 @@ async def build_report(
     metrics = snapshot.metrics
 
     # 样本不足判定（对齐基线："样本不足显示观察中"，以本周期证据为准）
-    insufficient = insufficient_period_sample
+    # BUG-1449：判定来自快照 metrics（build_snapshot 落库），不再自由引用未定义名。
+    insufficient = bool(metrics.get("insufficient_sample", False))
 
     # 能力变化：与上一快照对比（若存在）
     prev = (
