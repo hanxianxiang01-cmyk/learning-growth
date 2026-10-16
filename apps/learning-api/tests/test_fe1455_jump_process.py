@@ -27,6 +27,16 @@ class TestExtractTrajectory:
         t = extract_jump_trajectory(resp)
         assert t is not None and len(t) == 3
 
+    def test_production_envelope_workspaces_key(self):
+        """锁测：buildAttemptPayload 出网 envelope 的轨迹在 workspaces[].data（非 v2_ 前缀）
+        ——E2E 首跑 no_trajectory 根因回归锁。"""
+        resp = {"schema_version": "2.0", "type": "number_line",
+                "answer": {"value": 35},
+                "workspaces": [{"workspace_id": "main", "renderer": "number-line",
+                        "data": {"start": 20, "end": 35, "jumps": jumps((20, 35))}}]}
+        t = extract_jump_trajectory(resp)
+        assert t is not None and len(t) == 1 and t[0]["to"] == 35
+
     def test_v1_or_missing_returns_none(self):
         assert extract_jump_trajectory(None) is None
         assert extract_jump_trajectory({"answer": "35"}) is None

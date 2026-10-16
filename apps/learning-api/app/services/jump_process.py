@@ -20,19 +20,23 @@ VALID_DIRECTIONS = {"right", "left"}
 
 
 def extract_jump_trajectory(response: dict | None) -> list[dict] | None:
-    """从 V2 提交 envelope 取数轴跳步轨迹。
+    """从提交 envelope 取数轴跳步轨迹。
 
-    形态（serializeNumberLineV2）：v2_workspaces[].data = {start, end, jumps:[{jump_id,from,to}]}
+    两种形态都要支持：
+    - V2 提交适配器出网 envelope：`workspaces[].data{jumps:[{jump_id,from,to}]}`
+      （v2AttemptAdapter.buildAttemptPayload）
+    - 内部/测试直接构造：`v2_workspaces[].data…`（serializeNumberLineV2 原形态）
     取不到（V1 提交/非数轴）→ None = 无轨迹可校验。
     """
     if not isinstance(response, dict):
         return None
-    for ws in response.get("v2_workspaces") or []:
-        if not isinstance(ws, dict):
-            continue
-        data = ws.get("data")
-        if isinstance(data, dict) and isinstance(data.get("jumps"), list):
-            return [j for j in data["jumps"] if isinstance(j, dict)]
+    for key in ("workspaces", "v2_workspaces"):
+        for ws in response.get(key) or []:
+            if not isinstance(ws, dict):
+                continue
+            data = ws.get("data")
+            if isinstance(data, dict) and isinstance(data.get("jumps"), list):
+                return [j for j in data["jumps"] if isinstance(j, dict)]
     return None
 
 
