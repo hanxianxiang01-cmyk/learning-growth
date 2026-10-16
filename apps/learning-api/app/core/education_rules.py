@@ -101,3 +101,22 @@ DIAGNOSIS_LABELS = {
     "E06": "calculation_error",
     "E07": "checking_validation_gap",
 }
+
+# ---- FE-1454 选题策略（QA-ITEM-01 R2 冻结口径，决策③④）----
+# 跨 Session 近期去重窗口：同一孩子最近 N 个 session 的题目曝光计入"已曝光"。
+# 去重键 = resource_id（不是 resource_version_id）——"同一资源不同版本不能仅靠
+# 换 resource_version_id 绕过去重"（R2 §四）。
+EXPOSURE_WINDOW_SESSIONS = 4
+# 新能力引入配额：每个 session 最多引入 NEW_ABILITY_INTRO_PER_SESSION 个"此前无
+# ability_state 行"的虚拟能力；已有能力的继续练习不受本配额限制（R2 §三）。
+# plan.target（管理计划强制指定）为**显式例外**：不受配额约束、不占配额事件数，
+# 引入来源单独记 new_ability_source="plan_target"（独立日志，不混入普通 Auto 统计）。
+NEW_ABILITY_INTRO_PER_SESSION = 1
+# 补救练习触发趋势：能力近期质量走低时重练同能力=补救（REVIEW，非间隔）。
+REMEDIATION_TRENDS = ("down_review", "watch")
+# 重复推荐必须携带的解释原因（无依据重复率 R2 硬门槛=0%）：
+#   remediation_review = trend 走低的补救练习（**不是**间隔复习——无时间调度依据，
+#                        R2 FE-1454 复审改名，防空洞式"填理由=合理"）
+#   pool_exhausted     = 带内合格未曝光题耗尽后被迫重复
+# spaced_review 保留给未来基于时间间隔/retention 调度的真复习，当前不产出。
+REPEAT_REASONS = ("remediation_review", "pool_exhausted")
