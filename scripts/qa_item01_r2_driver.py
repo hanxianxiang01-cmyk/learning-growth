@@ -139,7 +139,12 @@ def main_requests():
                    "selection_reason": pol.get("selection_reason"),
                    "is_new_ability": pol.get("is_new_ability"),
                    "new_ability_source": pol.get("new_ability_source"),
-                   "fit_band": pol.get("fit_band")}
+                   "fit_band": pol.get("fit_band"),
+                   # 独立复算钩子：trace 当时快照（汇总器不采信实发自报）
+                   "trace_pool_new_items": {pp["ability_id"]: pp.get("new_item_pool_size", 0)
+                                            for pp in (tr.get("per_ability") or [])},
+                   "trace_trends": {pp["ability_id"]: pp.get("trend")
+                                    for pp in (tr.get("per_ability") or [])}}
             if tid:
                 n_assigned += 1
                 m = (str(act) == str(pred)) if pred else False
@@ -150,8 +155,9 @@ def main_requests():
                 if not m or pm is False:
                     mismatch_trace += 1
                 # resource 级曝光记账（换版本绕不过的口径自己也要算）
-                rid = db("select resource_id from resource_version where resource_version_id=%s", (act,))[0][0]
-                seen_rids[str(rid)] += 1
+                rid = str(db("select resource_id from resource_version where resource_version_id=%s", (act,))[0][0])
+                rec["rid"] = rid[:8]
+                seen_rids[rid] += 1
                 reasons[pol.get("selection_reason") or "?"] += 1
                 ans = answer_of(act)
                 hint = 3 if A_ID == "0091" else 0
