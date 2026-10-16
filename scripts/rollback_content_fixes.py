@@ -18,8 +18,13 @@ with psycopg.connect(URL) as c:
         consumed = c.execute(
             "select count(*) from task_instance where resource_version_id=%s",
             (uuid.UUID(it["new_rvid"]),)).fetchone()[0]
-        if consumed:
-            print(f"!! {it['new_rvid'][:8]} 已被 {consumed} 个任务消费，跳过删除（人工裁决）")
+        ev_consumed = c.execute(
+            """select count(*) from mastery_evidence
+               where task_instance_id in (select task_instance_id from task_instance
+               where resource_version_id=%s)""", (uuid.UUID(it["new_rvid"]),)).fetchone()[0]
+        if consumed or ev_consumed:
+            print(f"!! {it['new_rvid'][:8]} 已被 {consumed} 个任务/{ev_consumed} 条证据引用，"
+                  f"跳过删除（保留版本与证据关联，人工裁决）")
             continue
         c.execute("delete from resource_version where resource_version_id=%s",
                   (uuid.UUID(it["new_rvid"]),))

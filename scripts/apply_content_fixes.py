@@ -10,6 +10,15 @@ B. 9 道 Shape Gallery：shapes[].name 中性化为 "卡N"（不改变图形、k
   不再进入生产选题池与 pin 放行集 {published, qa_staged}）
 执行前置：**修复前浏览器取证必须已完成**（pin 固定旧 rvid，若先行 superseded 会拒 pin）。
 输出：q4_reva_devfix/fix_manifest.json（逐题 before/after/新 rvid/回滚索引）。
+
+安全性（产品方 PR#99 合并前确认 §一.2）：
+- **默认 Dry Run，正式执行必须显式 --apply**；
+- **幂等**：修复以 `review_status='published'` 行消费——已执行过的旧行转
+  superseded 后重跑天然空操作（items=0），**不会再次生成版本**；
+- manifest 防覆盖：正式执行成功后（items>0）manifest 落盘一次；重跑 items=0
+  时不写 manifest（防抹掉真实变更记录），改打幂等提示并 exit 0；
+- 原子性：全部 insert/update 收敛在**单事务**（psycopg with 块 + 末尾 commit），
+  中途异常整体回滚，不产生部分更新。
 """
 import json
 import os
@@ -20,6 +29,7 @@ import psycopg
 
 URL = os.environ["DATABASE_URL"].replace("+psycopg", "")
 OUT = os.path.join(os.environ["R2_OUT"], "q4_reva_devfix")
+MAN_PATH = os.path.join(OUT, "fix_manifest.json")
 DRY = "--apply" not in sys.argv
 
 # ---- 修复表：前缀 → (新 max | name 中性化) ----
@@ -58,7 +68,8 @@ for k, (rvid, resid, vno, ui, ct) in by8.items():
 with psycopg.connect(URL) as c:
     for prefix, new_max in AXIS.items():
         if prefix not in by8:
-            print("!! 缺题", prefix); continue
+            print("   （%s 非 published 状态——已修复过或被隔离，幂等跳过）" % prefix)
+            continue
         rvid, resid, vno, ui, ct = by8[prefix]
         old_ui = json.loads(json.dumps(ui))
         ui = json.loads(json.dumps(ui))
@@ -118,6 +129,12 @@ with psycopg.connect(URL) as c:
     if not DRY:
         c.commit()
 
+os.makedirs(OUT, exist_ok=True)
+if not manifest["items"]:
+    # 幂等空跑：不写 manifest（防抹掉已执行的真实变更记录）
+    print(("APPLIED(no-op)" if not DRY else "DRY-RUN(no-op)"),
+          "| items: 0 —— 修复已全部生效，重复运行不再生成版本")
+    sys.exit(0)
 with open(os.path.join(OUT, "fix_manifest.json"), "w") as f:
     json.dump(manifest, f, ensure_ascii=False, indent=1)
 print(("APPLIED" if not DRY else "DRY-RUN"), "| items:", len(manifest["items"]))
