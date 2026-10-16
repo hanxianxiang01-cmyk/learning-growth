@@ -22,7 +22,12 @@ from app.models import (
     ResourceVersion,
     TaskInstance,
 )
-from app.core.education_rules import SESSION_TASK_GOAL
+from app.core.education_rules import (
+    EXPOSURE_WINDOW_SESSIONS,
+    NEW_ABILITY_INTRO_PER_SESSION,
+    SESSION_TASK_GOAL,
+    SPACED_REVIEW_TRENDS,
+)
 from app.services.fitband import compute_fit_band
 from app.services.turn_service import record_attempt
 
@@ -178,12 +183,15 @@ async def _published_resource_for_ability(
     band_max: int,
     fallback_to_lowest: bool,
     exclude_resource_version_ids: set | None = None,
+    exclude_resource_ids: set | None = None,
 ) -> ResourceVersion | None:
     """取某能力「fit_band 内」的已发布资源；带内无题且 fallback_to_lowest 时，
     退到该能力「最低难度」已发布资源（保证指定能力一定有题可练）。
 
     exclude_resource_version_ids：本 session 已出过的题，取下一题时排除，
     避免「答对后点下一题仍是同一道题」。
+    exclude_resource_ids：FE-1454 跨 Session 近期曝光集（**resource 级**——
+    同一资源换版本不能绕过去重，R2 §四）。
 
     V2 门控：planned renderer 的 V2 资源不可下发（多取候选后在应用层过滤）。"""
     exclude = exclude_resource_version_ids or set()
@@ -193,6 +201,8 @@ async def _published_resource_for_ability(
     ]
     if exclude:
         base_where.append(ResourceVersion.resource_version_id.notin_(exclude))
+    if exclude_resource_ids:
+        base_where.append(ResourceVersion.resource_id.notin_(exclude_resource_ids))
 
     async def _first_assignable(stmt) -> ResourceVersion | None:
         rows = (await db.execute(stmt.limit(50))).scalars().all()
@@ -265,6 +275,49 @@ async def list_v2_catalog(db: AsyncSession) -> list[dict]:
     return out
 
 
+async def _recent_exposure(db: AsyncSession, *, child_id: uuid.UUID,
+                           session_id: uuid.UUID) -> tuple[set, set, set]:
+    """FE-1454 跨 Session 近期曝光集（R2 §四）。
+
+    返回 (exposed_resource_ids, exposed_resource_version_ids, exposed_ability_ids)：
+    - 窗口 = 该 child **最近 EXPOSURE_WINDOW_SESSIONS 个 session**（含当前）内
+      所有 TaskInstance 触达过的资源；
+    - **去重主键 = resource_id**（裁决红线：同一资源不同版本不能靠换
+      resource_version_id 绕过去重）；resource_version_id 集另作精确排除；
+    - ability 集用于"已引入过"判定（重复推送已曝光能力≠新引入事件）。
+
+    与既有 session 内 assigned_rvs 排除互补：session 内排除照旧（防"下一题同题"），
+    本函数把视野扩到跨 session；窗口内全部命中过的资源都算"已曝光"。
+    """
+    recent_sessions = list(
+        (
+            await db.execute(
+                select(LearningSession.session_id)
+                .where(LearningSession.child_id == child_id)
+                .order_by(LearningSession.started_at.desc(),
+                          LearningSession.session_id.desc())
+                .limit(EXPOSURE_WINDOW_SESSIONS)
+            )
+        ).scalars().all()
+    )
+    if not recent_sessions:
+        recent_sessions = [session_id]
+    rows = (
+        await db.execute(
+            select(TaskInstance.resource_version_id, Resource.resource_id,
+                   TaskInstance.ability_id)
+            .join(ResourceVersion,
+                  ResourceVersion.resource_version_id == TaskInstance.resource_version_id)
+            .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+            .where(TaskInstance.session_id.in_(recent_sessions))
+        )
+    ).all()
+    exposed_rids = {r[1] for r in rows}
+    exposed_rvs = {r[0] for r in rows}
+    exposed_aids = {r[2] for r in rows}
+    return exposed_rids, exposed_rvs, exposed_aids
+
+
 async def assign_next_task(
     db: AsyncSession,
     *,
@@ -287,6 +340,7 @@ async def assign_next_task(
     selected_ability: str | None = None
     rv: ResourceVersion | None = None
     band_min = band_max = 1
+    selection_reason: str | None = None
 
     # 本 session 已出过的资源版本：取下一题时排除，避免「答对后点下一题仍是同一道」。
     assigned_rvs = set(
@@ -298,6 +352,14 @@ async def assign_next_task(
             )
         ).scalars().all()
     )
+
+    # FE-1454：跨 session 近期曝光集（resource 级，窗口=EXPOSURE_WINDOW_SESSIONS）。
+    # pin 分支不使用（QA 确定性通道语义不变）。
+    exposed_rids: set = set()
+    exposed_aids: set = set()
+    if pin_resource_version_id is None:
+        exposed_rids, _exposed_rvs, exposed_aids = await _recent_exposure(
+            db, child_id=child_id, session_id=session_id)
 
     if pin_resource_version_id is not None:
         # QA 钉题路径：不看 band、不看排除；只守可下发状态 + V2 门控红线。
@@ -322,6 +384,8 @@ async def assign_next_task(
         level = state.level if state else 0
         confidence = float(state.confidence) if state else 0.0
         band_min, band_max = compute_fit_band(level=level, confidence=confidence)
+        # FE-1454：显式能力同样避开跨 session 近期曝光资源（resource 级去重）；
+        # 全部曝光耗尽时回落允许重复，但 reason 记 pool_exhausted（无依据重复率 0%）。
         rv = await _published_resource_for_ability(
             db,
             ability_id=ability_id,
@@ -329,9 +393,10 @@ async def assign_next_task(
             band_max=band_max,
             fallback_to_lowest=True,
             exclude_resource_version_ids=assigned_rvs,
+            exclude_resource_ids=exposed_rids,
         )
-        # 该能力新题已耗尽（全部被排除）→ 解除排除，允许重复，避免死锁。
         if rv is None:
+            selection_reason = "pool_exhausted"
             rv = await _published_resource_for_ability(
                 db,
                 ability_id=ability_id,
@@ -339,19 +404,55 @@ async def assign_next_task(
                 band_max=band_max,
                 fallback_to_lowest=True,
             )
+        else:
+            selection_reason = "new_item"
         if rv is not None:
             selected_ability = ability_id
     else:
+        # ---- FE-1454 auto 选题策略（R2 §三/§四冻结口径）----
+        # 优先级：先尊重 Session 目标（plan.target 在 _candidate_abilities 内已优先）
+        # → 按能力状态排序（level asc 弱项优先）→ 覆盖需求（虚拟新能力受配额约束）。
+        # 两趟：第一趟只要"带内合格未曝光新题"；全域无新题时第二趟才允许重复，
+        # 且必须落受控原因（spaced_review=趋势走低触发 / pool_exhausted=新题耗尽）。
+        #
+        # 配额（决策③）统一口径：**引入事件按瞬间记录**——任务策略 is_new_ability
+        # （选中时无 state 行）即一次引入。本 session 引入事件数 ≤ 配额；已引入
+        # 能力继续练习不重复计数；真实行能力永不占配额。**作答建档后事件记忆不丢**
+        # （否则"引入→答对建档→又引下一个"会连穿 2 个新能力）。两趟共用同一道门。
         candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
+        all_states = {
+            row.ability_id: row
+            for row in (
+                await db.execute(
+                    select(AbilityState).where(AbilityState.child_id == child_id)
+                )
+            ).scalars().all()
+        }
+        sess_tasks = (
+            await db.execute(
+                select(TaskInstance).where(TaskInstance.session_id == session_id)
+            )
+        ).scalars().all()
+        introduced = {
+            t.ability_id for t in sess_tasks
+            if isinstance(t.strategy_policy, dict)
+            and t.strategy_policy.get("is_new_ability")
+        }
+
+        def _quota_blocked(aid: str) -> bool:
+            # 真实行能力永不占配额；本 session 已引入能力继续练习不重复计数；
+            # 全新（无行、未引入）能力在事件数达配额后拦截——两趟共用此门
+            if aid in all_states or aid in introduced:
+                return False
+            return len(introduced) >= NEW_ABILITY_INTRO_PER_SESSION
+
+        # 第一趟：新题（resource 级排除近期曝光 + session 级排除已发版本）
         for aid, is_virtual in candidates:
-            if is_virtual:
-                # FE-1453 虚拟 L0：必查库（真实行可能在候选计算后新出现——理论上不发生，
-                # 保守起见仍按 flag 视 level0/conf0；建行只发生在 persist_mastery_state）
-                level, confidence = 0, 0.0
-            else:
-                state = await db.get(AbilityState, {"child_id": child_id, "ability_id": aid})
-                level = state.level if state else 0
-                confidence = float(state.confidence) if state else 0.0
+            if _quota_blocked(aid):
+                continue
+            st = all_states.get(aid)
+            level = st.level if st else 0
+            confidence = float(st.confidence) if st else 0.0
             bmin, bmax = compute_fit_band(level=level, confidence=confidence)
 
             row = await _published_resource_for_ability(
@@ -361,12 +462,46 @@ async def assign_next_task(
                 band_max=bmax,
                 fallback_to_lowest=False,
                 exclude_resource_version_ids=assigned_rvs,
+                exclude_resource_ids=exposed_rids,
             )
             if row is not None:
                 selected_ability = aid
                 rv = row
                 band_min, band_max = bmin, bmax
+                selection_reason = "new_item"
                 break
+
+        # 第二趟：全域无合格新题 → 受控重复（区分必要复习与耗尽兜底）
+        if selected_ability is None:
+            for aid, is_virtual in candidates:
+                if _quota_blocked(aid):
+                    continue  # 配额门不因"重复趟"旁路
+                st = all_states.get(aid)
+                if st is None and aid not in introduced and aid not in exposed_aids:
+                    # 无任何历史（无行、本 session 未引入、窗口内未曝光）：
+                    # "重复"推它没有可复习对象=无依据——跳过（配额门另有其责）
+                    continue
+                level = st.level if st else 0
+                confidence = float(st.confidence) if st else 0.0
+                trend = st.trend if st else None
+                bmin, bmax = compute_fit_band(level=level, confidence=confidence)
+                row = await _published_resource_for_ability(
+                    db,
+                    ability_id=aid,
+                    band_min=bmin,
+                    band_max=bmax,
+                    fallback_to_lowest=False,
+                    exclude_resource_version_ids=None,
+                )
+                if row is not None:
+                    selected_ability = aid
+                    rv = row
+                    band_min, band_max = bmin, bmax
+                    selection_reason = (
+                        "spaced_review" if trend in SPACED_REVIEW_TRENDS
+                        else "pool_exhausted"
+                    )
+                    break
 
     if selected_ability is None or rv is None:
         return {
@@ -390,19 +525,27 @@ async def assign_next_task(
         evidence_role = "retention"
         task_purpose = "review"
 
+    # FE-1454 推荐原因落日志（R2 §四：任何重复必须可解释；无依据重复率硬门槛=0%）。
+    # selection_reason ∈ new_item / spaced_review / pool_exhausted；
+    # is_new_ability=本题能力虚拟引入（配额门事件），供 new_ability_introduction 审计。
+    policy = {
+        "hint_max_level": 4,
+        "fit_band": [band_min, band_max],
+        "evidence_role": evidence_role,
+        "task_purpose": task_purpose,
+        **({"pinned": True} if pin_resource_version_id is not None else {}),
+    }
+    if pin_resource_version_id is None and selection_reason is not None:
+        policy["selection_reason"] = selection_reason
+        # state 已在上方查询：None=该能力尚无档案行=虚拟引入事件（配额门审计口径）
+        policy["is_new_ability"] = state is None
     task = TaskInstance(
         session_id=session_id,
         child_id=child_id,
         ability_id=selected_ability,
         resource_version_id=rv.resource_version_id,
         assigned_difficulty=rv.difficulty,
-        strategy_policy={
-            "hint_max_level": 4,
-            "fit_band": [band_min, band_max],
-            "evidence_role": evidence_role,
-            "task_purpose": task_purpose,
-            **({"pinned": True} if pin_resource_version_id is not None else {}),
-        },
+        strategy_policy=policy,
     )
     db.add(task)
     await db.commit()
