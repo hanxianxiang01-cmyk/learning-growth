@@ -23,6 +23,17 @@ DRY = "--apply" not in sys.argv
 with psycopg.connect(URL, autocommit=False) as c:
     try:
         for it in man["items"]:
+            cur_status = c.execute(
+                "select review_status from resource_version where resource_version_id=%s",
+                (uuid.UUID(it["old_rvid"]),)).fetchone()
+            if cur_status and cur_status[0] == "published":
+                # 幂等：旧版已在 published=已回滚过（或事故回流），重复执行不再动
+                print("[skip-idempotent]", it["old_rvid"][:8], "旧版已是 published，不重复回滚")
+                continue
+            if cur_status and cur_status[0] != "superseded":
+                print(f"!! {it['old_rvid'][:8]} 状态={cur_status[0]}（非 superseded），跳过",
+                      "（事故重修复旧版已再次 superseded 属正常，勿动）")
+                continue
             consumed = c.execute(
                 "select count(*) from task_instance where resource_version_id=%s",
                 (uuid.UUID(it["new_rvid"]),)).fetchone()[0]
