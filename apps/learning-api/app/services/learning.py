@@ -30,6 +30,11 @@ from app.core.education_rules import (
     SESSION_TASK_GOAL,
 )
 from app.services.fitband import compute_fit_band
+from app.services.jump_process import (
+    extract_jump_trajectory,
+    get_jump_constraint,
+    validate_jump_process,
+)
 from app.services.turn_service import record_attempt
 
 
@@ -866,6 +871,18 @@ async def submit_attempt(
     else:
         correct = _judge(expected, user_answer)
 
+    # FE-1455 跳步过程校验：仅当题目显式声明 jump_constraint 才启用——
+    # 未声明约束的旧题（含全部现存数轴题）判分行为逐比特不变（兼容红线）。
+    # 终点答对但轨迹违规（步长/方向/次数）→ correct 翻 False：过程要求未满足
+    # 不得判为满足，attempt/mastery 下游因 correct=False 不生成有效掌握证据。
+    jump_violation = None
+    jc = get_jump_constraint(rv.ui_schema if rv else None)
+    if jc is not None and correct is True:
+        traj = extract_jump_trajectory(response)
+        process_ok, jump_violation = validate_jump_process(traj, jc)
+        if not process_ok:
+            correct = False
+
     # 诊断候选来源：资源侧全部错因规则（不再取"第一条"当结论，交 V2 观察匹配）。
     error_models = rv.error_models if rv and rv.error_models else None
 
@@ -910,6 +927,10 @@ async def submit_attempt(
         )
 
     await db.commit()
+
+    if jump_violation:
+        # FE-1455：过程违规码透出（响应扩展字段，供诊断/E2E 断言；未声明约束题零影响）
+        result["process_violation"] = jump_violation
 
     return result
 
