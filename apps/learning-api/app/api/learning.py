@@ -8,6 +8,7 @@ from typing import Any
 from fastapi import APIRouter, Body, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
 from app.core.database import get_db
 from app.core.qa import is_qa_child
 from app.services.learning import (
@@ -32,9 +33,17 @@ async def selection_trace(
 ):
     """QA-ITEM-01 只读选题追踪（QA-ITEM-01 §4.2『新增 QA-only 只读追踪，不改变排序行为』）。
 
-    **仅限 QA 测试池 child**（403，与 pin 同红线）；纯读，不落 TaskInstance、零写入。
-    输出候选池/fit_band/排除集/预测选中项；QA 侧与真实 tasks/next 对账。
+    安全门禁（R2 §二收口，双层）：
+    1. **部署面**：`SELECTION_TRACE_ENABLED` 默认 false——生产不启用调试入口；
+       未启用一律 404（不暴露端点存在性）。
+    2. **目标面**：`is_qa_child` 403（与 pin 同红线）。如实声明：这校验的是
+       *目标 child 属于 QA 池*，**不是调用者身份鉴权**（本服务当前无调用者
+       认证体系）——故本端点只允许在 QA/内网环境开启；输出不含答案字段
+       （候选池元数据=题目 rvid/难度/标题+该 child 画像），答案泄露风险=0。
+    纯读，不落 TaskInstance、零写入。QA 侧与真实 tasks/next 对账。
     """
+    if not get_settings().selection_trace_enabled:
+        raise HTTPException(status_code=404)
     if not is_qa_child(child_id):
         raise HTTPException(status_code=403, detail="selection-trace 仅限 QA 测试池 child 使用")
     try:
