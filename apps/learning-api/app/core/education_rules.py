@@ -109,11 +109,14 @@ DIAGNOSIS_LABELS = {
 EXPOSURE_WINDOW_SESSIONS = 4
 # 新能力引入配额：每个 session 最多引入 NEW_ABILITY_INTRO_PER_SESSION 个"此前无
 # ability_state 行"的虚拟能力；已有能力的继续练习不受本配额限制（R2 §三）。
-# plan.target（显式课程目标）不受配额约束——"先尊重 Session 目标"。
+# plan.target（管理计划强制指定）为**显式例外**：不受配额约束、不占配额事件数，
+# 引入来源单独记 new_ability_source="plan_target"（独立日志，不混入普通 Auto 统计）。
 NEW_ABILITY_INTRO_PER_SESSION = 1
-# 合法重复（计入 spaced_review）的触发趋势：能力近期质量走低时重练同能力=合理间隔复习。
-SPACED_REVIEW_TRENDS = ("down_review", "watch")
+# 补救练习触发趋势：能力近期质量走低时重练同能力=补救（REVIEW，非间隔）。
+REMEDIATION_TRENDS = ("down_review", "watch")
 # 重复推荐必须携带的解释原因（无依据重复率 R2 硬门槛=0%）：
-#   spaced_review  = 由 trend 触发的合理间隔复习
-#   pool_exhausted = 带内合格未曝光题耗尽后被迫重复
-REPEAT_REASONS = ("spaced_review", "pool_exhausted")
+#   remediation_review = trend 走低的补救练习（**不是**间隔复习——无时间调度依据，
+#                        R2 FE-1454 复审改名，防空洞式"填理由=合理"）
+#   pool_exhausted     = 带内合格未曝光题耗尽后被迫重复
+# spaced_review 保留给未来基于时间间隔/retention 调度的真复习，当前不产出。
+REPEAT_REASONS = ("remediation_review", "pool_exhausted")

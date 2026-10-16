@@ -25,8 +25,8 @@ from app.models import (
 from app.core.education_rules import (
     EXPOSURE_WINDOW_SESSIONS,
     NEW_ABILITY_INTRO_PER_SESSION,
+    REMEDIATION_TRENDS,
     SESSION_TASK_GOAL,
-    SPACED_REVIEW_TRENDS,
 )
 from app.services.fitband import compute_fit_band
 from app.services.turn_service import record_attempt
@@ -78,6 +78,21 @@ async def _published_assignable_abilities(db: AsyncSession) -> set[str]:
         )
     ).all()
     return {aid for aid, ui in rows if _v2_assignable(ui)}
+
+
+async def _plan_target_set(db: AsyncSession, *, session_id: uuid.UUID) -> set[str]:
+    """本 session 管理计划强制指定的目标能力集（FE-1454 复审检查点2）。
+
+    plan.target 是**显式例外通道**：其中的能力不受普通 Auto 新能力配额约束、
+    也不计入配额事件数（独立 new_ability_source="plan_target" 落日志）——
+    课程计划指定练什么就练什么，与自适应拓展分账。
+    """
+    session = await db.get(LearningSession, session_id)
+    if session and session.plan_id:
+        plan = await db.get(LearningPlan, session.plan_id)
+        if plan and plan.target_ability_ids:
+            return set(plan.target_ability_ids)
+    return set()
 
 
 async def _candidate_abilities(
@@ -433,18 +448,32 @@ async def assign_next_task(
                 select(TaskInstance).where(TaskInstance.session_id == session_id)
             )
         ).scalars().all()
-        introduced = {
+        # 复审检查点2：plan.target=管理计划强制指定 → **显式例外通道**，
+        # 不受配额约束、不占配额事件数（new_ability_source="plan_target" 独立分账，
+        # 配额事件只统计 source=="auto"）。is_new_ability 保留第一轮口径兼容：
+        # 选中瞬间无 state 行=引入事件。
+        plan_targets = await _plan_target_set(db, session_id=session_id)
+        auto_introduced = {
             t.ability_id for t in sess_tasks
             if isinstance(t.strategy_policy, dict)
             and t.strategy_policy.get("is_new_ability")
+            and t.strategy_policy.get("new_ability_source", "auto") == "auto"
         }
 
         def _quota_blocked(aid: str) -> bool:
-            # 真实行能力永不占配额；本 session 已引入能力继续练习不重复计数；
-            # 全新（无行、未引入）能力在事件数达配额后拦截——两趟共用此门
-            if aid in all_states or aid in introduced:
+            # plan.target 例外永不受配额约束（管理意志优先，R2 §三"先尊重 Session 目标"）
+            if aid in plan_targets:
                 return False
-            return len(introduced) >= NEW_ABILITY_INTRO_PER_SESSION
+            # 真实行能力永不占配额；本 session 已 auto 引入能力继续练习不重复计数；
+            # 全新（无行、未 auto 引入）能力在事件数达配额后拦截——两趟共用此门
+            if aid in all_states or aid in auto_introduced:
+                return False
+            return len(auto_introduced) >= NEW_ABILITY_INTRO_PER_SESSION
+
+        def _intro_flag(aid: str) -> tuple[bool, str]:
+            if aid in all_states:
+                return (False, "existing")
+            return (True, "plan_target" if aid in plan_targets else "auto")
 
         # 第一趟：新题（resource 级排除近期曝光 + session 级排除已发版本）
         for aid, is_virtual in candidates:
@@ -477,7 +506,8 @@ async def assign_next_task(
                 if _quota_blocked(aid):
                     continue  # 配额门不因"重复趟"旁路
                 st = all_states.get(aid)
-                if st is None and aid not in introduced and aid not in exposed_aids:
+                if st is None and aid not in auto_introduced and aid not in exposed_aids \
+                        and aid not in plan_targets:
                     # 无任何历史（无行、本 session 未引入、窗口内未曝光）：
                     # "重复"推它没有可复习对象=无依据——跳过（配额门另有其责）
                     continue
@@ -498,7 +528,7 @@ async def assign_next_task(
                     rv = row
                     band_min, band_max = bmin, bmax
                     selection_reason = (
-                        "spaced_review" if trend in SPACED_REVIEW_TRENDS
+                        "remediation_review" if trend in REMEDIATION_TRENDS
                         else "pool_exhausted"
                     )
                     break
@@ -526,8 +556,12 @@ async def assign_next_task(
         task_purpose = "review"
 
     # FE-1454 推荐原因落日志（R2 §四：任何重复必须可解释；无依据重复率硬门槛=0%）。
-    # selection_reason ∈ new_item / spaced_review / pool_exhausted；
-    # is_new_ability=本题能力虚拟引入（配额门事件），供 new_ability_introduction 审计。
+    # selection_reason ∈ new_item / remediation_review / pool_exhausted
+    #（remediation_review=趋势走低的补救练习，**非间隔复习**——无时间调度依据时
+    #  不得冒用 spaced_review 之名，R2 FE-1454 复审检查点3 改名）；
+    # is_new_ability=选中瞬间无 state 行（引入事件，第一轮口径兼容）；
+    # new_ability_source=引入来源分账：existing（已有行）/ auto（自适应配额事件）/
+    # plan_target（管理计划强制，**不占配额、独立日志**）/ explicit（挑战卡显式指定）。
     policy = {
         "hint_max_level": 4,
         "fit_band": [band_min, band_max],
@@ -537,8 +571,14 @@ async def assign_next_task(
     }
     if pin_resource_version_id is None and selection_reason is not None:
         policy["selection_reason"] = selection_reason
-        # state 已在上方查询：None=该能力尚无档案行=虚拟引入事件（配额门审计口径）
-        policy["is_new_ability"] = state is None
+        if ability_id is not None:
+            # 显式挑战卡=用户/前端意志，不算自适应引入事件（也不占配额统计）
+            is_new = state is None
+            source = "explicit" if is_new else "existing"
+        else:
+            is_new, source = _intro_flag(selected_ability)
+        policy["is_new_ability"] = is_new
+        policy["new_ability_source"] = source
     task = TaskInstance(
         session_id=session_id,
         child_id=child_id,

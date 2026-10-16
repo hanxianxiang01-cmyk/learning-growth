@@ -5,7 +5,7 @@
    不再重复——存在合格未曝光新题时必选新题（无依据重复率 0% 的机制面）；
 2. **resource 级去重**：同一资源换 resource_version_id 不能绕过曝光窗口（R2 红线）；
 3. **受控重复带原因**：新题耗尽/复习场景下允许重复，selection_reason ∈
-   {spaced_review（task_purpose=review 且仍出同题——trend 走低链既有机制）,
+   {remediation_review（task_purpose=review 且仍出同题——trend 走低链既有机制）,
     pool_exhausted（无复习依据的耗尽兜底）}，绝不静默重复；
 4. **每 session ≤1 新能力配额**（决策③）：一个 session 最多引入 1 个新能力
    （引入=选中无 state 行的能力）；已引入能力继续练习不受限；真实行能力不占配额；
@@ -84,7 +84,8 @@ def _run(specs, test_fn, extra_seed=None):
                     content={"goal": f"g{i}", "answer": "1"},
                     ui_schema={"schema_version": "1.0", "kind": "number"},
                     error_models=[], hint_policy={}, review_status="published",
-                    created_at=datetime.datetime(2026, 1, 1, 0, i, tzinfo=datetime.timezone.utc)))
+                    created_at=datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)
+                               + datetime.timedelta(minutes=i)))
             db.add(LearningSession(session_id=_sid(0), child_id=CHILD_ID, subject="math"))
             if extra_seed:
                 extra_seed(db)
@@ -158,14 +159,14 @@ async def _repeat_body(db):
     # 第二趟重复，reason 必须落账
     out2 = await assign_next_task(db, child_id=CHILD_ID, session_id=sid, subject="math")
     assert out2["task_instance_id"] is not None, "新题耗尽不得空池死锁"
-    assert out2["strategy_policy"]["selection_reason"] in ("pool_exhausted", "spaced_review")
+    assert out2["strategy_policy"]["selection_reason"] in ("pool_exhausted", "remediation_review")
 
 
 def test_controlled_repeat_pool_exhausted():
     _run([(30, REL, 1)], _repeat_body)
 
 
-# ---- 3b. trend 走低复习链 → spaced_review（走既有 retention 通道）----
+# ---- 3b. trend 走低复习链 → remediation_review（走既有 retention 通道）----
 
 def _seed_watch(db):
     db.add(AbilityState(child_id=CHILD_ID, ability_id=REL, level=1, confidence=0.5,
@@ -182,12 +183,12 @@ async def _review_body(db):
     out2 = await assign_next_task(db, child_id=CHILD_ID, session_id=_sid(1), subject="math")
     assert out2["task_instance_id"] is not None
     pol = out2["strategy_policy"]
-    assert pol["selection_reason"] == "spaced_review", pol
+    assert pol["selection_reason"] == "remediation_review", pol
     # 复习链与既有 evidence_role 机制咬合：watch+非迁移 → retention/review
     assert pol["task_purpose"] == "review" and pol["evidence_role"] == "retention"
 
 
-def test_spaced_review_reason_and_retention_chain():
+def test_remediation_review_reason_and_retention_chain():
     _run([(40, REL, 1)], _review_body, extra_seed=_seed_watch)
 
 
@@ -218,7 +219,13 @@ async def _quota_body(db):
     out3 = await assign_next_task(db, child_id=CHILD_ID, session_id=sid, subject="math")
     assert out3["task_instance_id"] is not None, "不得因配额空池死锁"
     assert out3["ability_id"] != REL, "配额=1：不得引入第二个新能力 REL"
-    assert out3["strategy_policy"]["selection_reason"] in ("spaced_review", "pool_exhausted")
+    assert out3["strategy_policy"]["selection_reason"] in ("remediation_review", "pool_exhausted")
+
+    # ③' 复审检查点1 直接断言：**同一新能力连续推荐不重复占用配额**——
+    # RD 引入后（无行）连续多请求，auto_introduced 恒={RD}（set 天然幂等），
+    # 第 4/5 请求仍不引入 REL、RD 练习畅通
+    out3b = await assign_next_task(db, child_id=CHILD_ID, session_id=sid, subject="math")
+    assert out3b["ability_id"] != REL, "同一新能力续练多次仍不得旁路配额引入第二个"
 
     # ④ RD 有效作答 → 建档；同 session 后续请求仍不得引入 REL（事件记忆不因建档丢失
     #    ——若丢，introduced=∅，REL 虚拟可再引入，即"引入→建档→又引下一个"漏洞）
@@ -269,3 +276,48 @@ async def _real_body(db):
 
 def test_real_state_abilities_not_quota_consumers():
     _run([(50, REL, 1), (51, RD, 5)], _real_body, extra_seed=_seed_rel)
+
+
+# ---- 5. 复审检查点2：plan.target=管理计划强制例外，不占配额且独立分账 ----
+
+import uuid as _u
+PLAN_ID = _u.uuid5(_u.NAMESPACE_DNS, "fe1454-plan")
+PSID0 = _u.uuid5(_u.NAMESPACE_DNS, "fe1454-psess-0")
+
+
+def _seed_plan(db):
+    from app.models import LearningPlan
+    db.add(LearningPlan(plan_id=PLAN_ID, child_id=CHILD_ID, subject="math",
+                        plan_type="curriculum", status="active",
+                        target_ability_ids=[RD, REL, COND]))
+    db.add(LearningSession(session_id=PSID0, child_id=CHILD_ID, subject="math",
+                           plan_id=PLAN_ID))
+
+
+async def _plan_body(db):
+    # 三个目标能力全部零档案行：plan 强制例外 → 同一 session 连出 3 个"新能力"，
+    # 普通 Auto 配额（=1）不得误拦管理意志；来源独立分账 plan_target
+    out1 = await assign_next_task(db, child_id=CHILD_ID, session_id=PSID0, subject="math")
+    assert out1["task_instance_id"] is not None
+    assert out1["strategy_policy"]["is_new_ability"] is True
+    assert out1["strategy_policy"]["new_ability_source"] == "plan_target", out1["strategy_policy"]
+    a1 = out1["ability_id"]
+
+    out2 = await assign_next_task(db, child_id=CHILD_ID, session_id=PSID0, subject="math")
+    assert out2["task_instance_id"] is not None, "plan 目标不受 auto 配额=1 误拦"
+    a2 = out2["ability_id"]
+    assert a2 != a1, "第二题应走另一目标（已曝光能力让位）"
+    assert out2["strategy_policy"]["new_ability_source"] == "plan_target"
+
+    # 分账独立性：这些任务不得被计成 auto 引入事件——
+    # 验证=同一 session 再请求第三目标仍畅通（若混入 auto 统计，早已超配额）
+    out3 = await assign_next_task(db, child_id=CHILD_ID, session_id=PSID0, subject="math")
+    assert out3["task_instance_id"] is not None
+    assert {a1, a2, out3["ability_id"]} == {RD, REL, COND}, \
+        "plan 三目标全部可达且不受配额（独立日志口径）"
+
+
+def test_plan_target_bypasses_quota_with_own_ledger():
+    # 每能力 2 题保证同 session 连续三请求都能出未曝光新题
+    _run([(60, RD, 1), (61, REL, 1), (62, COND, 1), (63, COND, 1)], _plan_body,
+         extra_seed=_seed_plan)
