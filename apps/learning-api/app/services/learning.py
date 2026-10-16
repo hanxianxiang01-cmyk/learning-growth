@@ -26,6 +26,7 @@ from app.core.education_rules import (
     EXPOSURE_WINDOW_SESSIONS,
     NEW_ABILITY_INTRO_PER_SESSION,
     REMEDIATION_TRENDS,
+    RULE_VERSION,
     SESSION_TASK_GOAL,
 )
 from app.services.fitband import compute_fit_band
@@ -602,6 +603,234 @@ async def assign_next_task(
         "resource_version_id": rv.resource_version_id,
         "goal": rv.content.get("goal") if isinstance(rv.content, dict) else None,
         "plan_id": session.plan_id if session else None,
+    }
+
+
+async def trace_next_selection(
+    db: AsyncSession,
+    *,
+    child_id: uuid.UUID,
+    session_id: uuid.UUID,
+    ability_id: str | None = None,
+) -> dict:
+    """QA-ITEM-01 只读选题追踪（QA-only 端点消费）：**镜像 FE-1453+FE-1454 生产策略**，
+    输出候选池、逐能力 fit_band、排除集、配额/曝光门状态与预测选中项（含 predicted_reason
+    的 selection_reason/is_new_ability/new_ability_source 分账）。**不落 TaskInstance、零写入**。
+
+    镜像红线：与 assign_next_task auto/显式分支同一决策序——
+    虚拟 L0 候选宇宙 → 配额门（auto_introduced 分账、plan_target 例外）→
+    第一趟未曝光新题（resource 级排除）→ 第二趟受控重复（remediation/pool_exhausted）。
+    生产策略漂移而 trace 未同步=追踪失真；R2 对账（trace vs 实发）以本函数为准重测，
+    第一轮 99/99 旧证明不适用于新策略。
+
+    对账语义：QA 侧比较 trace.predicted_selected 与随后真实 tasks/next 的返回，
+    一致=追踪可信（生产分支未漂移）；不一致=以实发为准并标记 mismatch（追踪只读承诺不破）。
+    """
+    assigned_rvs = set(
+        (
+            await db.execute(
+                select(TaskInstance.resource_version_id).where(
+                    TaskInstance.session_id == session_id
+                )
+            )
+        ).scalars().all()
+    )
+    exposed_rids, _exposed_rvs, exposed_aids = await _recent_exposure(
+        db, child_id=child_id, session_id=session_id)
+
+    if ability_id:
+        candidates: list[tuple[str, bool]] = [(ability_id, False)]
+        mode = "explicit_ability"
+    else:
+        candidates = await _candidate_abilities(db, child_id=child_id, session_id=session_id)
+        mode = "auto"
+
+    states = {
+        row.ability_id: row
+        for row in (
+            await db.execute(select(AbilityState).where(AbilityState.child_id == child_id))
+        ).scalars().all()
+    }
+    sess_tasks = (
+        await db.execute(
+            select(TaskInstance).where(TaskInstance.session_id == session_id)
+        )
+    ).scalars().all()
+    plan_targets = await _plan_target_set(db, session_id=session_id)
+    auto_introduced = {
+        t.ability_id for t in sess_tasks
+        if isinstance(t.strategy_policy, dict)
+        and t.strategy_policy.get("is_new_ability")
+        and t.strategy_policy.get("new_ability_source", "auto") == "auto"
+    }
+
+    def _quota_blocked(aid: str) -> bool:
+        if aid in plan_targets:
+            return False
+        if aid in states or aid in auto_introduced:
+            return False
+        return len(auto_introduced) >= NEW_ABILITY_INTRO_PER_SESSION
+
+    def _intro_flag(aid: str) -> tuple[bool, str]:
+        if aid in states:
+            return (False, "existing")
+        return (True, "plan_target" if aid in plan_targets else "auto")
+
+    def _band_for(aid: str) -> tuple[int, int, str | None]:
+        st = states.get(aid)
+        level = st.level if st else 0
+        conf = float(st.confidence) if st else 0.0
+        return (*compute_fit_band(level=level, confidence=conf),
+                st.trend if st else None)
+
+    async def _band_rows(aid: str, bmin: int, bmax: int, *,
+                         exclude: set | None,
+                         exclude_rids: set | None = None) -> list:
+        conds = [
+            Resource.ability_id == aid,
+            ResourceVersion.review_status == "published",
+            ResourceVersion.difficulty >= bmin,
+            ResourceVersion.difficulty <= bmax,
+        ]
+        if exclude:
+            conds.append(ResourceVersion.resource_version_id.notin_(exclude))
+        if exclude_rids:
+            conds.append(ResourceVersion.resource_id.notin_(exclude_rids))
+        rows = (
+            await db.execute(
+                select(ResourceVersion, Resource.title)
+                .join(Resource, Resource.resource_id == ResourceVersion.resource_id)
+                .where(*conds)
+                .order_by(ResourceVersion.difficulty.asc(), ResourceVersion.created_at.asc())
+                .limit(50)
+            )
+        ).all()
+        return [(rv, title) for rv, title in rows if _v2_assignable(rv.ui_schema)]
+
+    per_ability: list[dict] = []
+    predicted = None
+    predicted_band = None
+    predicted_reason = None
+
+    if mode == "explicit_ability":
+        # 镜像生产显式分支：band 内排除(assigned+exposed) → new_item；
+        # 无题 → 解除排除 + fallback_to_lowest → pool_exhausted；
+        # 配额门不适用（管理/前端意志），来源=existing/explicit
+        aid = ability_id
+        bmin, bmax, trend = _band_for(aid)
+        rows = await _band_rows(aid, bmin, bmax, exclude=assigned_rvs,
+                                exclude_rids=exposed_rids)
+        reason = "new_item"
+        if not rows:
+            rows = await _band_rows(aid, 1, 5, exclude=None)  # fallback_to_lowest=全带
+            reason = "pool_exhausted"
+        is_new, source = _intro_flag(aid)
+        if is_new:
+            source = "explicit"
+        entry = {"ability_id": aid, "is_virtual": aid not in states,
+                 "level": (states[aid].level if aid in states else 0),
+                 "confidence": (float(states[aid].confidence) if aid in states else 0.0),
+                 "trend": trend, "fit_band": [bmin, bmax], "quota_blocked": False,
+                 "new_item_pool_size": len(rows), "eligible_pool_size": len(rows),
+                 "repeat_pool_size": len(rows),
+                 "eligible_head": [{"resource_version_id": str(rv.resource_version_id),
+                                    "difficulty": rv.difficulty, "title": title,
+                                    "transfer_distance": rv.transfer_distance}
+                                   for rv, title in rows[:8]]}
+        per_ability.append(entry)
+        if rows:
+            rv, title = rows[0]
+            predicted = {"resource_version_id": str(rv.resource_version_id),
+                         "ability_id": aid, "difficulty": rv.difficulty, "title": title}
+            # 生产 explicit：重复趟 fallback 带=全带，预测 band 仍报当次计算带
+            predicted_band = [bmin, bmax]
+            predicted_reason = {"selection_reason": reason,
+                                "is_new_ability": is_new, "new_ability_source": source}
+
+    for aid, is_virtual in ([] if mode == "explicit_ability" else candidates):
+        bmin, bmax, trend = _band_for(aid)
+        blocked = _quota_blocked(aid)
+        new_item_rows = [] if blocked else await _band_rows(
+            aid, bmin, bmax, exclude=assigned_rvs, exclude_rids=exposed_rids)
+        repeat_rows = await _band_rows(aid, bmin, bmax, exclude=None)
+        eligible = new_item_rows  # 第一趟语义
+        entry = {
+            "ability_id": aid,
+            "is_virtual": is_virtual,
+            "level": (states[aid].level if aid in states else 0),
+            "confidence": (float(states[aid].confidence) if aid in states else 0.0),
+            "trend": trend,
+            "fit_band": [bmin, bmax],
+            "quota_blocked": blocked,
+            "new_item_pool_size": len(new_item_rows),
+            "eligible_pool_size": len(new_item_rows),
+            "repeat_pool_size": len(repeat_rows),
+            "eligible_head": [
+                {
+                    "resource_version_id": str(rv.resource_version_id),
+                    "difficulty": rv.difficulty,
+                    "title": title,
+                    "transfer_distance": rv.transfer_distance,
+                }
+                for rv, title in new_item_rows[:8]
+            ],
+        }
+        per_ability.append(entry)
+
+        if predicted is None:
+            if new_item_rows and not blocked:
+                rv, title = new_item_rows[0]
+                is_new, source = _intro_flag(aid)
+                predicted = {"resource_version_id": str(rv.resource_version_id),
+                             "ability_id": aid, "difficulty": rv.difficulty, "title": title}
+                predicted_band = [bmin, bmax]
+                predicted_reason = {"selection_reason": "new_item",
+                                    "is_new_ability": is_new, "new_ability_source": source}
+
+    # 第一趟全域无新题 → 第二趟受控重复镜像（与生产同一资格判定）
+    if predicted is None:
+        for aid, is_virtual in candidates:
+            if _quota_blocked(aid):
+                continue
+            st = states.get(aid)
+            if st is None and aid not in auto_introduced and aid not in exposed_aids \
+                    and aid not in plan_targets:
+                continue
+            bmin, bmax, trend = _band_for(aid)
+            rows = await _band_rows(aid, bmin, bmax, exclude=None)
+            if rows:
+                rv, title = rows[0]
+                is_new, source = _intro_flag(aid)
+                predicted = {"resource_version_id": str(rv.resource_version_id),
+                             "ability_id": aid, "difficulty": rv.difficulty, "title": title}
+                predicted_band = [bmin, bmax]
+                predicted_reason = {
+                    "selection_reason": ("remediation_review" if trend in REMEDIATION_TRENDS
+                                          else "pool_exhausted"),
+                    "is_new_ability": is_new, "new_ability_source": source}
+                break
+
+    return {
+        "mode": mode,
+        "session_id": str(session_id),
+        "recent_assigned_excluded": [str(x) for x in sorted(assigned_rvs, key=str)],
+        "exposure_window_sessions": EXPOSURE_WINDOW_SESSIONS,
+        "exposed_resource_count": len(exposed_rids),
+        "new_ability_intro_quota": NEW_ABILITY_INTRO_PER_SESSION,
+        "auto_introduced_this_session": sorted(auto_introduced),
+        "plan_target_abilities": sorted(plan_targets),
+        "policy_version": RULE_VERSION,
+        "strategy_version": "selection-v1.4-r2",
+        "per_ability": per_ability,
+        "predicted_selected": predicted,
+        "predicted_fit_band": predicted_band,
+        "predicted_policy": predicted_reason,
+        "predicted_reason": (
+            "first candidate (level asc, virtual L0 after real) with unexposed band-eligible "
+            "assignable resource, quota-gated; else controlled repeat with reason"
+            if predicted else "no_published_resource_in_band"
+        ),
+        "read_only": True,
     }
 
 
