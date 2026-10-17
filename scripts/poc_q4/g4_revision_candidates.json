@@ -1,0 +1,110 @@
+{
+ "gate": "G4",
+ "candidates": [
+  {
+   "id": "R1",
+   "seq": 7,
+   "title": "47写成几个一",
+   "dimension": "D1 能力标签",
+   "before": {
+    "ability_id": "app_rd",
+    "judgement": "答7仅需位值知识，无阅读障碍成分"
+   },
+   "after": {
+    "ability_id": "app_model",
+    "rationale": "重挂位值理解；若坚持测阅读，改题干增加冗余干扰条件并验证干扰可区分",
+    "ab_test": "两版题干各跑 D1 rubric，要求评审盲选'哪版更能区分阅读理解 vs 位值'"
+   },
+   "regression": [
+    "ability 重挂影响该资源 band/mastery 键→新版本发布，旧证据保留",
+    "标签集合白名单不变"
+   ]
+  },
+  {
+   "id": "R2",
+   "seq": 16,
+   "title": "尺子量线段",
+   "dimension": "D1 能力标签",
+   "before": {
+    "ability_id": "app_check",
+    "judgement": "测量任务≠检查验算（无核对他人解答行为）"
+   },
+   "after": {
+    "ability_id": "app_model(量纲)",
+    "or": "改题呈现'两人读数5和12，谁量错了'真验算情境",
+    "ab_test": "原测量版 vs 验算改写版，D1 盲评"
+   },
+   "regression": [
+    "ruler renderer 判分语义不变；改写版为新 resource_version"
+   ]
+  },
+  {
+   "id": "R3",
+   "seq": 14,
+   "title": "检查减法答案",
+   "dimension": "D5 过程证据",
+   "before": {
+    "evidence": "终值 0/1，验算行为无痕"
+   },
+   "after": {
+    "proposal": "response 增'验算式'槽（3+6=9? 之类）或题面要求写出核对过程；V1 无槽位→归入需求单（不本 PoC 实现）",
+    "ab_test": "现版 vs 过程留痕版的 D5 充分性对照"
+   },
+   "regression": [
+    "V1 response_schema 扩展=契约变更，仅出需求单"
+   ]
+  },
+  {
+   "id": "R4",
+   "seq": 13,
+   "title": "规律板 1,4,1,4",
+   "dimension": "D2 编码形态",
+   "before": {
+    "db_answer": 14,
+    "form": "整数拼接（[1,4]→14）"
+   },
+   "after": {
+    "proposal": "统一数组编码约定并写入教学契约文档；pattern_board 序列化端与 answer 轴对齐（数字串/数组二选一并全库一致）",
+    "ab_test": "形态约定前后，判分等价回归（_judge 字符串兼容已证）"
+   },
+   "regression": [
+    "不产生数学变化；1723d78a 关闭口径沿用"
+   ]
+  },
+  {
+   "id": "R5",
+   "seq": 11,
+   "title": "跑步圈数迁移",
+   "dimension": "D1+D5 迁移配对",
+   "before": {
+    "evidence": "单题答对，无来源任务配对轨迹"
+   },
+   "after": {
+    "proposal": "迁移题以'已学来源题+新情境题'配对呈现（transfer_distance 已=字段），配对两题 attempt 链均正确才生成 transfer 证据（现有 mastery.transfer 语义核对）",
+    "ab_test": "单题签认版 vs 配对证据版的 D1 对照"
+   },
+   "regression": [
+    "mastery transfer 规则=需求单，不改 PoC 生产"
+   ]
+  },
+  {
+   "id": "R6",
+   "seq": 19,
+   "title": "图形找家无障碍",
+   "dimension": "D6",
+   "before": {
+    "aria": "null 全缺",
+    "visible": "卡1..6 零泄露"
+   },
+   "after": {
+    "proposal": "aria-label=特征描述（'四条边一样长的图形'类，不含类别结论词）——即 QA-ACCESS-01 冻结标准，本候选与其合并",
+    "ab_test": "读屏模拟下任务完成率 0%→可达 对照"
+   },
+   "regression": [
+    "纯渲染层，零题数据"
+   ]
+  }
+ ],
+ "count": 6,
+ "note": "R3/R5 涉契约/mastery 变更→按方案 §5.3 只出需求单不进 PoC 生产改动；≥5 项达标"
+}

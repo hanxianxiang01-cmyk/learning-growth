@@ -1,0 +1,17 @@
+{
+ "gate_verdicts": {
+  "G0_输入冻结": "PASS — 20/20 RVID 全命中现行 225 快照；SHA 453c295c… 冻结；V1 6+V2 14 校验；**Rev.C 原件未随包**（结论经 manifest 列内嵌，已记录引用缺口）",
+  "G1_独立算术": "PASS — 20/20 独立推导（ARITH 11/DOMAIN 9 全有推导路径，0 UNVERIFIED）；数学失配 0 漏检；#13 [1,4]vs'14'=编码形态登记（非算错）",
+  "G2_风险识别": "PARTIAL — harness 全量跑通（20 条结构化 rubric：答案/风险码/证据指针/建议齐全，D1-D6 分布=能力效度 9 题、编码 4、过程证据 6、无障碍 1、闭合 1）；**但评估者=会话 agent 自审**，同模型自证风险未消除（g2_meta 披露）——外部 LLM provider 未配置：本机无 key、无本地运行时、promptfoo 安装中",
+  "G3_教研一致性": "NOT_READY — 自审对照 100%（20/20，仅作 harness 验证基线，**不得引用为 AI-教研一致率**）；真值须外部模型跑同 harness + 教研 gold 双人复核后重算",
+  "G4_修订质量": "PASS — 6 项具体候选（≥5）：R1/R2 标签重挂、R3 验算留痕、R4 编码约定、R5 迁移配对、R6 无障碍（并 ACCESS-01）；各含 A/B 对照法+回归注意；涉契约变更项按 §5.3 只出需求单",
+  "G5_数据安全": "PASS — 0 生产写入（全程只读 JSONL）、0 真实儿童数据、快照 SHA 不变、0 自动发布"
+ },
+ "final": "PARTIAL — PoC 工程链路（G0/1/4/5）已验证可运行且有效；G2/G3 的模型独立性维度被环境阻断（无可用 LLM provider）",
+ "go_nogo": "条件 GO——harness 已就绪可复用；正式评测决策需：① 产品方提供授权 LLM 通道（openai 兼容即可，promptfoo.yaml 占位）② 教研双人 gold 复核填 review_workbook ③ 重跑 T1 两轮稳定性 → 再判 225 扩大",
+ "next_actions": [
+  "接入授权 provider 后：npm exec promptfoo eval -c promptfoo.yaml（20 题×2 轮）→ compare_report.py 重算 G3",
+  "教研：Excel 签认栏+G4 六候选 A/B 盲评",
+  "Rev.C 原件补交（manifest 内嵌列不能作 G0 输入冻结终态）"
+ ]
+}
