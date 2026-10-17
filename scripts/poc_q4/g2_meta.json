@@ -1,0 +1,5 @@
+{
+ "evaluator": "WorkBuddy 会话 agent 自审（非外部模型）",
+ "disclosure": "盲评协议执行：本步骤输入=eval_dataset.jsonl（无 DB answer）；但评估者与 T0 gold 推导同源、且会话历史中部分题目答案可见——'同模型自证'风险未被消除，G3 一致率仅作 harness 验证基线，外部模型接入后须以同一 harness 重跑",
+ "date": "2026-10-17"
+}

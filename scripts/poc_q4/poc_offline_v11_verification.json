@@ -1,0 +1,20 @@
+{
+ "source": "Q4_POC_Offline_Continuation_Handoff_V1.1（产品方 2026-10-17）",
+ "verified_by": "开发侧 SHA/diff/openpyxl 实测",
+ "integrity": {
+  "FINAL_VERDICT.json": "SHA 633a80da… 与我方 8f2efc9 版逐字节一致——**未被篡改** ✓",
+  "g2_ai_rubric_output/truth_reference/g4_candidates": "与我方在仓版 SHA 全一致 ✓",
+  "Q4_baseline_current_225.jsonl": "453c295c… 冻结快照一致 ✓"
+ },
+ "revc_gap_closed": "Rev.C 原件（SHA 5208bbad…）6 sheet；'现行225题签认台账'命中 20/20、'重点73题建议'命中 19/20（1 题不在重点集属正常）——G0 的 Rev.C 引用缺口**正式关闭**",
+ "workbook_fix_verified": "教研签认表 24 列×20 行：题目空 0、完整RVID 20/20、G4关联 20/20、PENDING 保留（产品方未代签 ✓）、评审人/日期/理由空栏待填",
+ "gate_status_accepted": {
+  "G0": "PASS(Rev.C 补件后终态)",
+  "G1": "PASS",
+  "G2": "PARTIAL 维持",
+  "G3": "NOT_READY 维持",
+  "G4": "PASS 候选设计",
+  "G5": "沿用"
+ },
+ "next_per_ruling": "① 教研填工作台（独立判断/评审人/日期/理由）→ 冻结 gold ② 受控环境配授权 provider+解 promptfoo 依赖后跑 20×2 轮算真 G3；在此之前不装更多工具、不扩 225、PoC=PARTIAL 条件GO"
+}

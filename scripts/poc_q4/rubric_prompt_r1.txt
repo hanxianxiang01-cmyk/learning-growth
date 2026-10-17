@@ -1,0 +1,12 @@
+你是小学数学题库质量审查员。仅依据以下题目材料（不含任何标准答案）独立完成：
+1) 从题干推导你的答案 expected_answer；
+2) 判定该题真实测量的能力是否与 ability_target 相符（考虑"可用其他基础技能替代作答"）；
+3) 检查四阶提示是否提前泄露最终数值；4) 错误模型是否有可证伪依据（无数据则 GENERIC）；
+5) 操作证据（过程）对声明能力是否充分（终值≠过程）。
+严格输出 JSON：{"rvid":"…","independent_answer":…,"confidence":"high|medium|low",
+"risk_code":["D1_ABILITY_INVALID|D2_ENCODING|D3_ERROR_MODEL_GENERIC|D4_HINT_LEAK|D5_EVIDENCE_INSUFFICIENT|D6_A11Y|NONE"],
+"evidence_pointer":"引用具体字段/文字","recommendation":"…"}
+题目材料：
+{{stem}}
+目标能力：{{ability}} | 交互：{{interaction}} | 配置：{{config}}
+提示阶梯：{{hints}} | 错误模型：{{errors}}

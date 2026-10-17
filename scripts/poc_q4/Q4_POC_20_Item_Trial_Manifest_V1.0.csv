@@ -1,0 +1,21 @@
+﻿seq,group,ability_id,title,resource_version_id,schema_version,renderer,difficulty,stem,revC_status,risk_hypothesis,evaluation_focus,gold_status,test_status
+1,策略选择,app_strat,相差多少用什么方法,cfc971b4-002f-42c3-8b00-993784a4f9ff,1.0,legacy:manipulative/objects,1,小红有8朵花，小蓝有5朵花。小红比小蓝多几朵？,REVISION_REQUIRED,策略选择 vs 直接计算，比较数量关系,语义、方法选择、答案独立复核,PENDING,NOT_RUN
+2,策略选择,app_strat,加号还是减号（V2 链 R10）,7f1ff763-3633-42ca-93f9-a556d3dc6267,2.0,formula-board,2,鱼缸里有7条鱼，游走了一些剩下几条？看图列式 7○2=5。圆圈里该点加号还是减号？,APPROVED_CANDIDATE,符号决策证据与减号ASCII契约,符号等价、策略观察,PENDING,NOT_RUN
+3,策略选择,app_strat,方框里藏了几（V2 链 R10）,6a66010c-3b59-4322-8717-b841402f17ad,2.0,formula-board,2,盒子里有一些弹珠，外面又有4颗。一共有9颗。□+4=9，方框里藏了几？点亮圆圈填数字。,REVISION_REQUIRED,缺数式是否真的测选策略,解题路径、提示梯度,PENDING,NOT_RUN
+4,策略选择,app_strat,给练习本付钱,b978d294-7ea5-4670-8538-3c04c2113536,2.0,money-board,2,一本练习本 **3 元 5 角**。钱包里有 1 角、5 角、1 元、5 元四种钱：点一档就拿出一枚放到台面上，点「取回」放回去。凑出**正好** 3 元 5 角（不能多不能少）。答案用**角**表示你付了多少（1 元=10 角）。,REVISION_REQUIRED,货币多种组合的等价性与方案选择,多解、动作历史、误判,PENDING,NOT_RUN
+5,策略选择,app_strat,先合起来再拿走,76d49907-c092-4822-b0ea-344850970da0,1.0,legacy:manipulative/number-line,4,停车场原来有8辆车，又开来5辆，后来开走4辆。现在停车场有多少辆车？,REVISION_REQUIRED,两步变化运算顺序与数轴轨迹,V1过程、标签效度,PENDING,NOT_RUN
+6,策略选择,app_strat,[T155] V14-P0-075,506538f4-1e95-402a-9b2e-8069d78251c5,2.0,formula-board,5,算式板上有一个空格：□+8=17。请把正确数字卡填入空格，让等式两边相等。,REVISION_REQUIRED,未知数数字填空与策略证据缺失,反例、能力标签,PENDING,NOT_RUN
+7,读题理解,app_rd,[T155] V14-P0-025,103b0e3f-4287-469c-96ec-6a173e84a4f5,2.0,number-input,5,47写成“4个十和几个一”？,REVISION_REQUIRED,读题理解与位值计算相混淆,信息提取、标签效度,PENDING,NOT_RUN
+8,读题理解,app_rd,[T155] V14-P0-046,e479b6ef-c53b-45e7-ae44-e7c5077028e3,2.0,ten-frame,1,第一格框里已有5个圆点，接着再放5个。请在十格框中摆出变化，最后填写一共有多少个圆点。,REVISION_REQUIRED,读指令还是在十格框凑十,分步证据、信息处理,PENDING,NOT_RUN
+9,读题理解,app_rd,把数字卡从小到大排好,6cf420db-b161-491a-99bd-5d08807bec66,2.0,sorting-board,2,桌上四张数字卡排得乱七八糟：7、1、4、2（卡片上的字有大有小，那是画的，别上当）。点两张卡把它们交换位置，把数字**从小到大**排好，答案按顺序写出这四个数字组成的数。,REVISION_REQUIRED,按排序操作与阅读能力区分,歧义、交互证据,PENDING,NOT_RUN
+10,读题理解,app_rd,[T155] V14-P0-006,855de461-b22d-41c2-b3bd-5d03976965c8,2.0,object-counter,1,桌上左边摆着3块积木，右边又摆了3块。请把两组积木放到数数区，数出一共有多少块。,REVISION_REQUIRED,双组积木阅读条件的提取,条件识别、算式比对,PENDING,NOT_RUN
+11,迁移观察,app_transfer,换成跑步圈数还能比较,8f603745-fc26-4402-9cd2-0fc20cfd401a,1.0,legacy:manipulative/objects,3,晨练时，小海跑了9圈，小森跑了6圈。小海比小森多跑几圈？,REVISION_REQUIRED,新情境是否有已学来源任务配对,迁移成对证据,PENDING,NOT_RUN
+12,迁移观察,app_transfer,换成步数中的多,c88410f2-f810-47b4-8ae4-cc218b140a88,1.0,legacy:manipulative/bar-model,4,小雨今天走了9千步，小安比小雨多走4千步。小安今天走了多少千步？,REVISION_REQUIRED,比较关系跨领域迁移的证据,跨情境、表征,PENDING,NOT_RUN
+13,迁移观察,app_transfer,[T155] V14-P0-149,845c6fea-418f-4365-a25e-b50e5b5040f8,2.0,pattern-board,4,颜色编码规律板的前四格依次是 1、4、1、4（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。,REVISION_REQUIRED,规律填空是否足以证明迁移,源任务配对、规则迁移,PENDING,NOT_RUN
+14,检查验算,app_check,检查减法答案,dd1147dc-ccba-460d-8546-8c9f7b7d264a,1.0,legacy:number,2,小林有8个苹果，吃掉3个。小华算“8 - 3 = 6”。请检查：小华的答案正确填1，错误填0。,未列入Rev.C重点题,判断题0/1与直接算术答案区分,独立判断重算,PENDING,NOT_RUN
+15,检查验算,app_check,[T155] V14-P0-082,48817fba-ee0d-4101-8cb2-9ac5b4e66b91,2.0,estimation-canvas,2,观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。,REVISION_REQUIRED,估算是否包含核查/修正动作,参考数、验算证据,PENDING,NOT_RUN
+16,检查验算,app_check,[T155] V14-P0-126,770ab57a-a1e2-4c78-8a9e-d89db4559ce9,2.0,ruler,1,请用尺子测量线段的两个端点在刻度5和12。线段长多少厘米？,REVISION_REQUIRED,测量与检查验算是否为同一能力,单位、验证行为,PENDING,NOT_RUN
+17,交互表征,app_rel,数轴跳跳跳（V2链）,e0a2a067-175b-480d-a614-e326212923f7,2.0,number-line,3,从20出发，每次向右跳5，跳3次，终点是多少？,APPROVED_CANDIDATE,数轴声明式跳步三态校验,过程合法性、Mastery,PENDING,NOT_RUN
+18,交互表征,app_rel,三组一样多,5bceb172-2b67-4421-99b2-175ec05b94e9,1.0,legacy:manipulative/number-line,3,有3个相同的小袋子，每个袋子里有7颗玻璃珠。3个袋子一共有多少颗玻璃珠？,REVISION_REQUIRED,V1三组等量表征与终点判分界限,起点、分步动作,PENDING,NOT_RUN
+19,交互表征,app_cond,给正方形找一个家,b0e607c7-add5-4372-9671-78ec108282fd,2.0,shape-gallery,1,美术角的图形墙上有 6 个图形邻居混住了。把所有的**正方形**点起来，放进下面「正方形的家」里——长方形、圆形的朋友可不是正方形哦。数一数家里最后有几个图形。,REVISION_REQUIRED,图形卡名称中性化后可访问语义,防泄题、无障碍,PENDING,NOT_RUN
+20,交互表征,app_model,排队做操（V2 链 R08）,5d41bfd4-bc9b-4c54-b454-2413041fa1bf,2.0,array-board,1,小朋友排队做操，每排站4人，站了3排。用行列把队伍排出来（先想横的几排、竖的几人），数一数一共几人？,APPROVED_CANDIDATE,阵列结构正确而非仅总数正确,行列、过程证据,PENDING,NOT_RUN
