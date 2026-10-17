@@ -22,7 +22,8 @@ SQL = """
 select rv.resource_version_id::text, rv.resource_id::text, rv.version_no,
        rv.review_status, rv.difficulty, rv.task_type, rv.transfer_distance,
        r.ability_id, r.title,
-       rv.ui_schema::text, rv.content::text
+       rv.ui_schema::text, rv.content::text,
+       rv.error_models::text, rv.hint_policy::text, rv.mastery_rule::text
 from resource_version rv join resource r using(resource_id)
 order by rv.resource_id, rv.version_no
 -- 全状态动态枚举（published/draft/qa_staged/superseded/archived/qa_retired…按实际值）；
@@ -56,20 +57,37 @@ def main():
     with psycopg.connect(args.db) as c:
         rows = c.execute(SQL).fetchall()   # 只读
 
+    # 检查点1：完整状态覆盖——已知状态枚举全集显式列 0（enum 值域 ∪ 实际出现值）
+    with psycopg.connect(args.db) as c:
+        enum_vals = [r[0] for r in c.execute(
+            "select distinct review_status from resource_version").fetchall()]
+    KNOWN_STATUS = ["published", "draft", "qa_staged", "superseded", "archived", "qa_retired"]
+    status_domain = sorted(set(KNOWN_STATUS) | set(enum_vals))  # 未知新状态并入显式报告
+
     items, blocked = [], []
-    status_dist, schema_dist = {}, {}
-    for (rvid, resid, vno, st, diff, ttype, td, ab, title, ui_s, ct_s) in rows:
+    status_dist = {s: 0 for s in status_domain}   # 0 值显式在场
+    schema_dist = {}
+    for (rvid, resid, vno, st, diff, ttype, td, ab, title, ui_s, ct_s, em_s, hp_s, mr_s) in rows:
         ui = json.loads(ui_s) if ui_s else None
         ct = json.loads(ct_s) if ct_s else {}
-        status_dist[st] = status_dist.get(st, 0) + 1
+        em = json.loads(em_s) if em_s else None
+        hp = json.loads(hp_s) if hp_s else None
+        mr = json.loads(mr_s) if mr_s else None
+        status_dist[st] = status_dist.get(st, 0) + 1  # 域外值也会新增键，显式可见
         form, info = classify_schema(ui)
         entry = {"resource_version_id": rvid, "resource_id": resid, "version_no": vno,
                  "review_status": st, "ability_id": ab, "difficulty": diff,
                  "task_type": ttype, "title": title,
                  "schema_form": form, "interaction": info,
-                 "content_sha256": hashlib.sha256(json.dumps(ct, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:16],
-                 "ui_sha256": hashlib.sha256(json.dumps(ui, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:16],
-                 "transfer_distance": td}
+                 "transfer_distance": td,
+                 # 检查点2：单题审计输入哈希=质量判断相关字段全集合（题面未变但 Hint 被改也能发现）
+                 # 规范化=json.dumps sort_keys ensure_ascii=False（字段范围与排序固定，可复现）
+                 "audit_input_sha256": hashlib.sha256(json.dumps(
+                     {"ui_schema": ui, "content": ct, "error_models": em, "hint_policy": hp,
+                      "mastery_rule": mr, "ability_id": ab, "difficulty": diff,
+                      "version_no": vno, "review_status": st,
+                      "response_axis": (ui or {}).get("response_contract") or (ui or {}).get("response_schema")},
+                     ensure_ascii=False, sort_keys=True, default=str).encode()).hexdigest()}
         if form is None:
             entry["block_reason"] = info
             blocked.append(entry)
@@ -77,9 +95,17 @@ def main():
             schema_dist[form] = schema_dist.get(form, 0) + 1
         items.append(entry)
 
-    # 内容级快照哈希：逐条字段排序拼接，与文件行序无关，可跨导出复现比对
-    canon = json.dumps(sorted(i["resource_version_id"] + i["ui_sha256"] + i["content_sha256"] for i in items))
+    # 全库 Inventory 快照哈希：按 (resource_id, version_no) 稳定身份顺序聚合每题审计哈希+状态
+    canon = json.dumps([[i["resource_id"], i["version_no"], i["resource_version_id"],
+                         i["review_status"], i["audit_input_sha256"]]
+                        for i in sorted(items, key=lambda x: (x["resource_id"], x["version_no"]))],
+                       ensure_ascii=False, sort_keys=True)
     snapshot_sha = hashlib.sha256(canon.encode()).hexdigest()
+    # ③ 检查点3：版本治理真检——按逻辑题目身份 resource_id 分组（非 RVID）
+    from collections import Counter
+    pub_by_resource = Counter(i["resource_id"] for i in items if i["review_status"] == "published")
+    multi_pub = [{"resource_id": rid, "published_versions": n}
+                 for rid, n in pub_by_resource.items() if n > 1]
 
     manifest = {
         "inventory_version": "iqc-inventory/1",
@@ -88,6 +114,9 @@ def main():
         "status_distribution": status_dist,
         "schema_distribution": schema_dist,
         "blocked_unknown_schema": len(blocked),
+        "status_domain": status_domain,
+        "status_zero_explicit": [s for s in status_domain if status_dist[s] == 0],
+        "version_governance_Q01": {"group_key": "resource_id", "multi_published": multi_pub},
         "snapshot_sha256": snapshot_sha,
         "read_only": True,
         "items": items,
