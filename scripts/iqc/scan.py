@@ -18,8 +18,14 @@ import sys
 import uuid
 from collections import Counter
 
-sys.path.insert(0, "..")
+
+import os as _os, sys as _sys
+_p=_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+if _p not in _sys.path: _sys.path.insert(0,_p)
 from iqc import common
+import os as _os, sys as _sys
+_p=_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+if _p not in _sys.path: _sys.path.insert(0,_p)
 from iqc import checks as C
 
 

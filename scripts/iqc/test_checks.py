@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """FE-1460 确定性规则回归夹具（负例必须检出、正例不得误报——裁决 §四.2）。"""
-import sys
-sys.path.insert(0, "..")
+import sys, os
+import os as _os, sys as _sys
+_p=_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+if _p not in _sys.path: _sys.path.insert(0,_p)
 from iqc import checks as C
 
 def item(**kw):
