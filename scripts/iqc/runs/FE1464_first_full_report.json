@@ -1,0 +1,79 @@
+{
+ "fe1464_first_full_baseline": {
+  "run_findings": "findings_20261017T150052Z.jsonl",
+  "inventory_run": "inventory_20261017T150052Z.json",
+  "snapshot_sha256": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+  "resources_discovered": 264,
+  "findings_total": 520,
+  "layering": {
+   "review_status": {
+    "superseded": 27,
+    "published": 443,
+    "qa_retired": 50
+   },
+   "schema_form": {
+    "V2": 412,
+    "V1": 108
+   },
+   "renderer_kind": {
+    "V2": 412,
+    "V1/legacy": 108
+   }
+  },
+  "current_published_findings": {
+   "n": 443,
+   "severity": {
+    "P3": 225,
+    "P2": 211,
+    "P1": 7
+   },
+   "status": {
+    "UNVERIFIED": 212,
+    "REVISION_REQUIRED": 211,
+    "PASS_RULES": 13,
+    "REVIEW_REQUIRED": 7
+   },
+   "note": "现行通过率/治理只读本段"
+  },
+  "superseded_audit_only_findings": {
+   "n": 77,
+   "status": {
+    "PASS_RULES": 1,
+    "REVISION_REQUIRED": 38,
+    "UNVERIFIED": 38
+   },
+   "note": "SUPERSEDED_AUDIT_ONLY 口径：参与审计追溯，不混现行"
+  },
+  "severity": {
+   "P3": 264,
+   "P2": 249,
+   "P1": 7
+  },
+  "status": {
+   "PASS_RULES": 14,
+   "REVISION_REQUIRED": 249,
+   "UNVERIFIED": 250,
+   "REVIEW_REQUIRED": 7
+  },
+  "rule_hits": {
+   "Q03-OK": 14,
+   "Q05-HOMOGENEOUS": 249,
+   "Q03-UNVERIFIED": 250,
+   "Q06-STEM-LEAK": 7
+  },
+  "p0_p1_by_status": {
+   "REVIEW_REQUIRED": 7
+  },
+  "exceptions_queue_review_required_rvid": [
+   "1723d78a",
+   "2ff4a288",
+   "334962af",
+   "579786c0",
+   "971b1f5e",
+   "9ab5d643",
+   "9d0d3a7e"
+  ],
+  "blocked_any": [],
+  "baseline_note": "首轮=基线轮（无 prev→趋势 diff 空属预期）。本清单冻结为 FE-1464 治理输入；superseded/qa_retired 发现计 SUPERSEDED_AUDIT_ONLY 口径——不进现行通过率；夜间链（用户配 secret 后）以 nightly/latest_findings.jsonl 为锚自动 diff。"
+ }
+}
