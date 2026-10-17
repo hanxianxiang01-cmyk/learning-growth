@@ -1,0 +1,27 @@
+{
+ "run_id": "FE1460-eb662b5c",
+ "rules_version": "2.2/iqc/1",
+ "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+ "audited_published": 225,
+ "findings_total": 470,
+ "by_status": {
+  "UNVERIFIED": 225,
+  "REVISION_REQUIRED": 224,
+  "PASS_RULES": 14,
+  "REVIEW_REQUIRED": 7
+ },
+ "by_rule": {
+  "Q03-UNVERIFIED": 225,
+  "Q05-HOMOGENEOUS": 224,
+  "Q03-OK": 14,
+  "Q06-STEM-LEAK": 7
+ },
+ "by_severity": {
+  "P3": 239,
+  "P2": 224,
+  "P1": 7
+ },
+ "items_with_unverified_q03": 225,
+ "blocked_schema": 0,
+ "p0_blocking": 0
+}
