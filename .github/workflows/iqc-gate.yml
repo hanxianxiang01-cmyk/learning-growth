@@ -44,6 +44,12 @@ jobs:
           python-version: "3.12"
       - name: 依赖
         run: pip install psycopg[binary]
+      - name: 恢复上一轮基线（跨运行趋势 diff——历史问题不重复计新增）
+        uses: actions/cache@v4
+        with:
+          path: scripts/iqc/runs/nightly
+          key: iqc-nightly-baseline
+          restore-keys: iqc-nightly-baseline
       - name: secret 显式校验（缺失=fail 不静默通过）
         env:
           IQC_DB: ${{ secrets.IQC_DATABASE_URL }}

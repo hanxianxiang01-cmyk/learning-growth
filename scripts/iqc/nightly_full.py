@@ -7,6 +7,7 @@
 secret 缺失由 workflow 层显式失败——本脚本要求 --db 必传。
 """
 import argparse
+import glob
 import json
 import os
 import subprocess
@@ -27,10 +28,19 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--db", required=True)
     ap.add_argument("--mapping", default=os.path.join(HERE, "version_migration_map.csv"))
-    ap.add_argument("--prev", default="")  # 上一轮 findings.jsonl
+    ap.add_argument("--prev", default="", help="上一轮 findings.jsonl；缺省自动发现 runs/nightly/ 最新历史件（CI cache 恢复后生效）")
     args = ap.parse_args()
     os.makedirs(OUT_DIR, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    # --prev 自动发现：排除本轮未生成的空值，取历史 mtime 最新
+    if not args.prev:
+        hist = sorted([p for p in glob.glob(os.path.join(OUT_DIR, "findings_*.jsonl"))],
+                      key=os.path.getmtime)
+        args.prev = hist[-1] if hist else ""
+        if args.prev:
+            print(f"prev 基线自动选定: {os.path.basename(args.prev)}")
+    else:
+        print(f"prev 基线显式指定: {os.path.basename(args.prev)}")
 
     # 1 re-inventory 全状态
     r = subprocess.run([sys.executable, os.path.join(HERE, "inventory.py"),
@@ -67,6 +77,8 @@ def main():
             "new_p0p1": len([a for a in added if a["severity"] in ("P0", "P1")])})
     diff["by_severity"] = dict(Counter(f["severity"] for f in cur))
     json.dump(diff, open(os.path.join(OUT_DIR, f"diff_{ts}.json"), "w"), ensure_ascii=False, indent=1)
+    import shutil
+    shutil.copy(os.path.join(OUT_DIR, f"findings_{ts}.jsonl"), os.path.join(OUT_DIR, "latest_findings.jsonl"))
     print("NIGHTLY DIFF:", json.dumps({k: (len(v) if isinstance(v, list) else v)
           for k, v in diff.items() if k in ("added", "fixed", "persistent", "new_p0p1", "findings_now")},
           ensure_ascii=False))
