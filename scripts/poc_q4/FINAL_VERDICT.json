@@ -13,5 +13,11 @@
   "接入授权 provider 后：npm exec promptfoo eval -c promptfoo.yaml（20 题×2 轮）→ compare_report.py 重算 G3",
   "教研：Excel 签认栏+G4 六候选 A/B 盲评",
   "Rev.C 原件补交（manifest 内嵌列不能作 G0 输入冻结终态）"
- ]
+ ],
+ "env_probe_2026_10_17": {
+  "promptfoo": "v0.124.1 已装 workspace（node_modules/.bin/promptfoo 存在），但 ESM 入口与 openai 子包版本冲突（ERR_MODULE_NOT_FOUND openai/index.mjs）CLI 不可执行——即便解决，本机仍无 API key，eval 无法出网",
+  "local_runtime": "无 ollama/lmstudio（11434/1234 端口拒绝）",
+  "cloud_llm": "需 applicationId 绑定应用，工作区无应用",
+  "conclusion": "T1 外部模型执行=环境三重阻断，非 harness 缺陷；harness（yaml+prompt+断言+compare）按 provider-ready 设计待命"
+ }
 }
