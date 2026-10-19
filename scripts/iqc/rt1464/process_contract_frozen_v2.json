@@ -1,0 +1,139 @@
+{
+ "title": "Q07 过程证据契约｜阶段A 修订版（按 20:12 冻结裁决四问落稿）",
+ "supersedes": "process_contract_proposal.json（PROPOSAL→FROZEN_WITH_DECISIONS）",
+ "decision_1": {
+  "ruling": "process_missing → correct=null（任务未完成），answer_correct 与 process_status 独立留存",
+  "fields": {
+   "answer_correct": "终值是否正确（bool）——attempt.response 扩展或新列，实现选型阶段B定",
+   "process_status": "valid | missing | contradiction | unverifiable | not_required（旧题=not_required 逐比特兼容）",
+   "correct": "对外接口保持 bool|null 现型"
+  },
+  "precheck_audit": "上线前置核查结论（2026-10-19，代码级全消费点审计）：",
+  "precheck_result": {
+   "compatible": [
+    "models：attempt.correct 本就 Boolean nullable ✓",
+    "session_result L102-109：if a.correct 假值语义——null 不计完成、不计 correct_count ✓（符合'不算任务成功完成'）",
+    "record_attempt L171：if correct is not None——null 天然跳过证据写入 ✓（与决策2'不生成'自动一致）",
+    "turn_service L47 幂等重放：existing.correct is False 特判——null 走重放不误判 ✓",
+    "learning L910 next_action 补齐：if result['correct']——null 不触发 NEXT_TASK/COMPLETE ✓"
+   ],
+   "breach_found": [
+    "turn_service L223 if not correct → null 会误入'答错'分支：下发 HINT + decide_hint 阶梯 + 诊断（response_shape 取 error_models 候选）——违反'缺失≠错误、不无依据归因错因'——阶段B 必须在 L223 前加 null 独立分支：next_action=过程提示（type=HINT 复用、hint 内容=完成操作引导而非解题提示、diagnosis=None）",
+    "前端消费：MathLearningScreen 对 correct=false 渲染答错反馈——null 需受控'任务未完成'态（公开 API 类型不变，前端分支新增）"
+   ],
+   "conclusion": "correct=null 公开契约兼容成立；两处内部误伤点（答错诊断分支/前端反馈态）=阶段B 必改项，已列实施清单"
+  },
+  "boundary_1_null_not_single_reason": "裁决§一.1：correct=null ≠ 所有未判分同因。必须 process_status+原因码分流：\n  missing（要求操作未做）/ unverifiable（结构不支持或字段语义不明）/\n  illegal_input（既有非法输入路径，如终值类型不符——保持现状语义）\n  UI 不得把所有 null 一律渲染\"请完成操作\"：missing→操作引导提示；\n  unverifiable→不提示孩子也不归因（系统能力边界，走受控告警）；\n  illegal_input→现行非法输入反馈。前端按 process_status 分支，不按 correct 单值猜。",
+  "boundary_2_server_recomputes": "裁决§一.2：过程状态后端独立计算，客户端提交的 process_status/area/total/\n  valid/structure 一律不作证据输入——只据原始操作数据（beads 序列、\n  selected_denominations multiset、vertices 坐标、slots 排列）+冻结资源约束\n  （config.price/constraints.area/target）重算核验。客户端结论字段仅可作\n  一致性对照（后端值与客户端值不符=记 contradiction 佐证），不采信。"
+ },
+ "decision_2": {
+  "ruling": "missing 不写 mastery_evidence；Attempt/LearningEvent 保留",
+  "impl_note": "record_attempt L171 现结构已天然满足（null 跳证据）；LearningEvent 记 process_missing+提示事件；幂等锁定=submission_id 同 ID 同内容重放不重复产事件（现行协议 L92-106 已具备，回归验证项）",
+  "session_retry": "Retry=原任务继续操作不重开（task 未终结语义）；session 完成统计不算——见 decision_1.precheck compatible 项"
+ },
+ "decision_3": {
+  "ruling": "矛盾过程负向证据=按 renderer 分策略，默认不写",
+  "matrix": {
+   "pattern-board": "相位[蓝黄]+12：题目测规律相位识别——允许负向（process_contradiction→correct=false→负证据），E-PB-01 phase_shift 错因映射已在",
+   "money-board": "[50]+35：金额约束错误——**暂不写负向**：能力标签 app_cond/app_strat 一致性未核（正是本批已发现的标签疑点）；只反馈过程",
+   "shape-canvas": "非直角+6：几何表征错误——允许负向（目标能力直接相关且可验证）",
+   "place-value": "卡位325+352：数位操作错误可确认——**不得记 app_rd（读题理解）负向**（能力映射未确认）；反馈+暂不产该能力负证据",
+   "default": "未证明错误↔目标能力对应→反馈但不产负向证据（冻结默认）；FE-1455 数轴既有机制原样保留，新契约不回改已验收旧题"
+  }
+ },
+ "decision_4": {
+  "ruling": "真实 UI 提交=强制上线前置（阶段C 先于 B 上线）",
+  "requirements_frozen": [
+   "FE-1462 driver 补 pattern-board/money-board/shape-canvas/place-value 四类真实 React 交互",
+   "workspace_id 实取（rt1464 已踩 w0 坑，固化红线）",
+   "Response 由真实操作生成，前端结论字段（total/area/valid）后端一律重算不信任",
+   "回归矩阵=双皮肤×{合法/缺失/矛盾}/Retry/历史兼容"
+  ]
+ },
+ "grid_frozen": {
+  "对+对": "correct=true→正向证据（能力映射符合时）",
+  "对+缺": "correct=null→无证据+操作提示+Retry 继续",
+  "对+错": "correct=false→过程反馈；负向证据按 decision_3.matrix",
+  "错+对": "现行答错诊断不变",
+  "unverifiable": "结构不支持/语义不明→受控 unverifiable+不产正向证据，不判孩子错"
+ },
+ "field_classification_v2": {
+  "pattern-board": {
+   "gate": [
+    "beads"
+   ],
+   "derived": [
+    "period",
+    "structure"
+   ],
+   "observation": [
+    "attempt_history"
+   ]
+  },
+  "money-board": {
+   "gate": [
+    "selected_denominations"
+   ],
+   "derived": [
+    "total"
+   ],
+   "observation": []
+  },
+  "shape-canvas": {
+   "gate": [
+    "vertices"
+   ],
+   "derived": [
+    "area",
+    "right_angles",
+    "structure"
+   ],
+   "observation": []
+  },
+  "place-value": {
+   "gate": [
+    "slots"
+   ],
+   "derived": [
+    "structure"
+   ],
+   "observation": []
+  }
+ },
+ "scope": "Q07 Process Evidence Integrity 统一任务·阶段A=本文件冻结；B=Judge/证据门槛接线（含 decision_1.breach 两处必改）；C=真实 UI driver+全链回归；D=逐题新版本发布+受控处置旧版",
+ "redlines_carried": "无效正向证据=0／合法多组合不误伤／缺失不降等级／真实与 API 一致／旧题逐比特兼容／6b2ba5d9 保持 qa_staged 至内容+过程双过",
+ "acceptance_matrix_v1": {
+  "对+有效": {
+   "correct": "true",
+   "evidence": "正向一次（能力映射合格）"
+  },
+  "对+缺失": {
+   "correct": "null",
+   "evidence": "零新增"
+  },
+  "对+矛盾": {
+   "correct": "false",
+   "evidence": "按 decision_3.matrix（pattern/shape 可负向；money/pv 零新增+反馈）"
+  },
+  "错+有效": {
+   "correct": "false",
+   "evidence": "原有答错规则不变"
+  },
+  "不可验证": {
+   "correct": "null",
+   "evidence": "零新增；不误判数学错误"
+  },
+  "未声明旧题": {
+   "correct": "旧行为",
+   "evidence": "兼容锁测必过"
+  }
+ },
+ "locked_when_null": [
+  "任务不得误完成",
+  "不自动触发错因提示(HINT阶梯)",
+  "不降低能力",
+  "同 submission 重放不新增 Evidence"
+ ],
+ "phase_BC_parallel": "澄清（§二）：B 后端与 C 前端可并行开发；完整真实交互测试必须先于生产发布——非'后端代码等前端'。",
+ "history_data_ruling": "已形成的历史证据不批量删改；历史影响评估=另建只读审计由产品决定。本轮目标=阻断新增无效正向证据（§五）。"
+}
