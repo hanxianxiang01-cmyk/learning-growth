@@ -9,9 +9,10 @@ on:
       - "apps/child-web/src/features/task-renderer/**"
       - "apps/child-web/src/components/renderers/**"
       - ".github/workflows/iqc-gate.yml"
-  # schedule 移除（架构裁决方案 A）：托管 Runner 连不通 RDS 白名单（10-17/10-18
-  # 两次 schedule run 扫描步失败实锤；Actions 出口 7038 动态网段不可白名单化）。
-  # 夜间全量已移交本机 launchd 09:00（~/IQC-nightly）；dispatch 保留手动应急。
+  # schedule 移除（2026-10-19 最终运行方式裁决）：托管 Runner 连不通 RDS
+  # 白名单（两次 schedule run 扫描步失败实锤；Actions 出口 7038 动态网段
+  # 不可白名单化）。全量扫描唯一入口＝Mac 手动 run_iqc_nightly.sh；
+  # 本工作流只保留 PR 质量门禁。
 
 jobs:
   # PR 增量：确定性门（DB-free）——夹具回归/契约镜像/覆盖一致性
