@@ -56,6 +56,22 @@ def _replay_shape(existing: Attempt, event: LearningEvent | None) -> dict:
     }
 
 
+def evidence_eligible(correct: bool | None, process_validation: dict | None) -> bool:
+    """FE-1466 证据资格判定（纯函数，锁测面）：
+    - 未判分（None：缺失/不可验证/无答案）→ 不产（决策2）；
+    - 终值对+过程矛盾 且 策略不允许负向归因（money/pv）→ 不产（决策3：
+      不写未经能力映射确认的负向证据）；
+    - 其余已判分结果 → 产（正向=1.0/负向按现行答错规则）。
+    未声明过程约束的旧题 process_validation=None → 行为逐比特不变。"""
+    if correct is None:
+        return False
+    if (correct is False and process_validation is not None
+            and process_validation.get("status") == "contradiction"
+            and not process_validation.get("negative_evidence_allowed", False)):
+        return False
+    return True
+
+
 async def record_attempt(
     db: AsyncSession,
     *,
@@ -72,9 +88,18 @@ async def record_attempt(
     used_hint_levels: list[int] | None = None,
     agent_turn_id: str | None = None,
     submission_id: uuid.UUID | None = None,
+    process_validation: dict | None = None,
 ) -> dict:
     """记录一次作答：写 attempt + event，产出诊断（V2 三段判定）+ next_action。
 
+    FE-1466 Q07（契约 process_contract_frozen_v2.json）：
+    - process_validation=统一过程校验结果（无声明题=None，行为逐比特不变）；
+    - 证据资格（§三.2/决策2）：仅"已判分且过程合格或按策略允许归因"的结果
+      产 Mastery Evidence——missing/unverifiable 调用方已置 correct=None
+      天然跳过；contradiction 且 negative_evidence_allowed=False（money/pv）
+      的答错**不写负向证据**（Attempt/Event/诊断照常）；
+    - correct=null（任务未完成/不可验证）不进入答错 HINT 阶梯（§三.1 breach
+      修复：`if not correct`→`if correct is False`）。
     幂等（docs/frontend/29 §3）：
     - 有 submission_id：同 ID 同内容 → 重放原 Attempt；同 ID 异内容 → SubmissionConflict(409)；
     - 无 submission_id（V1 提交）：回落到 (task_instance_id, attempt_no) 顺序号幂等（旧轨不变）。
@@ -168,7 +193,14 @@ async def record_attempt(
     #    后续 Retry 仍完整写 Attempt / LearningEvent（用于诊断、Hint、行为分析），
     #    但不再产/覆盖这条能力测量证据——Mastery 测"这次是否已会"，Retry 测"经教学是否学会"。
     evidence_id = None
-    if correct is not None:
+    # FE-1466 §三.2 证据资格：终值对+过程矛盾但策略不允许负向归因（money/pv）
+    # → 不产负向证据（Attempt/Event/反馈照常；correct=False 仅作任务完成态）。
+    _neg_gated = (
+        correct is False and process_validation is not None
+        and process_validation.get("status") == "contradiction"
+        and not process_validation.get("negative_evidence_allowed", False)
+    )
+    if correct is not None and not _neg_gated:
         existing_evidence = (
             await db.execute(
                 select(MasteryEvidence).where(
@@ -220,7 +252,19 @@ async def record_attempt(
     # 6. 决定 next_action —— 只返回「下一步做什么」的控制信号（对齐前端 NextAction 契约）。
     #    HINT 的详细内容（text/ladder）由 /v1/learning/hints 接口单独返回，不塞在这里。
     next_action = None
-    if not correct:
+    if (correct is None and process_validation is not None
+            and process_validation.get("status") in ("missing", "unverifiable")):
+        # FE-1466 §三.1 breach 修复：过程缺失/不可验证的 null=任务未完成 ≠ 答错
+        # ——不进 decide_hint 阶梯与错因诊断；Retry 原任务继续操作（决策2），
+        # 用冻结枚举内 RETRY 码；前端按 process_status 分支（§一边界1）。
+        next_action = {
+            "type": "RETRY",
+            "policy_id": "process_" + process_validation["status"],
+            "process_status": process_validation["status"],
+        }
+    elif not correct:
+        # 原语义逐比特保留：答错（False）与既有 undefined-answer（None 且无
+        # 过程声明）仍走 HINT 阶梯——新分支只截走 missing/unverifiable null。
         na = decide_hint(attempt_count=attempt_no, requested_level=None)
         next_action = {
             "type": "HINT",
@@ -234,4 +278,7 @@ async def record_attempt(
         "diagnosis": response_shape(d),  # V2 外形：top_level_code=None → 不下发猜测标签
         "evidence_id": evidence_id,
         "next_action": next_action,
+        **({"process_status": process_validation["status"],
+            "process_reason": process_validation.get("reason_code")}
+           if process_validation else {}),
     }
