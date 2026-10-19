@@ -1,0 +1,383 @@
+{
+ "method": "逐题：操作门槛字段存在性(客观)+同 ability·difficulty 其他 published V2 替代计数(客观)；'是否真正要求过程'最终需教学确认（裁决§二.3：不一定37题同缺陷）",
+ "requires_process_note": "gate=true=契约声明了操作真源字段(beads/counts/vertices/slots+目标值)——过程确为任务要求；但语义轻重仍需教研分级",
+ "rows": [
+  {
+   "rvid": "11aca9c8-067a-48e6-945e-959a20ce83f5",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 5,
+   "mode": "place_value_arrangement",
+   "requires_process_gate": true,
+   "alternate_same_band": 3,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "12f89452-ad38-4c24-af5d-d734f5b4c43b",
+   "renderer": "shape-canvas",
+   "ability": "app_cond",
+   "difficulty": 3,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 7,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "1716d898-506d-4428-a9de-664bc60b528e",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 3,
+   "mode": "make_amount",
+   "requires_process_gate": true,
+   "alternate_same_band": 4,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "renderer": "pattern-board",
+   "ability": "app_rel",
+   "difficulty": 1,
+   "mode": "pattern_extension",
+   "requires_process_gate": true,
+   "alternate_same_band": 12,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "24e3c3f4-51bd-4411-a3c3-f4e7f5538d43",
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 2,
+   "mode": "make_amount",
+   "requires_process_gate": true,
+   "alternate_same_band": 8,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "291106d7-45a5-4e79-8263-1b2e2e84dd11",
+   "renderer": "place-value",
+   "ability": "app_cond",
+   "difficulty": 3,
+   "mode": "place_value_arrangement",
+   "requires_process_gate": true,
+   "alternate_same_band": 7,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "2c46c271-1a2f-4f45-ad3c-b5719ad58ded",
+   "renderer": "place-value",
+   "ability": "app_strat",
+   "difficulty": 1,
+   "mode": "place_value_arrangement",
+   "requires_process_gate": true,
+   "alternate_same_band": 0,
+   "empty_pool_if_removed": true
+  },
+  {
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 3,
+   "mode": "change",
+   "requires_process_gate": true,
+   "alternate_same_band": 4,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 4,
+   "mode": "change",
+   "requires_process_gate": true,
+   "alternate_same_band": 8,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "3527282b-7c3a-490b-805c-295294f25c35",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 1,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 9,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "3d60a583-d90d-442d-9e2d-d78ab970b414",
+   "renderer": "pattern-board",
+   "ability": "app_transfer",
+   "difficulty": 5,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 1,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "4936b35f-a5dc-44d4-9b2e-e58c6f3b7c0e",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 2,
+   "mode": "place_value_arrangement",
+   "requires_process_gate": true,
+   "alternate_same_band": 4,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "4e850544-94db-4701-964e-3b939fb3cf42",
+   "renderer": "pattern-board",
+   "ability": "app_check",
+   "difficulty": 1,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 2,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 1,
+   "mode": "change",
+   "requires_process_gate": true,
+   "alternate_same_band": 8,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "57c34c52-7fc2-4ba8-9f66-2a60c622d6f4",
+   "renderer": "pattern-board",
+   "ability": "app_transfer",
+   "difficulty": 5,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 1,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "60039509-f8e6-47f5-a86a-04d9b84e05ef",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 5,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "6b87f039-372a-4146-80d2-6873e38001f9",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 4,
+   "mode": "make_amount",
+   "requires_process_gate": true,
+   "alternate_same_band": 3,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "75cae864-1d63-44d3-8bc4-3d300e81f550",
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 1,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 8,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "831832e5-a14c-4902-8249-60eaa0b451a9",
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 3,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 7,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "845c6fea-418f-4365-a25e-b50e5b5040f8",
+   "renderer": "pattern-board",
+   "ability": "app_transfer",
+   "difficulty": 4,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 0,
+   "empty_pool_if_removed": true
+  },
+  {
+   "rvid": "8d8c71fb-9c9d-45d6-9c8a-d395f202f9fa",
+   "renderer": "place-value",
+   "ability": "app_strat",
+   "difficulty": 5,
+   "mode": "place_value_arrangement",
+   "requires_process_gate": true,
+   "alternate_same_band": 3,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "95b16f9f-c5a4-4791-8f8a-00c25d744a61",
+   "renderer": "pattern-board",
+   "ability": "app_check",
+   "difficulty": 2,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 2,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 5,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "99b86483-6fe7-46bb-962d-ef298d779cce",
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 5,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 5,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 2,
+   "mode": "change",
+   "requires_process_gate": true,
+   "alternate_same_band": 5,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 2,
+   "mode": "place_value_build",
+   "requires_process_gate": true,
+   "alternate_same_band": 4,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "a21d4278-9780-453c-a510-08ce184f764e",
+   "renderer": "shape-canvas",
+   "ability": "app_rd",
+   "difficulty": 5,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 3,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "b7d09e76-58f2-40af-a8ea-7d31a1bc3f6e",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 3,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 3,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "b978d294-7ea5-4670-8538-3c04c2113536",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 2,
+   "mode": "payment",
+   "requires_process_gate": true,
+   "alternate_same_band": 5,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "be433fc9-af29-41dc-88c2-7d0a5d110459",
+   "renderer": "shape-canvas",
+   "ability": "app_rd",
+   "difficulty": 4,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 2,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "cbcf5a5d-a88c-4463-b5ec-1aed74e17cce",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 3,
+   "mode": "place_value_arrangement",
+   "requires_process_gate": true,
+   "alternate_same_band": 1,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "d606f5a4-649e-4f4b-be4f-4ce63923263b",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 5,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "da0d938c-90f9-4e06-9b16-aa6af9e568df",
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 5,
+   "mode": "make_amount",
+   "requires_process_gate": true,
+   "alternate_same_band": 5,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "e1393f3d-2a02-4eba-b02e-5be1ee9b6a54",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 4,
+   "mode": "place_value_arrangement",
+   "requires_process_gate": true,
+   "alternate_same_band": 2,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "e946491c-ced3-4160-aa25-a2ccb0a10a7c",
+   "renderer": "shape-canvas",
+   "ability": "app_cond",
+   "difficulty": 4,
+   "mode": "shape_drawing",
+   "requires_process_gate": true,
+   "alternate_same_band": 8,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "ec982464-72c9-40e1-9db0-20435c60b798",
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 2,
+   "mode": "repeat_pattern",
+   "requires_process_gate": true,
+   "alternate_same_band": 8,
+   "empty_pool_if_removed": false
+  },
+  {
+   "rvid": "f281ec32-4680-4c0e-b875-5ee76e23205f",
+   "renderer": "place-value",
+   "ability": "app_cond",
+   "difficulty": 4,
+   "mode": "place_value_arrangement",
+   "requires_process_gate": true,
+   "alternate_same_band": 8,
+   "empty_pool_if_removed": false
+  }
+ ],
+ "summary": {
+  "total": 37,
+  "gate_present": 37,
+  "has_alternate": 35,
+  "empty_pool_if_removed": 2
+ },
+ "interim_disposition": "暂不批量停用（裁决§二.5）。优先新版迁移：37 题逐题 clone+process_constraint+阶段C 验证→qa_staged→发布；空池风险题（本表 empty_pool_if_removed）迁移期间保留现行（风险已知），避免打断六能力覆盖"
+}

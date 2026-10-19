@@ -8,7 +8,9 @@ import { request as pwRequest } from "@playwright/test";
 const API = process.env.E2E_API_BASE ?? "http://127.0.0.1:8000";
 const CHILD = process.env.E2E_CHILD_ID ?? "00000000-0000-0000-0000-000000000099";
 const CONSTRAINED = "e0a2a067-175b-480d-a614-e326212923f7";
-const LEGACY = "8eb5de92-d04b-4d0a-abc5-eb2e58375fcd";
+// 2026-10-19 更新：原 LEGACY 8eb5de92 已 superseded（qa_staged 通道 pin 拒），哨兵红=钉题过期
+// 非判分回归（干净 main worktree 同证）；换现行 published 无约束数轴题（左跳14→9）。
+const LEGACY = "e1314829-19ff-4929-80e4-70c334c4015e";
 
 async function pin(rvid) {
   const ctx = await pwRequest.newContext({ baseURL: API });
@@ -67,7 +69,9 @@ test("FE1455-03 兼容：无约束旧版一步到终点仍判对（原行为不�
   await page.route("**/v1/learning/tasks/next", r =>
     r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(task) }));
   await page.goto(url(sid));
-  const j = await submitJump(page, [20, 35]);
+  // e1314829：14 起左跳一次落 9（无 jump_constraint/process_constraint）；
+  // 兼容断言=无过程校验→终点值判分原样，且不产 process_violation
+  const j = await submitJump(page, [9]);
   console.log("FE1455-03:", JSON.stringify({ correct: j.correct, pv: j.process_violation ?? null }));
   expect(j.correct).toBe(true);          // 兼容红线：未声明约束 → 终点判分原样
   expect(j.process_violation).toBeUndefined();
