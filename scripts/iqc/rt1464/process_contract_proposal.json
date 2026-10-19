@@ -1,0 +1,43 @@
+{
+  "title": "四类 V2 Renderer 过程校验契约草案（账2｜供冻结评审，未实施）",
+  "date": "2026-10-19",
+  "status": "PROPOSAL_FOR_FREEZE — 不改生产 Judge、不写码；裁决=契约冻结先于开发",
+  "architecture": "复用 FE-1455 机制：资源 ui_schema 显式声明 process_constraint → judge 在终值判对后校验过程 → 违规翻 correct=False 并透出 process_violation 码；未声明约束的旧题/合法无过程任务判分逐比特不变（兼容红线沿用）",
+  "principle": "evidence_targets ≠ 强制判分条件全集。每个字段先定语义再定门槛——四格语义表（裁决§二）为判定基准",
+  "renderers": {
+    "pattern-board (RT-01)": {
+      "beads": {"semantic": "required_completion_gate", "rule": "空格数=constraints.blanks 且序列=visible 周期延拓（[1,2]×k）；[2,1] 相位错位=过程违规（终值对不产正向证据）"},
+      "attempt_history": {"semantic": "observation_only", "rule": "是否修改过答案——不得设门槛（不要求必须改过一次才算通过）"},
+      "period/structure": {"semantic": "derived_check", "rule": "由 beads 推导核验，非独立提交字段要求"},
+      "hint_independence": {"semantic": "existing_mechanism", "rule": "independence=1/0.75/0.5/0.25/0 现行已按 max_hint_level 降权——保持，不新增"}
+    },
+    "money-board (RT-02~04/06)": {
+      "selected_denominations": {"semantic": "required_completion_gate", "rule": "multiset 非空 ∧ sum==config.price；[50] 超付=矛盾过程违规；空选=操作缺失（区别于矛盾：违规码二档 process_missing/process_contradiction）"},
+      "total": {"semantic": "derived_check", "rule": "sum(selected)==total==answer 三者一致；不一致=矛盾违规"},
+      "multi_combo_equivalence": {"semantic": "no_gate", "rule": "多组合等价类（[10,10,10,5]=[5]×7）均合法——已实测判分认得，门槛不检查具体组合=不惩罚策略差异（策略证据归 app_strat 观察项）"}
+    },
+    "shape-canvas (RT-05)": {
+      "vertices": {"semantic": "required_completion_gate", "rule": "count==constraints.vertex_count(4) ∧ 围合 ∧ 全直角 ∧ area==constraints.area(6)；无顶点=缺失；平行四边形=矛盾（面积对但直角违规）"},
+      "area/right_angles": {"semantic": "derived_check", "rule": "由 vertices 后端重算（不信客户端声明值——防伪造 evidence）"},
+      "structure": {"semantic": "derived_check"}
+    },
+    "place-value (RT-07)": {
+      "slots": {"semantic": "required_completion_gate", "rule": "h/t/o 全非空 ∧ multiset(slots)==digits(target)（pool_multiset_equals_target_digits 已声明）∧ 排列=答案数位；slots 空=缺失；[3,2,5]+352=矛盾（卡位与数值不一致）"},
+      "structure": {"semantic": "derived_check"}
+    }
+  },
+  "outcome_semantics": {
+    "终值对+过程对": "correct=True 产正向证据（现行✓）",
+    "终值对+过程缺失": "建议：correct 保持 True 但 attempt 标 process_missing，**不产正向掌握证据**、next_action 提示完成操作——注意：不产证据需要 record_attempt 增加门槛位（现写死 correct is not None 即写）——此为本草案唯一触及 turn_service 的点，属兼容变更评审项",
+    "终值对+过程明确错误": "process_contradiction → correct=False + 过程反馈码（沿用 FE-1455 翻转语义）；负向证据与否由冻结教学契约定（FE-1455 现行=产 0.0 负证据，保持）",
+    "终值错+过程对": "现行答错诊断路径不变✓"
+  },
+  "compatibility": "约束仅对显式声明 process_constraint 的新资源版本生效——现行 225 题与历史 superseded 判分零变化；整改题走新版本+迁移映射（既有治理）",
+  "open_questions_for_freeze": [
+    "process_missing 时 attempt.correct 记 true 还是 null？（影响 Retry/会话统计口径）",
+    "『不产正向证据』实现为 valid=false 预写还是跳过写入？（幂等/审计取向不同）",
+    "矛盾过程负证据是否进 Mastery 窗口——四格表说『由冻结契约决定』，需产品逐 renderer 拍板",
+    "缺失判定依赖 UI 真提交 data 形状——FE-1462 driver 需先覆盖四类 renderer 再上线门槛（否则 API 直测与真实浏览器行为分叉）"
+  ],
+  "explicitly_not_doing": "不做全局『缺任一 evidence_targets 即判错』（裁决§一红线：误伤正确操作+破坏契约）；不另造第二个 Judge；不改 6b2ba5d9 状态（Q06 内容已修但 Q07 门槛未冻结）"
+}

@@ -1,0 +1,144 @@
+{
+ "verdict": "CONFIRMED——空/矛盾过程+正确终值一律产出有效正向 Mastery Evidence（correctness=1.0，valid=true，type=attempt_standard）；evidence_count 逐条递增（191→192→193 / 908→909 / 569 / 213）＝确被能力账本消费",
+ "level_unchanged_note": "本轮 level 未跳变（QA 历史证据基数大，L2/L4 稳态）——裁决要求'即使等级不变也核对有无新增正向证据'＝有新增，实锤",
+ "session_settlement": "每题均调用 GET /sessions/{sid}/result 执行结算读取，settled=true",
+ "rows": [
+  {
+   "case": "货币35 空过程",
+   "rvid": "2ff4a288",
+   "process": "empty",
+   "judge_correct": true,
+   "evidence_type": "attempt_standard",
+   "correctness": 1.0,
+   "independence": 1.0,
+   "valid": true,
+   "attempt8": "ffc0b738",
+   "mastery_before": [
+    2,
+    191
+   ],
+   "mastery_after": [
+    2,
+    191
+   ]
+  },
+  {
+   "case": "货币35 矛盾过程(选50)",
+   "rvid": "2ff4a288",
+   "process": "contradiction",
+   "judge_correct": true,
+   "evidence_type": "attempt_standard",
+   "correctness": 1.0,
+   "independence": 1.0,
+   "valid": true,
+   "attempt8": "b3ecfd3c",
+   "mastery_before": [
+    2,
+    192
+   ],
+   "mastery_after": [
+    2,
+    192
+   ]
+  },
+  {
+   "case": "货币35 合法过程",
+   "rvid": "2ff4a288",
+   "process": "valid_op",
+   "judge_correct": true,
+   "evidence_type": "attempt_standard",
+   "correctness": 1.0,
+   "independence": 1.0,
+   "valid": true,
+   "attempt8": "09d02cbb",
+   "mastery_before": [
+    2,
+    193
+   ],
+   "mastery_after": [
+    2,
+    193
+   ]
+  },
+  {
+   "case": "花边12 空过程",
+   "rvid": "1723d78a",
+   "process": "empty",
+   "judge_correct": true,
+   "evidence_type": "attempt_standard",
+   "correctness": 1.0,
+   "independence": 1.0,
+   "valid": true,
+   "attempt8": "a426489f",
+   "mastery_before": [
+    4,
+    908
+   ],
+   "mastery_after": [
+    4,
+    908
+   ]
+  },
+  {
+   "case": "花边12 合法过程",
+   "rvid": "1723d78a",
+   "process": "valid_op",
+   "judge_correct": true,
+   "evidence_type": "attempt_standard",
+   "correctness": 1.0,
+   "independence": 1.0,
+   "valid": true,
+   "attempt8": "ea2113df",
+   "mastery_before": [
+    4,
+    909
+   ],
+   "mastery_after": [
+    4,
+    909
+   ]
+  },
+  {
+   "case": "钉子板6 空过程",
+   "rvid": "971b1f5e",
+   "process": "empty",
+   "judge_correct": true,
+   "evidence_type": "attempt_standard",
+   "correctness": 1.0,
+   "independence": 1.0,
+   "valid": true,
+   "attempt8": "e527f35a",
+   "mastery_before": [
+    2,
+    569
+   ],
+   "mastery_after": [
+    2,
+    569
+   ]
+  },
+  {
+   "case": "数字卡352 空过程",
+   "rvid": "9d0d3a7e",
+   "process": "empty",
+   "judge_correct": true,
+   "evidence_type": "attempt_standard",
+   "correctness": 1.0,
+   "independence": 1.0,
+   "valid": true,
+   "attempt8": "61f35a60",
+   "mastery_before": [
+    2,
+    213
+   ],
+   "mastery_after": [
+    2,
+    213
+   ]
+  }
+ ],
+ "root": "turn_service.record_attempt：correct is not None 即写 MasteryEvidence（correctness=1/0）——不查 V2 response.workspaces 过程数据；jump_constraint 仅数轴题判分前翻转 correct，翻转后 correct=False→写 0.0 负证据（FE-1455 全链正确），其余四类 renderer 无此门槛",
+ "principle_alignment": "对照裁决§二四格语义表：现行系统'终值对+过程缺失'＝产正向掌握证据（应＝不产＋提示完成）；'终值对+过程明确错'＝产正向（应＝过程反馈，负向与否由冻结契约定）——四格仅'终值对+过程对''终值错'两格现行语义正确",
+ "impact_scope": "非仅 7 题——凡 V2 提交且 renderer 无过程校验的题型均可能；7 题为 QA 代表样本",
+ "isolation": "全部 QA child …0099；题库资源零修改；Judge 零修改（裁决=暂不改）"
+}
