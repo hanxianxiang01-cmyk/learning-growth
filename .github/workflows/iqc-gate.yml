@@ -12,13 +12,6 @@ on:
   # schedule 移除（架构裁决方案 A）：托管 Runner 连不通 RDS 白名单（10-17/10-18
   # 两次 schedule run 扫描步失败实锤；Actions 出口 7038 动态网段不可白名单化）。
   # 夜间全量已移交本机 launchd 09:00（~/IQC-nightly）；dispatch 保留手动应急。
-  workflow_dispatch:
-    inputs:
-      audit_only:
-        description: "扫描口径"
-        default: "all"
-        type: choice
-        options: [all, published]
 
 jobs:
   # PR 增量：确定性门（DB-free）——夹具回归/契约镜像/覆盖一致性
@@ -32,44 +25,9 @@ jobs:
           python-version: "3.12"
       - name: IQC PR gate（失败不静默；仅规则明确证据充分的 P0/P1 阻断）
         run: python scripts/iqc/pr_gate.py
-
-  # 夜间/手动全量：动态 re-inventory 全状态 + 扫描 + 问题 diff + 工件归档
-  nightly-full:
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: 依赖
-        run: pip install psycopg[binary]
-      - name: 恢复上一轮基线（跨运行趋势 diff——历史问题不重复计新增）
-        uses: actions/cache@v4
-        with:
-          path: scripts/iqc/runs/nightly
-          key: iqc-nightly-baseline
-          restore-keys: iqc-nightly-baseline
-      - name: secret 显式校验（缺失=fail 不静默通过）
-        env:
-          IQC_DB: ${{ secrets.IQC_DATABASE_URL }}
-        run: |
-          if [ -z "$IQC_DB" ]; then
-            echo "::error::IQC_DATABASE_URL secret 未配置——夜间全量无法运行（只读账号）。显式失败。"
-            exit 1
-          fi
-      - name: 全量扫描 + diff（只读；新增 P0/P1 → job 红，不改题不发布）
-        env:
-          IQC_DB: ${{ secrets.IQC_DATABASE_URL }}
-        run: |
-          mkdir -p runs_local
-          python scripts/iqc/nightly_full.py --db "$IQC_DB"
-        continue-on-error: false
-      - name: 归档扫描工件
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: iqc-nightly-${{ github.run_id }}
-          path: scripts/iqc/runs/nightly/
-          retention-days: 30
+  # nightly-full 已整体移除（最终运行方式裁决 2026-10-19）：
+  # GitHub 托管 Runner 连不通 RDS 白名单，schedule 与 workflow_dispatch 均
+  # 不构成可用全量扫描入口——保留只会制造"好像能跑"的误导。
+  # 全量扫描唯一执行方式＝Mac 手动：~/IQC-nightly/run_iqc_nightly.sh
+  # （Keychain 只读凭证、动态全状态、趋势自动 diff）。
+  # GitHub 职责收敛为：代码变更时的 PR 质量门禁（pr-gate，DB-free）。
