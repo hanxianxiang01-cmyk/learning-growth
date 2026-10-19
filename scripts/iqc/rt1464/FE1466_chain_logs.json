@@ -1,0 +1,586 @@
+{
+ "lab": [
+  {
+   "case_id": "C-pattern-UI-PREVENTED",
+   "rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "verdict": "UI_PREVENTED",
+   "skin": "lab",
+   "ts": 1792452475853
+  },
+  {
+   "case_id": "C-pattern-API-EMPTY",
+   "rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "task_id": "0ed99fa1-0944-4b12-9184-2e15a8112cd2",
+   "submission_id": "8662468e-292d-486c-91ec-dbd5789b768a",
+   "attempt_id": "0325355b-eee3-4ea7-ae9a-2c30e9235eee",
+   "correct": null,
+   "process_status": "missing",
+   "next_action": "RETRY",
+   "evidence_pending": true,
+   "verdict": "null+RETRY(UI 可及性另证)",
+   "skin": "lab",
+   "ts": 1792452476817
+  },
+  {
+   "case_id": "C-pattern-UI-VALID",
+   "rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "task_id": "ba34f503-6bf7-4d06-9d63-49e8e1407ec6",
+   "session_id": "1e36c972-9b48-4562-ab20-c7b50e5e8a27",
+   "submission_id": "23ec37b3-c2dc-c73a-360c-a6688ee3840a",
+   "attempt_id": "11c9bec6-6d2c-4cb3-bd11-256ff53fef19",
+   "correct": true,
+   "process_status": "valid",
+   "real_data_keys": [
+    "visible",
+    "beads",
+    "pattern_text",
+    "period",
+    "attempt_history",
+    "answer",
+    "structure",
+    "evidence",
+    "evaluation",
+    "runtime_status"
+   ],
+   "evidence_id": "4c640418-455b-40de-a76d-4dc022122616",
+   "verdict": "UI 合法完成判对",
+   "skin": "lab",
+   "ts": 1792452478436
+  },
+  {
+   "case_id": "C-money-UI-PREVENTED",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "verdict": "UI_PREVENTED",
+   "skin": "lab",
+   "ts": 1792452479990
+  },
+  {
+   "case_id": "C-money-API-EMPTY",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "task_id": "c7b7bd7f-c7d7-4252-87e4-720248a577ab",
+   "submission_id": "7f046d0c-119e-4a03-bb96-cc7a5d46c067",
+   "attempt_id": "28f95a3d-3fd3-4e92-ad05-7b5735d4d239",
+   "correct": null,
+   "process_status": "missing",
+   "next_action": "RETRY",
+   "evidence_pending": true,
+   "verdict": "null+RETRY(UI 可及性另证)",
+   "skin": "lab",
+   "ts": 1792452480716
+  },
+  {
+   "case_id": "C-money-UI-VALID",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "task_id": "1d0271bd-cf8b-4286-89e5-f2a65f079561",
+   "session_id": "31177795-f4c7-4593-aeea-70bbb92f2234",
+   "submission_id": "da476b93-6cc3-cfc2-c40e-f79355893e1a",
+   "attempt_id": "53553d61-0269-467a-8810-8d7aa0585ccf",
+   "correct": true,
+   "process_status": "valid",
+   "real_data_keys": [
+    "counts",
+    "coins",
+    "total",
+    "total_text",
+    "selection_history",
+    "answer",
+    "price",
+    "structure",
+    "evidence",
+    "evaluation",
+    "runtime_status"
+   ],
+   "evidence_id": "2ec927ce-a2c2-4ae6-8cd8-5ca329cc6075",
+   "verdict": "UI 合法完成判对",
+   "skin": "lab",
+   "ts": 1792452482153
+  },
+  {
+   "case_id": "C-shape-UI-PREVENTED",
+   "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "verdict": "UI_PREVENTED",
+   "skin": "lab",
+   "ts": 1792452483583
+  },
+  {
+   "case_id": "C-shape-API-EMPTY",
+   "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "task_id": "9fbe14d8-6652-4def-8af4-8795854cd9f7",
+   "submission_id": "5da30100-3100-4c2b-a318-6368f645fb68",
+   "attempt_id": "5d148517-622e-47fc-9803-217817178d9a",
+   "correct": null,
+   "process_status": "missing",
+   "next_action": "RETRY",
+   "evidence_pending": true,
+   "verdict": "null+RETRY(UI 可及性另证)",
+   "skin": "lab",
+   "ts": 1792452484300
+  },
+  {
+   "case_id": "C-shape-UI-VALID",
+   "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "task_id": "85446b54-b5c7-4811-98bb-86fdb53a19c2",
+   "session_id": "c6bfe4c8-444a-4074-a2ad-0b55a92e3286",
+   "submission_id": "c75d0138-6249-b222-6528-f6d48612966f",
+   "attempt_id": "fd65c3de-4904-4504-b498-dd40da6bb644",
+   "correct": true,
+   "process_status": "valid",
+   "real_data_keys": [
+    "vertices",
+    "vertex_count",
+    "area",
+    "right_angles",
+    "answer",
+    "structure",
+    "evidence",
+    "evaluation",
+    "runtime_status"
+   ],
+   "evidence_id": "c31e05ac-92a8-45e4-9496-f6372dbaed4a",
+   "verdict": "UI 合法完成判对",
+   "skin": "lab",
+   "ts": 1792452486044
+  },
+  {
+   "case_id": "C-placevalue-UI-PREVENTED",
+   "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "verdict": "UI_PREVENTED",
+   "skin": "lab",
+   "ts": 1792452487726
+  },
+  {
+   "case_id": "C-placevalue-API-EMPTY",
+   "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "task_id": "17ea50c7-8f75-4797-ba11-96a9d28d2904",
+   "submission_id": "3dd03fcf-4b73-49ea-90f9-2fb963631371",
+   "attempt_id": "d5319691-0b02-4aa2-a66d-bd7b90bd2588",
+   "correct": null,
+   "process_status": "missing",
+   "next_action": "RETRY",
+   "evidence_pending": true,
+   "verdict": "null+RETRY(UI 可及性另证)",
+   "skin": "lab",
+   "ts": 1792452488444
+  },
+  {
+   "case_id": "C-placevalue-UI-VALID",
+   "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "task_id": "5d3ffa80-2dd7-402e-b702-a5ee2fda0c8d",
+   "session_id": "dacc7485-5777-47f0-bc25-043526b3be6e",
+   "submission_id": "09bdf4f0-1718-5b8b-808a-008d0f641126",
+   "attempt_id": "a1b0f069-d542-43e5-8565-19acd9a90a33",
+   "correct": true,
+   "process_status": "valid",
+   "real_data_keys": [
+    "slots",
+    "pool_remaining",
+    "answer",
+    "target_digits",
+    "structure",
+    "evidence",
+    "evaluation",
+    "runtime_status"
+   ],
+   "evidence_id": "cd67f25a-82cf-46a5-a95c-75792993458f",
+   "verdict": "UI 合法完成判对",
+   "skin": "lab",
+   "ts": 1792452490645
+  },
+  {
+   "case_id": "C-RETRY-CLOSED-LOOP",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "task_id": "37a4a039-61dd-4a91-8247-5b0991f260cd",
+   "submission_ids": [
+    "1a2e114a-57f7-48f9-8d9d-7be3b9e7cdc5",
+    "f9b65b94-87f4-4519-8a44-80d5ca1a73b9"
+   ],
+   "attempt_null": "b0588ad3-716c-4923-a213-c4d5737c742e",
+   "attempt_final": "93b2aae5-dc2f-46d3-ae53-e7d7c0bc0d6d",
+   "evidence_id": "c85f2ee7-8571-49bd-a558-230545041c0b",
+   "replay_same_attempt": true,
+   "verdict": "null→RETRY→补齐恰一次→重放不重复",
+   "skin": "lab",
+   "ts": 1792452491834
+  },
+  {
+   "case_id": "C-money-UI-CONTRADICTION",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "task_id": "b5715fa9-db28-4200-b80a-f54a16e4d30c",
+   "session_id": "3421d24d-76a9-44bd-988f-2b68c0ef8acb",
+   "attempt_id": "81fe9f03-afff-4461-9ce7-3a1b40f73464",
+   "correct": false,
+   "process_status": "contradiction",
+   "evidence_id": null,
+   "verdict": "UI 真实手势=终值随币（纯超付答错路径）；'终值对+过程矛盾'形态 UI 不可达=记 UI_PREVENTED，后端防线见 API 负例",
+   "skin": "lab",
+   "ts": 1792452493236
+  },
+  {
+   "case_id": "C-placevalue-UI-CONTRADICTION",
+   "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "task_id": "a8a67f44-d2a8-4f59-8b1e-b28b4b67e418",
+   "session_id": "4d533a7d-6a67-4eb2-b9f9-4282e573e131",
+   "attempt_id": "970d44ce-f06c-4e5e-810e-42bff5ced2a5",
+   "correct": false,
+   "process_status": "contradiction",
+   "evidence_id": null,
+   "verdict": "真实手势错位=终值随位（325）答错路径；终值对+矛盾 UI 不可达（自动答案）=UI_PREVENTED 记录，后端防线见 API 负例",
+   "skin": "lab",
+   "ts": 1792452494446
+  },
+  {
+   "case_id": "C-API-CONTRADICTION-FAMILY",
+   "rows": [
+    {
+     "key": "money",
+     "has_evidence": false,
+     "negAllowed": false,
+     "task_id": "9f9059b6-0860-46dd-bb45-d7afce78d490",
+     "attempt_id": "15435d30-babb-4ec6-b69a-ab67bb8d3a70",
+     "submission_id": "ff6c07e3-2aae-415a-b95a-5c5468e7d7ec",
+     "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524"
+    },
+    {
+     "key": "placevalue",
+     "has_evidence": false,
+     "negAllowed": false,
+     "task_id": "725fc11f-52d9-42c0-a7ac-8d4ef3e469ae",
+     "attempt_id": "6c791fbf-33f4-4063-a5d6-a6c85c6769ad",
+     "submission_id": "8f029808-1a8e-47e9-a415-2fa8df75c794",
+     "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60"
+    },
+    {
+     "key": "pattern",
+     "has_evidence": true,
+     "negAllowed": true,
+     "task_id": "5180c1ea-a90e-4aa3-9fee-569448a8164b",
+     "attempt_id": "01fa39c8-80f9-4d39-a857-5cf08440bde5",
+     "submission_id": "9c64d00f-1eeb-4422-bd0d-25a53ba74de3",
+     "rvid": "088d0469-b111-4dfd-9541-2df7154b206e"
+    },
+    {
+     "key": "shape",
+     "has_evidence": true,
+     "negAllowed": true,
+     "task_id": "3da9832a-6bfa-4f28-ac76-37b24b674bbc",
+     "attempt_id": "42123cd6-db71-4070-83e8-19ffc9a9f2e7",
+     "submission_id": "b54d4c3d-7f05-4dc1-8044-48d4cefe0c9a",
+     "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717"
+    }
+   ],
+   "verdict": "四类终值对+矛盾全被后端识别；负向归因=pattern/shape 产、money/pv 零新增（§二.3 冻结规则）",
+   "skin": "lab",
+   "ts": 1792452496986
+  },
+  {
+   "case_id": "C-API-UNVERIFIABLE",
+   "rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "task_id": "0cba4368-c7af-44f6-a150-2369d39c2c61",
+   "attempt_id": "20913548-29bb-49a9-9627-7df4fb8929dc",
+   "submission_id": "b51d5a77-9d8d-4533-8de0-f573e5ca35f5",
+   "correct": null,
+   "process_status": "unverifiable",
+   "evidence_id": null,
+   "next_action": {
+    "type": "RETRY",
+    "policy_id": "process_unverifiable",
+    "process_status": "unverifiable"
+   },
+   "verdict": "null+零证据+无错因诊断=不判孩子错",
+   "skin": "lab",
+   "ts": 1792452497452
+  }
+ ],
+ "healing": [
+  {
+   "case_id": "C-pattern-UI-PREVENTED",
+   "rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "verdict": "UI_PREVENTED",
+   "skin": "healing",
+   "ts": 1792452507982
+  },
+  {
+   "case_id": "C-pattern-API-EMPTY",
+   "rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "task_id": "b9a94499-efb9-4987-a919-1379675f9daa",
+   "submission_id": "a4ece982-d5ad-4e1b-ba17-41624c2c77eb",
+   "attempt_id": "0d4b033c-f427-4e72-a9e7-cebf5d39e359",
+   "correct": null,
+   "process_status": "missing",
+   "next_action": "RETRY",
+   "evidence_pending": true,
+   "verdict": "null+RETRY(UI 可及性另证)",
+   "skin": "healing",
+   "ts": 1792452508819
+  },
+  {
+   "case_id": "C-pattern-UI-VALID",
+   "rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "task_id": "76a04270-1499-478f-945e-27409d6d2b92",
+   "session_id": "132f671c-7406-4aaa-ae72-dab91e5739fd",
+   "submission_id": "76244bfe-3d78-c4e5-e7e4-084db9ece1ee",
+   "attempt_id": "5a0a948b-e4d0-4190-a153-4d10b86b9ef7",
+   "correct": true,
+   "process_status": "valid",
+   "real_data_keys": [
+    "visible",
+    "beads",
+    "pattern_text",
+    "period",
+    "attempt_history",
+    "answer",
+    "structure",
+    "evidence",
+    "evaluation",
+    "runtime_status"
+   ],
+   "evidence_id": "7611ea6d-ea36-451d-92cc-a55c080a6b8a",
+   "verdict": "UI 合法完成判对",
+   "skin": "healing",
+   "ts": 1792452510613
+  },
+  {
+   "case_id": "C-money-UI-PREVENTED",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "verdict": "UI_PREVENTED",
+   "skin": "healing",
+   "ts": 1792452512082
+  },
+  {
+   "case_id": "C-money-API-EMPTY",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "task_id": "40fd3d5f-9244-4421-82b8-ffcb785c18fc",
+   "submission_id": "ef02aad5-16c2-433f-a2d9-8aa3a42aef38",
+   "attempt_id": "b89e3c60-4347-4ffd-97ae-77b35b04ad31",
+   "correct": null,
+   "process_status": "missing",
+   "next_action": "RETRY",
+   "evidence_pending": true,
+   "verdict": "null+RETRY(UI 可及性另证)",
+   "skin": "healing",
+   "ts": 1792452512733
+  },
+  {
+   "case_id": "C-money-UI-VALID",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "task_id": "2881bc35-4647-4bb5-b6e1-98da1f22e91f",
+   "session_id": "b49319be-4f70-4aba-a63a-dd561f9e3bc8",
+   "submission_id": "e5afbc32-bffe-5eb0-3de4-fe23e1e19a42",
+   "attempt_id": "0f6419a1-2041-439c-9d21-4bfa0c650c20",
+   "correct": true,
+   "process_status": "valid",
+   "real_data_keys": [
+    "counts",
+    "coins",
+    "total",
+    "total_text",
+    "selection_history",
+    "answer",
+    "price",
+    "structure",
+    "evidence",
+    "evaluation",
+    "runtime_status"
+   ],
+   "evidence_id": "d85a8e42-20ba-49cf-8dae-6ed430a0a5c7",
+   "verdict": "UI 合法完成判对",
+   "skin": "healing",
+   "ts": 1792452514152
+  },
+  {
+   "case_id": "C-shape-UI-PREVENTED",
+   "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "verdict": "UI_PREVENTED",
+   "skin": "healing",
+   "ts": 1792452515553
+  },
+  {
+   "case_id": "C-shape-API-EMPTY",
+   "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "task_id": "49e899ff-c608-4504-a0f2-1f863819a7cd",
+   "submission_id": "3be9bcb9-261b-41b2-adb6-4cf1e0cb4cfe",
+   "attempt_id": "ded5b57d-3025-45a8-9133-01ee73706948",
+   "correct": null,
+   "process_status": "missing",
+   "next_action": "RETRY",
+   "evidence_pending": true,
+   "verdict": "null+RETRY(UI 可及性另证)",
+   "skin": "healing",
+   "ts": 1792452516296
+  },
+  {
+   "case_id": "C-shape-UI-VALID",
+   "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "task_id": "b52402fa-1b42-4441-bc92-9565c0fb3e3c",
+   "session_id": "ab311b71-5e65-414a-a715-bbc4b9a7b2f2",
+   "submission_id": "562e02e7-dab0-b512-848b-08a73fc46290",
+   "attempt_id": "282be68f-d814-48f4-b72c-73975ed08544",
+   "correct": true,
+   "process_status": "valid",
+   "real_data_keys": [
+    "vertices",
+    "vertex_count",
+    "area",
+    "right_angles",
+    "answer",
+    "structure",
+    "evidence",
+    "evaluation",
+    "runtime_status"
+   ],
+   "evidence_id": "ceb423a1-ed12-47a7-9fe7-e46e604e931a",
+   "verdict": "UI 合法完成判对",
+   "skin": "healing",
+   "ts": 1792452517849
+  },
+  {
+   "case_id": "C-placevalue-UI-PREVENTED",
+   "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "verdict": "UI_PREVENTED",
+   "skin": "healing",
+   "ts": 1792452519202
+  },
+  {
+   "case_id": "C-placevalue-API-EMPTY",
+   "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "task_id": "165d40f8-ee2a-49de-98c2-5dee0d897a1b",
+   "submission_id": "502359d3-5f45-4a5a-8271-f6d495893458",
+   "attempt_id": "93eb1774-2f96-4e20-bbb3-e1884901ffaf",
+   "correct": null,
+   "process_status": "missing",
+   "next_action": "RETRY",
+   "evidence_pending": true,
+   "verdict": "null+RETRY(UI 可及性另证)",
+   "skin": "healing",
+   "ts": 1792452520015
+  },
+  {
+   "case_id": "C-placevalue-UI-VALID",
+   "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "task_id": "bf75b0f4-1fc7-4475-ab24-d7b0ebdc493d",
+   "session_id": "628a0aff-2a0b-4a31-8ce3-fd57cdb5f6c6",
+   "submission_id": "605f99b0-dd7f-6f2c-15b7-3bd9292aec2c",
+   "attempt_id": "be863dc3-5dbd-4f55-af93-ae8904ebfdf8",
+   "correct": true,
+   "process_status": "valid",
+   "real_data_keys": [
+    "slots",
+    "pool_remaining",
+    "answer",
+    "target_digits",
+    "structure",
+    "evidence",
+    "evaluation",
+    "runtime_status"
+   ],
+   "evidence_id": "487b0e4b-a5ae-40df-bba5-c33547ce2413",
+   "verdict": "UI 合法完成判对",
+   "skin": "healing",
+   "ts": 1792452521566
+  },
+  {
+   "case_id": "C-RETRY-CLOSED-LOOP",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "task_id": "5f452407-a525-49bb-8f75-bb70a1eb996a",
+   "submission_ids": [
+    "27ef7650-132c-4b7f-9d85-c53f8f3c300b",
+    "2d6cf7ca-24d9-494c-870f-e5cd2ecf4130"
+   ],
+   "attempt_null": "3a1e2828-a5d8-43e7-bf5a-75fd4eeb33fa",
+   "attempt_final": "55207287-7b20-4bab-a35e-c93fa6ca85ae",
+   "evidence_id": "695ccc69-f0ed-45c9-9662-0cdf89aa2089",
+   "replay_same_attempt": true,
+   "verdict": "null→RETRY→补齐恰一次→重放不重复",
+   "skin": "healing",
+   "ts": 1792452522749
+  },
+  {
+   "case_id": "C-money-UI-CONTRADICTION",
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "task_id": "ff6c9dc7-d393-4cb1-9770-33c970d15628",
+   "session_id": "0749bb69-e31a-4145-9ff5-fb658d7224d6",
+   "attempt_id": "ff30cf99-407d-48da-8bd8-5e9dec66e3b1",
+   "correct": false,
+   "process_status": "contradiction",
+   "evidence_id": null,
+   "verdict": "UI 真实手势=终值随币（纯超付答错路径）；'终值对+过程矛盾'形态 UI 不可达=记 UI_PREVENTED，后端防线见 API 负例",
+   "skin": "healing",
+   "ts": 1792452523970
+  },
+  {
+   "case_id": "C-placevalue-UI-CONTRADICTION",
+   "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "task_id": "e0a38292-e287-4af5-a32d-f2e8e6402535",
+   "session_id": "0b7b82df-b350-4eba-866f-c36326965175",
+   "attempt_id": "7672c5d6-b9a9-491e-9861-f1e328586cea",
+   "correct": false,
+   "process_status": "contradiction",
+   "evidence_id": null,
+   "verdict": "真实手势错位=终值随位（325）答错路径；终值对+矛盾 UI 不可达（自动答案）=UI_PREVENTED 记录，后端防线见 API 负例",
+   "skin": "healing",
+   "ts": 1792452525239
+  },
+  {
+   "case_id": "C-API-CONTRADICTION-FAMILY",
+   "rows": [
+    {
+     "key": "money",
+     "has_evidence": false,
+     "negAllowed": false,
+     "task_id": "eb06ff98-72e0-406c-8be4-2cd0123cf316",
+     "attempt_id": "c42e5f12-2729-45ec-801e-c328f6cbcd3f",
+     "submission_id": "2ac7fda5-40b1-44f7-b276-eaa47c6f12b9",
+     "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524"
+    },
+    {
+     "key": "placevalue",
+     "has_evidence": false,
+     "negAllowed": false,
+     "task_id": "568360ec-f832-46af-a6c4-2e84ccde9483",
+     "attempt_id": "de24b35e-5e22-4f47-ae86-2e9c42ce7a1c",
+     "submission_id": "84903899-47ab-4d3c-a255-b8c141b96455",
+     "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60"
+    },
+    {
+     "key": "pattern",
+     "has_evidence": true,
+     "negAllowed": true,
+     "task_id": "4c01ea70-5032-480c-997e-457512b2ee5d",
+     "attempt_id": "b744dbaf-cae8-42a2-b5e8-ca31574b2995",
+     "submission_id": "0a9b18df-e17d-4aaf-a80c-5842e73b6b48",
+     "rvid": "088d0469-b111-4dfd-9541-2df7154b206e"
+    },
+    {
+     "key": "shape",
+     "has_evidence": true,
+     "negAllowed": true,
+     "task_id": "32970cdd-5629-49ab-9218-a3cc787d2d98",
+     "attempt_id": "96675d61-2465-4177-aff4-17d4692ec50d",
+     "submission_id": "73fc483f-b162-4837-87ec-380b0540f361",
+     "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717"
+    }
+   ],
+   "verdict": "四类终值对+矛盾全被后端识别；负向归因=pattern/shape 产、money/pv 零新增（§二.3 冻结规则）",
+   "skin": "healing",
+   "ts": 1792452527898
+  },
+  {
+   "case_id": "C-API-UNVERIFIABLE",
+   "rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "task_id": "7acd44b7-202b-4ccb-b756-49ee5533ecfa",
+   "attempt_id": "ed49ca41-72c9-4630-9f27-35ec103db2d2",
+   "submission_id": "254703fb-2088-4091-9f2c-e65ddcc649db",
+   "correct": null,
+   "process_status": "unverifiable",
+   "evidence_id": null,
+   "next_action": {
+    "type": "RETRY",
+    "policy_id": "process_unverifiable",
+    "process_status": "unverifiable"
+   },
+   "verdict": "null+零证据+无错因诊断=不判孩子错",
+   "skin": "healing",
+   "ts": 1792452528349
+  }
+ ]
+}
