@@ -1,0 +1,278 @@
+[
+ {
+  "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+  "rule": "Q06-STEM-LEAK",
+  "evidence": "题面披露语境含答案 12：照抄即对候选（弱披露=答案为题面输入数——归语义线）",
+  "field_path": "$.content.stem",
+  "snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+  "run": "FE1460-eb662b5c",
+  "title": "花边接着摆",
+  "ability_id": "app_rel",
+  "difficulty": 1,
+  "schema": "2.0",
+  "version_no": 1,
+  "stem": "联欢会的花边是按规律串的：**黄、蓝、黄、蓝**……后面还缺 2 颗珠子。看看它是怎么**轮流**排的，从调色板点颜色把空格补上（点已放的珠子可以抠掉重放）。答案把后 2 颗按顺序写成一个两位数：黄=1，蓝=2（例：先黄后蓝=12）。",
+  "goal": "识别 AB 交替周期并延续到后续空位",
+  "answer": 12,
+  "hint_ladder": [
+   "数一数：第 1 颗是什么颜色？第 2 颗呢？第 3 颗又变回谁？",
+   "黄、蓝，黄、蓝——它们是**轮流**出来的，两个一组。",
+   "第 4 颗是蓝，那第 5 颗该轮到谁了？",
+   "轮到黄啦，接着又是蓝——空格放 黄、蓝 = 1、2，答案 12。"
+  ],
+  "error_models": [
+   {
+    "code": "E-PB-01",
+    "note": "周期读对但从上一颗重新数（[2,1]）——相位偏移原料",
+    "pattern": "phase_shift"
+   },
+   {
+    "code": "E-PB-02",
+    "note": "全摆成同一种（末颗惯性）——没找规律 P0 靶",
+    "pattern": "rule_ignored"
+   },
+   {
+    "code": "E-PB-03",
+    "note": "其余错序（附 expected/actual 逐位原料）",
+    "pattern": "wrong_sequence"
+   },
+   {
+    "code": "E-PB-04",
+    "note": "摆对但中途改过珠（判对+尝试过程留痕）",
+    "pattern": "changed_once"
+   }
+  ],
+  "review_checklist": [
+   "当前版本与原始证据（本条目已含）",
+   "风险是否真实成立（披露语境 vs 题面输入数字语义）",
+   "对儿童学习目标的实际影响（照抄即对？测量失效面）",
+   "最小修订建议与回归要求",
+   "是否升级产品缺陷"
+  ]
+ },
+ {
+  "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+  "rule": "Q06-STEM-LEAK",
+  "evidence": "题面披露语境含答案 35：照抄即对候选（弱披露=答案为题面输入数——归语义线）",
+  "field_path": "$.content.stem",
+  "snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+  "run": "FE1460-eb662b5c",
+  "title": "[T155] V14-P0-143",
+  "ability_id": "app_strat",
+  "difficulty": 3,
+  "schema": "2.0",
+  "version_no": 1,
+  "stem": "文具店一本练习本标价35角。请用货币板上的1角、5角、10角或50角硬币，选出正好能凑齐货款的组合，并提交所选硬币的总金额。",
+  "goal": "使用支持的四种硬币币值正确凑付指定价格，并完成金额核对。",
+  "answer": 35,
+  "hint_ladder": [
+   "先看清练习本标价和单位。",
+   "观察可选硬币分别代表几角。",
+   "尝试挑选合适的硬币组合，让总额刚好达到价格。",
+   "再将选中的硬币面值相加，确认付款金额不多不少。"
+  ],
+  "error_models": [
+   {
+    "code": "denomination_confusion",
+    "pattern": "denomination_confusion"
+   }
+  ],
+  "review_checklist": [
+   "当前版本与原始证据（本条目已含）",
+   "风险是否真实成立（披露语境 vs 题面输入数字语义）",
+   "对儿童学习目标的实际影响（照抄即对？测量失效面）",
+   "最小修订建议与回归要求",
+   "是否升级产品缺陷"
+  ]
+ },
+ {
+  "rvid": "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+  "rule": "Q06-STEM-LEAK",
+  "evidence": "题面披露语境含答案 45：照抄即对候选（弱披露=答案为题面输入数——归语义线）",
+  "field_path": "$.content.stem",
+  "snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+  "run": "FE1460-eb662b5c",
+  "title": "[T155] V14-P0-144",
+  "ability_id": "app_cond",
+  "difficulty": 4,
+  "schema": "2.0",
+  "version_no": 1,
+  "stem": "文具店一本练习本标价45角。请用货币板上的1角、5角、10角或50角硬币，选出正好能凑齐货款的组合，并提交所选硬币的总金额。",
+  "goal": "使用支持的四种硬币币值正确凑付指定价格，并完成金额核对。",
+  "answer": 45,
+  "hint_ladder": [
+   "先看清练习本标价和单位。",
+   "观察可选硬币分别代表几角。",
+   "尝试挑选合适的硬币组合，让总额刚好达到价格。",
+   "再将选中的硬币面值相加，确认付款金额不多不少。"
+  ],
+  "error_models": [
+   {
+    "code": "denomination_confusion",
+    "pattern": "denomination_confusion"
+   }
+  ],
+  "review_checklist": [
+   "当前版本与原始证据（本条目已含）",
+   "风险是否真实成立（披露语境 vs 题面输入数字语义）",
+   "对儿童学习目标的实际影响（照抄即对？测量失效面）",
+   "最小修订建议与回归要求",
+   "是否升级产品缺陷"
+  ]
+ },
+ {
+  "rvid": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+  "rule": "Q06-STEM-LEAK",
+  "evidence": "题面披露语境含答案 15：照抄即对候选（弱披露=答案为题面输入数——归语义线）",
+  "field_path": "$.content.stem",
+  "snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+  "run": "FE1460-eb662b5c",
+  "title": "[T155] V14-P0-141",
+  "ability_id": "app_cond",
+  "difficulty": 1,
+  "schema": "2.0",
+  "version_no": 1,
+  "stem": "文具店一本练习本标价15角。请用货币板上的1角、5角、10角或50角硬币，选出正好能凑齐货款的组合，并提交所选硬币的总金额。",
+  "goal": "使用支持的四种硬币币值正确凑付指定价格，并完成金额核对。",
+  "answer": 15,
+  "hint_ladder": [
+   "先看清练习本标价和单位。",
+   "观察可选硬币分别代表几角。",
+   "尝试挑选合适的硬币组合，让总额刚好达到价格。",
+   "再将选中的硬币面值相加，确认付款金额不多不少。"
+  ],
+  "error_models": [
+   {
+    "code": "denomination_confusion",
+    "pattern": "denomination_confusion"
+   }
+  ],
+  "review_checklist": [
+   "当前版本与原始证据（本条目已含）",
+   "风险是否真实成立（披露语境 vs 题面输入数字语义）",
+   "对儿童学习目标的实际影响（照抄即对？测量失效面）",
+   "最小修订建议与回归要求",
+   "是否升级产品缺陷"
+  ]
+ },
+ {
+  "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+  "rule": "Q06-STEM-LEAK",
+  "evidence": "题面披露语境含答案 6：照抄即对候选（弱披露=答案为题面输入数——归语义线）",
+  "field_path": "$.content.stem",
+  "snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+  "run": "FE1460-eb662b5c",
+  "title": "钉子板上画一个长方形",
+  "ability_id": "app_model",
+  "difficulty": 2,
+  "schema": "2.0",
+  "version_no": 1,
+  "stem": "钉子板上按顺序点 4 个钉子，围出一个**长方形**，要正好盖住 6 个格子（面积=6）。点错了可以「撤一个点」。画好后提交，答案填它的面积。",
+  "goal": "用点阵顶点表征长方形（直角+面积约束）",
+  "answer": 6,
+  "hint_ladder": [
+   "长方形要点几个钉子？（4 个，每个角都要方方正正）",
+   "面积 6 可以怎么分？想一想 6=几×几。",
+   "6=3×2：先点一个角，向右数 3 格点第二个角。",
+   "按 (左下)→右 3 格→上 2 格→左 3 格 的顺序点，围出来数数是不是 6 格。"
+  ],
+  "error_models": [
+   {
+    "code": "E-SC-01",
+    "note": "顶点数不是 4（图形种类错）",
+    "pattern": "vertex_count"
+   },
+   {
+    "code": "E-SC-02",
+    "note": "四边形但角不是直角（歪斜/凹形——几何属性错误 P0 原料）",
+    "pattern": "not_right_angle"
+   },
+   {
+    "code": "E-SC-03",
+    "note": "是长方形但面积≠6（尺寸错）",
+    "pattern": "wrong_size"
+   }
+  ],
+  "review_checklist": [
+   "当前版本与原始证据（本条目已含）",
+   "风险是否真实成立（披露语境 vs 题面输入数字语义）",
+   "对儿童学习目标的实际影响（照抄即对？测量失效面）",
+   "最小修订建议与回归要求",
+   "是否升级产品缺陷"
+  ]
+ },
+ {
+  "rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+  "rule": "Q06-STEM-LEAK",
+  "evidence": "题面披露语境含答案 25：照抄即对候选（弱披露=答案为题面输入数——归语义线）",
+  "field_path": "$.content.stem",
+  "snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+  "run": "FE1460-eb662b5c",
+  "title": "[T155] V14-P0-142",
+  "ability_id": "app_strat",
+  "difficulty": 2,
+  "schema": "2.0",
+  "version_no": 1,
+  "stem": "文具店一本练习本标价25角。请用货币板上的1角、5角、10角或50角硬币，选出正好能凑齐货款的组合，并提交所选硬币的总金额。",
+  "goal": "使用支持的四种硬币币值正确凑付指定价格，并完成金额核对。",
+  "answer": 25,
+  "hint_ladder": [
+   "先看清练习本标价和单位。",
+   "观察可选硬币分别代表几角。",
+   "尝试挑选合适的硬币组合，让总额刚好达到价格。",
+   "再将选中的硬币面值相加，确认付款金额不多不少。"
+  ],
+  "error_models": [
+   {
+    "code": "denomination_confusion",
+    "pattern": "denomination_confusion"
+   }
+  ],
+  "review_checklist": [
+   "当前版本与原始证据（本条目已含）",
+   "风险是否真实成立（披露语境 vs 题面输入数字语义）",
+   "对儿童学习目标的实际影响（照抄即对？测量失效面）",
+   "最小修订建议与回归要求",
+   "是否升级产品缺陷"
+  ]
+ },
+ {
+  "rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+  "rule": "Q06-STEM-LEAK",
+  "evidence": "题面披露语境含答案 352：照抄即对候选（弱披露=答案为题面输入数——归语义线）",
+  "field_path": "$.content.stem",
+  "snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+  "run": "FE1460-eb662b5c",
+  "title": "数字卡回家（V2 链 R06）",
+  "ability_id": "app_rd",
+  "difficulty": 2,
+  "schema": "2.0",
+  "version_no": 1,
+  "stem": "数字卡 3、5、2 走丢了。把它们放回百、十、个的框里，组成 352。",
+  "goal": "按数位把数字放到正确位置（位值结构感知）",
+  "answer": 352,
+  "hint_ladder": [
+   "352 的百位是几？把那张卡拿起来。",
+   "拿起 3，点百位框。十位和个位还差谁？",
+   "十位是 5，个位是 2——顺序别站反啦。",
+   "从百位读到个位：三百…再读下去是什么？"
+  ],
+  "error_models": [
+   {
+    "code": "modeling",
+    "pattern": "place_value_confusion"
+   },
+   {
+    "code": "calc",
+    "pattern": "calc"
+   }
+  ],
+  "review_checklist": [
+   "当前版本与原始证据（本条目已含）",
+   "风险是否真实成立（披露语境 vs 题面输入数字语义）",
+   "对儿童学习目标的实际影响（照抄即对？测量失效面）",
+   "最小修订建议与回归要求",
+   "是否升级产品缺陷"
+  ]
+ }
+]
