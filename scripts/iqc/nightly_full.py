@@ -28,8 +28,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--db", required=True)
     ap.add_argument("--mapping", default=os.path.join(HERE, "version_migration_map.csv"))
-    ap.add_argument("--prev", default="", help="上一轮 findings.jsonl；缺省自动发现 runs/nightly/ 最新历史件（CI cache 恢复后生效）")
+    ap.add_argument("--prev", default="", help="上一轮 findings.jsonl；缺省自动发现 runs 目录最新历史件（CI cache 恢复后生效）")
+    ap.add_argument("--runs-dir", default="", help="工件输出目录（launchd 用持久目录；CI 默认仓内 runs/nightly）")
     args = ap.parse_args()
+    global OUT_DIR
+    if args.runs_dir:
+        OUT_DIR = args.runs_dir
     os.makedirs(OUT_DIR, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     # --prev 自动发现：排除本轮未生成的空值，取历史 mtime 最新
