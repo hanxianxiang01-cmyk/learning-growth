@@ -60,7 +60,12 @@ export function normalizeAttemptResult(payload: unknown): AttemptResult {
 
   return {
     attempt_id: asString(raw.attempt_id ?? raw.id, `attempt-${Date.now()}`),
-    correct: Boolean(raw.correct),
+    // FE-1466 Q07：correct 三态透传——Boolean(null)=false 会把"任务未完成
+    // （missing/unverifiable）"压成答错（审计 breach）。machine/useLearningSession
+    // 均 truthy 判断，null 自然走 retry 态且不计完成（决策2 语义）。
+    correct: raw.correct === true ? true : raw.correct == null ? null : false,
+    process_status:
+      typeof raw.process_status === "string" ? raw.process_status : undefined,
     diagnosis: normalizeDiagnosis(raw.diagnosis),
     next_action: {
       type: supported.includes(rawType as NextActionCode)

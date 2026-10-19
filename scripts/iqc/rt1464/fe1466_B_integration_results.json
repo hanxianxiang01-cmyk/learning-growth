@@ -1,0 +1,51 @@
+[
+ [
+  "花边声明 空过程+12",
+  null,
+  "missing",
+  0,
+  "RETRY"
+ ],
+ [
+  "花边声明 相位反+12",
+  false,
+  "contradiction",
+  1,
+  "HINT"
+ ],
+ [
+  "花边声明 正确摆+12",
+  true,
+  "valid",
+  1,
+  "NEXT_TASK"
+ ],
+ [
+  "货币声明 空选+35",
+  null,
+  "missing",
+  0,
+  "RETRY"
+ ],
+ [
+  "货币声明 50谎报35",
+  false,
+  "contradiction",
+  0,
+  "HINT"
+ ],
+ [
+  "货币声明 [5]x7+35",
+  true,
+  "valid",
+  1,
+  "NEXT_TASK"
+ ],
+ [
+  "旧版未声明 空过程+12（对照=旧行为）",
+  true,
+  "(none)",
+  1,
+  "NEXT_TASK"
+ ]
+]

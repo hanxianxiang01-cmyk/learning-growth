@@ -35,6 +35,7 @@ from app.services.jump_process import (
     get_jump_constraint,
     validate_jump_process,
 )
+from app.services.process_validate import get_process_constraint, process_validate
 from app.services.turn_service import record_attempt
 
 
@@ -886,6 +887,24 @@ async def submit_attempt(
     # 诊断候选来源：资源侧全部错因规则（不再取"第一条"当结论，交 V2 观察匹配）。
     error_models = rv.error_models if rv and rv.error_models else None
 
+    # FE-1466 Q07 过程校验（统一入口，复用 FE-1455 显式声明架构；未声明题
+    # pc=None 行为逐比特不变）。四格语义（契约§四）：
+    #   对+有效→true正向 / 对+缺失→null不产证据 / 对+矛盾→false（负向按策略）
+    #   / 错+*→false 现行 / unverifiable→null 不误判孩子
+    pc = get_process_constraint(rv.ui_schema if rv else None)
+    pv = process_validate(pc, response) if pc else None
+    if pv is not None:
+        st = pv["status"]
+        if correct is True and st == "missing":
+            correct = None
+        elif correct is True and st == "unverifiable":
+            correct = None
+        elif correct is True and st == "contradiction":
+            correct = False
+        # 终值错（False）不动：过程有效走原答错规则；过程状态仅透传
+    # 过程违规码对外透传（FE-1455 通道扩展为统一 process_violation）：
+    # jump 旧字段 process_violation=violation code 保持；新链路=reason_code。
+
     max_hint_level = max(used_hint_levels) if used_hint_levels else 0
 
     result = await record_attempt(
@@ -902,6 +921,7 @@ async def submit_attempt(
         resource_version_id=task.resource_version_id,
         used_hint_levels=used_hint_levels,
         submission_id=submission_id,
+        process_validation=pv,
     )
 
     # 答对时补齐 next_action（record_attempt 仅在答错时生成 HINT）。
