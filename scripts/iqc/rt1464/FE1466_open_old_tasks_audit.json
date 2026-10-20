@@ -1,0 +1,329 @@
+{
+ "total_open_tasks_on_old_risk": 556,
+ "by_child": {
+  "00000000": 519
+ },
+ "rows": [
+  {
+   "task": "2efda072-e511-49e3-9eaa-21243ad69d50",
+   "session": "597d4ecc-60a8-40e5-ad4c-65dd3044778a",
+   "sess_status": "active",
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "61f35a60-3880-448b-a857-928320973acc",
+   "session": "2995685b-fc11-4307-8166-8a50b354ba9f",
+   "sess_status": "active",
+   "rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "e527f35a-ddb0-484f-807e-4c256087ea20",
+   "session": "c23d321e-07fd-4877-b014-14eaad473bac",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "ea2113df-7685-4535-af97-d1c5e026ecad",
+   "session": "ba1c4a32-53eb-43b0-9b46-082fbc3fb7ce",
+   "sess_status": "active",
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "a426489f-ba3d-4ebc-bd18-996185622b3b",
+   "session": "19ad9403-24b5-4fae-80ab-2c5b5c16beea",
+   "sess_status": "active",
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "09d02cbb-0332-414b-b389-bb279724d855",
+   "session": "fd2f70a6-e356-40b3-9e6e-5f8dfc4779f4",
+   "sess_status": "active",
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "b3ecfd3c-46a0-45d5-9614-7966892fb3c1",
+   "session": "ae2055b4-bb79-472b-a6e2-3b72c783fa51",
+   "sess_status": "active",
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "ffc0b738-3835-4478-9e15-a558dc0c3665",
+   "session": "0b07ae52-40b5-4c34-8b1e-ccc5a57b830f",
+   "sess_status": "active",
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "9b151335-f2ca-4441-9e18-c239e5be6b79",
+   "session": "225fd100-029f-4a41-a349-2f0a7203b5d8",
+   "sess_status": "active",
+   "rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "6724dc80-113a-416a-a3a4-f9430c222ff6",
+   "session": "ab6fc1b5-fe60-44b7-933a-bafc7e34c6c0",
+   "sess_status": "active",
+   "rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "829d2cdb-5142-4728-bdb6-352db59eb2fc",
+   "session": "339c5c24-62d2-493b-b9b6-4a44bc61e01b",
+   "sess_status": "active",
+   "rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "de7e5be5-e569-4775-8dda-75e6dcaf3893",
+   "session": "c7cb1c9b-de4b-4c2d-885e-6b25d09644e4",
+   "sess_status": "active",
+   "rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "603c2fcb-ad6e-428f-9772-db09e688b6b4",
+   "session": "ea09dd71-0c6b-4562-bb83-e3b516a8d6c2",
+   "sess_status": "active",
+   "rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "0a3f02c1-dc23-47de-89b6-bf175a8d9ea9",
+   "session": "62332a00-7156-4d5e-8bd9-d9d88957b00e",
+   "sess_status": "active",
+   "rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "77ffdafe-4748-4e00-8be4-a14a4050ba3c",
+   "session": "76966eda-d475-4171-b9fc-ca7c0d4b8e08",
+   "sess_status": "active",
+   "rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "a21a1d1b-a9b3-4dad-b701-7e757d02aa8a",
+   "session": "597862e7-c3b7-4b26-8fc7-bfad73e3d809",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "c1c5e427-60aa-4bc8-8c9e-a050b242b653",
+   "session": "fffe51b7-a5ff-43af-999b-00159980b5d1",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "0d81bd9f-22e1-4645-83f2-859b173e55a2",
+   "session": "d4b0a809-bb18-4613-9b37-ba2045cb0d5b",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "77888ed5-ff7b-4809-a66e-76db04b118aa",
+   "session": "9977e78b-28f2-459c-b5a2-c569612c2e6a",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "87fcc2aa-c84f-4549-8454-908928f3348f",
+   "session": "d4ecd530-4429-4ba3-a1a4-4c227319a30f",
+   "sess_status": "active",
+   "rvid": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "447a4ed7-92e2-4304-902e-e0d9fc24b2f1",
+   "session": "28d4e30a-6225-4ab6-90bc-9ae1f38e962a",
+   "sess_status": "active",
+   "rvid": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "15c99178-454c-4ebd-a52b-2b9208d1e6c7",
+   "session": "e989be25-ad73-4c63-a3b6-764aafe7ed94",
+   "sess_status": "active",
+   "rvid": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "46ef63c1-1614-4e00-8648-7042d929c084",
+   "session": "d37aba75-2f53-41ea-bfde-3ce57e41b1fb",
+   "sess_status": "active",
+   "rvid": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "d4ec558d-2802-4248-b1df-11108aa5a514",
+   "session": "4b3b8fe9-b28f-4e7f-8835-e14cd1dc367d",
+   "sess_status": "active",
+   "rvid": "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "763605e9-5609-4e60-bde8-2e02141a49ee",
+   "session": "9ba55356-79d4-4561-a450-8cea209d91c8",
+   "sess_status": "active",
+   "rvid": "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "c8cf40b2-b48a-49c8-893e-3326de7a817b",
+   "session": "01351d7d-2371-4970-aba5-0ec884163749",
+   "sess_status": "active",
+   "rvid": "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "2f796a73-c061-487f-9c50-f42f8b5044ad",
+   "session": "e5e43bbb-ce14-4255-8895-57a70716470a",
+   "sess_status": "active",
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "6a2eaf13-eb03-4bfd-9d7e-3fb02aa2871f",
+   "session": "9c23c700-fde9-455f-b8d7-db9b28a27f6d",
+   "sess_status": "active",
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "d5f7b998-bd20-4358-b371-5101664c170d",
+   "session": "37a5d8c9-790a-4579-8891-19600b9799f6",
+   "sess_status": "active",
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "ff8acb16-3cf0-4ffd-b02e-76fd23c02e74",
+   "session": "40a1b7de-42a9-4391-a72f-10967aa39a63",
+   "sess_status": "active",
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "8cdce37e-59c9-492a-a1b7-4d4b793b367c",
+   "session": "4a6b8c07-7b9d-45cf-a9a3-94b44d45a93b",
+   "sess_status": "active",
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "d540ab3f-dac3-4fba-b9e4-c404837f1473",
+   "session": "552bc4ff-dc19-40e1-a776-5ae85364fbbe",
+   "sess_status": "active",
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "ec43bd39-ad54-493e-87c6-d4179ba23088",
+   "session": "5693d349-6b7c-4288-a746-0b7145878f83",
+   "sess_status": "active",
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "e004e810-44da-4b12-8752-9b4791ca22f0",
+   "session": "419af6ca-bae3-42a4-b685-14c215ca67d9",
+   "sess_status": "active",
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "child": "00000000-0000-0000-0000-000000000099",
+   "has_attempt": true
+  },
+  {
+   "task": "d75a560d-e5ff-4adb-9c28-8bc9e11e7191",
+   "session": "30a3bca9-d379-4be7-ba23-2fb103609a5e",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000094",
+   "has_attempt": true
+  },
+  {
+   "task": "ce855765-1b79-40ad-bb01-fa9d1597b415",
+   "session": "dc09c47b-89eb-4bfe-8b31-1dac1b8ac7cd",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000094",
+   "has_attempt": true
+  },
+  {
+   "task": "9f88dc48-fb63-47f3-b627-493a217238fd",
+   "session": "8d858b0d-c28e-49d2-b380-74c58dd7dea0",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000094",
+   "has_attempt": true
+  },
+  {
+   "task": "022849a0-7baf-4dbc-90cf-e5c516d297f7",
+   "session": "0271617d-ee55-467d-a39a-e7ebbf1215e0",
+   "sess_status": "active",
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "child": "00000000-0000-0000-0000-000000000094",
+   "has_attempt": true
+  },
+  {
+   "task": "d2e3e135-04bb-4b93-ac3c-b8d73f06f818",
+   "session": "60b0984c-c6da-4044-9f9b-1d7e745ff4dc",
+   "sess_status": "active",
+   "rvid": "2c46c271-1a2f-4f45-ad3c-b5719ad58ded",
+   "child": "00000000-0000-0000-0000-000000000093",
+   "has_attempt": true
+  },
+  {
+   "task": "10126b1c-376b-4b81-b38c-6f4100912518",
+   "session": "60b0984c-c6da-4044-9f9b-1d7e745ff4dc",
+   "sess_status": "active",
+   "rvid": "4e850544-94db-4701-964e-3b939fb3cf42",
+   "child": "00000000-0000-0000-0000-000000000093",
+   "has_attempt": true
+  }
+ ],
+ "note": "只读盘点（§五-2）；处理须走既有失效/重开机制——不改写历史 attempt/evidence；会话级已结束的不在列"
+}

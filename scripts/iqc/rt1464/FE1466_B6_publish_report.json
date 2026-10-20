@@ -1,0 +1,14 @@
+{
+ "published": [
+  {
+   "alt": "B",
+   "new_rvid": "2f2e8491-151c-4959-94be-c7789d553895",
+   "old_rvid": "845c6fea-418f-4365-a25e-b50e5b5040f8",
+   "relation": "cross-resource-replacement",
+   "content_sha256": "f8c991f3a3f2327cc1c18c6f87523c1fb48c3566af0fe714a9aa7c1689443065",
+   "ui_sha256": "1f9e03c36d15f14e0493c0b165be1c52bfc1a7f69fad0f685d27789c6973643e",
+   "post_publish_issues": "无"
+  }
+ ],
+ "note": "B6 受控发布（裁决 19:21 §四）；替代关系跨资源，未伪造版本链"
+}
