@@ -1,10 +1,18 @@
 {
  "built": [
   {
+   "alt": "A",
+   "title": "B6-ALT-A 位值卡策略摆放",
+   "resource_id": "9981d39f-1698-4f78-b7ea-4d5ef6c1fd45",
+   "rvid": "d4aa01b9-1128-42ef-9543-7d002ac6dc9e",
+   "ability": "app_strat",
+   "difficulty": 1
+  },
+  {
    "alt": "B",
    "title": "B6-ALT-B2 信号灯ABB周期迁移",
-   "resource_id": "f687e929-2be2-409c-9916-ae1a1fdad672",
-   "rvid": "2f2e8491-151c-4959-94be-c7789d553895",
+   "resource_id": "c89c99b9-1840-4a18-bf41-4bce4369a186",
+   "rvid": "e2a88b7d-0bbc-4afc-a1aa-09c6bdea66b8",
    "ability": "app_transfer",
    "difficulty": 4
   }

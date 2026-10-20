@@ -136,37 +136,51 @@ def main():
         print(f"静态复扫 {tag}: stem/hint 泄露=0 同质错因=0（{len(q6)} 条 L 级提示注记）")
     out = {"built": [], "independent_verify": iv, "replaces": REPLACES}
     apply = "--apply" in sys.argv
+    # ==== 结构性零 DML（BUG-1456 纪律）：Dry Run 路径不构造任何
+    # INSERT/UPDATE/DELETE 语句；写路径仅在 --apply 分支存在 ====
     conn = psycopg.connect(DB, autocommit=apply)
     try:
-        with conn:
-            for key, it in (("A", ITEM_A), ("B", ITEM_B)):
-                if conn.execute("select 1 from resource where title=%s", (it["title"],)).fetchone():
-                    print(f"{key} 已存在（幂等跳过）"); continue
-                rid, rvid = str(uuid.uuid4()), str(uuid.uuid4())
-                conn.execute("insert into resource (resource_id,ability_id,resource_type,title,status,created_at)"
-                          " values (%s,%s,'word_problem',%s,'draft',now())",
-                          (rid, it["ability_id"], it["title"]))
-                conn.execute("""insert into resource_version (resource_version_id,resource_id,version_no,
-                    difficulty,task_type,content,ui_schema,error_models,hint_policy,mastery_rule,
-                    transfer_distance,review_status,reviewer_1,reviewer_2,created_at)
-                    values (%s,%s,1,%s,'word_problem',%s,%s,%s,%s,%s,%s,'qa_staged','B6-alt','FE-1466',now())""",
-                    (rvid, rid, it["difficulty"], pj.Jsonb(it["content"]), pj.Jsonb(it["ui_schema"]),
-                     pj.Jsonb(it["error_models"]), pj.Jsonb(it["hint_policy"]),
-                     pj.Jsonb(it["mastery_rule"]), it["transfer_distance"]))
-                out["built"].append({"alt": key, "title": it["title"], "resource_id": rid,
-                                     "rvid": rvid, "ability": it["ability_id"],
-                                     "difficulty": it["difficulty"]})
-                print(f"{key} 建题: {rvid} {it['title']}（{'APPLIED' if apply else 'DRY'}）")
+        for key, it in (("A", ITEM_A), ("B", ITEM_B)):
+            exists = conn.execute("select 1 from resource where title=%s",
+                                  (it["title"],)).fetchone()
+            if exists:
+                cur = conn.execute("""select resource_version_id::text, review_status
+                    from resource_version rv join resource r using(resource_id)
+                    where r.title=%s""", (it["title"],)).fetchone()
+                print(f"{key} 已存在 {str(cur[0])[:8]}（{cur[1]}）幂等跳过")
+                out["built"].append({"alt": key, "title": it["title"], "rvid": cur[0],
+                                     "existing": True})
+                continue
+            if not apply:
+                # Dry：只输出计划，不触库写
+                out["built"].append({"alt": key, "title": it["title"],
+                                     "planned": True})
+                print(f"{key} DRY 计划: {it['title']}（无 DML）")
+                continue
+            rid, rvid = str(uuid.uuid4()), str(uuid.uuid4())
+            conn.execute("insert into resource (resource_id,ability_id,resource_type,title,status,created_at)"
+                      " values (%s,%s,'word_problem',%s,'draft',now())",
+                      (rid, it["ability_id"], it["title"]))
+            conn.execute("""insert into resource_version (resource_version_id,resource_id,version_no,
+                difficulty,task_type,content,ui_schema,error_models,hint_policy,mastery_rule,
+                transfer_distance,review_status,reviewer_1,reviewer_2,created_at)
+                values (%s,%s,1,%s,'word_problem',%s,%s,%s,%s,%s,%s,'qa_staged','B6-alt','FE-1466',now())""",
+                (rvid, rid, it["difficulty"], pj.Jsonb(it["content"]), pj.Jsonb(it["ui_schema"]),
+                 pj.Jsonb(it["error_models"]), pj.Jsonb(it["hint_policy"]),
+                 pj.Jsonb(it["mastery_rule"]), it["transfer_distance"]))
+            out["built"].append({"alt": key, "title": it["title"], "resource_id": rid,
+                                 "rvid": rvid, "ability": it["ability_id"],
+                                 "difficulty": it["difficulty"]})
+            print(f"{key} 建题: {rvid} {it['title']}（APPLIED，autocommit 单语句原子）")
     finally:
         if not apply:
-            conn.rollback()  # Dry 显式回滚（BUG-1456 纪律正解）
+            conn.rollback()  # 纵深防御（非唯一保证：Dry 路径无写语句可回滚）
         conn.close()
     json.dump(out, open(os.path.join(HERE, "FE1466_B6_alt_build.json"), "w"),
               ensure_ascii=False, indent=1)
     if not apply:
-        print("Dry Run：判定与试插入已显式 rollback，正式建题用 --apply")
+        print("Dry Run 完成：路径无 INSERT/UPDATE/DELETE（结构性零 DML）")
     else:
-        # 原题状态只读复核（零改动承诺）
         with psycopg.connect(DB) as c:
             for k, old in REPLACES.items():
                 st = c.execute("select review_status from resource_version where resource_version_id=%s", (old,)).fetchone()
