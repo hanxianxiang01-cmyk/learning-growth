@@ -1,0 +1,45 @@
+{
+ "batch": "B2",
+ "post": {
+  "catalog_missing": [],
+  "catalog_ghost": [],
+  "smoke": [
+   {
+    "new": "73c7e8c0",
+    "smoke_pass": true
+   },
+   {
+    "new": "11129745",
+    "smoke_pass": true
+   },
+   {
+    "new": "c8aea8db",
+    "smoke_pass": true
+   },
+   {
+    "new": "e6fd4a86",
+    "smoke_pass": true
+   },
+   {
+    "new": "3a80cfb1",
+    "smoke_pass": true
+   },
+   {
+    "new": "4e7aac4d",
+    "smoke_pass": true
+   },
+   {
+    "new": "52578333",
+    "smoke_pass": true
+   },
+   {
+    "new": "a1b71f95",
+    "smoke_pass": true
+   },
+   {
+    "new": "aaf57012",
+    "smoke_pass": true
+   }
+  ]
+ }
+}
