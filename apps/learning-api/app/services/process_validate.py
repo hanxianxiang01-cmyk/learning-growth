@@ -181,13 +181,17 @@ def _rule_place_value(data: dict, cfg: dict, cons: dict) -> tuple[str, str | Non
     target = cfg.get("target")
     if not isinstance(target, int):
         return ("unverifiable", "target_missing")
-    if len(seq) != 3 or any(x is None for x in seq):
+    digits = [int(d) for d in str(target)]
+    if any(x is None for x in seq):
         return ("missing", "slots_incomplete")
-    h, t, o = seq
-    if sorted((h, t, o)) != sorted(int(d) for d in str(target)):
+    if len(seq) != len(digits):
+        # 槽位数=题 target 位数（支持 2/3/4 位）；数量不符=结构矛盾
+        return ("contradiction", "slot_count_mismatch")
+    if sorted(seq) != sorted(digits):
         # 卡池多重集不符（pool_multiset_equals_target_digits）
         return ("contradiction", "denomination_confusion")
-    if h * 100 + t * 10 + o != target:
+    val = sum(d * 10 ** (len(seq) - 1 - i) for i, d in enumerate(seq))
+    if val != target:
         return ("contradiction", "digit_position_error")  # 卡位与数位结构不一致
     return ("valid", None)
 

@@ -1,0 +1,265 @@
+{
+ "migrated_all_pass": true,
+ "rows": [
+  {
+   "batch": "B1",
+   "src": "24e3c3f4",
+   "new": "421427f3",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B1",
+   "src": "4e850544",
+   "new": "82ff6618",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B1",
+   "src": "579786c0",
+   "new": "bd711387",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B1",
+   "src": "75cae864",
+   "new": "66938277",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B1",
+   "src": "95b16f9f",
+   "new": "e6bc5139",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B1",
+   "src": "ec982464",
+   "new": "a6eebe9a",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "12f89452",
+   "new": "73c7e8c0",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "291106d7",
+   "new": "11129745",
+   "renderer": "place-value",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "334962af",
+   "new": "c8aea8db",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "3527282b",
+   "new": "e6fd4a86",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "831832e5",
+   "new": "3a80cfb1",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "99b86483",
+   "new": "4e7aac4d",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "da0d938c",
+   "new": "52578333",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "e946491c",
+   "new": "a1b71f95",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B2",
+   "src": "f281ec32",
+   "new": "aaf57012",
+   "renderer": "place-value",
+   "pass": true
+  },
+  {
+   "batch": "B3",
+   "src": "4936b35f",
+   "new": "0bfad10f",
+   "renderer": "place-value",
+   "pass": true
+  },
+  {
+   "batch": "B3",
+   "src": "60039509",
+   "new": "8b41e648",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B3",
+   "src": "971b1f5e",
+   "new": "853ef450",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B3",
+   "src": "9d0d3a7e",
+   "new": "46701fae",
+   "renderer": "place-value",
+   "pass": true
+  },
+  {
+   "batch": "B3",
+   "src": "b7d09e76",
+   "new": "c9347ee4",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B3",
+   "src": "cbcf5a5d",
+   "new": "ae778338",
+   "renderer": "place-value",
+   "pass": true
+  },
+  {
+   "batch": "B3",
+   "src": "d606f5a4",
+   "new": "1d5fab4e",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B4",
+   "src": "11aca9c8",
+   "new": "7c1b3466",
+   "renderer": "place-value",
+   "pass": true
+  },
+  {
+   "batch": "B4",
+   "src": "1723d78a",
+   "new": "088d0469",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B4",
+   "src": "9ab5d643",
+   "new": "b2d0c748",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B4",
+   "src": "a21d4278",
+   "new": "b38f8898",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B4",
+   "src": "b978d294",
+   "new": "5ee230c4",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B4",
+   "src": "be433fc9",
+   "new": "e8fd711d",
+   "renderer": "shape-canvas",
+   "pass": true
+  },
+  {
+   "batch": "B4",
+   "src": "e1393f3d",
+   "new": "0b95c86f",
+   "renderer": "place-value",
+   "pass": true
+  },
+  {
+   "batch": "B5",
+   "src": "1716d898",
+   "new": "8a658f5e",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B5",
+   "src": "2ff4a288",
+   "new": "438696d1",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B5",
+   "src": "3d60a583",
+   "new": "da7655e3",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B5",
+   "src": "57c34c52",
+   "new": "fe2e4fbb",
+   "renderer": "pattern-board",
+   "pass": true
+  },
+  {
+   "batch": "B5",
+   "src": "6b87f039",
+   "new": "007b00b2",
+   "renderer": "money-board",
+   "pass": true
+  },
+  {
+   "batch": "B5",
+   "src": "8d8c71fb",
+   "new": "6285f244",
+   "renderer": "place-value",
+   "pass": true
+  }
+ ],
+ "b6_pending": [
+  {
+   "src": "2c46c271-1a2f-4f45-ad3c-b5719ad58ded",
+   "renderer": "place-value",
+   "ability": "app_strat",
+   "difficulty": 1
+  },
+  {
+   "src": "845c6fea-418f-4365-a25e-b50e5b5040f8",
+   "renderer": "pattern-board",
+   "ability": "app_transfer",
+   "difficulty": 4
+  }
+ ],
+ "note": "B1-B5=35 题 qa_staged 约束版全过三态复验；B6=2 空池题按裁决留最后（教学契约+替代确认前置）；旧版全程 published 未动；发布切换=产品决定"
+}
