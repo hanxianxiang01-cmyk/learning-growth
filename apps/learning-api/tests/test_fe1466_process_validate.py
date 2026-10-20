@@ -173,3 +173,30 @@ class TestEvidenceEligible:
     def test_grid6_old_item_untouched(self):
         assert self._f(True, None) is True
         assert self._f(None, None) is False          # 既有 undefined-answer 语义不变
+
+
+class TestRealSerializationShapes:
+    """FE-1466-C 对齐真实前端 serialize* 形态（锁测：形态失配=unverifiable 而非误判）。"""
+    def test_money_counts_dict_form(self):
+        U = ui("payment_change", extra_config={"price": 35, "denominations": [1, 5, 10, 50]})
+        pv = get_process_constraint(U)
+        assert process_validate(pv, resp({"counts": {"10": 3, "5": 1}, "total": 35}))["status"] == "valid"
+        assert process_validate(pv, resp({"counts": {"5": 7}, "total": 35}))["status"] == "valid"   # 等价类
+        assert process_validate(pv, resp({"counts": {"50": 1}, "total": 35}))["status"] == "contradiction"  # 谎报 total
+        assert process_validate(pv, resp({"counts": {}, "total": 35}))["status"] == "missing"
+    def test_pattern_beads_with_nulls(self):
+        U = ui("pattern_extension", constraints={"blanks": 2, "period": 2},
+               extra_config={"visible": [1, 2, 1, 2], "blanks": 2})
+        assert process_validate(get_process_constraint(U),
+            resp({"beads": [1, None]}))["status"] == "missing"   # 半填
+    def test_pv_slots_array_form(self):
+        U = ui("place_value_build", extra_config={"target": 352, "pool": [2, 5, 3]})
+        pv = get_process_constraint(U)
+        assert process_validate(pv, resp({"slots": [3, 5, 2]}))["status"] == "valid"
+        assert process_validate(pv, resp({"slots": [3, 2, 5]}))["status"] == "contradiction"
+        assert process_validate(pv, resp({"slots": [3, None, None]}))["status"] == "missing"
+        assert process_validate(pv, resp({"slots": [None, None, None]}))["status"] == "missing"
+    def test_shape_vertices_dict_form(self):
+        U = ui("shape_drawing", constraints={"vertex_count": 4, "area": 6, "right_angles": 4})
+        pts = [{"x": 0, "y": 0}, {"x": 3, "y": 0}, {"x": 3, "y": 2}, {"x": 0, "y": 2}]
+        assert process_validate(get_process_constraint(U), resp({"vertices": pts}))["status"] == "valid"

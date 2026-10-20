@@ -100,8 +100,11 @@ def _rule_pattern(data: dict, cfg: dict, cons: dict) -> tuple[str, str | None]:
     beads = data.get("beads")
     if not isinstance(beads, list):
         return ("unverifiable", "beads_absent")
-    if not beads:
+    filled = [b for b in beads if b is not None]
+    if not filled:
         return ("missing", "no_beads_placed")
+    if len(filled) != len(beads):
+        return ("missing", "beads_incomplete")
     visible = cfg.get("visible") or []
     blanks = cons.get("blanks", cfg.get("blanks", 0))
     period = cons.get("period", 2)
@@ -113,9 +116,27 @@ def _rule_pattern(data: dict, cfg: dict, cons: dict) -> tuple[str, str | None]:
     return ("valid", None)   # attempt_history=observation_only，不设门槛（§三）
 
 
-def _rule_money(data: dict, cfg: dict, cons: dict) -> tuple[str, str | None]:
+def _money_coins(data: dict) -> list | None:
+    """真实序列化=counts:{面值:枚数}（serializeMoneyV2）；兼容数组形态。"""
+    counts = data.get("counts")
+    if isinstance(counts, dict):
+        out = []
+        for d, n in counts.items():
+            try:
+                d = int(d); n = int(n)
+            except (TypeError, ValueError):
+                return None
+            if n < 0:
+                return None
+            out.extend([d] * n)
+        return out
     sel = data.get("selected_denominations")
-    if not isinstance(sel, list):
+    return sel if isinstance(sel, list) else None
+
+
+def _rule_money(data: dict, cfg: dict, cons: dict) -> tuple[str, str | None]:
+    sel = _money_coins(data)
+    if sel is None:
         return ("unverifiable", "denominations_absent")
     if not sel:
         return ("missing", "no_coins_selected")
@@ -148,17 +169,21 @@ def _rule_shape(data: dict, cfg: dict, cons: dict) -> tuple[str, str | None]:
 
 
 def _rule_place_value(data: dict, cfg: dict, cons: dict) -> tuple[str, str | None]:
-    slots = data.get("slots")
-    if not isinstance(slots, dict):
+    raw = data.get("slots")
+    if isinstance(raw, dict):
+        seq = [raw.get(k) for k in ("h", "t", "o")]
+    elif isinstance(raw, list):
+        seq = list(raw)
+    else:
         return ("unverifiable", "slots_shape_unknown")
-    if not any(slots.get(k) is not None for k in ("h", "t", "o")):
+    if not any(x is not None for x in seq):
         return ("missing", "no_cards_placed")
     target = cfg.get("target")
     if not isinstance(target, int):
         return ("unverifiable", "target_missing")
-    h, t, o = slots.get("h"), slots.get("t"), slots.get("o")
-    if None in (h, t, o):
+    if len(seq) != 3 or any(x is None for x in seq):
         return ("missing", "slots_incomplete")
+    h, t, o = seq
     if sorted((h, t, o)) != sorted(int(d) for d in str(target)):
         # 卡池多重集不符（pool_multiset_equals_target_digits）
         return ("contradiction", "denomination_confusion")

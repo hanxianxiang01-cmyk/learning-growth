@@ -1,0 +1,145 @@
+{
+ "batch": "B1",
+ "note": "qa_staged 新约束版（未发布）；旧版保持 published 可用；三态复验=阶段C 同口径",
+ "results": [
+  {
+   "src": "24e3c3f4",
+   "new": "421427f3-8f7a-47b0-9c61-cf7724701d10",
+   "renderer": "money-board",
+   "status": "qa_staged",
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1
+   },
+   "pass": true
+  },
+  {
+   "src": "4e850544",
+   "new": "82ff6618-4fea-4b4b-80a3-2741cf014571",
+   "renderer": "pattern-board",
+   "status": "qa_staged",
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1
+   },
+   "pass": true
+  },
+  {
+   "src": "579786c0",
+   "new": "bd711387-6da6-4669-ac3f-fdbd59ffd265",
+   "renderer": "money-board",
+   "status": "qa_staged",
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1
+   },
+   "pass": true
+  },
+  {
+   "src": "75cae864",
+   "new": "66938277-896a-424c-ae85-3b8cf710d7a3",
+   "renderer": "pattern-board",
+   "status": "qa_staged",
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1
+   },
+   "pass": true
+  },
+  {
+   "src": "95b16f9f",
+   "new": "e6bc5139-0be9-4981-92d0-094cfe133ca1",
+   "renderer": "pattern-board",
+   "status": "qa_staged",
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1
+   },
+   "pass": true
+  },
+  {
+   "src": "ec982464",
+   "new": "a6eebe9a-97e6-4bc0-a58f-727ede2cceed",
+   "renderer": "pattern-board",
+   "status": "qa_staged",
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1
+   },
+   "pass": true
+  }
+ ],
+ "all_pass": true
+}

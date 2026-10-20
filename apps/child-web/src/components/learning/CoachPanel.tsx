@@ -6,11 +6,13 @@ export function CoachPanel({
   status,
   hint,
   error,
+  processStatus,
   onHint,
   onRetry,
   onNext
 }: {
   status: LearningStatus;
+  processStatus?: string;
   hint: HintResponse | null;
   error?: string | null;
   onHint: () => void;
@@ -26,6 +28,12 @@ export function CoachPanel({
     message =
       hint?.text ??
       `提示 ${hint?.hint_level ?? ""} 已准备好。`;
+  } else if (status === "retry" && processStatus === "missing") {
+    // FE-1466 §二.2：null=任务未完成——明确提示操作，不得显示普通"算错了"反馈。
+    message = "这一步还没做完——先在操作区把学具摆好，再提交答案。";
+  } else if (status === "retry" && processStatus === "unverifiable") {
+    // 系统无法核验：不提示孩子也不归因（§三 unverifiable 语义）。
+    message = "先自己想一想。需要时，我会给你一点提示。";
   } else if (status === "retry") {
     message = "换一种方法再试一次。";
   } else if (status === "correct") {

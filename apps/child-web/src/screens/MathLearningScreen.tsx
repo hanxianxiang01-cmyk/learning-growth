@@ -98,6 +98,7 @@ export function MathLearningScreen({
                 status={state.status}
                 hint={state.hint}
                 error={state.error}
+                processStatus={state.lastAttempt?.process_status}
                 onHint={requestHint}
                 onRetry={retry}
                 onNext={loadTask}
