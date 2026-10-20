@@ -1,12 +1,13 @@
 {
  "title": "Q07 Process Evidence Integrity｜P0 关闭验收记录",
- "date": "2026-10-20（entry-closeout 补齐版）",
- "decision_requested": "Q07 P0 由 OPEN 转关闭验收（按裁决 19:21 §五 四问作答；关闭动作本身等批）",
- "code_baseline": "待合并 PR#121 分支 HEAD：含 submit_attempt 失效入口守卫 + 行锁（FOR UPDATE）（新增生产代码变更，见 entry_guard_note）",
+ "date": "2026-10-20（合并后定向复验完成，状态 CLOSED）",
+ "decision_requested": "Q07 P0 关闭（裁决 19:21 §五 四问作答；PR#121 已合并于 5a60a69，目标后端以该提交代码复验通过）",
+ "code_baseline": "已合并 main@5a60a693afeda15984fe3a933c11a5478d5d23e7（含 submit_attempt 失效入口守卫 + FOR UPDATE 行锁 + 前端 expired 恢复）",
  "q1_disposition_37": {
   "35_version_replacement": "B1–B5 35 对：新 RVID（带 process_constraint）published、旧 RVID superseded；逐批单事务+唯一性+目录+pin 冒烟（FE1466_publish_manifest_B1..B5 + postpublish_B1..B5）",
   "2_cross_resource_replacement": "B6-A 82aabb99（替 2c46c271·app_strat·d1）、B6-B 2f2e8491（替 845c6fea·app_transfer·d4）=新逻辑资源替代，关系记录于 FE1466_B6_publish_report.json，未伪造版本链；旧风险 superseded 退出下发（pin 403 实证于发布后检）",
-  "no_old_channel": "专核（只读）：全 published V2 中 evidence_targets 有而 process_constraint 无 = 0；37 旧风险行仍 published = 0"
+  "no_old_channel": "专核（只读）复算于合并后 main@5a60a69，FE1466_exposure_recheck_merged.json：published=225、含 config.process_constraint=37、**正确口径暴露=0**（口径=FE1466_published_exposure.risk_note 原文：契约声明 evidence_targets 且 renderer∈{place-value, shape-canvas, money-board, pattern-board} 且无 process_constraint）；37 旧风险行 review_status 全为 superseded（published=0）",
+   "no_old_channel_evidence_correction": "**证据缺陷自纠**：本轮复核发现原'专核=0'用的查询是 content ? 'evidence_targets'，而 content 只有 answer/goal/stem 三键——该查询恒为空集，结论虽同为零但证据链不成立（空集上的假通过）。已改用真实路径重算：process_constraint 在 ui_schema.workspaces[].config.process_constraint（与 process_validate.get_process_constraint 同口径），evidence_targets 在 ui_schema.response_contract.evidence_targets。复算同时验证口径必带 renderer∈四类——仅用 evidence_targets 会得 138 条，其中包含 estimation-canvas 等表单维度（其 evidence_targets 为 estimate/reason/adjust_history/structure，非过程操作证据），属口径过宽。以本复算为准。"
  },
  "q2_open_old_tasks": {
   "reconciliation": "FE1466_open_tasks_full_reconciliation.json：556 唯一 task_id 全枚举（distinct；首轮'37 差额'系 limit40 展示截断非未解释）。**12 个 QA child 完整 UUID**，分布由 FE1466_invalidation_run.json 明细直接 Counter 生成（非口算）：…0099×519、…0096×13、…0097×6、…0087×4、…0094×4、…0084×3、…0093×2、…0088/0089/0090/0091/0092 各×1；合计 519+37=556，账号数 12（主账号 0099 占 519，其余 **11 个**账号共 37 条）。未分类=0，真实儿童 …0001=0",
@@ -27,14 +28,21 @@
  "q4_scope_boundary": "Q07 关闭范围=过程证据完整性缺陷本身。以下不归 Q07：211 条同质错因（Q05，另批治理）、212 条 UNVERIFIED（Q03 计算器扩展）、教学效度/能力标签问题（app_transfer 保持观察项定位、money/pv 标签专项未启动）、B6 两题的教学验收（本次为技术发布非教学认证——裁决 §四.3 明示）",
  "history_untouched": "全程零 DELETE/零历史 UPDATE；已引用退役版 a2732868/939d81b5 保持 qa_retired 不可下发不可复用",
  "close_criteria_check": {
-  "新下发范围": "✓",
-  "旧任务范围": "✓ 归属全解释+入口收口残余=0",
-  "新版行为": "✓ 复扫+发布后检+四场景",
+  "新下发范围": "✓ 专核正确口径暴露=0（合并后 main 复算，见 no_old_channel / no_old_channel_evidence_correction）",
+  "旧任务范围": "✓ 556 条归属全解释+全部 cancelled+入口收口残余=0",
+  "新版行为": "✓ 复扫+发布后检+B1-B5/B6-A/B6-B 双侧实证",
   "审计完整性": "✓",
   "历史保护": "✓ 零删改"
  },
- "remaining_before_close": [
-  "你复核 PR#121（注意 entry_guard_note 的生产代码范围）→ 批准合并 → 我按明确缺陷范围关闭 Q07 并出终版记录"
+ "status": "CLOSED",
+ "closed_scope": "Q07 = V2 judge 不校验过程证据（evidence_targets 声明存在而无 process_constraint 时，空/矛盾操作 + 正确终值仍判 correct=true 并写入有效正向 Mastery Evidence）这一缺陷本身。关闭范围=该缺陷的新下发通道已断、旧任务已受控失效、提交入口已实际拒绝、历史证据零改写。",
+ "closed_excluded_scope": "不在 Q07 关闭范围（防过度声明）：211 条同质错因（Q05 另批）、212 条 UNVERIFIED（Q03 计算器扩展）、app_transfer 教学效度观察项、money/place-value 能力标签专项、B6 两替代题的教学验收（本次仅技术发布）——以上均未声明已完成。",
+ "closed_basis": "PR#121 已合并（合并提交 5a60a693afeda15984fe3a933c11a5478d5d23e7）；目标后端以该提交代码重启后定向复验：①旧任务新提交被拒（A 场景 expired/零写入）②精确历史重放不新增（B/D 场景 attempt_id 一致、三表计数不变）③异内容冲突仍 409（C 场景）④正常替代题可完成（B6-A/B 实测 correct=true 分别 10/7 次成功作答、published 状态）⑤旧页面失效后可恢复（E2E C-EXPIRE-RECOVERY，expired 后 hits=1 不二次提交、回 idle 重取）。并发边界由两连接真实锁争抢实测（非时序推断）。",
+ "postmerge_verification_artifacts": [
+  "FE1466_expiry_entry_reverify_merged.json（五场景 A-E 全 PASS，每例前后三表计数比对零新增）",
+  "FE1466_expiry_lock_concurrency_merged.json（T0-T6 全 PASS，锁等待实证+放行严格晚于失效提交+全局计数无污染）",
+  "FE1466_exposure_recheck_merged.json（正确口径暴露=0）"
  ],
+ "remaining_before_close": [],
  "entry_guard_note": "本 PR 除文档/工件外，含一处生产代码变更：submit_attempt 的失效任务守卫 + FOR UPDATE 行锁（§三 要求'提交入口实际拒绝'，既有代码无此校验=真实缺口，非仅测试数据）。198 单测 + 五场景实链 + 两会话锁争抢实测为据。另含前端三处契约透传（contracts.ts expired?/attemptResultNormalizer 透传/machine.ts expired→idle 重取 + CoachPanel 分态文案），E2E C-EXPIRE-RECOVERY 通过。"
 }
