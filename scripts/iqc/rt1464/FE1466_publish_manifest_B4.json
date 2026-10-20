@@ -1,0 +1,91 @@
+{
+ "batch": "B4",
+ "applied": true,
+ "items": [
+  {
+   "old_rvid": "11aca9c8-067a-48e6-945e-959a20ce83f5",
+   "new_rvid": "7c1b3466-dc9b-4630-b549-22432dca9418",
+   "resource_id": "5e26cf2a-b529-4700-9569-4d15b6972379",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "place-value",
+   "content_sha_old": "5230d6e8b5f241ddd18246180aa03ddb3359b8d902e69abb78e3b2dabcbbb00b",
+   "content_sha_new": "5230d6e8b5f241ddd18246180aa03ddb3359b8d902e69abb78e3b2dabcbbb00b",
+   "ui_sha_old": "4160de84172c007a204297e6f3ee2888dc3c80a58ed30419acd6c1cd515b3d01",
+   "ui_sha_new_minus_pc": "4160de84172c007a204297e6f3ee2888dc3c80a58ed30419acd6c1cd515b3d01"
+  },
+  {
+   "old_rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "new_rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "resource_id": "b9c55af4-c4d7-4b62-8c2f-ecd529bc4de5",
+   "old_version": 1,
+   "new_version": 3,
+   "renderer": "pattern-board",
+   "content_sha_old": "1eba6893460cfab12266c121972e6af4424ceaa9e5aa1f8e19c7e87bf6560ee4",
+   "content_sha_new": "67a56ea059a941c3077db84b6f12cc4459341533bbf2b5b1b6134d41f8d21f1c",
+   "ui_sha_old": "15676ee5ba6ba278158ed1992dc7e954ef33e7bb20995ea00e651cfce6e623ea",
+   "ui_sha_new_minus_pc": "15676ee5ba6ba278158ed1992dc7e954ef33e7bb20995ea00e651cfce6e623ea"
+  },
+  {
+   "old_rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "new_rvid": "b2d0c748-518c-4000-a8b6-4dbd56bd2bdb",
+   "resource_id": "39956d8a-3bae-4f57-9745-7a2285366c0c",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "money-board",
+   "content_sha_old": "b5308e618cfaf19a097e69340180d0e6a167cca0b3827c7cdde9182c02f7d0e0",
+   "content_sha_new": "b5308e618cfaf19a097e69340180d0e6a167cca0b3827c7cdde9182c02f7d0e0",
+   "ui_sha_old": "e0b723242a8dd36fa25604262d7a86190b2488e0a025a6104d1aee38a1406e30",
+   "ui_sha_new_minus_pc": "e0b723242a8dd36fa25604262d7a86190b2488e0a025a6104d1aee38a1406e30"
+  },
+  {
+   "old_rvid": "a21d4278-9780-453c-a510-08ce184f764e",
+   "new_rvid": "b38f8898-aed4-4238-b7d9-dda33092aae4",
+   "resource_id": "1167b7e4-1d61-43d2-b63e-12bf84992ab9",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "f97bd25e7fa2e838d72a6574479e97e91610896a5c0ba0a60b853d0d20051ea4",
+   "content_sha_new": "f97bd25e7fa2e838d72a6574479e97e91610896a5c0ba0a60b853d0d20051ea4",
+   "ui_sha_old": "83aba3c0383aabc25edb082e90639f902ce1817b40a9701e2d2dbf63fcdf5551",
+   "ui_sha_new_minus_pc": "83aba3c0383aabc25edb082e90639f902ce1817b40a9701e2d2dbf63fcdf5551"
+  },
+  {
+   "old_rvid": "b978d294-7ea5-4670-8538-3c04c2113536",
+   "new_rvid": "5ee230c4-a9e3-4b24-8bb6-657571cced5f",
+   "resource_id": "28c99c14-1de7-48ac-8e57-ead44049b529",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "money-board",
+   "content_sha_old": "becd3057b6f442dd83de546f583dc2824ea70a1f8a1384b62be7050225406023",
+   "content_sha_new": "becd3057b6f442dd83de546f583dc2824ea70a1f8a1384b62be7050225406023",
+   "ui_sha_old": "d681b13c4cedf133f5d7893895b19a2d98a9ad621ddc7bcd784b6305a723e04a",
+   "ui_sha_new_minus_pc": "d681b13c4cedf133f5d7893895b19a2d98a9ad621ddc7bcd784b6305a723e04a"
+  },
+  {
+   "old_rvid": "be433fc9-af29-41dc-88c2-7d0a5d110459",
+   "new_rvid": "e8fd711d-223a-4f4a-b79e-0cd46536bac1",
+   "resource_id": "1648a47e-cdcf-4802-88b8-ac18f894c03a",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "2964fb264778fbace72c24d8d83d8459b4b60fbeb46edb0ea750b7fd2a8cb3c6",
+   "content_sha_new": "2964fb264778fbace72c24d8d83d8459b4b60fbeb46edb0ea750b7fd2a8cb3c6",
+   "ui_sha_old": "d810bbf21a46b8a872d5a95666ef75733e42e4e8957ffeb9dea0917d275bc561",
+   "ui_sha_new_minus_pc": "d810bbf21a46b8a872d5a95666ef75733e42e4e8957ffeb9dea0917d275bc561"
+  },
+  {
+   "old_rvid": "e1393f3d-2a02-4eba-b02e-5be1ee9b6a54",
+   "new_rvid": "0b95c86f-99b3-421a-8a04-d328b4eb7eb7",
+   "resource_id": "dc871577-c721-490e-88dc-cb57b947a911",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "place-value",
+   "content_sha_old": "2e86a8739fac71f0e5df01a094e7c5242a55dce8fa0af3d723e6a246b1f5b266",
+   "content_sha_new": "2e86a8739fac71f0e5df01a094e7c5242a55dce8fa0af3d723e6a246b1f5b266",
+   "ui_sha_old": "2e106caec5e70e4d4992022dfeef7e04c324f32ab54b0380684f67fdff9d5bf4",
+   "ui_sha_new_minus_pc": "2e106caec5e70e4d4992022dfeef7e04c324f32ab54b0380684f67fdff9d5bf4"
+  }
+ ],
+ "note": "new→published old→superseded 单事务；反向 update 即回滚"
+}

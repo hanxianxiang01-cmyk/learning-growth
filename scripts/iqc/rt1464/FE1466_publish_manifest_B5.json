@@ -1,0 +1,79 @@
+{
+ "batch": "B5",
+ "applied": true,
+ "items": [
+  {
+   "old_rvid": "1716d898-506d-4428-a9de-664bc60b528e",
+   "new_rvid": "8a658f5e-f2ff-49c5-8e39-598e32a9681d",
+   "resource_id": "9eaa6f57-63c2-4cfd-ba13-11e18916841b",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "money-board",
+   "content_sha_old": "2c42edfdc1d2560128d9bd9c071304022a2540682bf1775cdd8d61cdba181c51",
+   "content_sha_new": "2c42edfdc1d2560128d9bd9c071304022a2540682bf1775cdd8d61cdba181c51",
+   "ui_sha_old": "4058ceec3445a155ca581149ed12112518a8157deaeada8dc5b6a0d91635ed6a",
+   "ui_sha_new_minus_pc": "4058ceec3445a155ca581149ed12112518a8157deaeada8dc5b6a0d91635ed6a"
+  },
+  {
+   "old_rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "new_rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "resource_id": "dd516cce-e62f-4b0a-bf81-50ead6b8b10c",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "money-board",
+   "content_sha_old": "a88d80b1f54983cc45ed93b193687b6ad68ecc45748b789ea6bb4c0add85623c",
+   "content_sha_new": "a88d80b1f54983cc45ed93b193687b6ad68ecc45748b789ea6bb4c0add85623c",
+   "ui_sha_old": "00344def46ef99d989dc5ae5b6454f1e88fc674160864431fb1f2dc4e653e957",
+   "ui_sha_new_minus_pc": "00344def46ef99d989dc5ae5b6454f1e88fc674160864431fb1f2dc4e653e957"
+  },
+  {
+   "old_rvid": "3d60a583-d90d-442d-9e2d-d78ab970b414",
+   "new_rvid": "da7655e3-bd20-4fa2-b112-788d4e86edc8",
+   "resource_id": "966f92fc-1ea4-4ce1-b170-f92a7b20f850",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "pattern-board",
+   "content_sha_old": "b44f9bbf6881b7b26225595eeb9d4370274f09f54126af6b60331bf7f8dc7f41",
+   "content_sha_new": "b44f9bbf6881b7b26225595eeb9d4370274f09f54126af6b60331bf7f8dc7f41",
+   "ui_sha_old": "ccddfb402868c4dc7736e8fb5b8c1fa727c6e843ba0f7c59bba0c91ffd9b95ed",
+   "ui_sha_new_minus_pc": "ccddfb402868c4dc7736e8fb5b8c1fa727c6e843ba0f7c59bba0c91ffd9b95ed"
+  },
+  {
+   "old_rvid": "57c34c52-7fc2-4ba8-9f66-2a60c622d6f4",
+   "new_rvid": "fe2e4fbb-0a49-4479-9c14-564ffa994724",
+   "resource_id": "6e137129-f3fc-4998-a779-de1ae90d209b",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "pattern-board",
+   "content_sha_old": "da1e5c232a41efd44b378683cfe6b41be1b92eabafa99ff9389e05694b93cac0",
+   "content_sha_new": "da1e5c232a41efd44b378683cfe6b41be1b92eabafa99ff9389e05694b93cac0",
+   "ui_sha_old": "bc53532db79627efe766b9c5a77978e477ecc35a11b8eb7cce9265a235d5f575",
+   "ui_sha_new_minus_pc": "bc53532db79627efe766b9c5a77978e477ecc35a11b8eb7cce9265a235d5f575"
+  },
+  {
+   "old_rvid": "6b87f039-372a-4146-80d2-6873e38001f9",
+   "new_rvid": "007b00b2-03bd-47d6-a58e-368ee1d00192",
+   "resource_id": "3d08fc2b-0c85-4308-aa1c-93d9f5d01e2a",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "money-board",
+   "content_sha_old": "09c86578d05f85c380ed8615e68b857e3d12a498ac74a7dc90ff6d5322e93d21",
+   "content_sha_new": "09c86578d05f85c380ed8615e68b857e3d12a498ac74a7dc90ff6d5322e93d21",
+   "ui_sha_old": "97e32d99327d800f2be9b303dc91e82b1a1f7bb16b4b531b257ad205a98f4922",
+   "ui_sha_new_minus_pc": "97e32d99327d800f2be9b303dc91e82b1a1f7bb16b4b531b257ad205a98f4922"
+  },
+  {
+   "old_rvid": "8d8c71fb-9c9d-45d6-9c8a-d395f202f9fa",
+   "new_rvid": "6285f244-9d78-4df3-b700-462801281d27",
+   "resource_id": "b8a762af-9f0c-4e02-888a-460b0516a543",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "place-value",
+   "content_sha_old": "f22b493b0fbdf67ce86af4fe82e3baaf199bf5eb58bf42e0e84e73754552a5b4",
+   "content_sha_new": "f22b493b0fbdf67ce86af4fe82e3baaf199bf5eb58bf42e0e84e73754552a5b4",
+   "ui_sha_old": "d594e6c59521435a720438ebd02a85aedef3d1b12a3d207eca3f2303095e31be",
+   "ui_sha_new_minus_pc": "d594e6c59521435a720438ebd02a85aedef3d1b12a3d207eca3f2303095e31be"
+  }
+ ],
+ "note": "new→published old→superseded 单事务；反向 update 即回滚"
+}

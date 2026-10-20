@@ -1,0 +1,91 @@
+{
+ "batch": "B3",
+ "applied": true,
+ "items": [
+  {
+   "old_rvid": "4936b35f-a5dc-44d4-9b2e-e58c6f3b7c0e",
+   "new_rvid": "0bfad10f-1e49-4625-ba5b-038de233f571",
+   "resource_id": "9537adab-a70d-4d83-ba2a-47b5cd45c05f",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "place-value",
+   "content_sha_old": "15ff9f47287c3f520a4d449e8aea74b2f938173f55874ccaf56ac0365a8028ef",
+   "content_sha_new": "15ff9f47287c3f520a4d449e8aea74b2f938173f55874ccaf56ac0365a8028ef",
+   "ui_sha_old": "354c6950656b5306ae09210bd82dbf0dc91c8d2d5c864a12140b97d4bbcfe14e",
+   "ui_sha_new_minus_pc": "354c6950656b5306ae09210bd82dbf0dc91c8d2d5c864a12140b97d4bbcfe14e"
+  },
+  {
+   "old_rvid": "60039509-f8e6-47f5-a86a-04d9b84e05ef",
+   "new_rvid": "8b41e648-23dc-4a84-bc3c-d86293c358f9",
+   "resource_id": "1adb22d6-a721-4453-8c0f-e853a328f4a6",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "8ff279c8ccba6efd8d42578586e0f23e422aea9b3c23054769d5e0f789fd4ab9",
+   "content_sha_new": "8ff279c8ccba6efd8d42578586e0f23e422aea9b3c23054769d5e0f789fd4ab9",
+   "ui_sha_old": "a921858527e5e2a3eace5801f680e35044833665b4b7991dac6e5116157979ab",
+   "ui_sha_new_minus_pc": "a921858527e5e2a3eace5801f680e35044833665b4b7991dac6e5116157979ab"
+  },
+  {
+   "old_rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "new_rvid": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "resource_id": "7afa5748-8500-44b1-bb0e-3469e8837df8",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "382e93841257e2e5375cb3731bb417d457fc05b5430aec557eda8d4538a5ea2a",
+   "content_sha_new": "382e93841257e2e5375cb3731bb417d457fc05b5430aec557eda8d4538a5ea2a",
+   "ui_sha_old": "178e1a50baf4d3abc7c8ea8c9bb99774c6a42f7b435d8259d0df0ca9935f69e4",
+   "ui_sha_new_minus_pc": "178e1a50baf4d3abc7c8ea8c9bb99774c6a42f7b435d8259d0df0ca9935f69e4"
+  },
+  {
+   "old_rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "new_rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "resource_id": "7f166c48-47b9-41b6-99f7-a0516420e5ad",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "place-value",
+   "content_sha_old": "86960540e15f5ba5c4fcea638a32b25f15804e9e91554193df5cf6ad3c0d4489",
+   "content_sha_new": "86960540e15f5ba5c4fcea638a32b25f15804e9e91554193df5cf6ad3c0d4489",
+   "ui_sha_old": "4bddbf3a86c52a4c8f93fa5804a6ac0bbdb8730b00bdeade6fa0c5d7e8ffec7d",
+   "ui_sha_new_minus_pc": "4bddbf3a86c52a4c8f93fa5804a6ac0bbdb8730b00bdeade6fa0c5d7e8ffec7d"
+  },
+  {
+   "old_rvid": "b7d09e76-58f2-40af-a8ea-7d31a1bc3f6e",
+   "new_rvid": "c9347ee4-5d75-4f2b-a9cc-b2a193c4961f",
+   "resource_id": "989770cb-158f-4442-963d-461335be2619",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "53e8e793c8b29449a65e599944d55301bb318023e0cf62288305fc2326c3c3bc",
+   "content_sha_new": "53e8e793c8b29449a65e599944d55301bb318023e0cf62288305fc2326c3c3bc",
+   "ui_sha_old": "79914c03dbb89f8ae66aee70dff06ade2accfcac3a5825684a5161f1b5053c90",
+   "ui_sha_new_minus_pc": "79914c03dbb89f8ae66aee70dff06ade2accfcac3a5825684a5161f1b5053c90"
+  },
+  {
+   "old_rvid": "cbcf5a5d-a88c-4463-b5ec-1aed74e17cce",
+   "new_rvid": "ae778338-3a06-417f-b889-f42ce4647f47",
+   "resource_id": "08aa8c1b-1e30-447b-b90e-d3eede1527df",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "place-value",
+   "content_sha_old": "b0a03f27ea33c8cc96a47ad3f1e4262e811fc0200436a1c94dba4e0699492535",
+   "content_sha_new": "b0a03f27ea33c8cc96a47ad3f1e4262e811fc0200436a1c94dba4e0699492535",
+   "ui_sha_old": "d94c9347b795922552cb0fb13ed0b9ca8a790cc7dd2f7b7035f63c64575176a9",
+   "ui_sha_new_minus_pc": "d94c9347b795922552cb0fb13ed0b9ca8a790cc7dd2f7b7035f63c64575176a9"
+  },
+  {
+   "old_rvid": "d606f5a4-649e-4f4b-be4f-4ce63923263b",
+   "new_rvid": "1d5fab4e-f752-4b7b-892b-82a0932d8cde",
+   "resource_id": "3328c491-9c9b-41f2-ae60-e5a98303d262",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "41899eb67bc277bcd4ac72065df9ab78d1f266e9629b7ef918e2ebdd3574004c",
+   "content_sha_new": "41899eb67bc277bcd4ac72065df9ab78d1f266e9629b7ef918e2ebdd3574004c",
+   "ui_sha_old": "93ec4b419d6ad3131be32e78d55a07f4e809983df10d8ae2483d2ad6287efdd4",
+   "ui_sha_new_minus_pc": "93ec4b419d6ad3131be32e78d55a07f4e809983df10d8ae2483d2ad6287efdd4"
+  }
+ ],
+ "note": "new→published old→superseded 单事务；反向 update 即回滚"
+}
