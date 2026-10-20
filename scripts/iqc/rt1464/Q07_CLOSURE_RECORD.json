@@ -1,26 +1,37 @@
 {
-  "title": "Q07 Process Evidence Integrity｜P0 关闭验收记录",
-  "date": "2026-10-20",
-  "decision_requested": "Q07 P0 由 OPEN 转关闭验收（按裁决 19:21 §五 四问作答；关闭动作本身等批）",
-  "code_baseline": "main=92f4a2c（PR#119 合并后代码=发布与复扫运行时目标后端所用）",
-  "q1_disposition_37": {
-    "35_version_replacement": "B1–B5 35 对：新 RVID（带 process_constraint）published、旧 RVID superseded；逐批单事务+唯一性+目录+pin 冒烟（FE1466_publish_manifest_B1..B5 + postpublish_B1..B5）",
-    "2_cross_resource_replacement": "B6-A 82aabb99（替 2c46c271·app_strat·d1）、B6-B 2f2e8491（替 845c6fea·app_transfer·d4）=新逻辑资源替代，关系记录于 FE1466_B6_publish_report.json，未伪造版本链；旧风险 superseded 退出下发（pin 403 实证于发布后检）",
-    "no_old_channel": "专核（只读）：全 published V2 中 evidence_targets 有而 process_constraint 无 = 0；37 旧风险行仍 published = 0"
-  },
-  "q2_open_old_tasks": {
-    "audit_file": "FE1466_open_old_tasks_audit.json",
-    "finding": "active/paused 会话中挂旧风险 rvid 的未结任务 556 条——child 分布最大头 519 条=QA child …0099 的未结算测试会话（历次验收遗留）；真实儿童 …0001 相关=0",
-    "disposition": "旧版 superseded 后：attempt 提交仍按已下发 task 的 rvid 判分（该 rvid 无 pc → 现行无门槛判分）——这是残余通道，但仅对 QA 测试会话存在；建议动作=QA 会话批量作废（learning_session 置 abandoned，既有机制）即可清零，不影响任何真实儿童；本记录不改写任何历史 attempt/evidence",
-    "product_decision_needed": "QA 测试会话作废是否执行（一行 UPDATE status，或留置不处理亦可——QA 数据卫生规则本就要求测试流量 valid=false 软删口径）"
-  },
-  "q3_new_version_rules_hold": {
-    "rescan": "发布后全库复扫（Mac 手动，无定时器）：inventory 304 条（published 225 等量/qa_staged 1/qa_retired 27/superseded 51）snapshot 79f90852…，BLOCKED_SCHEMA=0",
-    "tristate_on_published_new": "发布后检逐题实证（publish_b6/publish_batch post-publish）：空过程→null/missing/零证据/RETRY；不可核验→null/unverifiable/零证据/无错因诊断；合法→true+恰一次；重放同 attempt 不重复留证；矛盾按冻结策略（pattern/shape 负向允许、money/pv 零新增）",
-    "note": "publish_b6 的 --only 分跑致 manifest 覆盖（B 覆 A）为工具报告缺陷非数据缺陷——A 记录由 dry 期 content_sha=42a10dfa… 与终核状态（82aabb99 published）补全于 FE1466_B6_publish_report.json（已手工合并，缺陷登记整改 TODO：按题号合并写入）"
-  },
-  "q4_scope_boundary": "Q07 关闭范围=过程证据完整性缺陷本身。以下不归 Q07：211 条同质错因（Q05，另批治理）、212 条 UNVERIFIED（Q03 计算器扩展）、教学效度/能力标签问题（app_transfer 保持观察项定位、money/pv 标签专项未启动）、B6 两题的教学验收（本次为技术发布非教学认证——裁决 §四.3 明示）",
-  "history_untouched": "全程零 DELETE/零历史 UPDATE；已引用退役版 a2732868/939d81b5 保持 qa_retired 不可下发不可复用",
-  "close_criteria_check": {"37处置": "✓", "旧通道盘点+处置方案": "✓（QA 会话作废待定）", "新规则成立": "✓（复扫+发布后检）", "分账边界": "✓"},
-  "remaining_before_close": ["1. 你复核本记录与 FE1466_B6_publish_report.json/open_old_tasks_audit 后正式关闭 Q07", "2. （可选）QA 测试会话批量作废一行处置", "3. （可选小 PR）publish_b6 manifest 覆盖缺陷修正"]
+ "title": "Q07 Process Evidence Integrity｜P0 关闭验收记录",
+ "date": "2026-10-20（entry-closeout 补齐版）",
+ "decision_requested": "Q07 P0 由 OPEN 转关闭验收（按裁决 19:21 §五 四问作答；关闭动作本身等批）",
+ "code_baseline": "待合并 PR#121 分支 HEAD：含 submit_attempt 失效入口守卫（新增生产代码变更，见 entry_guard_note）",
+ "q1_disposition_37": {
+  "35_version_replacement": "B1–B5 35 对：新 RVID（带 process_constraint）published、旧 RVID superseded；逐批单事务+唯一性+目录+pin 冒烟（FE1466_publish_manifest_B1..B5 + postpublish_B1..B5）",
+  "2_cross_resource_replacement": "B6-A 82aabb99（替 2c46c271·app_strat·d1）、B6-B 2f2e8491（替 845c6fea·app_transfer·d4）=新逻辑资源替代，关系记录于 FE1466_B6_publish_report.json，未伪造版本链；旧风险 superseded 退出下发（pin 403 实证于发布后检）",
+  "no_old_channel": "专核（只读）：全 published V2 中 evidence_targets 有而 process_constraint 无 = 0；37 旧风险行仍 published = 0"
+ },
+ "q2_open_old_tasks": {
+  "reconciliation": "FE1466_open_tasks_full_reconciliation.json：556 唯一 task_id 全枚举（distinct，与首轮 556 一致——37 差额系首轮 limit40 截断非未解释项），12 个 QA child 完整 UUID by_child 清单，真实 …0001=0，未分类=0",
+  "invalidation": "FE1466_invalidation_run.json：556 条 task→cancelled（task 级——77 会话含 905 条范围外任务，会话级作废=扩大，已放弃）；attempt/evidence/session 零删改；审计前后状态在案",
+  "scope_analysis": "FE1466_invalidate_scope_analysis.json",
+  "entry_closure": "submit_attempt 增失效守卫（§三）：cancelled 任务新 submission→expired:true/RETRY(task_expired)·不判分·零证据；同 (task,attempt_no) 或同 submission 重放走既有幂等返回原结果不补写。FE1466_expiry_entry_verification.json 四场景全过；残余可提交旧风险任务=0（复核 SQL）",
+  "valid_pool_correction": "§二 纠正：此前'valid 池外'表述过强——qa07 实测确有 correctness=1.0/valid=true 历史证据（QA 身份≠证据未被消费）。本轮只对未来入口收口，历史 QA 证据零改写；真实儿童 …0001 未受影响（by_child=0）",
+  "note": "关闭记录按裁决 §五：入口收口已完成，非'待完成'"
+ },
+ "q3_new_version_rules_hold": {
+  "rescan": "发布后全库复扫（Mac 手动，无定时器）：inventory 304 条（published 225 等量/qa_staged 1/qa_retired 27/superseded 51）snapshot 79f90852…，BLOCKED_SCHEMA=0",
+  "tristate_on_published_new": "发布后检逐题实证（publish_b6/publish_batch post-publish）：空过程→null/missing/零证据/RETRY；不可核验→null/unverifiable/零证据/无错因诊断；合法→true+恰一次；重放同 attempt 不重复留证；矛盾按冻结策略（pattern/shape 负向允许、money/pv 零新增）",
+  "note": "publish_b6 的 --only 分跑致 manifest 覆盖（B 覆 A）为工具报告缺陷非数据缺陷——A 记录由 dry 期 content_sha=42a10dfa… 与终核状态（82aabb99 published）补全于 FE1466_B6_publish_report.json（已手工合并，缺陷登记整改 TODO：按题号合并写入）"
+ },
+ "q4_scope_boundary": "Q07 关闭范围=过程证据完整性缺陷本身。以下不归 Q07：211 条同质错因（Q05，另批治理）、212 条 UNVERIFIED（Q03 计算器扩展）、教学效度/能力标签问题（app_transfer 保持观察项定位、money/pv 标签专项未启动）、B6 两题的教学验收（本次为技术发布非教学认证——裁决 §四.3 明示）",
+ "history_untouched": "全程零 DELETE/零历史 UPDATE；已引用退役版 a2732868/939d81b5 保持 qa_retired 不可下发不可复用",
+ "close_criteria_check": {
+  "新下发范围": "✓",
+  "旧任务范围": "✓ 归属全解释+入口收口残余=0",
+  "新版行为": "✓ 复扫+发布后检+四场景",
+  "审计完整性": "✓",
+  "历史保护": "✓ 零删改"
+ },
+ "remaining_before_close": [
+  "你复核 PR#121（注意 entry_guard_note 的生产代码范围）→ 批准合并 → 我按明确缺陷范围关闭 Q07 并出终版记录"
+ ],
+ "entry_guard_note": "本 PR 除文档/工件外，含一处生产代码变更：submit_attempt 的失效任务守卫（§三 要求'提交入口实际拒绝'，既有代码无此校验=真实缺口，非仅测试数据）。192 单测+四场景实链验证为据。"
 }

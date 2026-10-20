@@ -160,7 +160,16 @@ def main():
                    "content_sha256": csha, "ui_sha256": usha,
                    "post_publish_issues": iss or "无"}
             reports.append(rep)
-            json.dump({"published": reports, "note": "B6 受控发布（裁决 19:21 §四）；替代关系跨资源，未伪造版本链"},
+            # 防覆盖修复（裁决 20:13 §四）：每题独立工件，总报告读回全部
+            # alt-*.json 聚合——第二次执行绝不覆写第一次记录。
+            json.dump(rep, open(f"{HERE}/FE1466_B6_publish_report_{key}.json", "w"),
+                      ensure_ascii=False, indent=1)
+            import glob as _g
+            agg = []
+            for fp in sorted(_g.glob(f"{HERE}/FE1466_B6_publish_report_*.json")):
+                agg.append(json.load(open(fp)))
+            json.dump({"published": agg,
+                       "note": "B6 受控发布；跨资源替代关系在案；工件按 alt 分文件防覆盖"},
                       open(f"{HERE}/FE1466_B6_publish_report.json", "w"), ensure_ascii=False, indent=1)
             print(f"B6-{key} 发布完成，后检: {rep['post_publish_issues']}")
             if iss:

@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import (
     AbilityState,
     Attempt,
+    LearningEvent,
     LearningPlan,
     LearningSession,
     Resource,
@@ -858,6 +859,47 @@ async def submit_attempt(
     task = await db.get(TaskInstance, task_instance_id)
     if task is None:
         raise ValueError(f"task_instance {task_instance_id} 不存在")
+
+    # FE-1466 Q07：已失效（cancelled 等）任务不接新作答——受控拒绝，不判分、
+    # 不写 attempt、不产 Mastery Evidence（§三：状态改了还要提交入口实际拒绝）。
+    # 幂等优先豁免：同 (task, attempt_no) 或同 submission_id 的历史提交仍按
+    # 既有重放约定返回原结果——不得因失效而报错或补写。
+    if task.status != "assigned":
+        prior = (
+            await db.execute(
+                select(Attempt).where(
+                    Attempt.task_instance_id == task_instance_id,
+                    Attempt.attempt_no == attempt_no,
+                )
+            )
+        ).scalar_one_or_none()
+        if submission_id is not None:
+            prior = prior or (
+                await db.execute(
+                    select(Attempt).where(Attempt.submission_id == submission_id)
+                )
+            ).scalar_one_or_none()
+        if prior is not None and str(prior.task_instance_id) == str(task_instance_id):
+            from app.services.turn_service import _replay_shape
+
+            event = (
+                await db.execute(
+                    select(LearningEvent).where(
+                        LearningEvent.attempt_id == prior.attempt_id
+                    )
+                )
+            ).scalar_one_or_none()
+            return _replay_shape(prior, event)
+        return {
+            "task_instance_id": str(task_instance_id),
+            "attempt_id": None,
+            "correct": None,
+            "process_status": None,
+            "diagnosis": None,
+            "evidence_id": None,
+            "next_action": {"type": "RETRY", "policy_id": "task_expired"},
+            "expired": True,
+        }
 
     rv = await db.get(ResourceVersion, task.resource_version_id)
     expected = rv.content.get("answer") if rv and isinstance(rv.content, dict) else None
