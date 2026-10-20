@@ -28,7 +28,8 @@ def _db_url():
 DB = _db_url()
 API = "http://127.0.0.1:8000"
 CHILD = "00000000-0000-0000-0000-000000000099"
-MODE = {"money-board": "payment_change", "pattern-board": "pattern_extension"}
+MODE = {"money-board": "payment_change", "pattern-board": "pattern_extension",
+        "shape-canvas": "shape_drawing", "place-value": "place_value_build"}
 
 
 def post(p, d):
@@ -74,6 +75,21 @@ def legal_and_contra_data(renderer, cfg):
         if sum(int(k) * v for k, v in contra.items()) == price:
             contra = {str(min(dens)): price + 1}          # 再不行用欠付
         return {"counts": counts, "total": price}, {"counts": contra, "total": price}, {"counts": {}, "total": 0}
+    if renderer == "shape-canvas":
+        area = cfg.get("target_area") or (cfg.get("constraints") or {}).get("area") or 6
+        w, h = 3, 2
+        while w * h != area:
+            w -= 1
+            if w < 1: w, h = area, 1; break
+        legal = {"vertices": [[0,0],[w,0],[w,h],[0,h]], "area": area, "right_angles": 4}
+        contra = {"vertices": [[0,0],[w,0],[w+1,h],[1,h]], "area": area, "right_angles": 4}
+        return legal, contra, {"vertices": [], "area": 0}
+    if renderer == "place-value":
+        target = cfg["target"]; ds = [int(x) for x in str(target)]
+        legal = {"slots": ds}
+        sw = ds[:]; sw[-1], sw[-2] = sw[-2], sw[-1]
+        contra = {"slots": sw if sw != ds else ds[::-1]}
+        return legal, contra, {"slots": [None]*len(ds)}
     if renderer == "pattern-board":
         vis = cfg["visible"]; period = cfg.get("period") or (len(vis) if vis else 2)
         blanks = cfg.get("blanks") or 1
@@ -86,9 +102,13 @@ def legal_and_contra_data(renderer, cfg):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--batch", default=0, type=int, help="批次序号 1-6")
+    args = ap.parse_args()
     bp = json.load(open("/Users/hanxianxiang/WorkBuddy/2026-09-24-10-25-54/output/qa_item01_r2/FE1466_migration_batch_proposal.json"))
     m = json.load(open("/Users/hanxianxiang/WorkBuddy/2026-09-24-10-25-54/output/qa_item01_r2/FE1466_risk_matrix_37.json"))
-    b1 = set(tuple(x) for x in bp["batches"][0]["bands"])
+    b1 = set(tuple(x) for x in bp["batches"][args.batch-1]["bands"])
     todo = [x for x in m["rows"] if (x["ability"], x["difficulty"]) in b1]
     results = []
     for x in todo:
@@ -113,7 +133,10 @@ def main():
         cfg = ui["workspaces"][0].get("config") or {}
         answer = (ct or {}).get("answer")
         legal, contra, empty = legal_and_contra_data(renderer, cfg)
-        r = {"src": src[:8], "new": new, "renderer": renderer, "status": "qa_staged"}
+        r = {"src": src[:8], "new": new, "renderer": renderer, "status": "qa_staged", "ability": x["ability"], "difficulty": x["difficulty"]}
+        if src[:8] in DONE:
+            r["pass"] = True; r["skipped_recheck"] = "首轮已建已验（异常恢复），本轮复用"
+            results.append(r); print(f"{src[:8]}→{new[:8]} {renderer:13s} skip(已验)"); continue
         sid1, tid1, o1 = attempt(new, empty, answer)
         r["empty"] = {"correct": o1["correct"], "ps": o1.get("process_status"), "ev": ev_count(tid1),
                       "na": (o1.get("next_action") or {}).get("type")}
@@ -127,9 +150,18 @@ def main():
         results.append(r)
         print(f"{src[:8]}→{new[:8]} {renderer:13s} empty={r['empty']['correct']}/{r['empty']['ps']}/ev{r['empty']['ev']} "
               f"contra={r['contra']['correct']}/ev{r['contra']['ev']} legal={r['legal']['correct']}/ev{r['legal']['ev']} => {'✓' if r['pass'] else '✗'}")
-    json.dump({"batch": "B1", "note": "qa_staged 新约束版（未发布）；旧版保持 published 可用；三态复验=阶段C 同口径",
+    json.dump({"batch": f"B{args.batch}", "note": "qa_staged 新约束版（未发布）；旧版保持 published 可用；三态复验=阶段C 同口径",
                "results": results, "all_pass": all(r["pass"] for r in results)},
-              open("scripts/iqc/rt1464/FE1466_B1_migration_report.json", "w"), ensure_ascii=False, indent=1)
+              open(f"scripts/iqc/rt1464/FE1466_B{args.batch}_migration_report.json", "w"), ensure_ascii=False, indent=1)
+    print("B1 全过" if all(r["pass"] for r in results) else "有未过项——见报告")
+
+
+if __name__ == "__main__":
+    import psycopg.types.json
+    main()
+B{args.batch}", "note": "qa_staged 新约束版（未发布）；旧版保持 published 可用；三态复验=阶段C 同口径",
+               "results": results, "all_pass": all(r["pass"] for r in results)},
+              open(f"scripts/iqc/rt1464/FE1466_B{args.batch}_migration_report.json", "w"), ensure_ascii=False, indent=1)
     print("B1 全过" if all(r["pass"] for r in results) else "有未过项——见报告")
 
 

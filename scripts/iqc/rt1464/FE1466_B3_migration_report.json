@@ -1,0 +1,253 @@
+{
+ "batch": "B3",
+ "generated": "2026-10-20T02:41:18.741392+00:00",
+ "note": "qa_staged 新约束版（未发布）；旧版 published 全程不动；三态复验每批独立跑（验证与建版解耦，幂等复用已建行）",
+ "results": [
+  {
+   "src": "4936b35f-a5dc-44d4-9b2e-e58c6f3b7c0e",
+   "new": "0bfad10f-1e49-4625-ba5b-038de233f571",
+   "created": false,
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 2,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "1a544ab3-cc63-414e-b2a8-196a89fe51db",
+     "task": "57eb8aa9-f4e4-4d02-b605-c88eabb40b1c"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 0,
+     "na": "HINT",
+     "attempt": "31aa1e9d-c811-403a-8fc4-5f2a8a7f898e",
+     "task": "a7b32800-ceda-4a8f-8d64-88da368aec9d"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "c62e54dc-000a-4db8-b394-5c1e9658e3be",
+     "task": "3312a1ec-026d-4a77-8c95-3b41c315671e"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "60039509-f8e6-47f5-a86a-04d9b84e05ef",
+   "new": "8b41e648-23dc-4a84-bc3c-d86293c358f9",
+   "created": false,
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "6ab5a8ca-b156-47ba-8441-5a7c132a7bf1",
+     "task": "0c7e141e-eae4-4b49-b408-1d155230668b"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 1,
+     "na": "HINT",
+     "attempt": "05ba4a83-664c-42f7-8f0e-14588c45b368",
+     "task": "92a28545-077e-4486-a20c-ef3d6b880782"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "37a78c51-6249-44fe-a3dc-34461b16a64f",
+     "task": "c1ceab79-c598-4af7-8c12-787863c30230"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "new": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "created": false,
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "2f586451-05ce-4767-9a78-75887303a55f",
+     "task": "bf04838f-5dc2-4508-8699-beefd76e8ff7"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 1,
+     "na": "HINT",
+     "attempt": "906f8594-cb2a-43c2-a07e-d942f8225ef5",
+     "task": "655a7948-cb5b-47ec-8d81-37f8e6bc99d4"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "f95ee01e-3e5d-460b-8c24-005f195de9de",
+     "task": "e884354c-267b-4b31-893e-9efbded47f19"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "new": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "created": false,
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 2,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "ccce6b7f-91c1-465b-97c2-cf9663f21a77",
+     "task": "af6ddfd1-4f5d-44e4-b915-d07910e4b054"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 0,
+     "na": "HINT",
+     "attempt": "b0b1d33a-94d6-4f8e-aec3-11a4d55da01e",
+     "task": "0ede29e1-1564-4880-9009-d52cc5f5f0bf"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "0ad809e7-c5ce-47aa-91fa-22a808655b5f",
+     "task": "4e67dc2c-df1b-4bf9-b36c-91fadeac40b2"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "b7d09e76-58f2-40af-a8ea-7d31a1bc3f6e",
+   "new": "c9347ee4-5d75-4f2b-a9cc-b2a193c4961f",
+   "created": false,
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 3,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "3b9c955c-b93a-4122-89a8-e432f51a80c8",
+     "task": "becaccba-ce68-4c61-a19b-0775fd098d0d"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 1,
+     "na": "HINT",
+     "attempt": "3833c90a-38ae-428c-b0aa-161abfe7cf7a",
+     "task": "6a70d095-e8ba-4b34-b93e-484223a958e6"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "a348e1f6-27e0-44fd-ae09-9c1fb126db0e",
+     "task": "143c0d52-823d-4304-87e0-e1dc14105860"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "cbcf5a5d-a88c-4463-b5ec-1aed74e17cce",
+   "new": "ae778338-3a06-417f-b889-f42ce4647f47",
+   "created": false,
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 3,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "e03afe0b-e736-4fd9-8a08-ad9b8425d02f",
+     "task": "b91ae7ad-0d52-4f9e-815e-e27fa2a6e0d9"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 0,
+     "na": "HINT",
+     "attempt": "480a8c09-9409-4428-89bf-d09123105cbd",
+     "task": "069b3ff5-fb05-4748-9d52-7f2c4c7d006d"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "fc0a1f5a-c545-4a3c-b0ce-7ba85f84fe4c",
+     "task": "f50593ad-e355-4eb5-86a7-8c71f45dd212"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "d606f5a4-649e-4f4b-be4f-4ce63923263b",
+   "new": "1d5fab4e-f752-4b7b-892b-82a0932d8cde",
+   "created": false,
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "eabe5f4c-80e3-4f7f-80d6-3142fba4dec3",
+     "task": "4c6c9115-79e9-42af-9e46-8cc214291458"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 1,
+     "na": "HINT",
+     "attempt": "015ba4ed-6452-47b8-adaf-136d163712ea",
+     "task": "50c2f631-b5cf-4785-834b-fbe28613dbc7"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "23b9458b-bfd0-48ce-99f9-187cc7436da2",
+     "task": "e3d9ce8e-e6f1-4075-ba9e-7fcf35775905"
+    }
+   },
+   "pass": true
+  }
+ ],
+ "all_pass": true
+}
