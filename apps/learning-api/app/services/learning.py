@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import (
     AbilityState,
     Attempt,
+    LearningEvent,
     LearningPlan,
     LearningSession,
     Resource,
@@ -36,7 +37,7 @@ from app.services.jump_process import (
     validate_jump_process,
 )
 from app.services.process_validate import get_process_constraint, process_validate
-from app.services.turn_service import record_attempt
+from app.services.turn_service import SubmissionConflict, record_attempt
 
 
 async def start_session(
@@ -855,9 +856,72 @@ async def submit_attempt(
     submission_id（V2 幂等键，docs/frontend/29 §3）：可空——V1 提交不带时回落
     (task_instance_id, attempt_no) 顺序号幂等（旧轨），V2 规模化前双轨并存。
     """
-    task = await db.get(TaskInstance, task_instance_id)
+    # 行锁（裁决 21:26 §二末段）：读任务即 FOR UPDATE，与本会话的 attempt/证据
+    # 写入同事务——失效批处理（UPDATE task_instance）与之互斥串行。保证
+    # "失效已提交后，新请求不再能写入该任务的掌握证据"不依赖演示时序：
+    # 新请求要么在失效提交前拿到锁（其时任务仍 assigned，属合法作答），
+    # 要么等失效提交后读到 cancelled 被守卫拒绝。
+    task = (
+        await db.execute(
+            select(TaskInstance)
+            .where(TaskInstance.task_instance_id == task_instance_id)
+            .with_for_update()
+        )
+    ).scalar_one_or_none()
     if task is None:
         raise ValueError(f"task_instance {task_instance_id} 不存在")
+
+    # FE-1466 Q07（裁决 21:26 §二）：已失效任务不接新作答。幂等判定与正常
+    # 路径同语义——命中依据="本次请求是否就是历史那次提交"（submission_id
+    # 全局权威轨 / (task,attempt_no) V1 兼容轨），不是"该任务以前答过"：
+    #   同 submission_id 同内容 → 重放原 Attempt（不判分/不新增证据/不恢复任务）；
+    #   同 submission_id 异内容 → SubmissionConflict(HTTP 409)（不被 expired 掩盖）；
+    #   新 submission_id / V1 新 attempt_no → 受控失效结果（即使任务已有其它历史
+    #   Attempt 也不能绕过守卫）；V1 同 (task,attempt_no) 命中 → 重放（既有旧轨）。
+    if task.status != "assigned":
+        prior = None
+        if submission_id is not None:
+            by_sub = (
+                await db.execute(
+                    select(Attempt).where(Attempt.submission_id == submission_id)
+                )
+            ).scalar_one_or_none()
+            if by_sub is not None:
+                if by_sub.response != response:
+                    raise SubmissionConflict(
+                        f"submission_id {submission_id} 已存在且内容不同（重试必须同内容）"
+                    )
+                prior = by_sub
+        else:
+            prior = (
+                await db.execute(
+                    select(Attempt).where(
+                        Attempt.task_instance_id == task_instance_id,
+                        Attempt.attempt_no == attempt_no,
+                    )
+                )
+            ).scalar_one_or_none()
+        if prior is not None:
+            from app.services.turn_service import _replay_shape
+
+            event = (
+                await db.execute(
+                    select(LearningEvent).where(
+                        LearningEvent.attempt_id == prior.attempt_id
+                    )
+                )
+            ).scalar_one_or_none()
+            return _replay_shape(prior, event)
+        return {
+            "task_instance_id": str(task_instance_id),
+            "attempt_id": None,
+            "correct": None,
+            "process_status": None,
+            "diagnosis": None,
+            "evidence_id": None,
+            "next_action": {"type": "RETRY", "policy_id": "task_expired"},
+            "expired": True,
+        }
 
     rv = await db.get(ResourceVersion, task.resource_version_id)
     expected = rv.content.get("answer") if rv and isinstance(rv.content, dict) else None

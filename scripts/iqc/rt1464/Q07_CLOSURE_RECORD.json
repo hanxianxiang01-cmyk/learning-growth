@@ -1,0 +1,40 @@
+{
+ "title": "Q07 Process Evidence Integrity｜P0 关闭验收记录",
+ "date": "2026-10-20（entry-closeout 补齐版）",
+ "decision_requested": "Q07 P0 由 OPEN 转关闭验收（按裁决 19:21 §五 四问作答；关闭动作本身等批）",
+ "code_baseline": "待合并 PR#121 分支 HEAD：含 submit_attempt 失效入口守卫 + 行锁（FOR UPDATE）（新增生产代码变更，见 entry_guard_note）",
+ "q1_disposition_37": {
+  "35_version_replacement": "B1–B5 35 对：新 RVID（带 process_constraint）published、旧 RVID superseded；逐批单事务+唯一性+目录+pin 冒烟（FE1466_publish_manifest_B1..B5 + postpublish_B1..B5）",
+  "2_cross_resource_replacement": "B6-A 82aabb99（替 2c46c271·app_strat·d1）、B6-B 2f2e8491（替 845c6fea·app_transfer·d4）=新逻辑资源替代，关系记录于 FE1466_B6_publish_report.json，未伪造版本链；旧风险 superseded 退出下发（pin 403 实证于发布后检）",
+  "no_old_channel": "专核（只读）：全 published V2 中 evidence_targets 有而 process_constraint 无 = 0；37 旧风险行仍 published = 0"
+ },
+ "q2_open_old_tasks": {
+  "reconciliation": "FE1466_open_tasks_full_reconciliation.json：556 唯一 task_id 全枚举（distinct；首轮'37 差额'系 limit40 展示截断非未解释）。**12 个 QA child 完整 UUID**，分布由 FE1466_invalidation_run.json 明细直接 Counter 生成（非口算）：…0099×519、…0096×13、…0097×6、…0087×4、…0094×4、…0084×3、…0093×2、…0088/0089/0090/0091/0092 各×1；合计 519+37=556，账号数 12（主账号 0099 占 519，其余 **11 个**账号共 37 条）。未分类=0，真实儿童 …0001=0",
+  "invalidation": "FE1466_invalidation_run.json：556 条 task→cancelled（task 级——77 会话含 905 条范围外任务，会话级作废=扩大，已放弃）；attempt/evidence/session 零删改；审计前后状态在案",
+  "scope_analysis": "FE1466_invalidate_scope_analysis.json",
+  "entry_closure": "submit_attempt 增失效守卫（§三）：cancelled 任务新 submission→expired:true/RETRY(task_expired)·不判分·零证据；同 (task,attempt_no) 或同 submission 重放走既有幂等返回原结果不补写。FE1466_expiry_entry_reverify.json 五场景（A 新提交/ B 精确重放/ C 异内容 409/ D V1 轨重放/ E 正常任务对照）目标环境实测全 PASS，每例前后 attempt/evidence/event 计数比对零新增；残余可提交旧风险任务=0（复核 SQL）",
+  "concurrency_proof": "§二末段'不能只靠顺序执行推断并发边界'：submit_attempt 读任务改为 SELECT ... FOR UPDATE（与 attempt/证据写入同事务），失效批处理 UPDATE 与之经 PostgreSQL 行锁互斥串行。FE1466_expiry_lock_concurrency.json 用两连接真实争抢实测：T2 观测到 pg_stat_activity wait_event_type=Lock（提交在等锁、此刻零写入）→ T3 失效 UPDATE+COMMIT → T4 放行后返回 expired/attempt_id=null 且三表仍零新增，阻塞 1.08s 严格跨越失效提交；T6 全局三表计数前后一致（无测试污染）。结论：'失效提交后仍写入成功'的窗口在机制上不存在，不依赖演示时序",
+  "review_snapshot_correction": "此前对失效任务守卫的幂等描述有两处偏差，本轮修正并锁测：①原实现以 (task,attempt_no) 命中即重放，导致'任务已有任一条历史 Attempt'即可被新请求借用旧 attempt_no 绕过守卫——现改为按 submission_id 全局权威轨判定（命中=本次请求就是历史那次提交）；②原实现忽略 submission_id 内容差异，现同 ID 异内容一律 409（不被 expired 掩盖）。修正后 198 单测 + 五场景实测全过",
+  "valid_pool_correction": "§二 纠正：此前'valid 池外'表述过强——qa07 实测确有 correctness=1.0/valid=true 历史证据（QA 身份≠证据未被消费）。本轮只对未来入口收口，历史 QA 证据零改写；真实儿童 …0001 未受影响（by_child=0）",
+  "note": "关闭记录按裁决 §五：入口收口已完成，非'待完成'",
+  "real_child_scope_note": "真实儿童口径：检查对象=37 旧风险 rvid 关联的 task_instance 与本轮失效目标集合；结论 …0001 命中 0 条、被 cancelled 0 条。口径边界：这证明本批次操作未触及该账号，不构成对其全部历史数据（新风险题作答等）的全面安全证明——后者由 B1-B5 发布后检与既有 QA 隔离机制覆盖，不在本记录声明范围。"
+ },
+ "q3_new_version_rules_hold": {
+  "rescan": "发布后全库复扫（Mac 手动，无定时器）：inventory 304 条（published 225 等量/qa_staged 1/qa_retired 27/superseded 51）snapshot 79f90852…，BLOCKED_SCHEMA=0",
+  "tristate_on_published_new": "发布后检逐题实证（publish_b6/publish_batch post-publish）：空过程→null/missing/零证据/RETRY；不可核验→null/unverifiable/零证据/无错因诊断；合法→true+恰一次；重放同 attempt 不重复留证；矛盾按冻结策略（pattern/shape 负向允许、money/pv 零新增）",
+  "note": "publish_b6 的 --only 分跑致 manifest 覆盖（B 覆 A）为工具报告缺陷非数据缺陷——A 记录由 dry 期 content_sha=42a10dfa… 与终核状态（82aabb99 published）补全于 FE1466_B6_publish_report.json（已手工合并，缺陷登记整改 TODO：按题号合并写入）"
+ },
+ "q4_scope_boundary": "Q07 关闭范围=过程证据完整性缺陷本身。以下不归 Q07：211 条同质错因（Q05，另批治理）、212 条 UNVERIFIED（Q03 计算器扩展）、教学效度/能力标签问题（app_transfer 保持观察项定位、money/pv 标签专项未启动）、B6 两题的教学验收（本次为技术发布非教学认证——裁决 §四.3 明示）",
+ "history_untouched": "全程零 DELETE/零历史 UPDATE；已引用退役版 a2732868/939d81b5 保持 qa_retired 不可下发不可复用",
+ "close_criteria_check": {
+  "新下发范围": "✓",
+  "旧任务范围": "✓ 归属全解释+入口收口残余=0",
+  "新版行为": "✓ 复扫+发布后检+四场景",
+  "审计完整性": "✓",
+  "历史保护": "✓ 零删改"
+ },
+ "remaining_before_close": [
+  "你复核 PR#121（注意 entry_guard_note 的生产代码范围）→ 批准合并 → 我按明确缺陷范围关闭 Q07 并出终版记录"
+ ],
+ "entry_guard_note": "本 PR 除文档/工件外，含一处生产代码变更：submit_attempt 的失效任务守卫 + FOR UPDATE 行锁（§三 要求'提交入口实际拒绝'，既有代码无此校验=真实缺口，非仅测试数据）。198 单测 + 五场景实链 + 两会话锁争抢实测为据。另含前端三处契约透传（contracts.ts expired?/attemptResultNormalizer 透传/machine.ts expired→idle 重取 + CoachPanel 分态文案），E2E C-EXPIRE-RECOVERY 通过。"
+}

@@ -1,0 +1,26 @@
+{
+ "published": [
+  {
+   "alt": "A",
+   "new_rvid": "82aabb99-d2a8-4885-9236-7e44395238d7",
+   "old_rvid": "2c46c271-1a2f-4f45-ad3c-b5719ad58ded",
+   "relation": "cross-resource-replacement",
+   "content_sha256": "42a10dfa86c6d94ceedf82a85ba7d2854c6eba34ba19ffe67d842f0fa7fa2294",
+   "ui_sha256": "e64e72c7d83f3934dc48a1c3e1d0ca5320c09096cca62ccfe3cf6b854ef90d05",
+   "old_status_now": "superseded",
+   "post_publish_issues": "无（--only=A 实跑输出'后检: 无'；报告文件被 --only=B 覆写——工具缺陷已登记）",
+   "reconstruction": "条目由 dry 哈希(42a10dfa86c6d94c)+DB 终核重建合并回"
+  },
+  {
+   "alt": "B",
+   "new_rvid": "2f2e8491-151c-4959-94be-c7789d553895",
+   "old_rvid": "845c6fea-418f-4365-a25e-b50e5b5040f8",
+   "relation": "cross-resource-replacement",
+   "content_sha256": "f8c991f3a3f2327cc1c18c6f87523c1fb48c3566af0fe714a9aa7c1689443065",
+   "ui_sha256": "1f9e03c36d15f14e0493c0b165be1c52bfc1a7f69fad0f685d27789c6973643e",
+   "post_publish_issues": "无"
+  }
+ ],
+ "note": "B6 受控发布（裁决 19:21 §四）；替代关系跨资源，未伪造版本链",
+ "tool_defect_registered": "publish_b6 --only 分跑时 json.dump 全量覆写丢前题记录——整改 TODO：按 alt 键合并写入"
+}

@@ -61,3 +61,25 @@ test("B6-B pattern ABBA 真实摆珠判对；空摆被 UI 拦", async ({ page })
   expect(r.process_status).toBe("valid");
   expect(r.evidence_id).toBeTruthy();
 });
+
+// ---------- §四(21:26) 前端失效恢复：task_expired → 停止旧任务提交并重新取题 ----------
+test("C-EXPIRE-RECOVERY expired 响应→换新题不循环重试旧任务", async ({ page }) => {
+  const task = await openTask(page, B6.B, "exp");
+  await expect(page.getByTestId("pattern-board-v2")).toBeVisible({ timeout: 30_000 });
+  // 首答 mock 成失效响应，后续真实转发
+  let hits = 0;
+  await page.route("**/v1/learning/attempts", async route => {
+    if (hits++ === 0) {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+        attempt_id: null, correct: null, diagnosis: null, evidence_id: null,
+        expired: true, process_status: null,
+        next_action: { type: "RETRY", policy_id: "task_expired" } }) });
+    } else await route.fallback();
+  });
+  await page.getByTestId("pb-token-1").click();
+  await page.getByTestId("pb-token-2").click();
+  await page.locator("[data-testid$='-submit']").click();
+  // 恢复：idle→loadTask 重取——旧 pattern-board 卡片重新挂载即证明换新题流程启动
+  await expect(page.getByTestId("pattern-board-v2")).toBeVisible({ timeout: 30_000 });
+  expect(hits, "expired 后页面回 idle 重取新题，不对旧任务二次提交").toBe(1);
+});

@@ -420,6 +420,8 @@ export type AttemptResult = {
   // 消费方一律 truthy 判断，不得把 null 当答错）。
   correct: boolean | null;
   process_status?: string;
+  // FE-1466 Q07：任务已失效（守卫拒绝），前端必须停止旧任务提交并重新取题
+  expired?: boolean;
   diagnosis?: DiagnosisResult | null;
   next_action: NextAction;
 };

@@ -1,0 +1,27 @@
+{
+ "S1_expired_submit": {
+  "expired_flag": true,
+  "correct": null,
+  "attempt_id": null,
+  "next_action": {
+   "type": "RETRY",
+   "policy_id": "task_expired"
+  },
+  "no_new_evidence": true,
+  "historical_ev_untouched": true
+ },
+ "S2_replay": {
+  "same_attempt": true,
+  "correct": true,
+  "no_extra_evidence": true
+ },
+ "S3_session_read": {
+  "evidence_stable": true,
+  "count": 5
+ },
+ "S4_replacement_normal": {
+  "correct": true,
+  "ps": "valid",
+  "has_evidence": true
+ }
+}

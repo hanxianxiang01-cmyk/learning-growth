@@ -1,0 +1,12 @@
+{
+ "alt": "A",
+ "new_rvid": "82aabb99-d2a8-4885-9236-7e44395238d7",
+ "old_rvid": "2c46c271-1a2f-4f45-ad3c-b5719ad58ded",
+ "relation": "cross-resource-replacement",
+ "content_sha256": "42a10dfa86c6d94ceedf82a85ba7d2854c6eba34ba19ffe67d842f0fa7fa2294",
+ "ui_sha256": "e64e72c7d83f3934dc48a1c3e1d0ca5320c09096cca62ccfe3cf6b854ef90d05",
+ "old_status_now": "superseded",
+ "post_publish_issues": "无（--only=A 实跑输出'后检: 无'；报告文件被 --only=B 覆写——工具缺陷已登记）",
+ "reconstruction": "条目由 dry 哈希(42a10dfa86c6d94c)+DB 终核重建合并回",
+ "reconstruction_boundary": "按裁决 20:13 §四：本条目保留被覆盖事实+重建时间+引用证据，不冒充原始发布日志；当前直接验证=FE1466_expiry_entry_verification.S4（发布态 82aabb99 下发/判分/证据全过）+内容哈希复核在案"
+}

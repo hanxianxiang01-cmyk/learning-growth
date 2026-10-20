@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-10-20T13:54:32.709971+00:00",
+  "api": "http://127.0.0.1:8000",
+  "verdict": "PASS",
+  "invariant": "失效批处理（UPDATE task_instance）与作答提交（SELECT ... FOR UPDATE）在 PostgreSQL 行锁上互斥串行；失效提交后到达的提交只能读到 cancelled。",
+  "steps": [
+    {
+      "step": "T0-INVALIDATION-HOLDS-LOCK",
+      "passed": true,
+      "task_instance_id": "00055d5d-3a0e-49b6-9993-35edc4096de9",
+      "child": "00000000-0000-0000-0000-000000000099",
+      "status_under_lock": "assigned",
+      "note": "FOR UPDATE 已持有，未提交"
+    },
+    {
+      "step": "T2-SUBMIT-BLOCKED-ON-LOCK",
+      "passed": true,
+      "lock_wait_observed": true,
+      "request_finished_early": false,
+      "counts_while_blocked": {
+        "attempt": 0,
+        "evidence": 0,
+        "event": 0
+      },
+      "status_while_blocked": "assigned",
+      "note": "判据=请求未跑完且零写入；改写成 expired 不可能在此刻发生"
+    },
+    {
+      "step": "T4-RELEASED-EXPIRED-NO-WRITE",
+      "passed": true,
+      "http_status": 200,
+      "expired": true,
+      "attempt_id": null,
+      "evidence_id": null,
+      "next_action": {
+        "type": "RETRY",
+        "policy_id": "task_expired"
+      },
+      "counts_after_release": {
+        "attempt": 0,
+        "evidence": 0,
+        "event": 0
+      },
+      "status_after_release": "cancelled",
+      "elapsed_s": 1.08,
+      "blocked_until_commit": true
+    },
+    {
+      "step": "T5-ORDER-INVARIANT",
+      "passed": true,
+      "submit_finished_at": 1792504471.913706,
+      "invalidation_committed_at": 1792504471.493391,
+      "note": "提交被放行严格晚于失效提交 → 不存在「失效后写入却成功」的窗口"
+    },
+    {
+      "step": "T6-NO-DATA-LEAK",
+      "passed": true,
+      "global_before": {
+        "attempt": 3935,
+        "mastery_evidence": 3130,
+        "learning_event": 3935
+      },
+      "global_after": {
+        "attempt": 3935,
+        "mastery_evidence": 3130,
+        "learning_event": 3935
+      },
+      "sample_task_reset_to": "assigned"
+    }
+  ]
+}
