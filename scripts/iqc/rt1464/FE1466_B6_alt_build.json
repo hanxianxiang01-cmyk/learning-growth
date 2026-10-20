@@ -1,0 +1,27 @@
+{
+ "built": [
+  {
+   "alt": "B",
+   "title": "B6-ALT-B2 信号灯ABB周期迁移",
+   "resource_id": "f687e929-2be2-409c-9916-ae1a1fdad672",
+   "rvid": "2f2e8491-151c-4959-94be-c7789d553895",
+   "ability": "app_transfer",
+   "difficulty": 4
+  }
+ ],
+ "independent_verify": {
+  "A_unique_solution": [
+   "305"
+  ],
+  "B_next_pair": [
+   1,
+   2
+  ],
+  "leak_checks": "PASS",
+  "error_models_discriminative": true
+ },
+ "replaces": {
+  "A": "2c46c271-1a2f-4f45-ad3c-b5719ad58ded",
+  "B": "845c6fea-418f-4365-a25e-b50e5b5040f8"
+ }
+}

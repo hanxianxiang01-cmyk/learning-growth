@@ -1,0 +1,48 @@
+{
+ "batch": "B6-alternatives v2",
+ "results": [
+  {
+   "alt": "A",
+   "rvid": "82aabb99-d2a8-4885-9236-7e44395238d7",
+   "renderer": "place-value",
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1
+   },
+   "pass": true
+  },
+  {
+   "alt": "B",
+   "rvid": "2f2e8491-151c-4959-94be-c7789d553895",
+   "renderer": "pattern-board",
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1
+   },
+   "pass": true
+  }
+ ],
+ "all_pass": true
+}
