@@ -7,12 +7,25 @@ DB 断言。旧版全程 published 可用（发布决定权在产品，=步骤5 
 """
 import copy
 import json
+import os
+import subprocess
+import sys
 import urllib.request
 import uuid
 
 import psycopg
 
-DB = "postgresql://h_pg_user:W5uae1dxfnm184UB@pgm-uf69q77eiyn7qt01fo.pg.rds.aliyuncs.com:5897/h_db"
+# 数据卫生 R2：凭据零字面量。迁移需写权限（插 qa_staged 新行），Keychain 的
+# iqc-database-url 是只读账号——必须显式用 IQC_MIGRATE_DB 注入迁移账号，
+# 不提供静默回退（防拿只读凭据跑写任务/防凭据入库）。
+def _db_url():
+    v = os.environ.get("IQC_MIGRATE_DB")
+    if not v:
+        sys.exit("缺 IQC_MIGRATE_DB（迁移需写账号，显式注入；Keychain 条目为只读扫描专用）")
+    return v
+
+
+DB = _db_url()
 API = "http://127.0.0.1:8000"
 CHILD = "00000000-0000-0000-0000-000000000099"
 MODE = {"money-board": "payment_change", "pattern-board": "pattern_extension"}
