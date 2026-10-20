@@ -1,0 +1,26 @@
+{
+ "lineage": "1723d78a(v1,published,含示例) → 6b2ba5d9(v2,qa_staged,示例已删) → 088d0469(v3,qa_staged,继承v2内容+process_constraint)",
+ "content_sha_equal_b4_vs_contentfix": true,
+ "content_sha_different_from_orig": true,
+ "ui_equal_b4_vs_contentfix_minus_pc": true,
+ "hint_err_equal": true,
+ "leak_example_absent_in_b4_stem": true,
+ "b4_version_of_same_resource": [
+  2,
+  3
+ ],
+ "statuses": {
+  "orig": [
+   "published",
+   1
+  ],
+  "contentfix": [
+   "qa_staged",
+   2
+  ],
+  "b4decl": [
+   "qa_staged",
+   3
+  ]
+ }
+}
