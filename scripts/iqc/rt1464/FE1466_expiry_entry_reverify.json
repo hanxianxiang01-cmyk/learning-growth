@@ -1,0 +1,110 @@
+{
+  "generated_at": "2026-10-20T13:52:08.574810+00:00",
+  "api": "http://127.0.0.1:8000",
+  "verdict": "PASS",
+  "cases": [
+    {
+      "case": "A-NEW-SUB-EXPIRED",
+      "passed": true,
+      "task_instance_id": "016ef12e-9366-4e70-971f-2c2e55c80a6c",
+      "submission_id": "84042f46-0cf7-427a-80a9-f29449767a2d",
+      "http_status": 200,
+      "body": {
+        "task_instance_id": "016ef12e-9366-4e70-971f-2c2e55c80a6c",
+        "attempt_id": null,
+        "correct": null,
+        "process_status": null,
+        "diagnosis": null,
+        "evidence_id": null,
+        "next_action": {
+          "type": "RETRY",
+          "policy_id": "task_expired"
+        },
+        "expired": true
+      },
+      "before": {
+        "attempt": 0,
+        "mastery_evidence": 0,
+        "learning_event": 0,
+        "task_status": "cancelled"
+      },
+      "after": {
+        "attempt": 0,
+        "mastery_evidence": 0,
+        "learning_event": 0,
+        "task_status": "cancelled"
+      }
+    },
+    {
+      "case": "B-REPLAY-EXACT",
+      "passed": true,
+      "task_instance_id": "0b6c7fe6-2b91-4823-85da-9ed21ce86785",
+      "submission_id": "de76c376-2439-947f-c814-dca162f359e3",
+      "http_status": 200,
+      "replayed_attempt_id": "d984e768-cf95-4677-bd70-18c1e879c50c",
+      "expected_attempt_id": "d984e768-cf95-4677-bd70-18c1e879c50c",
+      "before": {
+        "attempt": 3,
+        "mastery_evidence": 1,
+        "learning_event": 3,
+        "task_status": "cancelled"
+      },
+      "after": {
+        "attempt": 3,
+        "mastery_evidence": 1,
+        "learning_event": 3,
+        "task_status": "cancelled"
+      }
+    },
+    {
+      "case": "C-CONFLICT-409",
+      "passed": true,
+      "task_instance_id": "0b6c7fe6-2b91-4823-85da-9ed21ce86785",
+      "submission_id": "de76c376-2439-947f-c814-dca162f359e3",
+      "http_status": 409,
+      "detail": "submission_id de76c376-2439-947f-c814-dca162f359e3 已存在且内容不同（重试必须同内容）",
+      "before": {
+        "attempt": 3,
+        "mastery_evidence": 1,
+        "learning_event": 3,
+        "task_status": "cancelled"
+      },
+      "after": {
+        "attempt": 3,
+        "mastery_evidence": 1,
+        "learning_event": 3,
+        "task_status": "cancelled"
+      }
+    },
+    {
+      "case": "D-V1-TRACK-REPLAY",
+      "passed": true,
+      "task_instance_id": "0b6c7fe6-2b91-4823-85da-9ed21ce86785",
+      "attempt_no": 1,
+      "http_status": 200,
+      "replayed_attempt_id": "d984e768-cf95-4677-bd70-18c1e879c50c",
+      "expected_attempt_id": "d984e768-cf95-4677-bd70-18c1e879c50c",
+      "before": {
+        "attempt": 3,
+        "mastery_evidence": 1,
+        "learning_event": 3,
+        "task_status": "cancelled"
+      },
+      "after": {
+        "attempt": 3,
+        "mastery_evidence": 1,
+        "learning_event": 3,
+        "task_status": "cancelled"
+      }
+    },
+    {
+      "case": "E-CONTROL-NORMAL",
+      "passed": true,
+      "task_instance_id": "00027045-ebf4-4b08-ba97-d8c6d882c035",
+      "http_status": 200,
+      "correct": false,
+      "expired": null,
+      "note": "对照项：不要求判对，只要求守卫不放行到 expired 分支"
+    }
+  ]
+}

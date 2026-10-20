@@ -66,6 +66,7 @@ export function normalizeAttemptResult(payload: unknown): AttemptResult {
     correct: raw.correct === true ? true : raw.correct == null ? null : false,
     process_status:
       typeof raw.process_status === "string" ? raw.process_status : undefined,
+    expired: raw.expired === true,
     diagnosis: normalizeDiagnosis(raw.diagnosis),
     next_action: {
       type: supported.includes(rawType as NextActionCode)
