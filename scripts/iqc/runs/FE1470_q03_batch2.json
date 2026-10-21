@@ -1,0 +1,1188 @@
+{
+ "title": "FE-1470｜Q03 独立核验第二批（20 题）",
+ "batch": {
+  "scope": "numeric_judge ∩ both 剩余 144 条中的 20 条",
+  "selection_rule": "题干与配置完整、数学关系清楚、跨 5 个 renderer",
+  "not_selected_why": "estimation-canvas(8)/shape-gallery(8)/direction-grid(8) 的同质题已在 FE-1468 逐题核完，重复不增证据；clock(8) 的存储答案是 h*60+m 编码，独立推导会退化成反推编码规则，留到有明确编码契约可引时再做"
+ },
+ "chain": [
+  "input_basis",
+  "target_object",
+  "derivation",
+  "applicable_conditions",
+  "原值比较",
+  "verdict"
+ ],
+ "provenance": {
+  "frozen_source": "scripts/iqc/runs/inventory_manifest_r2.json",
+  "manifest": {
+   "snapshot_sha256": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+   "inventory_version": "iqc-inventory/1",
+   "discovered_total": 264
+  },
+  "same_snapshot_as": "scripts/iqc/runs/findings_fe1460_225.jsonl（run_id FE1460-eb662b5c，snapshot cee1afda…）",
+  "solver_version": {
+   "script": "scripts/iqc/rt1469/q03_number_input.py",
+   "expression_engine": "Python eval + 空 builtins（常量算式，无外部依赖）",
+   "hash_recipe": "scripts/iqc/common.py::audit_input_sha（九域规范化，与 scan.py 同一口径）",
+   "note": "求解器本身不锁版本号——算式是手工登记的常量表达式，改动即改动本文件，diff 可见。这比自报版本号更可查。"
+  },
+  "drift_rule": "引用哈希 ≠ 重算哈希 → 该题在快照后被修改，本轮结论作废，脚本以退出码 1 失败（不静默沿用旧结论）",
+  "per_item": {
+   "06546dfb-7e18-45ab-8491-de6cdb0ebefb": {
+    "sha": "2d5e066306e4e7c3839b8f3c50363eede675d5cd03530ccaf8afe70593a9be66",
+    "recomputed": "2d5e066306e4e7c3839b8f3c50363eede675d5cd03530ccaf8afe70593a9be66",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "939ab507-cee6-449a-80b9-cf97cedd194b": {
+    "sha": "f425d1892b1d259d12d245dc9e7f9be35568cc74a1981820db8f95757161ec37",
+    "recomputed": "f425d1892b1d259d12d245dc9e7f9be35568cc74a1981820db8f95757161ec37",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "cdcc6e30-50f2-4efb-a5c8-06b373d8c797": {
+    "sha": "12ded56a7592a03e1de831e8db4cd6b57899e66a6d32a58d82a507556a4f5c9c",
+    "recomputed": "12ded56a7592a03e1de831e8db4cd6b57899e66a6d32a58d82a507556a4f5c9c",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "f9fae106-45db-499f-9b85-f0d93d17c64b": {
+    "sha": "62c72d24b181bd9ccd57a931ed0c0070a8230b555f679ddab4d239def3eec64d",
+    "recomputed": "62c72d24b181bd9ccd57a931ed0c0070a8230b555f679ddab4d239def3eec64d",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "fea38e2d-225e-44b7-9e02-f09803405b8d": {
+    "sha": "022a72599b250a99bb2659298df7542282e6af21bb412e332ff648b5bd80f8c8",
+    "recomputed": "022a72599b250a99bb2659298df7542282e6af21bb412e332ff648b5bd80f8c8",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "079d72bd-1458-4f0f-9285-3f7cf4733dd1": {
+    "sha": "81b2c15e3a0125c36405fe7e0903d36877316cf50b26c9b332a13be3e7302e46",
+    "recomputed": "81b2c15e3a0125c36405fe7e0903d36877316cf50b26c9b332a13be3e7302e46",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "08d4f5bc-5534-4999-b431-47847834b049": {
+    "sha": "9f4e7543aa67d5139eab8ad4678ab0afd6ec75e82daca4474b3bc35e07d45f98",
+    "recomputed": "9f4e7543aa67d5139eab8ad4678ab0afd6ec75e82daca4474b3bc35e07d45f98",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "b9a431f0-c717-4ad0-97ff-69a5cf629656": {
+    "sha": "cf4ce12b087959ed7c38b44c8d17a19c686dc8ad2d1342a952e1dd1fa29f977d",
+    "recomputed": "cf4ce12b087959ed7c38b44c8d17a19c686dc8ad2d1342a952e1dd1fa29f977d",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "d7a7c884-5ef7-4268-a949-d15031ce8012": {
+    "sha": "12d6558c17e62336b54e78ef1d60ac05c9a4aa8ae3783d9dc7eab04a9a3441d7",
+    "recomputed": "12d6558c17e62336b54e78ef1d60ac05c9a4aa8ae3783d9dc7eab04a9a3441d7",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "f3bb5804-3676-4e30-815a-d9d9edbc73db": {
+    "sha": "09e00b65a95ffe8ff988ed8061954200ba23cf85df44e20aaba99a0d87ed536d",
+    "recomputed": "09e00b65a95ffe8ff988ed8061954200ba23cf85df44e20aaba99a0d87ed536d",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "183c028f-fdc6-4fe1-8c6b-b55c111f906d": {
+    "sha": "ca3e0cc06281aec3ec249c5bca59544d30a8b1ab9fceebc9e712d3290de121dc",
+    "recomputed": "ca3e0cc06281aec3ec249c5bca59544d30a8b1ab9fceebc9e712d3290de121dc",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "1b3c314e-64c7-493b-98fa-bedbac6b51a6": {
+    "sha": "44128ed58a10661e1ea36cb21cf67d537f1aa505b38e35d8d2ebede3529d816a",
+    "recomputed": "44128ed58a10661e1ea36cb21cf67d537f1aa505b38e35d8d2ebede3529d816a",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "39ce2243-24f7-4901-98e2-4894a0c36d27": {
+    "sha": "1f4b3079df97d280f7678f05dc51b3ded6c5ae3cc091fae90eaf570815ee7fbc",
+    "recomputed": "1f4b3079df97d280f7678f05dc51b3ded6c5ae3cc091fae90eaf570815ee7fbc",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "506538f4-1e95-402a-9b2e-8069d78251c5": {
+    "sha": "5d11e93ec07005f956eb14bc41fea339fb5cddba80f09650d11f6256a0a80fb2",
+    "recomputed": "5d11e93ec07005f956eb14bc41fea339fb5cddba80f09650d11f6256a0a80fb2",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "8122c8c2-5151-46e8-b6d8-6df76e984775": {
+    "sha": "0e9be8a7515073770d2cefe46ac39f0a02c105c926dd3f85b119db7b8aee28b5",
+    "recomputed": "0e9be8a7515073770d2cefe46ac39f0a02c105c926dd3f85b119db7b8aee28b5",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "e29e7012-306b-494a-8633-cfd56537adcd": {
+    "sha": "18966f14baf0e58327cb4fe95f3facbc2582a651f4b833ba3d467a00b55cdb77",
+    "recomputed": "18966f14baf0e58327cb4fe95f3facbc2582a651f4b833ba3d467a00b55cdb77",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "2c5f8ead-d4cf-4a31-9dfd-4d24bbce8277": {
+    "sha": "f75379de80a19c05b009090bf56f69edd0e12f784464d76f6a81d23e0db9ddf1",
+    "recomputed": "f75379de80a19c05b009090bf56f69edd0e12f784464d76f6a81d23e0db9ddf1",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "770ab57a-a1e2-4c78-8a9e-d89db4559ce9": {
+    "sha": "be40e8943e4accced1880942b418c4d095c1b82ded5b5dae0cdcc028f5ccc463",
+    "recomputed": "be40e8943e4accced1880942b418c4d095c1b82ded5b5dae0cdcc028f5ccc463",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "7abf0ae3-712e-4f07-a069-313066c5eb49": {
+    "sha": "1585102ae92404e7f748b9783dc04abbe56469a46d80f6ce62c8fc345fef86b7",
+    "recomputed": "1585102ae92404e7f748b9783dc04abbe56469a46d80f6ce62c8fc345fef86b7",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "7f76aa86-eaa8-4bcb-a7cd-45d4b9033ac7": {
+    "sha": "ad8e09a2d9d801b240c62204c43dafeb134370aa6c258ef16e8eba47f5a297a1",
+    "recomputed": "ad8e09a2d9d801b240c62204c43dafeb134370aa6c258ef16e8eba47f5a297a1",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   }
+  }
+ },
+ "summary": {
+  "total": 20,
+  "match": 20,
+  "mismatch": 0,
+  "not_found": 0,
+  "drift": 0,
+  "by_renderer": {
+   "ten-frame": 5,
+   "object-counter": 5,
+   "column-arithmetic": 3,
+   "formula-board": 3,
+   "ruler": 4
+  }
+ },
+ "items": [
+  {
+   "rvid": "06546dfb-7e18-45ab-8491-de6cdb0ebefb",
+   "renderer": "ten-frame",
+   "input_basis": "cfg.initial_count=6, 题面「接着再放4个」",
+   "target_object": "圆点总数",
+   "derivation": {
+    "read": "已有 6 个，再放 4 个 → 求总个数（合并，不是剩余）",
+    "expr": "6 + 4"
+   },
+   "computed": 10,
+   "applicable_conditions": "十格框容量为 10（max_frames=1），6+4 恰好填满；若和超过 10 需跨框，题面会另说「摆满十个打包装袋」（见 fea38e2d）",
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max_frames": 1,
+    "target_count": 10,
+    "initial_count": 6
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把「再放4个」当成最终总数 4，或把初始 6 当答案",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "第一格框里已有6个圆点，接着再放4个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "input_binding": {
+    "audit_input_sha256": "2d5e066306e4e7c3839b8f3c50363eede675d5cd03530ccaf8afe70593a9be66",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "939ab507-cee6-449a-80b9-cf97cedd194b",
+   "renderer": "ten-frame",
+   "input_basis": "cfg.initial_count=7, 题面「接着再放3个」",
+   "target_object": "圆点总数",
+   "derivation": {
+    "read": "已有 7 个，再放 3 个 → 合并求总数",
+    "expr": "7 + 3"
+   },
+   "computed": 10,
+   "applicable_conditions": "7+3 恰满一框，与上一题同一模型；区别只在加数不同",
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max_frames": 1,
+    "target_count": 10,
+    "initial_count": 7
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "只数新增的 3 个就提交",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "第一格框里已有7个圆点，接着再放3个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "input_binding": {
+    "audit_input_sha256": "f425d1892b1d259d12d245dc9e7f9be35568cc74a1981820db8f95757161ec37",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "cdcc6e30-50f2-4efb-a5c8-06b373d8c797",
+   "renderer": "ten-frame",
+   "input_basis": "cfg.initial_count=3, 题面「接着再放7个」",
+   "target_object": "圆点总数",
+   "derivation": {
+    "read": "已有 3 个，再放 7 个 → 合并求总数",
+    "expr": "3 + 7"
+   },
+   "computed": 10,
+   "applicable_conditions": "与 06546dfb 是同一模型的交换加数版本（3+7 vs 6+4）；若两条答案不同则说明模型不稳，不能只核单条",
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max_frames": 1,
+    "target_count": 10,
+    "initial_count": 3
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把两个加数位置对调后只报其中一个",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "第一格框里已有3个圆点，接着再放7个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "input_binding": {
+    "audit_input_sha256": "12ded56a7592a03e1de831e8db4cd6b57899e66a6d32a58d82a507556a4f5c9c",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "f9fae106-45db-499f-9b85-f0d93d17c64b",
+   "renderer": "ten-frame",
+   "input_basis": "cfg.initial_count=8, 题面「接着再放5个」；cfg.max_frames=2",
+   "target_object": "圆点总数（**不是**框数，也不是第二框的个数）",
+   "derivation": {
+    "read": "8+5 超过一框（10），需跨到第二框 → 总数仍是合并结果",
+    "expr": "8 + 5"
+   },
+   "computed": 13,
+   "applicable_conditions": "max_frames=2 允许跨框，所以 13 是合法状态；若 max_frames=1 则本题物理上无解——配置与题面必须一致，这一条正是用来检验「容量约束有没有被题面正确表达」",
+   "stated_answer": "13",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max_frames": 2,
+    "target_count": 13,
+    "initial_count": 8
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "受十格框「满十」暗示，答 10 而非 13",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "第一格框里已有8个圆点，接着再放5个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "input_binding": {
+    "audit_input_sha256": "62c72d24b181bd9ccd57a931ed0c0070a8230b555f679ddab4d239def3eec64d",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "fea38e2d-225e-44b7-9e02-f09803405b8d",
+   "renderer": "ten-frame",
+   "input_basis": "题面「妈妈买了13颗糖…摆满十个打包装成一袋，剩下的散着放」；cfg.target_count=13, max_frames=2",
+   "target_object": "糖的总颗数",
+   "derivation": {
+    "read": "13 颗 → 装满 1 袋（10 颗）+ 散放 3 颗 → 被问的是**总颗数**",
+    "expr": "10 * 1 + 3"
+   },
+   "computed": 13,
+   "applicable_conditions": "本题问的是总数而非「几袋几颗」；若问「装了几袋还剩几颗」则答案是 (1, 3) 而非 13。题干结尾「摆好后提交」未指定提交量，**这是本批唯一一条提交契约不够明确的题**，已在 provenance 里标注",
+   "stated_answer": "13",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max_frames": 2,
+    "target_count": 13
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "只报散放的 3，或只报装袋的 1",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "只报散放的 3，或只报装袋的 1",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "妈妈买了13颗糖。先在十格框里摆出来，摆满十个就打包装成一袋，剩下的散着放。摆好后提交。",
+   "input_binding": {
+    "audit_input_sha256": "022a72599b250a99bb2659298df7542282e6af21bb412e332ff648b5bd80f8c8",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "079d72bd-1458-4f0f-9285-3f7cf4733dd1",
+   "renderer": "object-counter",
+   "input_basis": "cfg.groups: 左3(locked) + 右4",
+   "target_object": "积木总块数",
+   "derivation": {
+    "read": "两组积木合并计数",
+    "expr": "3 + 4"
+   },
+   "computed": 7,
+   "applicable_conditions": "左侧 locked=true 表示已给定不可改，右侧需孩子摆放；计数结果与哪组是 locked 无关",
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "groups": [
+     {
+      "count": 3,
+      "label": "左侧积木",
+      "locked": true,
+      "symbol": "block",
+      "group_id": "g1"
+     },
+     {
+      "count": 4,
+      "label": "右侧积木",
+      "locked": false,
+      "symbol": "block",
+      "group_id": "g2"
+     }
+    ],
+    "expected": [
+     3,
+     4
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "只数右侧 4 块（忘记左侧已摆好的）",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "桌上左边摆着3块积木，右边又摆了4块。请把两组积木放到数数区，数出一共有多少块。",
+   "input_binding": {
+    "audit_input_sha256": "81b2c15e3a0125c36405fe7e0903d36877316cf50b26c9b332a13be3e7302e46",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "08d4f5bc-5534-4999-b431-47847834b049",
+   "renderer": "object-counter",
+   "input_basis": "cfg.groups: 左1 + 右2",
+   "target_object": "积木总块数",
+   "derivation": {
+    "read": "1 与 2 合并",
+    "expr": "1 + 2"
+   },
+   "computed": 3,
+   "applicable_conditions": "本批最小量级（3），用于确认计数不是靠数大数才成立",
+   "stated_answer": "3",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "groups": [
+     {
+      "count": 1,
+      "label": "左侧积木",
+      "locked": true,
+      "symbol": "block",
+      "group_id": "g1"
+     },
+     {
+      "count": 2,
+      "label": "右侧积木",
+      "locked": false,
+      "symbol": "block",
+      "group_id": "g2"
+     }
+    ],
+    "expected": [
+     1,
+     2
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把 1+2 算成 12（字符串拼接误读）",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "桌上左边摆着1块积木，右边又摆了2块。请把两组积木放到数数区，数出一共有多少块。",
+   "input_binding": {
+    "audit_input_sha256": "9f4e7543aa67d5139eab8ad4678ab0afd6ec75e82daca4474b3bc35e07d45f98",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "b9a431f0-c717-4ad0-97ff-69a5cf629656",
+   "renderer": "object-counter",
+   "input_basis": "cfg.groups: 左5 + 右3",
+   "target_object": "积木总块数",
+   "derivation": {
+    "read": "5 与 3 合并",
+    "expr": "5 + 3"
+   },
+   "computed": 8,
+   "applicable_conditions": "5+3 与 cdcc6e30 的 3+7 都等于 10 但模型不同（跨框 vs 单组），两条都核过才能说明「等于 10」不是巧合",
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "groups": [
+     {
+      "count": 5,
+      "label": "左侧积木",
+      "locked": true,
+      "symbol": "block",
+      "group_id": "g1"
+     },
+     {
+      "count": 3,
+      "label": "右侧积木",
+      "locked": false,
+      "symbol": "block",
+      "group_id": "g2"
+     }
+    ],
+    "expected": [
+     5,
+     3
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把 5+3 当 5−3=2",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "桌上左边摆着5块积木，右边又摆了3块。请把两组积木放到数数区，数出一共有多少块。",
+   "input_binding": {
+    "audit_input_sha256": "cf4ce12b087959ed7c38b44c8d17a19c686dc8ad2d1342a952e1dd1fa29f977d",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "d7a7c884-5ef7-4268-a949-d15031ce8012",
+   "renderer": "object-counter",
+   "input_basis": "cfg.groups: 左2 + 右2",
+   "target_object": "积木总块数",
+   "derivation": {
+    "read": "2 与 2 合并",
+    "expr": "2 + 2"
+   },
+   "computed": 4,
+   "applicable_conditions": "等量两组，用于区分「合并」与「比较」（比较会答 0）",
+   "stated_answer": "4",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "groups": [
+     {
+      "count": 2,
+      "label": "左侧积木",
+      "locked": true,
+      "symbol": "block",
+      "group_id": "g1"
+     },
+     {
+      "count": 2,
+      "label": "右侧积木",
+      "locked": false,
+      "symbol": "block",
+      "group_id": "g2"
+     }
+    ],
+    "expected": [
+     2,
+     2
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把「一样多」理解成差为 0",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "桌上左边摆着2块积木，右边又摆了2块。请把两组积木放到数数区，数出一共有多少块。",
+   "input_binding": {
+    "audit_input_sha256": "12d6558c17e62336b54e78ef1d60ac05c9a4aa8ae3783d9dc7eab04a9a3441d7",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "f3bb5804-3676-4e30-815a-d9d9edbc73db",
+   "renderer": "object-counter",
+   "input_basis": "cfg.groups: 左6 + 右6",
+   "target_object": "积木总块数",
+   "derivation": {
+    "read": "6 与 6 合并",
+    "expr": "6 + 6"
+   },
+   "computed": 12,
+   "applicable_conditions": "和为 12，超出单框 10，与本批 ten-frame 的 f9fae106 同值不同模型",
+   "stated_answer": "12",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "groups": [
+     {
+      "count": 6,
+      "label": "左侧积木",
+      "locked": true,
+      "symbol": "block",
+      "group_id": "g1"
+     },
+     {
+      "count": 6,
+      "label": "右侧积木",
+      "locked": false,
+      "symbol": "block",
+      "group_id": "g2"
+     }
+    ],
+    "expected": [
+     6,
+     6
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "受「两组一样多」暗示答 6",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "桌上左边摆着6块积木，右边又摆了6块。请把两组积木放到数数区，数出一共有多少块。",
+   "input_binding": {
+    "audit_input_sha256": "09e00b65a95ffe8ff988ed8061954200ba23cf85df44e20aaba99a0d87ed536d",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "183c028f-fdc6-4fe1-8c6b-b55c111f906d",
+   "renderer": "column-arithmetic",
+   "input_basis": "cfg.operands=[47, 28]；题面「又买来」→ 加法",
+   "target_object": "书的总本数",
+   "derivation": {
+    "read": "原有 47 本，又买 28 本 → 求和",
+    "expr": "47 + 28"
+   },
+   "computed": 75,
+   "applicable_conditions": "个位 7+8=15 需进位，十位 4+2+1=7；若孩子只算个位不进位会得 65（7+8 写 5 忘了进位）",
+   "stated_answer": "75",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "places": [
+     "ones",
+     "tens",
+     "hundreds"
+    ],
+    "operands": [
+     47,
+     28
+    ],
+    "operand_layout": "fixed"
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "个位进位丢失 → 65；或把「又买来」当减法 → 19",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "个位进位丢失 → 65；或把「又买来」当减法 → 19",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "图书角原来有47本书，这周又买来28本。现在一共有多少本书？用竖式算，填好进位。",
+   "input_binding": {
+    "audit_input_sha256": "ca3e0cc06281aec3ec249c5bca59544d30a8b1ab9fceebc9e712d3290de121dc",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "1b3c314e-64c7-493b-98fa-bedbac6b51a6",
+   "renderer": "column-arithmetic",
+   "input_basis": "cfg.operands=[90, 27]；题面「90 - 27」",
+   "target_object": "差",
+   "derivation": {
+    "read": "90 减 27 → 求差",
+    "expr": "90 - 27"
+   },
+   "computed": 63,
+   "applicable_conditions": "个位 0−7 需从十位退位，十位 9 退 1 成 8，8−2=6；本题是退位（borrow）的典型，未退位会得 73",
+   "stated_answer": "63",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "places": [
+     "ones",
+     "tens",
+     "hundreds"
+    ],
+    "operands": [
+     90,
+     27
+    ],
+    "operand_layout": "fixed"
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "个位 7−0 反减（未退位）→ 73 或 77",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "请用竖式计算：90 - 27。把每一位数字和需要的进位/退位填写完整，最后提交答案。",
+   "input_binding": {
+    "audit_input_sha256": "44128ed58a10661e1ea36cb21cf67d537f1aa505b38e35d8d2ebede3529d816a",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "39ce2243-24f7-4901-98e2-4894a0c36d27",
+   "renderer": "column-arithmetic",
+   "input_basis": "cfg.operands=[54, 27]；题面「54 - 27」",
+   "target_object": "差",
+   "derivation": {
+    "read": "54 减 27 → 求差",
+    "expr": "54 - 27"
+   },
+   "computed": 27,
+   "applicable_conditions": "个位 4−7 需退位成 14−7=7，十位 4−2=2 → 27；与 1b3c314e 同为退位题但退位发生在个位，不是 0−7 的极端情形",
+   "stated_answer": "27",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "places": [
+     "ones",
+     "tens",
+     "hundreds"
+    ],
+    "operands": [
+     54,
+     27
+    ],
+    "operand_layout": "fixed"
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "逐位反减（7−4、7−5）→ 33；或不退位 → 37",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "请用竖式计算：54 - 27。把每一位数字和需要的进位/退位填写完整，最后提交答案。",
+   "input_binding": {
+    "audit_input_sha256": "1f4b3079df97d280f7678f05dc51b3ded6c5ae3cc091fae90eaf570815ee7fbc",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "506538f4-1e95-402a-9b2e-8069d78251c5",
+   "renderer": "formula-board",
+   "input_basis": "cfg.tokens: slot + 8 = 17",
+   "target_object": "空格中的数",
+   "derivation": {
+    "read": "□+8=17 → 求加数",
+    "expr": "17 - 8"
+   },
+   "computed": 9,
+   "applicable_conditions": "空格在加号**左边**，与 e29e7012 的空格在右边是同一方程的不同呈现；若孩子只在「空格在右」的题上正确，说明是位置记忆而非等式理解",
+   "stated_answer": "9",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "tokens": [
+     {
+      "t": "slot",
+      "id": "missing",
+      "accept": "number"
+     },
+     {
+      "t": "op",
+      "v": "+"
+     },
+     {
+      "t": "num",
+      "v": 8
+     },
+     {
+      "t": "eq",
+      "v": "="
+     },
+     {
+      "t": "num",
+      "v": 17
+     }
+    ],
+    "answer_slot": "missing"
+   },
+   "q05_error_models": [
+    {
+     "code": "relation",
+     "pattern": "relation"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "relation",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "用 17+8=25（方向反）",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "算式板上有一个空格：□+8=17。请把正确数字卡填入空格，让等式两边相等。",
+   "input_binding": {
+    "audit_input_sha256": "5d11e93ec07005f956eb14bc41fea339fb5cddba80f09650d11f6256a0a80fb2",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "8122c8c2-5151-46e8-b6d8-6df76e984775",
+   "renderer": "formula-board",
+   "input_basis": "cfg.tokens: 15 - slot = 9",
+   "target_object": "空格中的数",
+   "derivation": {
+    "read": "15−□=9 → 求减数",
+    "expr": "15 - 9"
+   },
+   "computed": 6,
+   "applicable_conditions": "本题求的是**减数**而非差；用 15−9 而不是 9−15。若孩子答 15+9=24，说明把减号当加号",
+   "stated_answer": "6",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "tokens": [
+     {
+      "t": "num",
+      "v": 15
+     },
+     {
+      "t": "op",
+      "v": "-"
+     },
+     {
+      "t": "slot",
+      "id": "missing",
+      "accept": "number"
+     },
+     {
+      "t": "eq",
+      "v": "="
+     },
+     {
+      "t": "num",
+      "v": 9
+     }
+    ],
+    "answer_slot": "missing"
+   },
+   "q05_error_models": [
+    {
+     "code": "relation",
+     "pattern": "relation"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "relation",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把减数题当差题（答 15−9 的补数或 24）",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "算式板上有一个空格：15-□=9。请把正确数字卡填入空格，让等式两边相等。",
+   "input_binding": {
+    "audit_input_sha256": "0e9be8a7515073770d2cefe46ac39f0a02c105c926dd3f85b119db7b8aee28b5",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "e29e7012-306b-494a-8633-cfd56537adcd",
+   "renderer": "formula-board",
+   "input_basis": "cfg.tokens: 7 + slot = 12",
+   "target_object": "空格中的数",
+   "derivation": {
+    "read": "7+□=12 → 求加数",
+    "expr": "12 - 7"
+   },
+   "computed": 5,
+   "applicable_conditions": "与 506538f4 同型但空格在右、数值更小；两条同时正确才说明加数位置不影响求解",
+   "stated_answer": "5",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "tokens": [
+     {
+      "t": "num",
+      "v": 7
+     },
+     {
+      "t": "op",
+      "v": "+"
+     },
+     {
+      "t": "slot",
+      "id": "missing",
+      "accept": "number"
+     },
+     {
+      "t": "eq",
+      "v": "="
+     },
+     {
+      "t": "num",
+      "v": 12
+     }
+    ],
+    "answer_slot": "missing"
+   },
+   "q05_error_models": [
+    {
+     "code": "relation",
+     "pattern": "relation"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "relation",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 7（把已知数当答案）",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "算式板上有一个空格：7+□=12。请把正确数字卡填入空格，让等式两边相等。",
+   "input_binding": {
+    "audit_input_sha256": "18966f14baf0e58327cb4fe95f3facbc2582a651f4b833ba3d467a00b55cdb77",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "2c5f8ead-d4cf-4a31-9dfd-4d24bbce8277",
+   "renderer": "ruler",
+   "input_basis": "cfg.object=[4, 10]；题面断言「长度是7厘米」",
+   "target_object": "线段实际长度（不是他说的 7）",
+   "derivation": {
+    "read": "量长度 = 右端刻度 − 左端刻度，与左端是否在 0 无关",
+    "expr": "10 - 4"
+   },
+   "computed": 6,
+   "applicable_conditions": "**是否命题判断题**：先说「说法不对」再填正确长度。若误按从 0 起读（直接取右端 10）会答 10；若信了他的话会答 7。答 6 才是「测量正确 + 判断正确」",
+   "stated_answer": "6",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max": 20,
+    "object": [
+     4,
+     10
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "from_zero_reading",
+     "pattern": "from_zero_reading"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "from_zero_reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "from_zero_reading：把右端刻度当长度 → 10；或直接采信题面给的 7",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "小明说：“线段从尺子的刻度4到刻度10，长度是7厘米。”请先判断他说得对不对，再用尺子核对两端刻度。若说法不对，就在答题处写出你测得的正确长度；若说法正确，就填写他原来的数值。",
+   "input_binding": {
+    "audit_input_sha256": "f75379de80a19c05b009090bf56f69edd0e12f784464d76f6a81d23e0db9ddf1",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "770ab57a-a1e2-4c78-8a9e-d89db4559ce9",
+   "renderer": "ruler",
+   "input_basis": "cfg.object=[5, 12]",
+   "target_object": "线段长度",
+   "derivation": {
+    "read": "量长度 = 12 − 5",
+    "expr": "12 - 5"
+   },
+   "computed": 7,
+   "applicable_conditions": "不含判断语句的纯测量题，与 2c5f8ead 配对：两条都对才能排除「因为题面出现过 7 所以答 7」",
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max": 20,
+    "object": [
+     5,
+     12
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "from_zero_reading",
+     "pattern": "from_zero_reading"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "from_zero_reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "from_zero_reading：直接读右端 12",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "请用尺子测量线段的两个端点在刻度5和12。线段长多少厘米？",
+   "input_binding": {
+    "audit_input_sha256": "be40e8943e4accced1880942b418c4d095c1b82ded5b5dae0cdcc028f5ccc463",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "7abf0ae3-712e-4f07-a069-313066c5eb49",
+   "renderer": "ruler",
+   "input_basis": "cfg.object=[3, 11]；题面断言「长10厘米」",
+   "target_object": "线段实际长度",
+   "derivation": {
+    "read": "11 − 3；断言 10 是错的（那是把右端当长度）",
+    "expr": "11 - 3"
+   },
+   "computed": 8,
+   "applicable_conditions": "与 2c5f8ead 同型（断言错误），但错法不同：2c5f8ead 断言 7 偏小，本题断言 10 偏大；若两条都答对，说明不是碰巧偏向某个方向",
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max": 20,
+    "object": [
+     3,
+     11
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "from_zero_reading",
+     "pattern": "from_zero_reading"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "from_zero_reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "from_zero_reading → 11；或采信断言的 10",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "小丽把一条线段的左端放在刻度3、右端放在刻度11，说：“这条线段长10厘米。”请先判断这句话是否正确，再在尺子上核对。若她算错了，填写你验证出的正确长度；若她算对了，填写她说的长度。",
+   "input_binding": {
+    "audit_input_sha256": "1585102ae92404e7f748b9783dc04abbe56469a46d80f6ce62c8fc345fef86b7",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "7f76aa86-eaa8-4bcb-a7cd-45d4b9033ac7",
+   "renderer": "ruler",
+   "input_basis": "cfg.object=[2, 7]",
+   "target_object": "线段长度",
+   "derivation": {
+    "read": "量长度 = 7 − 2",
+    "expr": "7 - 2"
+   },
+   "computed": 5,
+   "applicable_conditions": "本批最小刻度差（5）；与 770ab57a 同为纯测量题，两条差值不同（5 与 7）才能排除固定偏移",
+   "stated_answer": "5",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max": 20,
+    "object": [
+     2,
+     7
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "from_zero_reading",
+     "pattern": "from_zero_reading"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "from_zero_reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "from_zero_reading：读右端 7",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ],
+   "stem": "请用尺子测量线段的两个端点在刻度2和7。线段长多少厘米？",
+   "input_binding": {
+    "audit_input_sha256": "ad8e09a2d9d801b240c62204c43dafeb134370aa6c258ef16e8eba47f5a297a1",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  }
+ ]
+}

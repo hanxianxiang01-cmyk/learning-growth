@@ -17,6 +17,10 @@
    （2026-10-21 复审：_post 定义被删却仍被调用，靠静默 except 躲过两轮）
 8. 语义族判据回归：分族是启发式，错判不报错只会静默改结果，所以用真实题面
    锁住已知事故（乘号 × 被当判断词、构造动词漏词、判据互为冗余兜底）（FE-1468）
+9. 核验结果与输入绑定：Q03 结论必须能指到冻结清单里的题目哈希，
+   引用≠重算即漂移、缺原件即漂移；q05 只写候选不写结论（FE-1469）
+10. 比对效力边界：改存储答案只能证明比较器非永真，改配置独立事实才能证明
+    推导依赖题面；必要条件不成立必须受控拒绝（FE-1470）
 边界（裁决 §四）：本门只判规则明确证据充分的问题；不访问生产 DB；失败输出含
 rule_id+证据，不得为空。
 """
@@ -125,6 +129,30 @@ if os.path.exists(fam_test):
          r8.returncode == 0 and "FAMILY-GATE: PASS" in r8.stdout, tail8)
 else:
     note("语义族判据回归工件存在", False, "缺 rt1468/test_worklist_family.py")
+
+# 9 核验结果与输入绑定（FE-1469 复审 §一.1：结论必须能指到冻结原件的哈希。
+#   这里锁的是判定逻辑本身：引用≠重算 / 缺原件 / 两者皆缺，都必须算漂移——
+#   否则"题目改了还沿用旧结论"和"没原件也当通过"都会静默发生）
+bind_test = os.path.join(HERE, "rt1469", "test_q03_binding.py")
+if os.path.exists(bind_test):
+    r9 = subprocess.run([sys.executable, bind_test], capture_output=True, text=True)
+    tail9 = (r9.stdout.strip().splitlines()[-1] if r9.stdout else r9.stderr[-200:])
+    note("核验输入绑定回归 test_q03_binding",
+         r9.returncode == 0 and "BINDING-GATE: PASS" in r9.stdout, tail9)
+else:
+    note("核验输入绑定回归工件存在", False, "缺 rt1469/test_q03_binding.py")
+
+# 10 比对效力边界（FE-1470 复审 §三：改存储答案只能证明比较器非永真，
+#    不能证明题干解析正确。这里锁 B/C 两组：改配置独立事实输出必须变、
+#    必要条件不成立必须受控拒绝——这两组才是"推导真的读了题面"的证据）
+neg_test = os.path.join(HERE, "rt1470", "test_batch2_negative.py")
+if os.path.exists(neg_test):
+    r10 = subprocess.run([sys.executable, neg_test], capture_output=True, text=True)
+    tail10 = (r10.stdout.strip().splitlines()[-1] if r10.stdout else r10.stderr[-200:])
+    note("比对效力边界 test_batch2_negative",
+         r10.returncode == 0 and "BATCH2-NEGATIVE-GATE: PASS" in r10.stdout, tail10)
+else:
+    note("比对效力边界工件存在", False, "缺 rt1470/test_batch2_negative.py")
 
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)
