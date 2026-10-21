@@ -1,22 +1,34 @@
 #!/usr/bin/env python3
 """FE-1471：Q03 独立核验第三批（额定 20 题，实核 29 题；`legacy:*` + `bar-model`）。
 
-**先把这个 29 与 20 的差说清楚，不允许用「已完成 20 题」含糊带过：**
+**账要分开记，但不许把「记录缺失」记成「题的身份不明」：**
 
 | 项 | 数 | 依据 |
 |---|---|---|
-| 额定 | 20 | 复审第七项「从 `legacy:*` + `bar-model` 取 20 题」 |
+| 计划 | 约 20 | 复审第七项原文是「**约**20 题」，不是「只能 20 题」 |
 | 实核 | 29 | 本文件 `CHECKS` 条数，也是工件 `summary.total` |
-| 可追溯补入 | 7 | DEF-D1 补 4（`8b121389`/`c88410f2`/`e5c13ef5`/`04f97cb8`）<br>+ DEF-D2 补 3（`421ede36`/`6e5395f0`/`8981fbcc`），源码有分组注释与补入理由 |
-| **未解释差额** | **2** | 22 题底稿与额定 20 之间差 2，**首批选题清单从未落盘，无法反推** |
+| 后补入 | 7 | DEF-D1 补 4（`8b121389`/`c88410f2`/`e5c13ef5`/`04f97cb8`）<br>+ DEF-D2 补 3（`421ede36`/`6e5395f0`/`8981fbcc`），有分组注释与补入理由 |
+| 身份完整性 | 29/29 | 每条都有完整 UUID、题干、独立推导、存储答案比对 |
+
+**这个 29/29 与「原定 20」的关系（2026-10-21 复审裁决）：**
+
+29 条 RVID 的身份**全部明确**，不存在「结果集里有两条身份不明的记录」。
+缺的是**最初选样过程的记录**：那 20 题的冻结名单没有落盘，所以无法反查
+「最初那批是哪 20 个 RVID」。因此：
+
+- **不追造历史**：不反推原来 20 个 RVID，不把「29 − 7 − 20 = 2」讲成两条
+  来路不明的题；
+- **不删题凑 20**：29 条都已实核，删掉反而丢证据；
+- **留改进项**：下次开批时先把选题集合写进工件（`quota_list`），扩样时追加
+  新增 RVID 及原因，使差额可从工件反查而不靠记忆；
+- **门禁不再强制「差额必须未解释」这个固定状态**——那会把一次性的过程瑕疵
+  固化成永久门禁条件，逼着后来的人维护一个不再有意义的字段。
 
 补入 7 条的理由是硬的：`KNOWN_DEFECTS[x].affected` 若引用批外 RVID，等于
-「缺陷已登记，但登记时没核对过现场」——门禁 T5/T6e 就是为此设的。
-宁可扩批，也不能留这种「已登记未核对」。
-
-那 2 条未解释差额**不编造解释**：它是本批唯一的记账瑕疵，已作为
-`batch.ledger_gap` 落盘，并用门禁 T10 强制它必须显式出现且数值自洽。
-下次开批时，选题清单必须先写进工件再跑核验。
+「缺陷已登记，但登记时没核对过现场」。不过定理式的解法不是「必须扩批」，
+而是**缺陷调查可以引用批外题目，只要独立保留其身份、输入和核查证据**。
+本批选择扩批，是因为这 7 条确实需要现场核对；「批外发现」与「本批完成数量」
+本可以分账，见 `batch.out_of_batch_refs`。
 
 用户 2026-10-21 复审《FE-1470 复审结论与 FE-1471 执行裁决》第七项，逐条对应：
 
@@ -46,6 +58,27 @@
 **差量为 0 不是漏检**——本批没有被问「差本身」又恰好只给了差量的题；
 答案副本 5 条全部落在 DEF-D1。
 
+**关于 `MATCH` 的效力边界（必须在每次汇报里重复）：**
+
+`MATCH` 只表示「按题面独立推导的结果与存储答案相等」。它**不**表示该题的
+交互/配置无问题。本批的 `visual_leak` / `unreachable_signal` /
+`known_defects` 是**与 MATCH 独立**的另一笔账，必须分开读。
+
+**关于风险条目的证据分层（2026-10-21 复审要求）：**
+
+`KNOWN_DEFECTS` 里的条目在报告中被称作「已登记的交互／配置风险条目」，
+不再统称为「已确证缺陷」。每条必须标出 `evidence_tier`：
+
+| tier | 含义 | 允许写成 |
+|---|---|---|
+| `static_fact` | 只读仓库/配置即可确认的数值或字段事实 | 「配置里 A 等于 B」「字段 X 不存在」 |
+| `inference` | 由静态事实推出、但需要额外前提的风险 | 「若前提 P 成立，则存在风险 R」 |
+| `needs_runtime` | 必须真实操作/提交才能判定 | 「未经运行验证，不作定论」 |
+
+**不许**把 `static_fact` 直接叙述成「评分已经出错」。例如滑杆上限等于答案
+是一个可确认的配置事实，但「孩子只要拖到底就能满分」还需要核对提交契约和
+判分路径；「答案数值超过某个上限」也只是线索，不等于任务不可完成。
+
 因此本批每题都显式声明 `source_kind`：
 
 | source_kind | 含义 | 独立事实从哪来 |
@@ -72,13 +105,19 @@ assert os.path.isdir(os.path.join(REPO, "scripts", "iqc")), \
     f"REPO 层级算错：{REPO} 下没有 scripts/iqc"
 
 # ── 账目（单一出处）────────────────────────────────────────────────────────
-# 「额定多少」与「实际核了多少」是两笔账，必须分开记。本批的实情是：
-# 额定 20 → 实核 29，其中 7 条有可追溯的补入依据（缺陷登记必须核对现场），
-# 余下 2 条差额**无法从仓库反推**，因为首批选题清单从未落盘。
-# 这 2 条不编解释：编出来的构成表会变成事后叙事，比留一个已知缺口更糟。
-# 门禁 T10 会强制上表数字与 CHECKS 实际条数、与算式三方自洽。
+# 「计划多少」与「实际核了多少」是两笔账，必须分开记。本批实情是：
+# 计划约 20 题（复审原文「约20题」，不是「只能20题」）→ 实核 29 题，
+# 其中 7 条有可追溯的补入依据（缺陷登记需要核对现场）。
+#
+# 关键口径（2026-10-21 复审裁决）：
+#   29 条 RVID 的**身份全部明确**，不存在「结果集里有两条身份不明的记录」。
+#   缺的是「最初选样过程的记录」——那 20 题的冻结名单没有落盘，所以无法
+#   反查「最初那批是哪 20 个 RVID」。
+#   因此本账不设 `gap` / `gap_explained` 这类「差额必须未解释」的固定状态，
+#   改为 `selection_record` 明确记录「记录缺失」这件事本身。
 LEDGER: dict = {
     "quota": 20,
+    "quota_wording": "约 20（复审原文「约20题」）",
     "verified": 29,                      # 必须 == len(CHECKS)
     "traced_extra": 7,
     "traced_extra_breakdown": {
@@ -87,14 +126,24 @@ LEDGER: dict = {
     },
     "traced_extra_reason": (
         "KNOWN_DEFECTS.affected 若引用批外 RVID，等于「缺陷已登记但登记时"
-        "没核对过现场」。门禁 T5/T6e 为此而设；宁可扩批，也不留这种账。"),
-    "gap": 2,                            # == verified - traced_extra - quota
-    "gap_explained": False,
-    "gap_why_not_explained": (
-        "首批选题清单**从未落盘**，仓库里没有「额定 20 题是哪 20 题」的可反查"
-        "记录，因此无法区分「多做了 2 题」与「额定清单实为 22 题」。"),
-    "gap_remedy": ("下次开批时选题清单先写进工件（quota_list 字段）再跑核验，"
-                   "使差额可从工件反查，而不是只能靠记忆"),
+        "没核对过现场」。本批选择扩批以完成现场核对；但这条不是唯一解法——"
+        "缺陷调查也可以引用批外题目，只要独立保留身份、输入与核查证据。"),
+    "identity_complete": True,
+    "identity_basis": (
+        "29/29 有完整 RVID、题干、独立推导与存储答案比对；"
+        "与前两批重叠 0；全部位于 numeric_judge ∩ both 队列内。"),
+    "selection_record": {
+        "frozen_initial_list": None,
+        "missing_reason": (
+            "最初的选样集合没有在开批时写入工件，事后无法从仓库反查"
+            "「计划的那约 20 题具体是哪 20 个 RVID」。"),
+        "what_this_is_not": (
+            "**不是**「结果集里有 2 条身份不明的记录」，"
+            "也**不是**「29 − 7 − 20 = 2 那两条来路不明」。"),
+        "remedy": ("下次开批先把选题集合写入工件 quota_list 字段，扩样时追加"
+                   "新增 RVID 及原因，使计划与实际可从工件对账；"
+                   "不追溯补造本批的历史名单。"),
+    },
 }
 
 # ── 五类关系的口径（题面层判据，不是 renderer 层判据）────────────────────────
@@ -882,61 +931,159 @@ CHECKS: list[dict] = [
     },
 ]
 
-# ── KNOWN_DEFECTS：本批核验中检出的配置/交互缺陷（**不改组件，只登记**）──
-# 与上一批 `Q05_BLOCKED_BY` 同一做法：缺陷不藏，逐题挂到 item 上。
+# ── KNOWN_DEFECTS：本批核验中登记的「交互／配置风险条目」（**不改组件，只登记**）──
+# 2026-10-21 复审要求：15 条先称为「已登记的交互／配置风险条目」，分别标出
+# 静态事实、推断、待运行验证，**不直接作为 15 条已确认产品故障**。
+# 因此每条都带 `evidence_tier`：
+#   static_fact  → 只读仓库/配置即可确认的数值或字段事实
+#   inference    → 由静态事实推出、但需要额外前提的风险
+#   needs_runtime→ 必须真实操作/提交才能判定
+# 以及 `confirmed`（本批是否已确证为产品故障）与 `not_claimed`（明确不主张什么）。
 KNOWN_DEFECTS: dict[str, dict] = {
     "DEF-D1": {
-        "title": "legacy:bar-model 滑杆上限等于答案（答案副本）",
+        "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
         "kind": "ui_answer_leak",
-        "evidence": "`ui_schema.visual.bars[].max` == `content.answer`；"
+        "evidence_tier": "static_fact → inference",
+        "confirmed": False,
+        "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；"
                     "V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫"
                     "（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
-        "impact": "孩子把未知条拖到最右端即得正确答案，无需推导；"
-                  "Q05 侧任何「是否理解比较关系」的判定都失去区分力",
+        "static_fact": ("5 题的 `bars[].max` 与 `content.answer` 数值相等；"
+                        "`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，"
+                        "所以最右端恰好是答案值。"),
+        "inference": ("未知条拖到最右端时，表征里的 `unknown.value` 等于答案。"
+                      "**但这是否构成「直接得分」，取决于提交与判分契约**，"
+                      "不是静态配置能单独决定的。"),
+        "not_claimed": ("**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框"
+                        "（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 "
+                        "`AnswerComposer`），判分读的是 `response.answer`"
+                        "（`learning.py` 中 `content.answer` 与 `response.answer` 比较），"
+                        "`representation` 不参与判分。因此更准确的说法是："
+                        "**表征层的答案泄露风险**，而不是「分数白送」。"),
+        "impact": ("存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把"
+                   "未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」"
+                   "的证据时区分力弱。**这不等于判分必然出错**，"
+                   "但确实使过程证据的可信度下降。"),
+        "needs_runtime": ("真实提交一次「未知条拖到底 + 数字答案填错」的组合，"
+                          "观察判分是否仍为 `correct=false`；"
+                          "本批**未做**该实验，故 `confirmed=false`。"),
         "affected": ["c07482bb", "8b121389", "c88410f2", "e5c13ef5", "04f97cb8"],
         # 差额可追溯性：这 4 条是门禁 T5 检出「affected 引用批外 RVID」后补入的，
         # 源码里留有对应分组注释（见 CHECKS 内 "DEF-D1 其余四条"）。
         "added_after_gate": ["8b121389", "c88410f2", "e5c13ef5", "04f97cb8"],
-        "status": "已登记；本轮不改组件（只读范围），待内容侧调整 max",
+        "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计",
     },
     "DEF-D2": {
-        "title": "legacy:bar-model 滑杆上限小于答案（物理摆不出）",
-        "kind": "unreachable_answer",
-        "evidence": "`content.answer` > `visual.max_value` 且 > 所有 `bars[].max`",
-        "impact": "**正确答案在界面上无法摆出**。孩子即便算对也交不出正确表征，"
-                  "只能靠数字输入框答对；representation 恒为错误结构，"
-                  "错误证据被污染（分不清「不会」与「摆不出」）",
+        "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+        "kind": "unreachable_signal",
+        "evidence_tier": "needs_runtime",
+        "confirmed": False,
+        # ★★ 本条目是 2026-10-21 复审撤回重写的地方，改动原因写在此处备查：
+        #    上一版把它定性为「答案在界面上无法摆出」「界面在系统性奖励半成品」，
+        #    前提是「未知条必须表示最终合计」。该前提**未经核验**：
+        #    三题都是「先求另一个人的数量、再求两人合计」的两步题，
+        #    未知条完全可以表示**另一个人的数量**，而不是最后的合计。
+        "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+        "static_fact": ("三题的最终合计（18 / 21 / 19）都大于任一单条上限；"
+                        "三题的**个人数量**却都在范围内（见下表）。"),
+        "inference": ("**没有**。当前检测器 `detect_unreachable()` 只比较"
+                      "「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，"
+                      "也不知道题目是否要求单独展示合计。"
+                      "所以它给出的是线索，不是可完成性结论。"),
+        "detector_limits": (
+            "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。"
+            "两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」"
+            "与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非"
+            "「答案条的上限」，因此会漏报——"
+            "反例：答案条上限 5、另一无关条上限 100、答案 10，"
+            "该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。"),
+        "not_claimed": ("**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励"
+                        "半成品」**。上一版这两句与同一份报告里「只能靠数字输入框"
+                        "答对」互相矛盾——两者不能作为同一已证结论并存。"
+                        "而且判分读 `response.answer`，与滑杆能否摆出无关。"),
+        "role_hypothesis": [
+            {"rvid": "421ede36", "person_a": 11, "person_b": 7,
+             "answer": 18, "bar_caps": [15, 15], "max_value": 17,
+             "bars_can_show": "11 与 7（两人各自的数量）",
+             "both_within_range": True},
+            {"rvid": "6e5395f0", "person_a": 9, "person_b": 12,
+             "answer": 21, "bar_caps": [12, 12], "max_value": 14,
+             "bars_can_show": "9 与 12（两人各自的数量）",
+             "both_within_range": True},
+            {"rvid": "8981fbcc", "person_a": 8, "person_b": 11,
+             "answer": 19, "bar_caps": [11, 11], "max_value": 13,
+             "bars_can_show": "8 与 11（两人各自的数量）",
+             "both_within_range": True},
+        ],
+        "verification_plan": [
+            "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」"
+            "还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+            "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求"
+            "表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+            "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+            "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里"
+            "各承担什么，是否要求一致",
+        ],
+        "impact": ("在①②未完成前，**只能说「单条上限不足以表示最终合计」这一"
+                   "静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为"
+                   "「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。"),
+        "if_confirmed": ("若契约确实要求未知条为合计、或提交被真实阻断，"
+                         "再走内容侧新版本整改；且**不能只把 `max` 改成比答案大"
+                         "就算修好**——那会同时制造新的答案泄露。"),
+        "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
         "affected": ["421ede36", "6e5395f0", "8981fbcc"],
-        # 同样可追溯：CHECKS 内 "DEF-D2 三条" 分组注释 + 该组硬性理由
-        # 「否则缺陷登记表引用批外 RVID，已登记就没有核对过现场」。
         "added_after_gate": ["421ede36", "6e5395f0", "8981fbcc"],
-        "status": "已登记；**这是比 DEF-D1 更严重的问题**——"
-                  "D1 是白送分，D2 是永远拿不到分。"
-                  "本轮不改组件，但必须在报告中单列，不能混入 MATCH 统计",
+        "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置",
     },
     "DEF-D3": {
-        "title": "legacy:objects 不支持增减，求差动作不可观测",
+        "title": "legacy:objects 未提供增减操作（静态事实）",
         "kind": "interaction_gap",
-        "evidence": "`visual.groups[].count` 由 config 写死；`tools=[drag,align,count,"
-                    "undo,reset]` 无 `remove_object`/`add_object`",
-        "impact": "「一一对应后多出几个」这个关键动作不留痕迹；"
-                  "representation 里永远只有题面给的两组数",
+        "evidence_tier": "static_fact → inference",
+        "confirmed": False,
+        "evidence": "`visual.groups[].count` 由 config 写死；"
+                    "`tools` 无 `remove_object`/`add_object`",
+        "static_fact": ("4 题的 `groups[].count` 来自配置，界面上没有增删物件的"
+                        "工具项。"),
+        "inference": ("「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。"),
+        "not_claimed": ("**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。"
+                        "仍需查三件事：① 物件位置是否记录（`items[].x/y`）；"
+                        "② 对齐动作是否记录（`aligned` 字段）；"
+                        "③ 序列化是否保留了两组的相对排布。"
+                        "「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。"),
+        "impact": ("一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；"
+                   "是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。"),
+        "needs_runtime": ("以 `[对齐]` 操作驱动一次真实提交，检查序列化里"
+                          "`aligned` 与 `items[].x` 是否变化；本批**未做**。"),
         "affected": ["eaa828b3", "7acb4a38", "cfc971b4", "8f603745"],
-        "status": "已登记；与上一批 object-counter「进入即 PASS」"
-                  "是**两个相反的缺陷**：一个白送分、一个不给操作",
+        "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，"
+                  "不宜并列成「两个相反的缺陷」",
     },
     "DEF-D4": {
-        "title": "legacy:number-line 不记录跳步，只记录终点",
+        "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
         "kind": "interaction_gap",
-        "evidence": "`NumberLineRepresentation` 有 `jumps: number[]` 字段，"
-                    "但 `visual` 侧只给 `min/max/start`，"
-                    "**没有期望跳步序列**；判分只比 `answer`",
-        "impact": "「跳到 9」可来自一次 +1 或 +5−4，二者不可分；"
-                  "连续变化类的核心过程证据缺失",
+        "evidence_tier": "static_fact",
+        "confirmed": False,
+        "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；"
+                    "`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+        "static_fact": ("`jumps` 字段真实存在且会被序列化；"
+                        "`visual` 里没有「期望怎么跳」的声明。"),
+        "not_claimed": ("**不主张「不记录跳步」**——上一版这个标题是错的，"
+                        "因为 `jumps` 字段明确存在。准确的表述是"
+                        "「**没有声明期望跳步序列**」，属于「有字段无口径」。"),
+        "four_things_separated": {
+            "能否操作": "可以（数轴上可连续跳步）",
+            "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+            "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+            "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）",
+        },
+        "inference": ("因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；"
+                      "但这**不等于**过程信息不存在——它存在但未被使用。"),
+        "impact": ("连续变化类的**过程证据未被判分使用**；"
+                   "若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，"
+                   "而不是改记录结构。"),
         "affected": ["76d49907", "bb376fbd", "552b39e3"],
-        "status": "已登记；`jumps` 字段存在但未被判分使用，"
-                  "属于「有字段无口径」，与上一批 ruler 的 `structure.error` "
-                  "（有精确靶）不同",
+        "status": "已登记风险；`jumps` 字段存在但未被判分使用，"
+                  "与上一批 ruler 的 `structure.error`（有精确靶）不同",
     },
 }
 
@@ -964,8 +1111,20 @@ Q05_EVIDENCE: dict[str, dict] = {
             "relation": "`bars.c` ≤ `bars.a` 或 ≤ `bars.b`（整体条不比部分条长）→ "
                         "`structure.error='relation'`。摆出了数学上不存在的模型",
         },
-        "competing": "`calc` 也可能来自「摆对了 12 但中途移动过已知条又移回」——"
-                     "序列化只存终态，不存轨迹，分不开「一次摆对」与「试错后摆对」",
+        # ★ 内部矛盾修正（2026-10-21 复审）：上一版这里写「`calc` 也可能来自
+        #   『摆对了 12 但中途移动过已知条又移回』」，同时又承认「序列化只存终态」。
+        #   二者不能并存：既然不记录中途动作，就不能拿一个未记录的中间动作
+        #   去解释一个终态错误码。正确的写法是**明确说出不能区分什么**。
+        "competing": (
+            "`calc` 只说明**终态**里 `bars.c ≠ 12` 且已知条摆对。它与下列解释"
+            "**全都相容**，而现有字段**不能区分**它们："
+            "①把 5+7 算成别的数；②算对了但拖动时停在别处；"
+            "③先摆了别的值再改到 12 的一半。"
+            "序列化只保留终态、不保留轨迹，所以本题的错误码只能定位到"
+            "「结构对、结果错」，**不能定位到具体算法错在哪里**。"
+            "上一版用「中途移动过又移回」解释 `calc` 是越权的——那个动作没有记录。"),
+        "cannot_distinguish": (
+            "终态同值时，以下解释均相容且不可分：算错 / 停错位置 / 改过又改回。"),
         "neutral": "说「整体条要盖住两根部分条，看看现在盖住了吗」",
     },
     "a76ac388": {
@@ -1080,9 +1239,11 @@ Q05_EVIDENCE: dict[str, dict] = {
         "observable": "`bars=[{id:base,value:13},{id:unknown,value:8}]` 为正解形态。"
                       "`unknown.max=18`，**拖到底得 18 ≠ 8**，"
                       "所以本题的滑杆不泄露答案",
-        "competing": "`unknown.value=18` 说明做了 13+5（方向反），"
-                     "这是**可归因的错法**——比 c07482bb 强："
-                     "同样拖到底，本题拖出来是错的，说明孩子在按「多就加」做",
+        "competing": "`unknown.value=18` 与「做了 13+5（方向反）」**相容**。"
+                     "比 c07482bb 可用之处在于：本题拖到底得到的是 18（错值），"
+                     "所以「拖到底」与「方向反」在这一题上**指向同一个值**，"
+                     "仍不能区分；但它至少**排除了「拖到底就蒙对」**这一条。"
+                     "**注意：这不构成对孩子的归因**，只缩小了相容假设的范围",
         "neutral": "说「姐姐比弟弟多 5 颗，弟弟的条该比姐姐的条短还是长」",
     },
     "7f22076d": {
@@ -1097,8 +1258,9 @@ Q05_EVIDENCE: dict[str, dict] = {
         "observable": "`bars=[{id:base,value:12},{id:unknown,value:7}]` 为正解。"
                       "`unknown.max=17`，拖到底得 17 ≠ 7",
         "competing": "`unknown.value=17` → 12+5（方向反）；"
-                     "`unknown.value=5` → 把差量当答案（另一类可归因错法）。"
-                     "两种错法值不同，可分开",
+                     "`unknown.value=5` → 把差量当答案。"
+                     "两种错法值不同，可分开这两个假设"
+                     "（**可分开假设 ≠ 可归因**：仍只说明与该假设相容）",
         "neutral": "说「妹妹比哥哥少 5 个，妹妹那条该短 5 格」",
     },
     "ed97b114": {
@@ -1259,21 +1421,36 @@ Q05_EVIDENCE: dict[str, dict] = {
         "neutral": "说「放进来的是苹果，篮子里问的是橘子，苹果算不算橘子的数」",
     },
     "76ce803c": {
-        "observable": "只有 `answer`。正解 `'12'`（10+5−3）。"
-                      "**12 = 10+5−3，而 10+5−3+4=16、10+5=15 都不同值**，"
-                      "所以本题的错法在值上可分",
-        "competing": "`answer='16'` → 把 4 块饼干算进糖（条件筛选失败，可归因）；"
-                     "`answer='15'` → 漏掉「吃掉3颗」（连续变化第二步丢失，可归因）；"
-                     "`answer='8'` → 10−3 后又减了... 或 5−3+10 之外的算法错。"
-                     "**本题是本批 direct 类里错法最可分的一条**",
+        "observable": "只有 `answer`（本题**没有** `representation`，"
+                      "也没有除终值外的过程字段）。正解 `'12'`（10+5−3）。"
+                      "`10+5−3+4=16` 与 `10+5=15` 都是不同值，"
+                      "所以**若**孩子提交这些值，它们与特定假设相容",
+        # ★ 越权归因修正（2026-10-21 复审）：上一版把「答 16」直接写成
+        #   「把饼干算进糖，可归因」。本题只有 answer 一个字段，
+        #   终值 16 只能说明**与**「把饼干算进去了」这个假设**相容**，
+        #   不能证明孩子实际用了该算法——同一个 16 也可能来自别处。
+        "competing": (
+            "`answer='16'` 与「把 4 块饼干也算进糖」**相容**；"
+            "`answer='15'` 与「漏掉『吃掉 3 颗』这一步」**相容**；"
+            "`answer='8'` 与「把加法做成减法」相容。"
+            "**以上都只是相容，不是归因**：本题只存终值，"
+            "同一个终值可以来自不同算法，现有字段无法判定孩子用了哪一种。"),
+        "cannot_distinguish": (
+            "只有终值时，任何「他一定是这样算的」都不成立；"
+            "可说的是「这个值与假设 H 相容」，不可说的是「他用了 H」。"),
         "neutral": "说「饼干也在旁边，但问的是糖，饼干要不要数」",
     },
     "623b7f19": {
-        "observable": "只有 `answer`。正解 `'6'`（9−3）。"
-                      "错法 8 = 9−3+2、4 = 9−3−2 都不同值",
-        "competing": "`answer='8'` → 把练习册当贴纸（条件筛选失败）；"
-                     "`answer='4'` → 9−3 后又减了 2（把练习册当贴纸且方向也错）。"
-                     "**两种错法值不同可分开**，但都指向「没能把练习册排除」",
+        "observable": "只有 `answer`（无过程字段）。正解 `'6'`（9−3）。"
+                      "`8 = 9−3+2`、`4 = 9−3−2` 都是不同值",
+        "competing": (
+            "`answer='8'` 与「把 2 本练习册也当成贴纸（加进去了）」相容；"
+            "`answer='4'` 与「把练习册当成贴纸且方向反了（减两次）」相容。"
+            "两者终值不同，**故可区分这两个假设**；但都不能从终值推出"
+            "「孩子实际这样想」——只能说明与该假设相容。"),
+        "cannot_distinguish": (
+            "终值不同 → 可区分「相容的假设集合」；"
+            "终值相同 → 不可区分具体算法。二者不要混说。"),
         "neutral": "说「书包里那 2 本练习册，和贴纸是不是一回事」",
     },
 }
@@ -1411,7 +1588,23 @@ def detect_visual_leak(vis: dict | None, answer: float) -> list[str]:
 
 
 def detect_unreachable(vis: dict | None, answer: float) -> str | None:
-    """答案是否在界面上物理摆不出（上限 < 答案）。"""
+    """**线索检测器，不是可完成性判定器。**
+
+    只回答一个问题：「最终答案的数值是否大于界面能显示的最大值」。
+
+    ## 它不能回答什么（2026-10-21 复审指出的两处局限）
+
+    1. **不读条的角色语义。** 它不知道哪根条代表哪个量，也不知道题目是否
+       要求「未知条 = 最终合计」。对「先求另一个人的数量、再求两人合计」的
+       两步题，未知条完全可以表示另一个人的数量，此时最终合计大于单条上限
+       是**正常设计**，不是缺陷。
+    2. **取 `max(所有上限)` 导致漏报。** 反例：答案条上限 5、另一无关条上限
+       100、答案 10 —— 本函数取最大值 100 后判定「可达」，但答案条其实摆不出
+       10。正确做法是读「答案条」的上限，而「哪根是答案条」需要角色语义。
+
+    因此返回值只是**线索**，出现在报告里时必须与
+    `KNOWN_DEFECTS[x].verification_plan` 一起读，不得直接写成「答案不可达」。
+    """
     if not isinstance(vis, dict):
         return None
     t = vis.get("type")
@@ -1423,11 +1616,12 @@ def detect_unreachable(vis: dict | None, answer: float) -> str | None:
             caps.append(mv)
         if not caps:
             return None
-        return (f"answer {answer:.0f} > max 可摆上限 {max(caps):.0f}"
+        return (f"线索：最终答案 {answer:.0f} > 单条可摆放上限 {max(caps):.0f}"
+                f"（不代表任务不可完成，需核验未知条应表示哪个量）"
                 if answer > max(caps) else None)
     if t == "number-line":
         mx = vis.get("max")
-        return (f"answer {answer:.0f} > number-line max {mx}"
+        return (f"线索：最终答案 {answer:.0f} > number-line max {mx}"
                 if isinstance(mx, (int, float)) and answer > mx else None)
     return None
 
@@ -1443,10 +1637,10 @@ def evaluate(check: dict, stated_raw, ems: list, ui: dict) -> dict:
 
     vis = (ui or {}).get("visual")
     leak = detect_visual_leak(vis, float(stated)) if stated is not None else []
-    unreachable = detect_unreachable(vis, float(stated)) if stated is not None else None
+    signal = detect_unreachable(vis, float(stated)) if stated is not None else None
 
     ev = Q05_EVIDENCE.get(check["rvid"][:8])
-    # 缺陷挂载：按 affected 列表反查（同一缺陷可挂多题）
+    # 风险挂载：按 affected 列表反查（同一风险可挂多题）
     defects = [{"id": k, **{kk: vv for kk, vv in v.items() if kk != "affected"}}
                for k, v in KNOWN_DEFECTS.items()
                if check["rvid"][:8] in v["affected"]]
@@ -1482,9 +1676,10 @@ def evaluate(check: dict, stated_raw, ems: list, ui: dict) -> dict:
         "applicable_conditions": check["boundary"],
         "stated_answer": stated_raw,
         "verdict": "MATCH" if match else "MISMATCH",
-        # 单列的例外/缺陷，不混进 MATCH 统计
+        # 单列的例外/风险线索，不混进 MATCH 统计
         "visual_leak": leak,
-        "unreachable": unreachable,
+        # 字段名从 unreachable 改为 unreachable_signal：这是线索，不是结论
+        "unreachable_signal": signal,
         "known_defects": defects,
         "ui_visual_seen": vis,
         "q05_error_models": ems,
@@ -1496,6 +1691,8 @@ def evaluate(check: dict, stated_raw, ems: list, ui: dict) -> dict:
             "observable_evidence": obs_for(str(e.get("code"))),
             "competing_explanations": (ev or {}).get("competing")
                                       or "【缺口】本题未登记竞争解释",
+            "cannot_distinguish": (ev or {}).get("cannot_distinguish")
+                                  or "【未登记】本题未显式声明现有字段不能区分什么",
             "neutral_feedback": (ev or {}).get("neutral")
                                 or "【缺口】本题未登记中性反馈口径",
             "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
@@ -1603,23 +1800,22 @@ def main() -> int:
             prev_ids = {i["rvid"] for i in json.load(f).get("items", [])}
 
     out = {
-        "title": "FE-1471｜Q03 独立核验第三批（额定 20，实核 29；legacy + bar-model）",
+        "title": "FE-1471｜Q03 独立核验第三批（计划约 20，实核 29；legacy + bar-model）",
         "batch": {
-            "scope": "numeric_judge ∩ both 剩余中的 legacy:* + bar-model；额定 20 题",
+            "scope": "numeric_judge ∩ both 剩余中的 legacy:* + bar-model；计划约 20 题",
             "selection_rule": "优先 legacy:* 与 bar-model；覆盖五类题意关系",
             "relation_rules": RELATION_RULES,
-            # ── 记账（与 summary.total 分开：一个是「说好做多少」，一个是「实际做了多少」）──
-            "ledger": {k: v for k, v in LEDGER.items()
-                       if k not in ("gap", "gap_explained",
-                                    "gap_why_not_explained", "gap_remedy")},
-            "ledger_gap": {
-                "count": LEDGER["gap"],
-                "basis": (f"{LEDGER['verified']} − {LEDGER['traced_extra']} = "
-                          f"{LEDGER['verified'] - LEDGER['traced_extra']}，"
-                          f"与额定 {LEDGER['quota']} 差 {LEDGER['gap']}"),
-                "explained": LEDGER["gap_explained"],
-                "why_not_explained": LEDGER["gap_why_not_explained"],
-                "remedy": LEDGER["gap_remedy"],
+            # ── 记账（与 summary.total 分开：一个是「计划做多少」，一个是「实际做了多少」）──
+            "ledger": LEDGER,
+            # 批外引用规则：缺陷调查可以引用批外题目，只要独立留证；
+            # 「批外发现」与「本批完成数量」分账，不必为满足门禁而扩批。
+            "out_of_batch_refs": {
+                "rule": ("缺陷/调查可以引用批外题目，但必须独立保留其 RVID、输入与"
+                         "核查证据；批外发现不计入本批完成数量。"),
+                "count": 0,
+                "items": [],
+                "note": ("本批实际做法是扩批（7 条补入并现场核对），"
+                         "所以当前没有批外引用；此字段为后续批次预留口径。"),
             },
             "not_selected_why": (
                 "clock(8) 的存储答案是 h*60+m 编码，独立推导会退化成反推编码规则；"
@@ -1636,31 +1832,70 @@ def main() -> int:
         "items": results,
     }
     from collections import Counter
+
+    def _triple(r: dict) -> tuple:
+        """一题的多码候选三字段组（同码复用同组三字段）。"""
+        return tuple(
+            (c["code"], c["observable_evidence"], c["competing_explanations"],
+             c["neutral_feedback"]) for c in (r.get("q05_candidates") or []))
+
     ok = [r for r in results if r["verdict"] == "MATCH"]
+    _record_total = sum(len(r.get("q05_candidates") or []) for r in results)
+    # ★ Q05 去重口径（2026-10-21 复审）：
+    #   82 是**候选记录数**，不是 82 种有区分依据的错法。
+    #   逐条比对三字段后发现实际只有 29 组：27 道多错误码题各码复用同组
+    #   三字段（共 80 条），2 道单码题各 1 条。同一观察事实可以被多个假设共享，
+    #   正确做法是明确「当前不能区分」，而不是换措辞制造虚假区分力。
+    _distinct_groups = len({_triple(r) for r in results if r.get("q05_candidates")})
     out["summary"] = {
         "total": len(results),
         "match": len(ok),
         "mismatch": sum(1 for r in results if r["verdict"] == "MISMATCH"),
         "not_found": sum(1 for r in results if r["verdict"] == "RVID_NOT_FOUND"),
         "drift": sum(1 for r in results if r.get("input_binding", {}).get("drift")),
-        "overlap_with_batch2": sorted({r["rvid"][:8] for r in results} & 
+        "overlap_with_batch2": sorted({r["rvid"][:8] for r in results} &
                                       {i[:8] for i in prev_ids}),
         "by_relation": dict(Counter(r["relation"] for r in results)),
         "by_renderer": dict(Counter(r["renderer"] for r in results)),
         "visual_leak_items": sorted(r["rvid"][:8] for r in results if r.get("visual_leak")),
-        "unreachable_items": sorted(r["rvid"][:8] for r in results if r.get("unreachable")),
+        "unreachable_signal_items": sorted(
+            r["rvid"][:8] for r in results if r.get("unreachable_signal")),
         "defect_hit_items": sorted(r["rvid"][:8] for r in results if r.get("known_defects")),
-        "q05_candidates_total": sum(len(r.get("q05_candidates") or []) for r in results),
+        "q05_candidates_total": _record_total,
+        "q05_candidate_records": _record_total,
+        "q05_candidate_wording": (
+            "`q05_candidates_total` / `q05_candidate_records` 是**候选记录数**"
+            "（每道题的错误码各算一条），**不是**有区分依据的错法种数。"
+            "同一道题的多码复用同一组三字段，因此记录数天然大于独立证据组数。"),
+        "q05_distinct_evidence_groups": _distinct_groups,
+        "q05_dedup_note": (
+            f"去重后只有 {_distinct_groups} 组三字段（题），"
+            f"却产生 {_record_total} 条候选记录——差额来自同一组三字段被各错误码复用。"
+            "这不等于「错法有 82 种」，也不要求把每条记录改写成不同句子；"
+            "同一观察事实可以被多个假设共享，关键是明确「当前不能区分什么」。"),
+        "q05_completed": 0,
+        "q05_completed_note": (
+            "Q05 继续 **0 题完成**。本批只做到「已观察到什么 → 与哪些解释相容 → "
+            "现有字段不能区分什么 → 可以给什么不越权的反馈」这四步的登记，"
+            "不构成「错误诊断已可用」的结论。"),
         # ★ 关键口径：MATCH 是「题意级通过」，不等于「无保留完成」
         "match_definition": ("MATCH 只表示「按题面独立推导的结果与存储答案相等」。"
                              "它**不**表示该题的交互/配置无问题——"
-                             "上列 visual_leak / unreachable / known_defects "
-                             "是与之独立的另一笔账，必须分开读"),
+                             "上列 visual_leak / unreachable_signal / "
+                             "known_defects 是与之独立的另一笔账，必须分开读"),
+        "risk_tier_note": (
+            "`known_defects` 里的 15 条是「已登记的交互／配置风险条目」，"
+            "不是 15 条已确证产品故障。每条带 `evidence_tier`"
+            "（static_fact / inference / needs_runtime）与 `confirmed` 标志；"
+            "`confirmed=false` 的条目不得被引用为「已发生的评分故障」。"),
     }
     out["known_role_distribution"] = dict(
         Counter(r["known_role"] for r in results))
 
-    # ── 账目自洽：ledger 必须与现场的实核结果对得上，不许「说 20 做 29 不吭声」──
+    # ── 账目自洽：ledger 必须与现场实核结果对得上，不许「说 20 做 29 不吭声」──
+    # 注意：这里**不再**强制「差额必须未解释」。
+    # 复审裁决：不要求门禁把这批永久锁定在「差额必须未解释」的状态；
+    # 29 条 RVID 身份全部明确，缺的是「初始选样名单没落盘」这一过程记录。
     led = out["batch"]["ledger"]
     traced = {r8 for v in led["traced_extra_breakdown"].values() for r8 in v}
     ledger_problems: list[str] = []
@@ -1674,16 +1909,25 @@ def main() -> int:
     if len(traced) != led["traced_extra"]:
         ledger_problems.append(
             f"traced_extra={led['traced_extra']} ≠ 明细条数 {len(traced)}")
-    # 差额必须等于「实核 − 可追溯补入 − 额定」
-    expect_gap = led["verified"] - led["traced_extra"] - led["quota"]
-    if out["batch"]["ledger_gap"]["count"] != expect_gap:
-        ledger_problems.append(
-            f"ledger_gap.count={out['batch']['ledger_gap']['count']} "
-            f"≠ 算式 {led['verified']}−{led['traced_extra']}−{led['quota']}"
-            f"={expect_gap}")
-    # 差额为零时不能还挂着「未解释」
-    if expect_gap == 0 and out["batch"]["ledger_gap"]["explained"] is False:
-        ledger_problems.append("差额为 0 但 ledger_gap 仍标为未解释")
+    # 身份完整性：29 条必须都有完整 UUID（不接受短 id、不接受重复）
+    ids = [r["rvid"] for r in results]
+    if len(set(ids)) != len(ids):
+        ledger_problems.append("实核结果里有重复 RVID")
+    for i in ids:
+        if len(i) != 36 or i.count("-") != 4:
+            ledger_problems.append(f"RVID 不是完整 UUID：{i!r}")
+    # 计划/实际的差必须可解释：要么差额为 0，要么 selection_record 明确记录
+    # 「初始名单未落盘」——记录缺失本身是允许的，**沉默**不允许。
+    plan_delta = led["verified"] - led["quota"]
+    if plan_delta != 0:
+        if not led.get("selection_record", {}).get("missing_reason"):
+            ledger_problems.append(
+                f"实核 {led['verified']} 与计划 {led['quota']} 不一致（差 "
+                f"{plan_delta}），但 selection_record 未说明原因")
+        if not led.get("identity_complete"):
+            ledger_problems.append(
+                "存在计划/实际不一致，但 identity_complete 非 True——"
+                "必须明确 29 条身份是否完整")
     out["batch"]["ledger"]["consistent"] = not ledger_problems
     out["batch"]["ledger"]["problems"] = ledger_problems
     if ledger_problems:
@@ -1702,8 +1946,8 @@ def main() -> int:
         flags = []
         if r.get("visual_leak"):
             flags.append("LEAK:" + ",".join(r["visual_leak"]))
-        if r.get("unreachable"):
-            flags.append("UNREACH")
+        if r.get("unreachable_signal"):
+            flags.append("SIGNAL")
         print(f"{r['verdict']:8s} {r['renderer']:20s} {r['relation']:16s}"
               f" {r['known_role']:6s} {r['derivation']['expr']:14s}"
               f" = {r['computed']:<4} stated={r['stated_answer']!r:5}"

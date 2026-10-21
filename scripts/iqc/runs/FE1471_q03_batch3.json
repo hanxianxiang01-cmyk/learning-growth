@@ -1,7 +1,7 @@
 {
- "title": "FE-1471｜Q03 独立核验第三批（额定 20，实核 29；legacy + bar-model）",
+ "title": "FE-1471｜Q03 独立核验第三批（计划约 20，实核 29；legacy + bar-model）",
  "batch": {
-  "scope": "numeric_judge ∩ both 剩余中的 legacy:* + bar-model；额定 20 题",
+  "scope": "numeric_judge ∩ both 剩余中的 legacy:* + bar-model；计划约 20 题",
   "selection_rule": "优先 legacy:* 与 bar-model；覆盖五类题意关系",
   "relation_rules": {
    "part_whole": "题面出现「一共有 / 一共多少 / 其余是 / 还剩」等部分—整体措辞，且所问量由两个（或多个）部分合成或从整体中分出",
@@ -12,6 +12,7 @@
   },
   "ledger": {
    "quota": 20,
+   "quota_wording": "约 20（复审原文「约20题」）",
    "verified": 29,
    "traced_extra": 7,
    "traced_extra_breakdown": {
@@ -27,16 +28,23 @@
      "8981fbcc"
     ]
    },
-   "traced_extra_reason": "KNOWN_DEFECTS.affected 若引用批外 RVID，等于「缺陷已登记但登记时没核对过现场」。门禁 T5/T6e 为此而设；宁可扩批，也不留这种账。",
+   "traced_extra_reason": "KNOWN_DEFECTS.affected 若引用批外 RVID，等于「缺陷已登记但登记时没核对过现场」。本批选择扩批以完成现场核对；但这条不是唯一解法——缺陷调查也可以引用批外题目，只要独立保留身份、输入与核查证据。",
+   "identity_complete": true,
+   "identity_basis": "29/29 有完整 RVID、题干、独立推导与存储答案比对；与前两批重叠 0；全部位于 numeric_judge ∩ both 队列内。",
+   "selection_record": {
+    "frozen_initial_list": null,
+    "missing_reason": "最初的选样集合没有在开批时写入工件，事后无法从仓库反查「计划的那约 20 题具体是哪 20 个 RVID」。",
+    "what_this_is_not": "**不是**「结果集里有 2 条身份不明的记录」，也**不是**「29 − 7 − 20 = 2 那两条来路不明」。",
+    "remedy": "下次开批先把选题集合写入工件 quota_list 字段，扩样时追加新增 RVID 及原因，使计划与实际可从工件对账；不追溯补造本批的历史名单。"
+   },
    "consistent": true,
    "problems": []
   },
-  "ledger_gap": {
-   "count": 2,
-   "basis": "29 − 7 = 22，与额定 20 差 2",
-   "explained": false,
-   "why_not_explained": "首批选题清单**从未落盘**，仓库里没有「额定 20 题是哪 20 题」的可反查记录，因此无法区分「多做了 2 题」与「额定清单实为 22 题」。",
-   "remedy": "下次开批时选题清单先写进工件（quota_list 字段）再跑核验，使差额可从工件反查，而不是只能靠记忆"
+  "out_of_batch_refs": {
+   "rule": "缺陷/调查可以引用批外题目，但必须独立保留其 RVID、输入与核查证据；批外发现不计入本批完成数量。",
+   "count": 0,
+   "items": [],
+   "note": "本批实际做法是扩批（7 条补入并现场核对），所以当前没有批外引用；此字段为后续批次预留口径。"
   },
   "not_selected_why": "clock(8) 的存储答案是 h*60+m 编码，独立推导会退化成反推编码规则；estimation-canvas / shape-gallery / direction-grid 的同质题已在 FE-1468 逐题核完，重复不增证据"
  },
@@ -65,7 +73,7 @@
   "same_snapshot_as": "scripts/iqc/runs/findings_fe1460_225.jsonl（run_id FE1460-eb662b5c，snapshot cee1afda…）",
   "solver_version": {
    "entry_script": "scripts/iqc/rt1471/q03_batch3.py",
-   "entry_sha256": "f59b555ee5f56f283d7632867ba923e63c407a9644bd6ab07e92584ed5cfcc7f",
+   "entry_sha256": "b6a02acca5f2226a42680ab24c4704a8fb4f501b932e65d2521b127c3e8c6f8b",
    "shared_modules": [
     {
      "path": "scripts/iqc/rt1469/q03_number_input.py",
@@ -78,7 +86,7 @@
      "role": "audit_input_sha（九域规范化哈希，与 scan.py 同一口径）"
     }
    ],
-   "git_commit": "95ab587922df872591dcf0f0d5bea69322016319",
+   "git_commit": "dbbd429c4542d6cb1eddefcf141419de8158dbea",
    "expression_engine": "Python eval + 空 builtins（仅算术与 int()）",
    "note": "入口与共享模块分别列出；git_commit 是本次生成时所在提交，工作区有未提交改动时以 entry_sha256 为准。"
   },
@@ -336,10 +344,16 @@
  ],
  "known_defects": {
   "DEF-D1": {
-   "title": "legacy:bar-model 滑杆上限等于答案（答案副本）",
+   "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
    "kind": "ui_answer_leak",
-   "evidence": "`ui_schema.visual.bars[].max` == `content.answer`；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
-   "impact": "孩子把未知条拖到最右端即得正确答案，无需推导；Q05 侧任何「是否理解比较关系」的判定都失去区分力",
+   "evidence_tier": "static_fact → inference",
+   "confirmed": false,
+   "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+   "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+   "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+   "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+   "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+   "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
    "affected": [
     "c07482bb",
     "8b121389",
@@ -353,13 +367,68 @@
     "e5c13ef5",
     "04f97cb8"
    ],
-   "status": "已登记；本轮不改组件（只读范围），待内容侧调整 max"
+   "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
   },
   "DEF-D2": {
-   "title": "legacy:bar-model 滑杆上限小于答案（物理摆不出）",
-   "kind": "unreachable_answer",
-   "evidence": "`content.answer` > `visual.max_value` 且 > 所有 `bars[].max`",
-   "impact": "**正确答案在界面上无法摆出**。孩子即便算对也交不出正确表征，只能靠数字输入框答对；representation 恒为错误结构，错误证据被污染（分不清「不会」与「摆不出」）",
+   "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+   "kind": "unreachable_signal",
+   "evidence_tier": "needs_runtime",
+   "confirmed": false,
+   "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+   "static_fact": "三题的最终合计（18 / 21 / 19）都大于任一单条上限；三题的**个人数量**却都在范围内（见下表）。",
+   "inference": "**没有**。当前检测器 `detect_unreachable()` 只比较「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，也不知道题目是否要求单独展示合计。所以它给出的是线索，不是可完成性结论。",
+   "detector_limits": "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非「答案条的上限」，因此会漏报——反例：答案条上限 5、另一无关条上限 100、答案 10，该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。",
+   "not_claimed": "**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励半成品」**。上一版这两句与同一份报告里「只能靠数字输入框答对」互相矛盾——两者不能作为同一已证结论并存。而且判分读 `response.answer`，与滑杆能否摆出无关。",
+   "role_hypothesis": [
+    {
+     "rvid": "421ede36",
+     "person_a": 11,
+     "person_b": 7,
+     "answer": 18,
+     "bar_caps": [
+      15,
+      15
+     ],
+     "max_value": 17,
+     "bars_can_show": "11 与 7（两人各自的数量）",
+     "both_within_range": true
+    },
+    {
+     "rvid": "6e5395f0",
+     "person_a": 9,
+     "person_b": 12,
+     "answer": 21,
+     "bar_caps": [
+      12,
+      12
+     ],
+     "max_value": 14,
+     "bars_can_show": "9 与 12（两人各自的数量）",
+     "both_within_range": true
+    },
+    {
+     "rvid": "8981fbcc",
+     "person_a": 8,
+     "person_b": 11,
+     "answer": 19,
+     "bar_caps": [
+      11,
+      11
+     ],
+     "max_value": 13,
+     "bars_can_show": "8 与 11（两人各自的数量）",
+     "both_within_range": true
+    }
+   ],
+   "verification_plan": [
+    "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+    "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+    "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+    "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里各承担什么，是否要求一致"
+   ],
+   "impact": "在①②未完成前，**只能说「单条上限不足以表示最终合计」这一静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。",
+   "if_confirmed": "若契约确实要求未知条为合计、或提交被真实阻断，再走内容侧新版本整改；且**不能只把 `max` 改成比答案大就算修好**——那会同时制造新的答案泄露。",
+   "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
    "affected": [
     "421ede36",
     "6e5395f0",
@@ -370,32 +439,49 @@
     "6e5395f0",
     "8981fbcc"
    ],
-   "status": "已登记；**这是比 DEF-D1 更严重的问题**——D1 是白送分，D2 是永远拿不到分。本轮不改组件，但必须在报告中单列，不能混入 MATCH 统计"
+   "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置"
   },
   "DEF-D3": {
-   "title": "legacy:objects 不支持增减，求差动作不可观测",
+   "title": "legacy:objects 未提供增减操作（静态事实）",
    "kind": "interaction_gap",
-   "evidence": "`visual.groups[].count` 由 config 写死；`tools=[drag,align,count,undo,reset]` 无 `remove_object`/`add_object`",
-   "impact": "「一一对应后多出几个」这个关键动作不留痕迹；representation 里永远只有题面给的两组数",
+   "evidence_tier": "static_fact → inference",
+   "confirmed": false,
+   "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+   "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+   "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+   "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+   "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+   "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
    "affected": [
     "eaa828b3",
     "7acb4a38",
     "cfc971b4",
     "8f603745"
    ],
-   "status": "已登记；与上一批 object-counter「进入即 PASS」是**两个相反的缺陷**：一个白送分、一个不给操作"
+   "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
   },
   "DEF-D4": {
-   "title": "legacy:number-line 不记录跳步，只记录终点",
+   "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
    "kind": "interaction_gap",
-   "evidence": "`NumberLineRepresentation` 有 `jumps: number[]` 字段，但 `visual` 侧只给 `min/max/start`，**没有期望跳步序列**；判分只比 `answer`",
-   "impact": "「跳到 9」可来自一次 +1 或 +5−4，二者不可分；连续变化类的核心过程证据缺失",
+   "evidence_tier": "static_fact",
+   "confirmed": false,
+   "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+   "static_fact": "`jumps` 字段真实存在且会被序列化；`visual` 里没有「期望怎么跳」的声明。",
+   "not_claimed": "**不主张「不记录跳步」**——上一版这个标题是错的，因为 `jumps` 字段明确存在。准确的表述是「**没有声明期望跳步序列**」，属于「有字段无口径」。",
+   "four_things_separated": {
+    "能否操作": "可以（数轴上可连续跳步）",
+    "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+    "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+    "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）"
+   },
+   "inference": "因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；但这**不等于**过程信息不存在——它存在但未被使用。",
+   "impact": "连续变化类的**过程证据未被判分使用**；若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，而不是改记录结构。",
    "affected": [
     "76d49907",
     "bb376fbd",
     "552b39e3"
    ],
-   "status": "已登记；`jumps` 字段存在但未被判分使用，属于「有字段无口径」，与上一批 ruler 的 `structure.error` （有精确靶）不同"
+   "status": "已登记风险；`jumps` 字段存在但未被判分使用，与上一批 ruler 的 `structure.error`（有精确靶）不同"
   }
  },
  "summary": {
@@ -426,7 +512,7 @@
    "c88410f2",
    "e5c13ef5"
   ],
-  "unreachable_items": [
+  "unreachable_signal_items": [
    "421ede36",
    "6e5395f0",
    "8981fbcc"
@@ -449,7 +535,14 @@
    "eaa828b3"
   ],
   "q05_candidates_total": 82,
-  "match_definition": "MATCH 只表示「按题面独立推导的结果与存储答案相等」。它**不**表示该题的交互/配置无问题——上列 visual_leak / unreachable / known_defects 是与之独立的另一笔账，必须分开读"
+  "q05_candidate_records": 82,
+  "q05_candidate_wording": "`q05_candidates_total` / `q05_candidate_records` 是**候选记录数**（每道题的错误码各算一条），**不是**有区分依据的错法种数。同一道题的多码复用同一组三字段，因此记录数天然大于独立证据组数。",
+  "q05_distinct_evidence_groups": 29,
+  "q05_dedup_note": "去重后只有 29 组三字段（题），却产生 82 条候选记录——差额来自同一组三字段被各错误码复用。这不等于「错法有 82 种」，也不要求把每条记录改写成不同句子；同一观察事实可以被多个假设共享，关键是明确「当前不能区分什么」。",
+  "q05_completed": 0,
+  "q05_completed_note": "Q05 继续 **0 题完成**。本批只做到「已观察到什么 → 与哪些解释相容 → 现有字段不能区分什么 → 可以给什么不越权的反馈」这四步的登记，不构成「错误诊断已可用」的结论。",
+  "match_definition": "MATCH 只表示「按题面独立推导的结果与存储答案相等」。它**不**表示该题的交互/配置无问题——上列 visual_leak / unreachable_signal / known_defects 是与之独立的另一笔账，必须分开读",
+  "risk_tier_note": "`known_defects` 里的 15 条是「已登记的交互／配置风险条目」，不是 15 条已确证产品故障。每条带 `evidence_tier`（static_fact / inference / needs_runtime）与 `confirmed` 标志；`confirmed=false` 的条目不得被引用为「已发生的评分故障」。"
  },
  "items": [
   {
@@ -472,7 +565,7 @@
    "stated_answer": "12",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": null,
    "q05_error_models": [
@@ -487,7 +580,8 @@
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "**错误码有优先级，必须先说清顺序**（`evaluateBarModel` 的执行顺序决定错法归类）：① 已知条摆错（a≠5 或 b≠7）→ 立即 `modeling`，**不管 c 对不对**；② 已知条对了但 c ≤ a 或 c ≤ b → `relation`；③ 已知条对、结构成立、c≠12 → `calc`。所以「只摆 c=12、a 与 b 留 0」实际落到 **modeling**（因为 a=0≠5），**不是 calc**——要拿到 calc，必须先把 a、b 精确摆对",
      "observable_evidence": "`bars.a` 或 `bars.b` ≠ config.known 的 5/7，且 `answerTouched=true`。`structure={status:FAIL, error:'modeling', relation:'part_whole'}`。**痕迹在 a/b 两根已知条上**，不在答案条",
-     "competing_explanations": "`calc` 也可能来自「摆对了 12 但中途移动过已知条又移回」——序列化只存终态，不存轨迹，分不开「一次摆对」与「试错后摆对」",
+     "competing_explanations": "`calc` 只说明**终态**里 `bars.c ≠ 12` 且已知条摆对。它与下列解释**全都相容**，而现有字段**不能区分**它们：①把 5+7 算成别的数；②算对了但拖动时停在别处；③先摆了别的值再改到 12 的一半。序列化只保留终态、不保留轨迹，所以本题的错误码只能定位到「结构对、结果错」，**不能定位到具体算法错在哪里**。上一版用「中途移动过又移回」解释 `calc` 是越权的——那个动作没有记录。",
+     "cannot_distinguish": "终态同值时，以下解释均相容且不可分：算错 / 停错位置 / 改过又改回。",
      "neutral_feedback": "说「整体条要盖住两根部分条，看看现在盖住了吗」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -520,7 +614,7 @@
    "stated_answer": "7",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": null,
    "q05_error_models": [
@@ -536,6 +630,7 @@
      "hypothesis": "**已按 `evaluateBarModel` 的执行顺序重算，上一版写错了**：若把「又拿来4张」当最终总数，孩子会把 c 摆成 4、而 a、b 仍按题面摆 3 与 4 → 已知条摆对、结构判定 `c > a && c > b` 即 4>3 且 4>4 → 4>4 为假 → **`relation`**（不是 modeling，因为 a=3、b=4 都对）。另一路径：a 或 b 也摆错 → 先命中 `modeling`，**modeling 优先于 relation**",
      "observable_evidence": "`bars.a`≠3 或 `bars.b`≠4，`answerTouched=true` → `structure.error='modeling'`",
      "competing_explanations": "`calc` 也可能是「把 c 摆成 4（只记第二次拿来的量）」——这与「算错」在终态上同值，需结合 c 的具体值区分：c=4 更可能是漏了第一次，c=别的数更像误算",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「两次拿来的纸都倒进同一个筐，筐里现在有几张」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -568,7 +663,7 @@
    "stated_answer": "21",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": {
     "max": 23,
@@ -598,6 +693,7 @@
      "hypothesis": "把 3 和 7 相加得 10（份数当量），或只跳到 7（单袋量）",
      "observable_evidence": "`NumberLineRepresentation.jumps` 记录跳步数组，`current` 记录终点。**只有 `current=21` 能对上答案**；`jumps` 若为 `[7,7,7]` 则说明是连跳三次（正确过程），若为 `[21]` 则是一次跳到（结果对、过程不可判定）",
      "competing_explanations": "`jumps=[21]` 也可能是孩子心算 3×7 后一次跳到位——这在数学上是**正确**的，与「乱跳蒙对」不可分。所以 `jumps` 长度本身不能当过程质量的证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「每个袋子 7 颗，三个袋子一起数，你打算怎么跳」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -608,6 +704,7 @@
      "hypothesis": "把 3 和 7 相加得 10（份数当量），或只跳到 7（单袋量）",
      "observable_evidence": "`NumberLineRepresentation.jumps` 记录跳步数组，`current` 记录终点。**只有 `current=21` 能对上答案**；`jumps` 若为 `[7,7,7]` 则说明是连跳三次（正确过程），若为 `[21]` 则是一次跳到（结果对、过程不可判定）",
      "competing_explanations": "`jumps=[21]` 也可能是孩子心算 3×7 后一次跳到位——这在数学上是**正确**的，与「乱跳蒙对」不可分。所以 `jumps` 长度本身不能当过程质量的证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「每个袋子 7 颗，三个袋子一起数，你打算怎么跳」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -618,6 +715,7 @@
      "hypothesis": "把 3 和 7 相加得 10（份数当量），或只跳到 7（单袋量）",
      "observable_evidence": "`NumberLineRepresentation.jumps` 记录跳步数组，`current` 记录终点。**只有 `current=21` 能对上答案**；`jumps` 若为 `[7,7,7]` 则说明是连跳三次（正确过程），若为 `[21]` 则是一次跳到（结果对、过程不可判定）",
      "competing_explanations": "`jumps=[21]` 也可能是孩子心算 3×7 后一次跳到位——这在数学上是**正确**的，与「乱跳蒙对」不可分。所以 `jumps` 长度本身不能当过程质量的证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「每个袋子 7 颗，三个袋子一起数，你打算怎么跳」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -650,7 +748,7 @@
    "stated_answer": "8",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": {
     "bars": [
@@ -701,6 +799,7 @@
      "hypothesis": "**按 V1 legacy 的实际判分口径重算**：V1 判分只比 `TaskResponse.answer`（数字框），**不比 bars 结构**，所以「13+5=18」不会被界面挡住（18 只是摆不上条，但答案框可以填 18），会以 `MISMATCH` 呈现为错答。真正的可观察痕迹只有 `bars[].value`（表征）与 `answer`（判分）两处，**两者不联动**——这是 V1 legacy 与 V2 的关键差别：V2 的 `evaluateBarModel` 会把结构错分到 modeling/relation/calc，V1 **没有结构判分**",
      "observable_evidence": "`bars=[{id:total,value:13},{id:known,value:5},{id:unknown,value:8}]` 为正解。`unknown.max=13`，拖到底得 13 ≠ 8",
      "competing_explanations": "`unknown.value=13` → 抄整体（把未知部分当整体）；`unknown.value=5` → 抄已知部分（把两块当一样大）。两种错法值不同，可分开——**本题的 bars 结构（三根条：整体/已知部分/未知部分）比 compare 族的两根条更能暴露「整体与部分混淆」**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「整条是 13，红的占了 5 格，剩下那截是黄的」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -711,6 +810,7 @@
      "hypothesis": "**按 V1 legacy 的实际判分口径重算**：V1 判分只比 `TaskResponse.answer`（数字框），**不比 bars 结构**，所以「13+5=18」不会被界面挡住（18 只是摆不上条，但答案框可以填 18），会以 `MISMATCH` 呈现为错答。真正的可观察痕迹只有 `bars[].value`（表征）与 `answer`（判分）两处，**两者不联动**——这是 V1 legacy 与 V2 的关键差别：V2 的 `evaluateBarModel` 会把结构错分到 modeling/relation/calc，V1 **没有结构判分**",
      "observable_evidence": "`bars=[{id:total,value:13},{id:known,value:5},{id:unknown,value:8}]` 为正解。`unknown.max=13`，拖到底得 13 ≠ 8",
      "competing_explanations": "`unknown.value=13` → 抄整体（把未知部分当整体）；`unknown.value=5` → 抄已知部分（把两块当一样大）。两种错法值不同，可分开——**本题的 bars 结构（三根条：整体/已知部分/未知部分）比 compare 族的两根条更能暴露「整体与部分混淆」**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「整条是 13，红的占了 5 格，剩下那截是黄的」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -721,6 +821,7 @@
      "hypothesis": "**按 V1 legacy 的实际判分口径重算**：V1 判分只比 `TaskResponse.answer`（数字框），**不比 bars 结构**，所以「13+5=18」不会被界面挡住（18 只是摆不上条，但答案框可以填 18），会以 `MISMATCH` 呈现为错答。真正的可观察痕迹只有 `bars[].value`（表征）与 `answer`（判分）两处，**两者不联动**——这是 V1 legacy 与 V2 的关键差别：V2 的 `evaluateBarModel` 会把结构错分到 modeling/relation/calc，V1 **没有结构判分**",
      "observable_evidence": "`bars=[{id:total,value:13},{id:known,value:5},{id:unknown,value:8}]` 为正解。`unknown.max=13`，拖到底得 13 ≠ 8",
      "competing_explanations": "`unknown.value=13` → 抄整体（把未知部分当整体）；`unknown.value=5` → 抄已知部分（把两块当一样大）。两种错法值不同，可分开——**本题的 bars 结构（三根条：整体/已知部分/未知部分）比 compare 族的两根条更能暴露「整体与部分混淆」**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「整条是 13，红的占了 5 格，剩下那截是黄的」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -753,7 +854,7 @@
    "stated_answer": "9",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": {
     "bars": [
@@ -804,6 +905,7 @@
      "hypothesis": "把 15+6=21 当答案（方向反了）；或直接抄 6",
      "observable_evidence": "`bars=[{id:total,value:15},{id:known,value:6},{id:unknown,value:9}]` 为正解。`unknown.max=15`，不泄露",
      "competing_explanations": "`unknown.value=15` → 抄整体；`unknown.value=6` → 抄已知部分；`unknown.value=21` 物理不可达（max=15）——**「15+6 方向反」这条错法在本题被上限挡住了**，所以本题看不到方向错的证据。这是与 240ff07b（unknown.max=13=整体，21 也不可达）相同的限制，须与「孩子不会犯方向错」区分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「书架共 15 本，故事书占 6 本，剩下的是科普书」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -814,6 +916,7 @@
      "hypothesis": "把 15+6=21 当答案（方向反了）；或直接抄 6",
      "observable_evidence": "`bars=[{id:total,value:15},{id:known,value:6},{id:unknown,value:9}]` 为正解。`unknown.max=15`，不泄露",
      "competing_explanations": "`unknown.value=15` → 抄整体；`unknown.value=6` → 抄已知部分；`unknown.value=21` 物理不可达（max=15）——**「15+6 方向反」这条错法在本题被上限挡住了**，所以本题看不到方向错的证据。这是与 240ff07b（unknown.max=13=整体，21 也不可达）相同的限制，须与「孩子不会犯方向错」区分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「书架共 15 本，故事书占 6 本，剩下的是科普书」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -824,6 +927,7 @@
      "hypothesis": "把 15+6=21 当答案（方向反了）；或直接抄 6",
      "observable_evidence": "`bars=[{id:total,value:15},{id:known,value:6},{id:unknown,value:9}]` 为正解。`unknown.max=15`，不泄露",
      "competing_explanations": "`unknown.value=15` → 抄整体；`unknown.value=6` → 抄已知部分；`unknown.value=21` 物理不可达（max=15）——**「15+6 方向反」这条错法在本题被上限挡住了**，所以本题看不到方向错的证据。这是与 240ff07b（unknown.max=13=整体，21 也不可达）相同的限制，须与「孩子不会犯方向错」区分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「书架共 15 本，故事书占 6 本，剩下的是科普书」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -856,15 +960,21 @@
    "stated_answer": "3",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D3",
-     "title": "legacy:objects 不支持增减，求差动作不可观测",
+     "title": "legacy:objects 未提供增减操作（静态事实）",
      "kind": "interaction_gap",
-     "evidence": "`visual.groups[].count` 由 config 写死；`tools=[drag,align,count,undo,reset]` 无 `remove_object`/`add_object`",
-     "impact": "「一一对应后多出几个」这个关键动作不留痕迹；representation 里永远只有题面给的两组数",
-     "status": "已登记；与上一批 object-counter「进入即 PASS」是**两个相反的缺陷**：一个白送分、一个不给操作"
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+     "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+     "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+     "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+     "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+     "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+     "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
     }
    ],
    "ui_visual_seen": {
@@ -905,6 +1015,7 @@
      "hypothesis": "8+5=13（误把「多几」当「一共」）；或答 8（只报较大数）",
      "observable_evidence": "`groups=[{id:g1,count:8,items[…]},{id:g2,count:5,items[…]}]`、`aligned:boolean`。**`count` 永远是 8 和 5**（config 写死、界面无增减能力），所以 representation 里唯一会变的只有 `items[].x` 与 `aligned`",
      "competing_explanations": "`aligned=true` 只说明点过「一一对齐」按钮，**不说明孩子看懂了多出 3 个**——对齐是单键操作，一键完成，无过程可分。`aligned=false` 也不能推出「没理解」（可能孩子不用对齐也能算）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「把两支队伍一排一排对齐，看哪一列多出来了」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -915,6 +1026,7 @@
      "hypothesis": "8+5=13（误把「多几」当「一共」）；或答 8（只报较大数）",
      "observable_evidence": "`groups=[{id:g1,count:8,items[…]},{id:g2,count:5,items[…]}]`、`aligned:boolean`。**`count` 永远是 8 和 5**（config 写死、界面无增减能力），所以 representation 里唯一会变的只有 `items[].x` 与 `aligned`",
      "competing_explanations": "`aligned=true` 只说明点过「一一对齐」按钮，**不说明孩子看懂了多出 3 个**——对齐是单键操作，一键完成，无过程可分。`aligned=false` 也不能推出「没理解」（可能孩子不用对齐也能算）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「把两支队伍一排一排对齐，看哪一列多出来了」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -925,6 +1037,7 @@
      "hypothesis": "8+5=13（误把「多几」当「一共」）；或答 8（只报较大数）",
      "observable_evidence": "`groups=[{id:g1,count:8,items[…]},{id:g2,count:5,items[…]}]`、`aligned:boolean`。**`count` 永远是 8 和 5**（config 写死、界面无增减能力），所以 representation 里唯一会变的只有 `items[].x` 与 `aligned`",
      "competing_explanations": "`aligned=true` 只说明点过「一一对齐」按钮，**不说明孩子看懂了多出 3 个**——对齐是单键操作，一键完成，无过程可分。`aligned=false` 也不能推出「没理解」（可能孩子不用对齐也能算）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「把两支队伍一排一排对齐，看哪一列多出来了」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -957,15 +1070,21 @@
    "stated_answer": "2",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D3",
-     "title": "legacy:objects 不支持增减，求差动作不可观测",
+     "title": "legacy:objects 未提供增减操作（静态事实）",
      "kind": "interaction_gap",
-     "evidence": "`visual.groups[].count` 由 config 写死；`tools=[drag,align,count,undo,reset]` 无 `remove_object`/`add_object`",
-     "impact": "「一一对应后多出几个」这个关键动作不留痕迹；representation 里永远只有题面给的两组数",
-     "status": "已登记；与上一批 object-counter「进入即 PASS」是**两个相反的缺陷**：一个白送分、一个不给操作"
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+     "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+     "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+     "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+     "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+     "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+     "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
     }
    ],
    "ui_visual_seen": {
@@ -1002,6 +1121,7 @@
      "hypothesis": "6+4=10（当合并）；或答 6",
      "observable_evidence": "`groups=[{count:6},{count:4}]`、`aligned`；同 eaa828b3，`count` 固定，只有 `items[].x`/`aligned` 可变",
      "competing_explanations": "同 eaa828b3；另注意本题 `ability_id=app_model`（建模）而 eaa828b3 是 app_rel（关系），但 representation 形态**完全相同**，所以「建模能力」在本题没有独立的可观察证据——这是标签与证据不匹配",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「左边的积木比右边多，多出来的那几块在哪」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1012,6 +1132,7 @@
      "hypothesis": "6+4=10（当合并）；或答 6",
      "observable_evidence": "`groups=[{count:6},{count:4}]`、`aligned`；同 eaa828b3，`count` 固定，只有 `items[].x`/`aligned` 可变",
      "competing_explanations": "同 eaa828b3；另注意本题 `ability_id=app_model`（建模）而 eaa828b3 是 app_rel（关系），但 representation 形态**完全相同**，所以「建模能力」在本题没有独立的可观察证据——这是标签与证据不匹配",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「左边的积木比右边多，多出来的那几块在哪」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1044,15 +1165,21 @@
    "stated_answer": "3",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D3",
-     "title": "legacy:objects 不支持增减，求差动作不可观测",
+     "title": "legacy:objects 未提供增减操作（静态事实）",
      "kind": "interaction_gap",
-     "evidence": "`visual.groups[].count` 由 config 写死；`tools=[drag,align,count,undo,reset]` 无 `remove_object`/`add_object`",
-     "impact": "「一一对应后多出几个」这个关键动作不留痕迹；representation 里永远只有题面给的两组数",
-     "status": "已登记；与上一批 object-counter「进入即 PASS」是**两个相反的缺陷**：一个白送分、一个不给操作"
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+     "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+     "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+     "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+     "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+     "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+     "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
     }
    ],
    "ui_visual_seen": {
@@ -1093,6 +1220,7 @@
      "hypothesis": "8+5=13；或答 5（报较小数，把「多」读成「是」）",
      "observable_evidence": "`groups=[{count:8},{count:5}]`、`aligned`；同族限制：`count` 固定",
      "competing_explanations": "**与 eaa828b3 的 groups 逐字段相同（8 和 5）**，所以两条的 representation **必然一致**——若孩子都用对齐，两条的痕迹一模一样。这意味着：本题的 Q05 证据与 eaa828b3 的不可区分，不能当成两份独立证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「两行花排齐后，多出来的那一行有几朵」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1103,6 +1231,7 @@
      "hypothesis": "8+5=13；或答 5（报较小数，把「多」读成「是」）",
      "observable_evidence": "`groups=[{count:8},{count:5}]`、`aligned`；同族限制：`count` 固定",
      "competing_explanations": "**与 eaa828b3 的 groups 逐字段相同（8 和 5）**，所以两条的 representation **必然一致**——若孩子都用对齐，两条的痕迹一模一样。这意味着：本题的 Q05 证据与 eaa828b3 的不可区分，不能当成两份独立证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「两行花排齐后，多出来的那一行有几朵」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1113,6 +1242,7 @@
      "hypothesis": "8+5=13；或答 5（报较小数，把「多」读成「是」）",
      "observable_evidence": "`groups=[{count:8},{count:5}]`、`aligned`；同族限制：`count` 固定",
      "competing_explanations": "**与 eaa828b3 的 groups 逐字段相同（8 和 5）**，所以两条的 representation **必然一致**——若孩子都用对齐，两条的痕迹一模一样。这意味着：本题的 Q05 证据与 eaa828b3 的不可区分，不能当成两份独立证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「两行花排齐后，多出来的那一行有几朵」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1145,15 +1275,21 @@
    "stated_answer": "3",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D3",
-     "title": "legacy:objects 不支持增减，求差动作不可观测",
+     "title": "legacy:objects 未提供增减操作（静态事实）",
      "kind": "interaction_gap",
-     "evidence": "`visual.groups[].count` 由 config 写死；`tools=[drag,align,count,undo,reset]` 无 `remove_object`/`add_object`",
-     "impact": "「一一对应后多出几个」这个关键动作不留痕迹；representation 里永远只有题面给的两组数",
-     "status": "已登记；与上一批 object-counter「进入即 PASS」是**两个相反的缺陷**：一个白送分、一个不给操作"
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+     "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+     "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+     "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+     "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+     "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+     "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
     }
    ],
    "ui_visual_seen": {
@@ -1194,6 +1330,7 @@
      "hypothesis": "9+6=15；或答 9（只报较大数）",
      "observable_evidence": "`groups=[{count:9},{count:6}]`、`aligned`；同族限制",
      "competing_explanations": "`count` 固定 → 同 eaa828b3。另：本条标 app_transfer（迁移），但**本批找不到同值的非迁移配对**（9−6 只出现这一次），所以迁移结论没有对照，`competing` 里也没有可比的错法模式",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「两个人跑的圈数排成两行，哪一行长出来了」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1204,6 +1341,7 @@
      "hypothesis": "9+6=15；或答 9（只报较大数）",
      "observable_evidence": "`groups=[{count:9},{count:6}]`、`aligned`；同族限制",
      "competing_explanations": "`count` 固定 → 同 eaa828b3。另：本条标 app_transfer（迁移），但**本批找不到同值的非迁移配对**（9−6 只出现这一次），所以迁移结论没有对照，`competing` 里也没有可比的错法模式",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「两个人跑的圈数排成两行，哪一行长出来了」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1214,6 +1352,7 @@
      "hypothesis": "9+6=15；或答 9（只报较大数）",
      "observable_evidence": "`groups=[{count:9},{count:6}]`、`aligned`；同族限制",
      "competing_explanations": "`count` 固定 → 同 eaa828b3。另：本条标 app_transfer（迁移），但**本批找不到同值的非迁移配对**（9−6 只出现这一次），所以迁移结论没有对照，`competing` 里也没有可比的错法模式",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「两个人跑的圈数排成两行，哪一行长出来了」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1246,20 +1385,75 @@
    "stated_answer": "18",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": "answer 18 > max 可摆上限 17",
+   "unreachable_signal": "线索：最终答案 18 > 单条可摆放上限 17（不代表任务不可完成，需核验未知条应表示哪个量）",
    "known_defects": [
     {
      "id": "DEF-D2",
-     "title": "legacy:bar-model 滑杆上限小于答案（物理摆不出）",
-     "kind": "unreachable_answer",
-     "evidence": "`content.answer` > `visual.max_value` 且 > 所有 `bars[].max`",
-     "impact": "**正确答案在界面上无法摆出**。孩子即便算对也交不出正确表征，只能靠数字输入框答对；representation 恒为错误结构，错误证据被污染（分不清「不会」与「摆不出」）",
+     "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+     "kind": "unreachable_signal",
+     "evidence_tier": "needs_runtime",
+     "confirmed": false,
+     "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+     "static_fact": "三题的最终合计（18 / 21 / 19）都大于任一单条上限；三题的**个人数量**却都在范围内（见下表）。",
+     "inference": "**没有**。当前检测器 `detect_unreachable()` 只比较「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，也不知道题目是否要求单独展示合计。所以它给出的是线索，不是可完成性结论。",
+     "detector_limits": "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非「答案条的上限」，因此会漏报——反例：答案条上限 5、另一无关条上限 100、答案 10，该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。",
+     "not_claimed": "**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励半成品」**。上一版这两句与同一份报告里「只能靠数字输入框答对」互相矛盾——两者不能作为同一已证结论并存。而且判分读 `response.answer`，与滑杆能否摆出无关。",
+     "role_hypothesis": [
+      {
+       "rvid": "421ede36",
+       "person_a": 11,
+       "person_b": 7,
+       "answer": 18,
+       "bar_caps": [
+        15,
+        15
+       ],
+       "max_value": 17,
+       "bars_can_show": "11 与 7（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "6e5395f0",
+       "person_a": 9,
+       "person_b": 12,
+       "answer": 21,
+       "bar_caps": [
+        12,
+        12
+       ],
+       "max_value": 14,
+       "bars_can_show": "9 与 12（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "8981fbcc",
+       "person_a": 8,
+       "person_b": 11,
+       "answer": 19,
+       "bar_caps": [
+        11,
+        11
+       ],
+       "max_value": 13,
+       "bars_can_show": "8 与 11（两人各自的数量）",
+       "both_within_range": true
+      }
+     ],
+     "verification_plan": [
+      "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+      "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+      "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+      "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里各承担什么，是否要求一致"
+     ],
+     "impact": "在①②未完成前，**只能说「单条上限不足以表示最终合计」这一静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。",
+     "if_confirmed": "若契约确实要求未知条为合计、或提交被真实阻断，再走内容侧新版本整改；且**不能只把 `max` 改成比答案大就算修好**——那会同时制造新的答案泄露。",
+     "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
      "added_after_gate": [
       "421ede36",
       "6e5395f0",
       "8981fbcc"
      ],
-     "status": "已登记；**这是比 DEF-D1 更严重的问题**——D1 是白送分，D2 是永远拿不到分。本轮不改组件，但必须在报告中单列，不能混入 MATCH 统计"
+     "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置"
     }
    ],
    "ui_visual_seen": {
@@ -1304,6 +1498,7 @@
      "hypothesis": "答 7（只做完第一步）；或答 15（11+4，方向反）",
      "observable_evidence": "`bars=[{id:base,value:11},{id:unknown,value:?}]`、`max_value=17`。**正解需要 unknown.value=18，但 bars.max=15 与 max_value=17 都小于 18**，所以 `unknown.value` 永远到不了 18——本题的 representation 侧**不存在正确终态**",
      "competing_explanations": "⚠ 本题的 `competing` 无意义：**没有正确表征可供对照**。`unknown.value=15`（拖到底）既不等于答案也不等于任何合理的错误答案（15=11+4，恰好是方向反的结果，但这是巧合，因为 15 同时是上限）。上限与某个错法值撞车，使「拖到底」这个动作在证据上被误标成「方向反」——这是**缺陷污染错误归因**的实例",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小青 11 张，小雨比小青少 4 张，两个人数一数一共几张」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1314,6 +1509,7 @@
      "hypothesis": "答 7（只做完第一步）；或答 15（11+4，方向反）",
      "observable_evidence": "`bars=[{id:base,value:11},{id:unknown,value:?}]`、`max_value=17`。**正解需要 unknown.value=18，但 bars.max=15 与 max_value=17 都小于 18**，所以 `unknown.value` 永远到不了 18——本题的 representation 侧**不存在正确终态**",
      "competing_explanations": "⚠ 本题的 `competing` 无意义：**没有正确表征可供对照**。`unknown.value=15`（拖到底）既不等于答案也不等于任何合理的错误答案（15=11+4，恰好是方向反的结果，但这是巧合，因为 15 同时是上限）。上限与某个错法值撞车，使「拖到底」这个动作在证据上被误标成「方向反」——这是**缺陷污染错误归因**的实例",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小青 11 张，小雨比小青少 4 张，两个人数一数一共几张」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1324,6 +1520,7 @@
      "hypothesis": "答 7（只做完第一步）；或答 15（11+4，方向反）",
      "observable_evidence": "`bars=[{id:base,value:11},{id:unknown,value:?}]`、`max_value=17`。**正解需要 unknown.value=18，但 bars.max=15 与 max_value=17 都小于 18**，所以 `unknown.value` 永远到不了 18——本题的 representation 侧**不存在正确终态**",
      "competing_explanations": "⚠ 本题的 `competing` 无意义：**没有正确表征可供对照**。`unknown.value=15`（拖到底）既不等于答案也不等于任何合理的错误答案（15=11+4，恰好是方向反的结果，但这是巧合，因为 15 同时是上限）。上限与某个错法值撞车，使「拖到底」这个动作在证据上被误标成「方向反」——这是**缺陷污染错误归因**的实例",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小青 11 张，小雨比小青少 4 张，两个人数一数一共几张」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1356,20 +1553,75 @@
    "stated_answer": "21",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": "answer 21 > max 可摆上限 14",
+   "unreachable_signal": "线索：最终答案 21 > 单条可摆放上限 14（不代表任务不可完成，需核验未知条应表示哪个量）",
    "known_defects": [
     {
      "id": "DEF-D2",
-     "title": "legacy:bar-model 滑杆上限小于答案（物理摆不出）",
-     "kind": "unreachable_answer",
-     "evidence": "`content.answer` > `visual.max_value` 且 > 所有 `bars[].max`",
-     "impact": "**正确答案在界面上无法摆出**。孩子即便算对也交不出正确表征，只能靠数字输入框答对；representation 恒为错误结构，错误证据被污染（分不清「不会」与「摆不出」）",
+     "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+     "kind": "unreachable_signal",
+     "evidence_tier": "needs_runtime",
+     "confirmed": false,
+     "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+     "static_fact": "三题的最终合计（18 / 21 / 19）都大于任一单条上限；三题的**个人数量**却都在范围内（见下表）。",
+     "inference": "**没有**。当前检测器 `detect_unreachable()` 只比较「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，也不知道题目是否要求单独展示合计。所以它给出的是线索，不是可完成性结论。",
+     "detector_limits": "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非「答案条的上限」，因此会漏报——反例：答案条上限 5、另一无关条上限 100、答案 10，该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。",
+     "not_claimed": "**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励半成品」**。上一版这两句与同一份报告里「只能靠数字输入框答对」互相矛盾——两者不能作为同一已证结论并存。而且判分读 `response.answer`，与滑杆能否摆出无关。",
+     "role_hypothesis": [
+      {
+       "rvid": "421ede36",
+       "person_a": 11,
+       "person_b": 7,
+       "answer": 18,
+       "bar_caps": [
+        15,
+        15
+       ],
+       "max_value": 17,
+       "bars_can_show": "11 与 7（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "6e5395f0",
+       "person_a": 9,
+       "person_b": 12,
+       "answer": 21,
+       "bar_caps": [
+        12,
+        12
+       ],
+       "max_value": 14,
+       "bars_can_show": "9 与 12（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "8981fbcc",
+       "person_a": 8,
+       "person_b": 11,
+       "answer": 19,
+       "bar_caps": [
+        11,
+        11
+       ],
+       "max_value": 13,
+       "bars_can_show": "8 与 11（两人各自的数量）",
+       "both_within_range": true
+      }
+     ],
+     "verification_plan": [
+      "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+      "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+      "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+      "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里各承担什么，是否要求一致"
+     ],
+     "impact": "在①②未完成前，**只能说「单条上限不足以表示最终合计」这一静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。",
+     "if_confirmed": "若契约确实要求未知条为合计、或提交被真实阻断，再走内容侧新版本整改；且**不能只把 `max` 改成比答案大就算修好**——那会同时制造新的答案泄露。",
+     "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
      "added_after_gate": [
       "421ede36",
       "6e5395f0",
       "8981fbcc"
      ],
-     "status": "已登记；**这是比 DEF-D1 更严重的问题**——D1 是白送分，D2 是永远拿不到分。本轮不改组件，但必须在报告中单列，不能混入 MATCH 统计"
+     "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置"
     }
    ],
    "ui_visual_seen": {
@@ -1414,6 +1666,7 @@
      "hypothesis": "答 12（只做第一步，且界面滑杆上限也是 12，会被强化）；或答 6（9−3，方向反）",
      "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`、`max_value=14`。正解 unknown=21，**摆不出**；而 `bars.max=12` **恰好等于第一步结果 12**，所以「只做第一步」的表征**恰恰可以摆出来**",
      "competing_explanations": "⚠ 最严重的一条：界面**能摆出错误答案 12、摆不出正确答案 21**。若孩子只做第一步并把 12 作为答案提交，其 `unknown.value=12` 与「算对了两步」在表征上无法区分——因为后者根本摆不出来。**这不是区分力不足，是界面在系统性地奖励半成品**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算小红有几本，再把两个人的加在一起」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1424,6 +1677,7 @@
      "hypothesis": "答 12（只做第一步，且界面滑杆上限也是 12，会被强化）；或答 6（9−3，方向反）",
      "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`、`max_value=14`。正解 unknown=21，**摆不出**；而 `bars.max=12` **恰好等于第一步结果 12**，所以「只做第一步」的表征**恰恰可以摆出来**",
      "competing_explanations": "⚠ 最严重的一条：界面**能摆出错误答案 12、摆不出正确答案 21**。若孩子只做第一步并把 12 作为答案提交，其 `unknown.value=12` 与「算对了两步」在表征上无法区分——因为后者根本摆不出来。**这不是区分力不足，是界面在系统性地奖励半成品**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算小红有几本，再把两个人的加在一起」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1434,6 +1688,7 @@
      "hypothesis": "答 12（只做第一步，且界面滑杆上限也是 12，会被强化）；或答 6（9−3，方向反）",
      "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`、`max_value=14`。正解 unknown=21，**摆不出**；而 `bars.max=12` **恰好等于第一步结果 12**，所以「只做第一步」的表征**恰恰可以摆出来**",
      "competing_explanations": "⚠ 最严重的一条：界面**能摆出错误答案 12、摆不出正确答案 21**。若孩子只做第一步并把 12 作为答案提交，其 `unknown.value=12` 与「算对了两步」在表征上无法区分——因为后者根本摆不出来。**这不是区分力不足，是界面在系统性地奖励半成品**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算小红有几本，再把两个人的加在一起」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1466,20 +1721,75 @@
    "stated_answer": "19",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": "answer 19 > max 可摆上限 13",
+   "unreachable_signal": "线索：最终答案 19 > 单条可摆放上限 13（不代表任务不可完成，需核验未知条应表示哪个量）",
    "known_defects": [
     {
      "id": "DEF-D2",
-     "title": "legacy:bar-model 滑杆上限小于答案（物理摆不出）",
-     "kind": "unreachable_answer",
-     "evidence": "`content.answer` > `visual.max_value` 且 > 所有 `bars[].max`",
-     "impact": "**正确答案在界面上无法摆出**。孩子即便算对也交不出正确表征，只能靠数字输入框答对；representation 恒为错误结构，错误证据被污染（分不清「不会」与「摆不出」）",
+     "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+     "kind": "unreachable_signal",
+     "evidence_tier": "needs_runtime",
+     "confirmed": false,
+     "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+     "static_fact": "三题的最终合计（18 / 21 / 19）都大于任一单条上限；三题的**个人数量**却都在范围内（见下表）。",
+     "inference": "**没有**。当前检测器 `detect_unreachable()` 只比较「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，也不知道题目是否要求单独展示合计。所以它给出的是线索，不是可完成性结论。",
+     "detector_limits": "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非「答案条的上限」，因此会漏报——反例：答案条上限 5、另一无关条上限 100、答案 10，该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。",
+     "not_claimed": "**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励半成品」**。上一版这两句与同一份报告里「只能靠数字输入框答对」互相矛盾——两者不能作为同一已证结论并存。而且判分读 `response.answer`，与滑杆能否摆出无关。",
+     "role_hypothesis": [
+      {
+       "rvid": "421ede36",
+       "person_a": 11,
+       "person_b": 7,
+       "answer": 18,
+       "bar_caps": [
+        15,
+        15
+       ],
+       "max_value": 17,
+       "bars_can_show": "11 与 7（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "6e5395f0",
+       "person_a": 9,
+       "person_b": 12,
+       "answer": 21,
+       "bar_caps": [
+        12,
+        12
+       ],
+       "max_value": 14,
+       "bars_can_show": "9 与 12（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "8981fbcc",
+       "person_a": 8,
+       "person_b": 11,
+       "answer": 19,
+       "bar_caps": [
+        11,
+        11
+       ],
+       "max_value": 13,
+       "bars_can_show": "8 与 11（两人各自的数量）",
+       "both_within_range": true
+      }
+     ],
+     "verification_plan": [
+      "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+      "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+      "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+      "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里各承担什么，是否要求一致"
+     ],
+     "impact": "在①②未完成前，**只能说「单条上限不足以表示最终合计」这一静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。",
+     "if_confirmed": "若契约确实要求未知条为合计、或提交被真实阻断，再走内容侧新版本整改；且**不能只把 `max` 改成比答案大就算修好**——那会同时制造新的答案泄露。",
+     "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
      "added_after_gate": [
       "421ede36",
       "6e5395f0",
       "8981fbcc"
      ],
-     "status": "已登记；**这是比 DEF-D1 更严重的问题**——D1 是白送分，D2 是永远拿不到分。本轮不改组件，但必须在报告中单列，不能混入 MATCH 统计"
+     "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置"
     }
    ],
    "ui_visual_seen": {
@@ -1524,6 +1834,7 @@
      "hypothesis": "答 11（只做第一步）；或答 5（8−3，方向反）",
      "observable_evidence": "`bars=[{id:base,value:8},{id:unknown,value:?}]`、`max_value=13`。正解 unknown=19 摆不出；`bars.max=11` 等于第一步结果（小杰 11 颗）",
      "competing_explanations": "⚠ 与 6e5395f0 同型：能摆出 11（第一步）、摆不出 19（正解）。三条 DEF-D2 的 `competing` 都指向同一个结构性事实——**渲染模板只留两根条，而题意需要三根（较小方 / 较大方 / 合计）**，所以这类题的 representation 侧证据整体不可用",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算小杰有几颗，再算两人合起来」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1534,6 +1845,7 @@
      "hypothesis": "答 11（只做第一步）；或答 5（8−3，方向反）",
      "observable_evidence": "`bars=[{id:base,value:8},{id:unknown,value:?}]`、`max_value=13`。正解 unknown=19 摆不出；`bars.max=11` 等于第一步结果（小杰 11 颗）",
      "competing_explanations": "⚠ 与 6e5395f0 同型：能摆出 11（第一步）、摆不出 19（正解）。三条 DEF-D2 的 `competing` 都指向同一个结构性事实——**渲染模板只留两根条，而题意需要三根（较小方 / 较大方 / 合计）**，所以这类题的 representation 侧证据整体不可用",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算小杰有几颗，再算两人合起来」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1544,6 +1856,7 @@
      "hypothesis": "答 11（只做第一步）；或答 5（8−3，方向反）",
      "observable_evidence": "`bars=[{id:base,value:8},{id:unknown,value:?}]`、`max_value=13`。正解 unknown=19 摆不出；`bars.max=11` 等于第一步结果（小杰 11 颗）",
      "competing_explanations": "⚠ 与 6e5395f0 同型：能摆出 11（第一步）、摆不出 19（正解）。三条 DEF-D2 的 `competing` 都指向同一个结构性事实——**渲染模板只留两根条，而题意需要三根（较小方 / 较大方 / 合计）**，所以这类题的 representation 侧证据整体不可用",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算小杰有几颗，再算两人合起来」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1576,7 +1889,7 @@
    "stated_answer": "0",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": null,
    "q05_error_models": [
@@ -1600,6 +1913,7 @@
      "hypothesis": "答 1（直接采信断言 18，不去验算）；或算出 18（把「比弟弟多5」做成 13+5）后再判 1",
      "observable_evidence": "**判分字段只有 `TaskResponse.answer`（字符串）**；`representation` 在这个 schema 下不参与提交门禁。`answer='0'` 为正解（断言错误）。`interaction_events` 里只有 `answer_changed` 事件，**不带输入值**，所以无法还原输入历史。本题的 0 与「数量为 0」在提交值上同形",
      "competing_explanations": "⚠ `answer='0'` 的两种可能：①算出弟弟=8、判断言 18 错、填 0；②误以为「弟弟有 0 颗」、填 0。**提交值完全相同，交互事件里也没有可用于区分的字段**。这是本批第二个「证据本身失效」的情形（第一个是 c07482bb 的滑杆）。区别在于：c07482bb 是配置泄露，本条是**题型设计缺少区分字段**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算算弟弟到底几颗，再和小明说的 18 比一比」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1610,6 +1924,7 @@
      "hypothesis": "答 1（直接采信断言 18，不去验算）；或算出 18（把「比弟弟多5」做成 13+5）后再判 1",
      "observable_evidence": "**判分字段只有 `TaskResponse.answer`（字符串）**；`representation` 在这个 schema 下不参与提交门禁。`answer='0'` 为正解（断言错误）。`interaction_events` 里只有 `answer_changed` 事件，**不带输入值**，所以无法还原输入历史。本题的 0 与「数量为 0」在提交值上同形",
      "competing_explanations": "⚠ `answer='0'` 的两种可能：①算出弟弟=8、判断言 18 错、填 0；②误以为「弟弟有 0 颗」、填 0。**提交值完全相同，交互事件里也没有可用于区分的字段**。这是本批第二个「证据本身失效」的情形（第一个是 c07482bb 的滑杆）。区别在于：c07482bb 是配置泄露，本条是**题型设计缺少区分字段**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算算弟弟到底几颗，再和小明说的 18 比一比」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1620,6 +1935,7 @@
      "hypothesis": "答 1（直接采信断言 18，不去验算）；或算出 18（把「比弟弟多5」做成 13+5）后再判 1",
      "observable_evidence": "**判分字段只有 `TaskResponse.answer`（字符串）**；`representation` 在这个 schema 下不参与提交门禁。`answer='0'` 为正解（断言错误）。`interaction_events` 里只有 `answer_changed` 事件，**不带输入值**，所以无法还原输入历史。本题的 0 与「数量为 0」在提交值上同形",
      "competing_explanations": "⚠ `answer='0'` 的两种可能：①算出弟弟=8、判断言 18 错、填 0；②误以为「弟弟有 0 颗」、填 0。**提交值完全相同，交互事件里也没有可用于区分的字段**。这是本批第二个「证据本身失效」的情形（第一个是 c07482bb 的滑杆）。区别在于：c07482bb 是配置泄露，本条是**题型设计缺少区分字段**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先算算弟弟到底几颗，再和小明说的 18 比一比」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1652,7 +1968,7 @@
    "stated_answer": "8",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": {
     "bars": [
@@ -1695,7 +2011,8 @@
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "13+5=18（「多」直接做加法）；或答 5（把差量当答案）",
      "observable_evidence": "`bars=[{id:base,value:13},{id:unknown,value:8}]` 为正解形态。`unknown.max=18`，**拖到底得 18 ≠ 8**，所以本题的滑杆不泄露答案",
-     "competing_explanations": "`unknown.value=18` 说明做了 13+5（方向反），这是**可归因的错法**——比 c07482bb 强：同样拖到底，本题拖出来是错的，说明孩子在按「多就加」做",
+     "competing_explanations": "`unknown.value=18` 与「做了 13+5（方向反）」**相容**。比 c07482bb 可用之处在于：本题拖到底得到的是 18（错值），所以「拖到底」与「方向反」在这一题上**指向同一个值**，仍不能区分；但它至少**排除了「拖到底就蒙对」**这一条。**注意：这不构成对孩子的归因**，只缩小了相容假设的范围",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「姐姐比弟弟多 5 颗，弟弟的条该比姐姐的条短还是长」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1705,7 +2022,8 @@
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "13+5=18（「多」直接做加法）；或答 5（把差量当答案）",
      "observable_evidence": "`bars=[{id:base,value:13},{id:unknown,value:8}]` 为正解形态。`unknown.max=18`，**拖到底得 18 ≠ 8**，所以本题的滑杆不泄露答案",
-     "competing_explanations": "`unknown.value=18` 说明做了 13+5（方向反），这是**可归因的错法**——比 c07482bb 强：同样拖到底，本题拖出来是错的，说明孩子在按「多就加」做",
+     "competing_explanations": "`unknown.value=18` 与「做了 13+5（方向反）」**相容**。比 c07482bb 可用之处在于：本题拖到底得到的是 18（错值），所以「拖到底」与「方向反」在这一题上**指向同一个值**，仍不能区分；但它至少**排除了「拖到底就蒙对」**这一条。**注意：这不构成对孩子的归因**，只缩小了相容假设的范围",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「姐姐比弟弟多 5 颗，弟弟的条该比姐姐的条短还是长」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1715,7 +2033,8 @@
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "13+5=18（「多」直接做加法）；或答 5（把差量当答案）",
      "observable_evidence": "`bars=[{id:base,value:13},{id:unknown,value:8}]` 为正解形态。`unknown.max=18`，**拖到底得 18 ≠ 8**，所以本题的滑杆不泄露答案",
-     "competing_explanations": "`unknown.value=18` 说明做了 13+5（方向反），这是**可归因的错法**——比 c07482bb 强：同样拖到底，本题拖出来是错的，说明孩子在按「多就加」做",
+     "competing_explanations": "`unknown.value=18` 与「做了 13+5（方向反）」**相容**。比 c07482bb 可用之处在于：本题拖到底得到的是 18（错值），所以「拖到底」与「方向反」在这一题上**指向同一个值**，仍不能区分；但它至少**排除了「拖到底就蒙对」**这一条。**注意：这不构成对孩子的归因**，只缩小了相容假设的范围",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「姐姐比弟弟多 5 颗，弟弟的条该比姐姐的条短还是长」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1748,7 +2067,7 @@
    "stated_answer": "8",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": {
     "bars": [
@@ -1792,6 +2111,7 @@
      "hypothesis": "14+6=20（把「少」读成「多」）；或答 14（忽略差量）",
      "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:8}]` 为正解。`unknown.max=20`，拖到底得 20 ≠ 8",
      "competing_explanations": "`unknown.value=20` → 做了 14+6（方向反）；`unknown.value=14` → 直接抄已知量。两种错法**值不同**，可分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安比小林少 6 颗，小安那条比 14 长还是短」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1802,6 +2122,7 @@
      "hypothesis": "14+6=20（把「少」读成「多」）；或答 14（忽略差量）",
      "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:8}]` 为正解。`unknown.max=20`，拖到底得 20 ≠ 8",
      "competing_explanations": "`unknown.value=20` → 做了 14+6（方向反）；`unknown.value=14` → 直接抄已知量。两种错法**值不同**，可分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安比小林少 6 颗，小安那条比 14 长还是短」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1812,6 +2133,7 @@
      "hypothesis": "14+6=20（把「少」读成「多」）；或答 14（忽略差量）",
      "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:8}]` 为正解。`unknown.max=20`，拖到底得 20 ≠ 8",
      "competing_explanations": "`unknown.value=20` → 做了 14+6（方向反）；`unknown.value=14` → 直接抄已知量。两种错法**值不同**，可分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安比小林少 6 颗，小安那条比 14 长还是短」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1844,7 +2166,7 @@
    "stated_answer": "7",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": {
     "bars": [
@@ -1887,7 +2209,8 @@
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "12+5=17（方向反）；或答 12",
      "observable_evidence": "`bars=[{id:base,value:12},{id:unknown,value:7}]` 为正解。`unknown.max=17`，拖到底得 17 ≠ 7",
-     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案（另一类可归因错法）。两种错法值不同，可分开",
+     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案。两种错法值不同，可分开这两个假设（**可分开假设 ≠ 可归因**：仍只说明与该假设相容）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「妹妹比哥哥少 5 个，妹妹那条该短 5 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1897,7 +2220,8 @@
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "12+5=17（方向反）；或答 12",
      "observable_evidence": "`bars=[{id:base,value:12},{id:unknown,value:7}]` 为正解。`unknown.max=17`，拖到底得 17 ≠ 7",
-     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案（另一类可归因错法）。两种错法值不同，可分开",
+     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案。两种错法值不同，可分开这两个假设（**可分开假设 ≠ 可归因**：仍只说明与该假设相容）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「妹妹比哥哥少 5 个，妹妹那条该短 5 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1907,7 +2231,8 @@
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "12+5=17（方向反）；或答 12",
      "observable_evidence": "`bars=[{id:base,value:12},{id:unknown,value:7}]` 为正解。`unknown.max=17`，拖到底得 17 ≠ 7",
-     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案（另一类可归因错法）。两种错法值不同，可分开",
+     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案。两种错法值不同，可分开这两个假设（**可分开假设 ≠ 可归因**：仍只说明与该假设相容）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「妹妹比哥哥少 5 个，妹妹那条该短 5 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1940,7 +2265,7 @@
    "stated_answer": "9",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": {
     "bars": [
@@ -1984,6 +2309,7 @@
      "hypothesis": "14+5=19（方向反）；或答 5",
      "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:9}]` 为正解。`unknown.max=19`，拖到底得 19 ≠ 9",
      "competing_explanations": "`unknown.value=19` → 14+5（方向反）。**注意与 7f22076d 的错法同形**（都是 `base+差量`），两条的错法值分别是 19 与 20——这是「同一错法不同数值」的对照，可用于确认方向错是稳定模式而非偶发",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小芸比小康少 5 颗，从小康那条往回收 5 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -1994,6 +2320,7 @@
      "hypothesis": "14+5=19（方向反）；或答 5",
      "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:9}]` 为正解。`unknown.max=19`，拖到底得 19 ≠ 9",
      "competing_explanations": "`unknown.value=19` → 14+5（方向反）。**注意与 7f22076d 的错法同形**（都是 `base+差量`），两条的错法值分别是 19 与 20——这是「同一错法不同数值」的对照，可用于确认方向错是稳定模式而非偶发",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小芸比小康少 5 颗，从小康那条往回收 5 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2004,6 +2331,7 @@
      "hypothesis": "14+5=19（方向反）；或答 5",
      "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:9}]` 为正解。`unknown.max=19`，拖到底得 19 ≠ 9",
      "competing_explanations": "`unknown.value=19` → 14+5（方向反）。**注意与 7f22076d 的错法同形**（都是 `base+差量`），两条的错法值分别是 19 与 20——这是「同一错法不同数值」的对照，可用于确认方向错是稳定模式而非偶发",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小芸比小康少 5 颗，从小康那条往回收 5 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2039,21 +2367,27 @@
     "bars[base].max",
     "bars[unknown].max"
    ],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D1",
-     "title": "legacy:bar-model 滑杆上限等于答案（答案副本）",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
      "kind": "ui_answer_leak",
-     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
-     "impact": "孩子把未知条拖到最右端即得正确答案，无需推导；Q05 侧任何「是否理解比较关系」的判定都失去区分力",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
      "added_after_gate": [
       "8b121389",
       "c88410f2",
       "e5c13ef5",
       "04f97cb8"
      ],
-     "status": "已登记；本轮不改组件（只读范围），待内容侧调整 max"
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
     }
    ],
    "ui_visual_seen": {
@@ -2098,6 +2432,7 @@
      "hypothesis": "拖到最右得 11（正确但无推导过程，不可观测）；或 7−4=3（方向反）",
      "observable_evidence": "`bars=[{id:base,value:?},{id:unknown,value:?}]`。期望是 `base.value=7`、`unknown.value=11`。**但 `unknown.max=11`**，所以 `value=11` 有两种来源：算出 7+4，或把滑杆拖到底（DEF-D1）",
      "competing_explanations": "⚠ **本题的 `competing` 不是「别的想法」，而是硬件级歧义**：`unknown.value=11` 完全无法区分「算对了」与「拖到底了」。这是本批唯一一处**证据本身失效**的情形，不是「区分力待验证」，是**不可验证**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小宁比小杰多 4 张，未知条该比已知条长多少」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2108,6 +2443,7 @@
      "hypothesis": "拖到最右得 11（正确但无推导过程，不可观测）；或 7−4=3（方向反）",
      "observable_evidence": "`bars=[{id:base,value:?},{id:unknown,value:?}]`。期望是 `base.value=7`、`unknown.value=11`。**但 `unknown.max=11`**，所以 `value=11` 有两种来源：算出 7+4，或把滑杆拖到底（DEF-D1）",
      "competing_explanations": "⚠ **本题的 `competing` 不是「别的想法」，而是硬件级歧义**：`unknown.value=11` 完全无法区分「算对了」与「拖到底了」。这是本批唯一一处**证据本身失效**的情形，不是「区分力待验证」，是**不可验证**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小宁比小杰多 4 张，未知条该比已知条长多少」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2118,6 +2454,7 @@
      "hypothesis": "拖到最右得 11（正确但无推导过程，不可观测）；或 7−4=3（方向反）",
      "observable_evidence": "`bars=[{id:base,value:?},{id:unknown,value:?}]`。期望是 `base.value=7`、`unknown.value=11`。**但 `unknown.max=11`**，所以 `value=11` 有两种来源：算出 7+4，或把滑杆拖到底（DEF-D1）",
      "competing_explanations": "⚠ **本题的 `competing` 不是「别的想法」，而是硬件级歧义**：`unknown.value=11` 完全无法区分「算对了」与「拖到底了」。这是本批唯一一处**证据本身失效**的情形，不是「区分力待验证」，是**不可验证**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小宁比小杰多 4 张，未知条该比已知条长多少」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2153,21 +2490,27 @@
     "bars[base].max",
     "bars[unknown].max"
    ],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D1",
-     "title": "legacy:bar-model 滑杆上限等于答案（答案副本）",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
      "kind": "ui_answer_leak",
-     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
-     "impact": "孩子把未知条拖到最右端即得正确答案，无需推导；Q05 侧任何「是否理解比较关系」的判定都失去区分力",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
      "added_after_gate": [
       "8b121389",
       "c88410f2",
       "e5c13ef5",
       "04f97cb8"
      ],
-     "status": "已登记；本轮不改组件（只读范围），待内容侧调整 max"
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
     }
    ],
    "ui_visual_seen": {
@@ -2212,6 +2555,7 @@
      "hypothesis": "拖到底得 10（正确但无过程）；或 6−4=2（方向反）",
      "observable_evidence": "`bars=[{id:base,value:6},{id:unknown,value:?}]`；正解 `unknown.value=10`。**`unknown.max=10`** —— 构造上的答案上界，所以 `unknown.value=10` 天然可达且是最右端",
      "competing_explanations": "⚠ `unknown.value=10` 有两种来源，且**在表征上完全同形**：①算 6+4 后摆到 10；②直接把条拖到最右端。由于 max 恰为 10，「拖到底」与「摆对」是**同一个状态**。这不是区分力弱，是**两种来源在状态空间上重合**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安的书比小雨多 4 本，未知条要比已知条长出 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2222,6 +2566,7 @@
      "hypothesis": "拖到底得 10（正确但无过程）；或 6−4=2（方向反）",
      "observable_evidence": "`bars=[{id:base,value:6},{id:unknown,value:?}]`；正解 `unknown.value=10`。**`unknown.max=10`** —— 构造上的答案上界，所以 `unknown.value=10` 天然可达且是最右端",
      "competing_explanations": "⚠ `unknown.value=10` 有两种来源，且**在表征上完全同形**：①算 6+4 后摆到 10；②直接把条拖到最右端。由于 max 恰为 10，「拖到底」与「摆对」是**同一个状态**。这不是区分力弱，是**两种来源在状态空间上重合**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安的书比小雨多 4 本，未知条要比已知条长出 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2232,6 +2577,7 @@
      "hypothesis": "拖到底得 10（正确但无过程）；或 6−4=2（方向反）",
      "observable_evidence": "`bars=[{id:base,value:6},{id:unknown,value:?}]`；正解 `unknown.value=10`。**`unknown.max=10`** —— 构造上的答案上界，所以 `unknown.value=10` 天然可达且是最右端",
      "competing_explanations": "⚠ `unknown.value=10` 有两种来源，且**在表征上完全同形**：①算 6+4 后摆到 10；②直接把条拖到最右端。由于 max 恰为 10，「拖到底」与「摆对」是**同一个状态**。这不是区分力弱，是**两种来源在状态空间上重合**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安的书比小雨多 4 本，未知条要比已知条长出 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2267,21 +2613,27 @@
     "bars[base].max",
     "bars[unknown].max"
    ],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D1",
-     "title": "legacy:bar-model 滑杆上限等于答案（答案副本）",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
      "kind": "ui_answer_leak",
-     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
-     "impact": "孩子把未知条拖到最右端即得正确答案，无需推导；Q05 侧任何「是否理解比较关系」的判定都失去区分力",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
      "added_after_gate": [
       "8b121389",
       "c88410f2",
       "e5c13ef5",
       "04f97cb8"
      ],
-     "status": "已登记；本轮不改组件（只读范围），待内容侧调整 max"
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
     }
    ],
    "ui_visual_seen": {
@@ -2326,6 +2678,7 @@
      "hypothesis": "拖到底得 13；或 9−4=5（方向反）",
      "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`；正解 13，`unknown.max=13` —— 同 DEF-D1 形态",
      "competing_explanations": "⚠ 同 8b121389：max==答案 → 拖到底即满分，无法归因。另注：`visual` 无单位字段，所以 `unknown.value=13` 与题面「13 千步」在表征层无连接，**单位语义丢失**（登记为观察项）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安比小雨多走 4 千步，未知条要多出 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2336,6 +2689,7 @@
      "hypothesis": "拖到底得 13；或 9−4=5（方向反）",
      "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`；正解 13，`unknown.max=13` —— 同 DEF-D1 形态",
      "competing_explanations": "⚠ 同 8b121389：max==答案 → 拖到底即满分，无法归因。另注：`visual` 无单位字段，所以 `unknown.value=13` 与题面「13 千步」在表征层无连接，**单位语义丢失**（登记为观察项）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安比小雨多走 4 千步，未知条要多出 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2346,6 +2700,7 @@
      "hypothesis": "拖到底得 13；或 9−4=5（方向反）",
      "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`；正解 13，`unknown.max=13` —— 同 DEF-D1 形态",
      "competing_explanations": "⚠ 同 8b121389：max==答案 → 拖到底即满分，无法归因。另注：`visual` 无单位字段，所以 `unknown.value=13` 与题面「13 千步」在表征层无连接，**单位语义丢失**（登记为观察项）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小安比小雨多走 4 千步，未知条要多出 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2381,21 +2736,27 @@
     "bars[base].max",
     "bars[unknown].max"
    ],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D1",
-     "title": "legacy:bar-model 滑杆上限等于答案（答案副本）",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
      "kind": "ui_answer_leak",
-     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
-     "impact": "孩子把未知条拖到最右端即得正确答案，无需推导；Q05 侧任何「是否理解比较关系」的判定都失去区分力",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
      "added_after_gate": [
       "8b121389",
       "c88410f2",
       "e5c13ef5",
       "04f97cb8"
      ],
-     "status": "已登记；本轮不改组件（只读范围），待内容侧调整 max"
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
     }
    ],
    "ui_visual_seen": {
@@ -2440,6 +2801,7 @@
      "hypothesis": "拖到底得 11；或 7−4=3（方向反）",
      "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11`。**与 c07482bb 的 visual 逐字段相同**（除无 ui_revision）",
      "competing_explanations": "⚠ 同族。**本条与 c07482bb 的状态空间完全相同**（7→11、max=11），所以两条的 representation 在任何一次作答中都同形——既不能互相区分，也不能互相补证。若把它们当成两份证据，等于把同一份证据数了两次",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小美的书比小李多 4 本，未知条要多 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2450,6 +2812,7 @@
      "hypothesis": "拖到底得 11；或 7−4=3（方向反）",
      "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11`。**与 c07482bb 的 visual 逐字段相同**（除无 ui_revision）",
      "competing_explanations": "⚠ 同族。**本条与 c07482bb 的状态空间完全相同**（7→11、max=11），所以两条的 representation 在任何一次作答中都同形——既不能互相区分，也不能互相补证。若把它们当成两份证据，等于把同一份证据数了两次",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小美的书比小李多 4 本，未知条要多 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2460,6 +2823,7 @@
      "hypothesis": "拖到底得 11；或 7−4=3（方向反）",
      "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11`。**与 c07482bb 的 visual 逐字段相同**（除无 ui_revision）",
      "competing_explanations": "⚠ 同族。**本条与 c07482bb 的状态空间完全相同**（7→11、max=11），所以两条的 representation 在任何一次作答中都同形——既不能互相区分，也不能互相补证。若把它们当成两份证据，等于把同一份证据数了两次",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小美的书比小李多 4 本，未知条要多 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2495,21 +2859,27 @@
     "bars[base].max",
     "bars[unknown].max"
    ],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D1",
-     "title": "legacy:bar-model 滑杆上限等于答案（答案副本）",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
      "kind": "ui_answer_leak",
-     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
-     "impact": "孩子把未知条拖到最右端即得正确答案，无需推导；Q05 侧任何「是否理解比较关系」的判定都失去区分力",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
      "added_after_gate": [
       "8b121389",
       "c88410f2",
       "e5c13ef5",
       "04f97cb8"
      ],
-     "status": "已登记；本轮不改组件（只读范围），待内容侧调整 max"
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
     }
    ],
    "ui_visual_seen": {
@@ -2554,6 +2924,7 @@
      "hypothesis": "拖到底得 11；或 7−4=3（把「少」直接做减法）",
      "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11` —— 同 DEF-D1 形态",
      "competing_explanations": "⚠ 同族缺陷。**本条与 c07482bb 的语序相反但数值全同**（本条「小冬比小夏少」，c07482bb「小宁比小杰多」），本来是一对很好的语序对照，但两条都拖到底得 11 → **对照被 DEF-D1 破坏**。这是本批最能说明「配置缺陷会毁掉教学设计」的实例：题目本身设计得当，UI 让它失效",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小冬比小夏少 4 张，那谁更多？多的那条要多 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2564,6 +2935,7 @@
      "hypothesis": "拖到底得 11；或 7−4=3（把「少」直接做减法）",
      "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11` —— 同 DEF-D1 形态",
      "competing_explanations": "⚠ 同族缺陷。**本条与 c07482bb 的语序相反但数值全同**（本条「小冬比小夏少」，c07482bb「小宁比小杰多」），本来是一对很好的语序对照，但两条都拖到底得 11 → **对照被 DEF-D1 破坏**。这是本批最能说明「配置缺陷会毁掉教学设计」的实例：题目本身设计得当，UI 让它失效",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小冬比小夏少 4 张，那谁更多？多的那条要多 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2574,6 +2946,7 @@
      "hypothesis": "拖到底得 11；或 7−4=3（把「少」直接做减法）",
      "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11` —— 同 DEF-D1 形态",
      "competing_explanations": "⚠ 同族缺陷。**本条与 c07482bb 的语序相反但数值全同**（本条「小冬比小夏少」，c07482bb「小宁比小杰多」），本来是一对很好的语序对照，但两条都拖到底得 11 → **对照被 DEF-D1 破坏**。这是本批最能说明「配置缺陷会毁掉教学设计」的实例：题目本身设计得当，UI 让它失效",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「小冬比小夏少 4 张，那谁更多？多的那条要多 4 格」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2606,15 +2979,26 @@
    "stated_answer": "9",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D4",
-     "title": "legacy:number-line 不记录跳步，只记录终点",
+     "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
      "kind": "interaction_gap",
-     "evidence": "`NumberLineRepresentation` 有 `jumps: number[]` 字段，但 `visual` 侧只给 `min/max/start`，**没有期望跳步序列**；判分只比 `answer`",
-     "impact": "「跳到 9」可来自一次 +1 或 +5−4，二者不可分；连续变化类的核心过程证据缺失",
-     "status": "已登记；`jumps` 字段存在但未被判分使用，属于「有字段无口径」，与上一批 ruler 的 `structure.error` （有精确靶）不同"
+     "evidence_tier": "static_fact",
+     "confirmed": false,
+     "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+     "static_fact": "`jumps` 字段真实存在且会被序列化；`visual` 里没有「期望怎么跳」的声明。",
+     "not_claimed": "**不主张「不记录跳步」**——上一版这个标题是错的，因为 `jumps` 字段明确存在。准确的表述是「**没有声明期望跳步序列**」，属于「有字段无口径」。",
+     "four_things_separated": {
+      "能否操作": "可以（数轴上可连续跳步）",
+      "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+      "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+      "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）"
+     },
+     "inference": "因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；但这**不等于**过程信息不存在——它存在但未被使用。",
+     "impact": "连续变化类的**过程证据未被判分使用**；若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，而不是改记录结构。",
+     "status": "已登记风险；`jumps` 字段存在但未被判分使用，与上一批 ruler 的 `structure.error`（有精确靶）不同"
     }
    ],
    "ui_visual_seen": {
@@ -2645,6 +3029,7 @@
      "hypothesis": "8+5=13 忘记减 4；或 8+5+4=17（把「开走」当加）",
      "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]` 或 `[-4,5]`。**`current=9` 是唯一判分依据**，`jumps` 不参与判分",
      "competing_explanations": "`current=9` 也可能来自 `jumps=[1]`（从 8 跳 1 格）——结果对、过程完全错。**这是 DEF-D4 的直接后果**：终点相同则过程不可分",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先开来了几辆，后来开走了几辆，数轴上走过哪两段」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2655,6 +3040,7 @@
      "hypothesis": "8+5=13 忘记减 4；或 8+5+4=17（把「开走」当加）",
      "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]` 或 `[-4,5]`。**`current=9` 是唯一判分依据**，`jumps` 不参与判分",
      "competing_explanations": "`current=9` 也可能来自 `jumps=[1]`（从 8 跳 1 格）——结果对、过程完全错。**这是 DEF-D4 的直接后果**：终点相同则过程不可分",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先开来了几辆，后来开走了几辆，数轴上走过哪两段」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2665,6 +3051,7 @@
      "hypothesis": "8+5=13 忘记减 4；或 8+5+4=17（把「开走」当加）",
      "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]` 或 `[-4,5]`。**`current=9` 是唯一判分依据**，`jumps` 不参与判分",
      "competing_explanations": "`current=9` 也可能来自 `jumps=[1]`（从 8 跳 1 格）——结果对、过程完全错。**这是 DEF-D4 的直接后果**：终点相同则过程不可分",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「先开来了几辆，后来开走了几辆，数轴上走过哪两段」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2697,15 +3084,26 @@
    "stated_answer": "11",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D4",
-     "title": "legacy:number-line 不记录跳步，只记录终点",
+     "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
      "kind": "interaction_gap",
-     "evidence": "`NumberLineRepresentation` 有 `jumps: number[]` 字段，但 `visual` 侧只给 `min/max/start`，**没有期望跳步序列**；判分只比 `answer`",
-     "impact": "「跳到 9」可来自一次 +1 或 +5−4，二者不可分；连续变化类的核心过程证据缺失",
-     "status": "已登记；`jumps` 字段存在但未被判分使用，属于「有字段无口径」，与上一批 ruler 的 `structure.error` （有精确靶）不同"
+     "evidence_tier": "static_fact",
+     "confirmed": false,
+     "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+     "static_fact": "`jumps` 字段真实存在且会被序列化；`visual` 里没有「期望怎么跳」的声明。",
+     "not_claimed": "**不主张「不记录跳步」**——上一版这个标题是错的，因为 `jumps` 字段明确存在。准确的表述是「**没有声明期望跳步序列**」，属于「有字段无口径」。",
+     "four_things_separated": {
+      "能否操作": "可以（数轴上可连续跳步）",
+      "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+      "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+      "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）"
+     },
+     "inference": "因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；但这**不等于**过程信息不存在——它存在但未被使用。",
+     "impact": "连续变化类的**过程证据未被判分使用**；若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，而不是改记录结构。",
+     "status": "已登记风险；`jumps` 字段存在但未被判分使用，与上一批 ruler 的 `structure.error`（有精确靶）不同"
     }
    ],
    "ui_visual_seen": {
@@ -2736,6 +3134,7 @@
      "hypothesis": "9+6+4=19（「下去」当加）；或 9+6=15（漏第二步）",
      "observable_evidence": "`current=9+6-4=11`；`jumps` 应为 `[6,-4]`。中间态 15 在 max=16 内可达，所以 `jumps=[6,-4]` 与 `[11]` 都停在 11",
      "competing_explanations": "同上——`[11]` 一次跳到与 `[6,-4]` 两步在终态上无差。另：`[6,4]`（把「下去」当加）会停在 19，超出 max=16 → 物理上跳不到，孩子会被迫回头，**这个约束反而帮了忙**：19 不可达意味着错误路径会被界面挡住",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「车上先上来 6 个人，再下去 4 个人，人数怎么变」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2746,6 +3145,7 @@
      "hypothesis": "9+6+4=19（「下去」当加）；或 9+6=15（漏第二步）",
      "observable_evidence": "`current=9+6-4=11`；`jumps` 应为 `[6,-4]`。中间态 15 在 max=16 内可达，所以 `jumps=[6,-4]` 与 `[11]` 都停在 11",
      "competing_explanations": "同上——`[11]` 一次跳到与 `[6,-4]` 两步在终态上无差。另：`[6,4]`（把「下去」当加）会停在 19，超出 max=16 → 物理上跳不到，孩子会被迫回头，**这个约束反而帮了忙**：19 不可达意味着错误路径会被界面挡住",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「车上先上来 6 个人，再下去 4 个人，人数怎么变」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2756,6 +3156,7 @@
      "hypothesis": "9+6+4=19（「下去」当加）；或 9+6=15（漏第二步）",
      "observable_evidence": "`current=9+6-4=11`；`jumps` 应为 `[6,-4]`。中间态 15 在 max=16 内可达，所以 `jumps=[6,-4]` 与 `[11]` 都停在 11",
      "competing_explanations": "同上——`[11]` 一次跳到与 `[6,-4]` 两步在终态上无差。另：`[6,4]`（把「下去」当加）会停在 19，超出 max=16 → 物理上跳不到，孩子会被迫回头，**这个约束反而帮了忙**：19 不可达意味着错误路径会被界面挡住",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「车上先上来 6 个人，再下去 4 个人，人数怎么变」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2788,15 +3189,26 @@
    "stated_answer": "9",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [
     {
      "id": "DEF-D4",
-     "title": "legacy:number-line 不记录跳步，只记录终点",
+     "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
      "kind": "interaction_gap",
-     "evidence": "`NumberLineRepresentation` 有 `jumps: number[]` 字段，但 `visual` 侧只给 `min/max/start`，**没有期望跳步序列**；判分只比 `answer`",
-     "impact": "「跳到 9」可来自一次 +1 或 +5−4，二者不可分；连续变化类的核心过程证据缺失",
-     "status": "已登记；`jumps` 字段存在但未被判分使用，属于「有字段无口径」，与上一批 ruler 的 `structure.error` （有精确靶）不同"
+     "evidence_tier": "static_fact",
+     "confirmed": false,
+     "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+     "static_fact": "`jumps` 字段真实存在且会被序列化；`visual` 里没有「期望怎么跳」的声明。",
+     "not_claimed": "**不主张「不记录跳步」**——上一版这个标题是错的，因为 `jumps` 字段明确存在。准确的表述是「**没有声明期望跳步序列**」，属于「有字段无口径」。",
+     "four_things_separated": {
+      "能否操作": "可以（数轴上可连续跳步）",
+      "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+      "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+      "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）"
+     },
+     "inference": "因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；但这**不等于**过程信息不存在——它存在但未被使用。",
+     "impact": "连续变化类的**过程证据未被判分使用**；若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，而不是改记录结构。",
+     "status": "已登记风险；`jumps` 字段存在但未被判分使用，与上一批 ruler 的 `structure.error`（有精确靶）不同"
     }
    ],
    "ui_visual_seen": {
@@ -2827,6 +3239,7 @@
      "hypothesis": "8+5=13；或 8+5+4=17",
      "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]`。**与 76d49907 的 visual 逐字段相同**，所以两条的 representation 形态完全一致，只有题面文字不同",
      "competing_explanations": "**这一条的竞争解释与前一条同形**，而这恰是「换情境」对照的价值：若孩子在 76d49907 上 `jumps=[5,-4]`、在本条上 `jumps=[9]`，则说明场景换了过程就丢了——这是可观测的迁移失败信号。**但只有两条都留下 jumps 才可判，而判分不看 jumps**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「书架上的书先放上后借走，数轴上走过哪两段」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2837,6 +3250,7 @@
      "hypothesis": "8+5=13；或 8+5+4=17",
      "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]`。**与 76d49907 的 visual 逐字段相同**，所以两条的 representation 形态完全一致，只有题面文字不同",
      "competing_explanations": "**这一条的竞争解释与前一条同形**，而这恰是「换情境」对照的价值：若孩子在 76d49907 上 `jumps=[5,-4]`、在本条上 `jumps=[9]`，则说明场景换了过程就丢了——这是可观测的迁移失败信号。**但只有两条都留下 jumps 才可判，而判分不看 jumps**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「书架上的书先放上后借走，数轴上走过哪两段」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2847,6 +3261,7 @@
      "hypothesis": "8+5=13；或 8+5+4=17",
      "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]`。**与 76d49907 的 visual 逐字段相同**，所以两条的 representation 形态完全一致，只有题面文字不同",
      "competing_explanations": "**这一条的竞争解释与前一条同形**，而这恰是「换情境」对照的价值：若孩子在 76d49907 上 `jumps=[5,-4]`、在本条上 `jumps=[9]`，则说明场景换了过程就丢了——这是可观测的迁移失败信号。**但只有两条都留下 jumps 才可判，而判分不看 jumps**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「书架上的书先放上后借走，数轴上走过哪两段」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2879,7 +3294,7 @@
    "stated_answer": "8",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": null,
    "q05_error_models": [
@@ -2903,6 +3318,7 @@
      "hypothesis": "6+2+4=12（把铅笔也算上，未做条件筛选）",
      "observable_evidence": "只有 `answer`。正解 `'8'`。**注意 8 也可能来自 6+2 或别的组合**——本题的 8 不可分解来源",
      "competing_explanations": "`answer='8'` 是正解，但 8 这个值本身**没有唯一分解**：6+2=8、8−0=8、（若把梨当 2、铅笔当 0）也是 8。所以「答对 8」不能证明做了正确的条件筛选——只能证明没把 4 算进去。这是本题作为条件筛选题的**根本弱点**：干扰项 4 加进去是 12，减出去是 8，但答 8 也可能是「只加了苹果」（漏了梨）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「题目问的是水果，桌子上的铅笔要不要算」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2913,6 +3329,7 @@
      "hypothesis": "6+2+4=12（把铅笔也算上，未做条件筛选）",
      "observable_evidence": "只有 `answer`。正解 `'8'`。**注意 8 也可能来自 6+2 或别的组合**——本题的 8 不可分解来源",
      "competing_explanations": "`answer='8'` 是正解，但 8 这个值本身**没有唯一分解**：6+2=8、8−0=8、（若把梨当 2、铅笔当 0）也是 8。所以「答对 8」不能证明做了正确的条件筛选——只能证明没把 4 算进去。这是本题作为条件筛选题的**根本弱点**：干扰项 4 加进去是 12，减出去是 8，但答 8 也可能是「只加了苹果」（漏了梨）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「题目问的是水果，桌子上的铅笔要不要算」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2923,6 +3340,7 @@
      "hypothesis": "6+2+4=12（把铅笔也算上，未做条件筛选）",
      "observable_evidence": "只有 `answer`。正解 `'8'`。**注意 8 也可能来自 6+2 或别的组合**——本题的 8 不可分解来源",
      "competing_explanations": "`answer='8'` 是正解，但 8 这个值本身**没有唯一分解**：6+2=8、8−0=8、（若把梨当 2、铅笔当 0）也是 8。所以「答对 8」不能证明做了正确的条件筛选——只能证明没把 4 算进去。这是本题作为条件筛选题的**根本弱点**：干扰项 4 加进去是 12，减出去是 8，但答 8 也可能是「只加了苹果」（漏了梨）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「题目问的是水果，桌子上的铅笔要不要算」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2955,7 +3373,7 @@
    "stated_answer": "8",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": null,
    "q05_error_models": [
@@ -2979,6 +3397,7 @@
      "hypothesis": "12−4+3=11（把苹果算进橘子）；或 12+3−4 但答橘子（同值巧合，需注意 11 也可能来自这个错序——两种错法同值，不可分）",
      "observable_evidence": "只有 `answer`。正解 `'8'`（12−4）。**11 = 12−4+3 是主要错法**，但 11 也可能来自 12+3−4 （同值不同序）",
      "competing_explanations": "`answer='11'` 有两种错法同值：①把苹果算进橘子（12−4+3）；②先加后减但答橘子（12+3−4，数值巧合相同）。**两种错法的数学含义完全不同**（①是条件筛选失败、②是只要有「放进来」就加），但提交值都是 11。这是本批唯一「两种错法同值」的题——如果要分开，需要额外要求写过程，当前题型做不到",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「放进来的是苹果，篮子里问的是橘子，苹果算不算橘子的数」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2989,6 +3408,7 @@
      "hypothesis": "12−4+3=11（把苹果算进橘子）；或 12+3−4 但答橘子（同值巧合，需注意 11 也可能来自这个错序——两种错法同值，不可分）",
      "observable_evidence": "只有 `answer`。正解 `'8'`（12−4）。**11 = 12−4+3 是主要错法**，但 11 也可能来自 12+3−4 （同值不同序）",
      "competing_explanations": "`answer='11'` 有两种错法同值：①把苹果算进橘子（12−4+3）；②先加后减但答橘子（12+3−4，数值巧合相同）。**两种错法的数学含义完全不同**（①是条件筛选失败、②是只要有「放进来」就加），但提交值都是 11。这是本批唯一「两种错法同值」的题——如果要分开，需要额外要求写过程，当前题型做不到",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「放进来的是苹果，篮子里问的是橘子，苹果算不算橘子的数」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -2999,6 +3419,7 @@
      "hypothesis": "12−4+3=11（把苹果算进橘子）；或 12+3−4 但答橘子（同值巧合，需注意 11 也可能来自这个错序——两种错法同值，不可分）",
      "observable_evidence": "只有 `answer`。正解 `'8'`（12−4）。**11 = 12−4+3 是主要错法**，但 11 也可能来自 12+3−4 （同值不同序）",
      "competing_explanations": "`answer='11'` 有两种错法同值：①把苹果算进橘子（12−4+3）；②先加后减但答橘子（12+3−4，数值巧合相同）。**两种错法的数学含义完全不同**（①是条件筛选失败、②是只要有「放进来」就加），但提交值都是 11。这是本批唯一「两种错法同值」的题——如果要分开，需要额外要求写过程，当前题型做不到",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
      "neutral_feedback": "说「放进来的是苹果，篮子里问的是橘子，苹果算不算橘子的数」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -3031,7 +3452,7 @@
    "stated_answer": "12",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": null,
    "q05_error_models": [
@@ -3053,8 +3474,9 @@
      "code": "reading",
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "10+5−3+4=16（把饼干算进糖）；或 10+5=15（漏掉吃掉）",
-     "observable_evidence": "只有 `answer`。正解 `'12'`（10+5−3）。**12 = 10+5−3，而 10+5−3+4=16、10+5=15 都不同值**，所以本题的错法在值上可分",
-     "competing_explanations": "`answer='16'` → 把 4 块饼干算进糖（条件筛选失败，可归因）；`answer='15'` → 漏掉「吃掉3颗」（连续变化第二步丢失，可归因）；`answer='8'` → 10−3 后又减了... 或 5−3+10 之外的算法错。**本题是本批 direct 类里错法最可分的一条**",
+     "observable_evidence": "只有 `answer`（本题**没有** `representation`，也没有除终值外的过程字段）。正解 `'12'`（10+5−3）。`10+5−3+4=16` 与 `10+5=15` 都是不同值，所以**若**孩子提交这些值，它们与特定假设相容",
+     "competing_explanations": "`answer='16'` 与「把 4 块饼干也算进糖」**相容**；`answer='15'` 与「漏掉『吃掉 3 颗』这一步」**相容**；`answer='8'` 与「把加法做成减法」相容。**以上都只是相容，不是归因**：本题只存终值，同一个终值可以来自不同算法，现有字段无法判定孩子用了哪一种。",
+     "cannot_distinguish": "只有终值时，任何「他一定是这样算的」都不成立；可说的是「这个值与假设 H 相容」，不可说的是「他用了 H」。",
      "neutral_feedback": "说「饼干也在旁边，但问的是糖，饼干要不要数」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -3063,8 +3485,9 @@
      "code": "strategy",
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "10+5−3+4=16（把饼干算进糖）；或 10+5=15（漏掉吃掉）",
-     "observable_evidence": "只有 `answer`。正解 `'12'`（10+5−3）。**12 = 10+5−3，而 10+5−3+4=16、10+5=15 都不同值**，所以本题的错法在值上可分",
-     "competing_explanations": "`answer='16'` → 把 4 块饼干算进糖（条件筛选失败，可归因）；`answer='15'` → 漏掉「吃掉3颗」（连续变化第二步丢失，可归因）；`answer='8'` → 10−3 后又减了... 或 5−3+10 之外的算法错。**本题是本批 direct 类里错法最可分的一条**",
+     "observable_evidence": "只有 `answer`（本题**没有** `representation`，也没有除终值外的过程字段）。正解 `'12'`（10+5−3）。`10+5−3+4=16` 与 `10+5=15` 都是不同值，所以**若**孩子提交这些值，它们与特定假设相容",
+     "competing_explanations": "`answer='16'` 与「把 4 块饼干也算进糖」**相容**；`answer='15'` 与「漏掉『吃掉 3 颗』这一步」**相容**；`answer='8'` 与「把加法做成减法」相容。**以上都只是相容，不是归因**：本题只存终值，同一个终值可以来自不同算法，现有字段无法判定孩子用了哪一种。",
+     "cannot_distinguish": "只有终值时，任何「他一定是这样算的」都不成立；可说的是「这个值与假设 H 相容」，不可说的是「他用了 H」。",
      "neutral_feedback": "说「饼干也在旁边，但问的是糖，饼干要不要数」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -3073,8 +3496,9 @@
      "code": "modeling",
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "10+5−3+4=16（把饼干算进糖）；或 10+5=15（漏掉吃掉）",
-     "observable_evidence": "只有 `answer`。正解 `'12'`（10+5−3）。**12 = 10+5−3，而 10+5−3+4=16、10+5=15 都不同值**，所以本题的错法在值上可分",
-     "competing_explanations": "`answer='16'` → 把 4 块饼干算进糖（条件筛选失败，可归因）；`answer='15'` → 漏掉「吃掉3颗」（连续变化第二步丢失，可归因）；`answer='8'` → 10−3 后又减了... 或 5−3+10 之外的算法错。**本题是本批 direct 类里错法最可分的一条**",
+     "observable_evidence": "只有 `answer`（本题**没有** `representation`，也没有除终值外的过程字段）。正解 `'12'`（10+5−3）。`10+5−3+4=16` 与 `10+5=15` 都是不同值，所以**若**孩子提交这些值，它们与特定假设相容",
+     "competing_explanations": "`answer='16'` 与「把 4 块饼干也算进糖」**相容**；`answer='15'` 与「漏掉『吃掉 3 颗』这一步」**相容**；`answer='8'` 与「把加法做成减法」相容。**以上都只是相容，不是归因**：本题只存终值，同一个终值可以来自不同算法，现有字段无法判定孩子用了哪一种。",
+     "cannot_distinguish": "只有终值时，任何「他一定是这样算的」都不成立；可说的是「这个值与假设 H 相容」，不可说的是「他用了 H」。",
      "neutral_feedback": "说「饼干也在旁边，但问的是糖，饼干要不要数」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -3107,7 +3531,7 @@
    "stated_answer": "6",
    "verdict": "MATCH",
    "visual_leak": [],
-   "unreachable": null,
+   "unreachable_signal": null,
    "known_defects": [],
    "ui_visual_seen": null,
    "q05_error_models": [
@@ -3129,8 +3553,9 @@
      "code": "reading",
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "9−3+2=8（把练习册当贴纸）；或 9−3−2=4",
-     "observable_evidence": "只有 `answer`。正解 `'6'`（9−3）。错法 8 = 9−3+2、4 = 9−3−2 都不同值",
-     "competing_explanations": "`answer='8'` → 把练习册当贴纸（条件筛选失败）；`answer='4'` → 9−3 后又减了 2（把练习册当贴纸且方向也错）。**两种错法值不同可分开**，但都指向「没能把练习册排除」",
+     "observable_evidence": "只有 `answer`（无过程字段）。正解 `'6'`（9−3）。`8 = 9−3+2`、`4 = 9−3−2` 都是不同值",
+     "competing_explanations": "`answer='8'` 与「把 2 本练习册也当成贴纸（加进去了）」相容；`answer='4'` 与「把练习册当成贴纸且方向反了（减两次）」相容。两者终值不同，**故可区分这两个假设**；但都不能从终值推出「孩子实际这样想」——只能说明与该假设相容。",
+     "cannot_distinguish": "终值不同 → 可区分「相容的假设集合」；终值相同 → 不可区分具体算法。二者不要混说。",
      "neutral_feedback": "说「书包里那 2 本练习册，和贴纸是不是一回事」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -3139,8 +3564,9 @@
      "code": "modeling",
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "9−3+2=8（把练习册当贴纸）；或 9−3−2=4",
-     "observable_evidence": "只有 `answer`。正解 `'6'`（9−3）。错法 8 = 9−3+2、4 = 9−3−2 都不同值",
-     "competing_explanations": "`answer='8'` → 把练习册当贴纸（条件筛选失败）；`answer='4'` → 9−3 后又减了 2（把练习册当贴纸且方向也错）。**两种错法值不同可分开**，但都指向「没能把练习册排除」",
+     "observable_evidence": "只有 `answer`（无过程字段）。正解 `'6'`（9−3）。`8 = 9−3+2`、`4 = 9−3−2` 都是不同值",
+     "competing_explanations": "`answer='8'` 与「把 2 本练习册也当成贴纸（加进去了）」相容；`answer='4'` 与「把练习册当成贴纸且方向反了（减两次）」相容。两者终值不同，**故可区分这两个假设**；但都不能从终值推出「孩子实际这样想」——只能说明与该假设相容。",
+     "cannot_distinguish": "终值不同 → 可区分「相容的假设集合」；终值相同 → 不可区分具体算法。二者不要混说。",
      "neutral_feedback": "说「书包里那 2 本练习册，和贴纸是不是一回事」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
@@ -3149,8 +3575,9 @@
      "code": "strategy",
      "status": "同质占位候选，区分力尚待验证",
      "hypothesis": "9−3+2=8（把练习册当贴纸）；或 9−3−2=4",
-     "observable_evidence": "只有 `answer`。正解 `'6'`（9−3）。错法 8 = 9−3+2、4 = 9−3−2 都不同值",
-     "competing_explanations": "`answer='8'` → 把练习册当贴纸（条件筛选失败）；`answer='4'` → 9−3 后又减了 2（把练习册当贴纸且方向也错）。**两种错法值不同可分开**，但都指向「没能把练习册排除」",
+     "observable_evidence": "只有 `answer`（无过程字段）。正解 `'6'`（9−3）。`8 = 9−3+2`、`4 = 9−3−2` 都是不同值",
+     "competing_explanations": "`answer='8'` 与「把 2 本练习册也当成贴纸（加进去了）」相容；`answer='4'` 与「把练习册当成贴纸且方向反了（减两次）」相容。两者终值不同，**故可区分这两个假设**；但都不能从终值推出「孩子实际这样想」——只能说明与该假设相容。",
+     "cannot_distinguish": "终值不同 → 可区分「相容的假设集合」；终值相同 → 不可区分具体算法。二者不要混说。",
      "neutral_feedback": "说「书包里那 2 本练习册，和贴纸是不是一回事」",
      "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
      "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"

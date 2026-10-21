@@ -1,0 +1,1892 @@
+{
+ "title": "FE-1471｜第三批 29 题冻结输入快照（供离线 gate 回放 evaluate()）",
+ "purpose": "门禁原先只查结构、不执行数学核验，导致 independent_eval 恒 0 / match 恒 True 仍 PASS。本快照把 answer / error_models / ui_schema 冻结下来，使门禁可在无数据库的 CI 上真实跑一遍 evaluate()。",
+ "frozen_at_commit": "dbbd429c4542d6cb1eddefcf141419de8158dbea",
+ "provenance": {
+  "source": "resource_version.content->>'answer' / content->>'stem' / error_models / ui_schema（运行时原值，未规整）",
+  "readonly": "psycopg3 with-connect，零 DML 路径",
+  "regenerate": "export DATABASE_URL=\"$(security find-generic-password -s iqc-database-url -w)\" && ~/.workbuddy/binaries/python/envs/learning-engine/bin/python scripts/iqc/rt1471/snapshot_batch3.py"
+ },
+ "count": 29,
+ "items": [
+  {
+   "rvid": "73dd367b-3883-4621-bdef-3951aee84881",
+   "renderer": "bar-model",
+   "relation": "part_whole",
+   "answer_raw": "12",
+   "answer_num": 12.0,
+   "stem": "图书角两层书架分别放着5本和7本书。请用线段图表示两个部分，再求书架上一共有多少本书。",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "ui_schema": {
+    "prompt": {
+     "text": "图书角两层书架分别放着5本和7本书。请用线段图表示两个部分，再求书架上一共有多少本书。"
+    },
+    "workspaces": [
+     {
+      "mode": "part_whole",
+      "config": {
+       "mode": "part_whole",
+       "known": {
+        "a": 5,
+        "b": 7
+       },
+       "answer_bar": "c",
+       "max_blocks": 14
+      },
+      "renderer": "bar-model",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "bar_model",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "bar_lengths",
+      "unknown_value"
+     ]
+    }
+   },
+   "answer_raw_sha256": "f9cacf3cb91a12e03bc4546834f95a50a4c5fe02276ac260148ea9296c442d39",
+   "ui_schema_sha256": "e80d9423cbdcd83f8b15dd19dc63338fa22f14df2115415f1db0b927aab471fe",
+   "replay": {
+    "computed": 12,
+    "verdict": "MATCH",
+    "expr": "5 + 7",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "a76ac388-4c00-4888-82f1-6d49e852dfbc",
+   "renderer": "bar-model",
+   "relation": "part_whole",
+   "answer_raw": "7",
+   "answer_num": 7.0,
+   "stem": "手工课上先拿来3张彩纸，又拿来4张彩纸。请用线段图表示两次拿来的数量，再求总共有多少张。",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "ui_schema": {
+    "prompt": {
+     "text": "手工课上先拿来3张彩纸，又拿来4张彩纸。请用线段图表示两次拿来的数量，再求总共有多少张。"
+    },
+    "workspaces": [
+     {
+      "mode": "part_whole",
+      "config": {
+       "mode": "part_whole",
+       "known": {
+        "a": 3,
+        "b": 4
+       },
+       "answer_bar": "c",
+       "max_blocks": 12
+      },
+      "renderer": "bar-model",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "bar_model",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "bar_lengths",
+      "unknown_value"
+     ]
+    }
+   },
+   "answer_raw_sha256": "266aa5886067fbbc1a3a39fe432fc5bbf561abc90e4b8a322215ac17df6ce012",
+   "ui_schema_sha256": "466cf0ea144a6cbe9ba6415f8e8263df1e02d92626aa7497a24bf17a0e6205e9",
+   "replay": {
+    "computed": 7,
+    "verdict": "MATCH",
+    "expr": "3 + 4",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "5bceb172-2b67-4421-99b2-175ec05b94e9",
+   "renderer": "legacy:number-line",
+   "relation": "part_whole",
+   "answer_raw": "21",
+   "answer_num": 21.0,
+   "stem": "有3个相同的小袋子，每个袋子里有7颗玻璃珠。3个袋子一共有多少颗玻璃珠？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "select",
+     "jump",
+     "undo",
+     "reset"
+    ],
+    "prompt": "有3个相同的小袋子，每个袋子里有7颗玻璃珠。3个袋子一共有多少颗玻璃珠？",
+    "visual": {
+     "max": 23,
+     "min": 0,
+     "step": 1,
+     "type": "number-line",
+     "start": 0
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "6f8f349216adc47cfd723001f3dfbfc11179e1b36c31ce51c85056026f3d85b9",
+   "ui_schema_sha256": "413e7c764479927d500e35cffb3dd4a75c7aaa5618373e1e91704f21365c6777",
+   "replay": {
+    "computed": 21,
+    "verdict": "MATCH",
+    "expr": "3 * 7",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "240ff07b-3f7d-4420-97d3-e6ab89fd24dd",
+   "renderer": "legacy:bar-model",
+   "relation": "part_whole",
+   "answer_raw": "8",
+   "answer_num": 8.0,
+   "stem": "一盒彩纸有13张，其中红色5张，其余是黄色。黄色彩纸有多少张？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "一盒彩纸有13张，其中红色5张，其余是黄色。黄色彩纸有多少张？",
+    "visual": {
+     "bars": [
+      {
+       "id": "total",
+       "max": 13,
+       "min": 0,
+       "label": "一共",
+       "value": 13
+      },
+      {
+       "id": "known",
+       "max": 13,
+       "min": 0,
+       "label": "已知部分",
+       "value": 5
+      },
+      {
+       "id": "unknown",
+       "max": 13,
+       "min": 0,
+       "label": "未知部分",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 15,
+     "relationship": "part-whole"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "ade1a1c2a61af0f279a4978dfddcdb6acd33f5a8b61e62c5fd881e8a88a387bc",
+   "ui_schema_sha256": "0cd6e18a6074686d2c28553937f1275061dbe664bad66e8855cf7b369b5f855c",
+   "replay": {
+    "computed": 8,
+    "verdict": "MATCH",
+    "expr": "13 - 5",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "f5fb6594-862e-4dfe-9f19-723b1eed7ea6",
+   "renderer": "legacy:bar-model",
+   "relation": "part_whole",
+   "answer_raw": "9",
+   "answer_num": 9.0,
+   "stem": "书桌上共有15本书，其中6本是故事书，其余是科普书。科普书有多少本？",
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "书桌上共有15本书，其中6本是故事书，其余是科普书。科普书有多少本？",
+    "visual": {
+     "bars": [
+      {
+       "id": "total",
+       "max": 15,
+       "min": 0,
+       "label": "一共",
+       "value": 15
+      },
+      {
+       "id": "known",
+       "max": 15,
+       "min": 0,
+       "label": "已知部分",
+       "value": 6
+      },
+      {
+       "id": "unknown",
+       "max": 15,
+       "min": 0,
+       "label": "未知部分",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 17,
+     "relationship": "part-whole"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "986b79d4b69dffb1d19836f47b27073d95bf55201b3385aceb7e0687a21d8667",
+   "ui_schema_sha256": "e6155f45778d06ced36fd6c7a2dc5a4e988104a8e73b5f31db44d3793b3c7883",
+   "replay": {
+    "computed": 9,
+    "verdict": "MATCH",
+    "expr": "15 - 6",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "eaa828b3-a633-4ab6-9cf5-8025a3687899",
+   "renderer": "legacy:objects",
+   "relation": "difference",
+   "answer_raw": "3",
+   "answer_num": 3.0,
+   "stem": "小东有8支彩笔，小西有5支彩笔。小东比小西多几支彩笔？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "drag",
+     "align",
+     "count",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小东有8支彩笔，小西有5支彩笔。小东比小西多几支彩笔？",
+    "visual": {
+     "type": "objects",
+     "groups": [
+      {
+       "id": "g1",
+       "count": 8,
+       "label": "第1组",
+       "symbol": "🖍"
+      },
+      {
+       "id": "g2",
+       "count": 5,
+       "label": "第2组",
+       "symbol": "🖍"
+      }
+     ]
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "a4aab3f1f08004e907d2357fafe74cab56359bcb32e23f52e7eb1d3a9c0a2ad3",
+   "ui_schema_sha256": "49763416e01226f6abe93df646e94fcd5bbd2b9f7835b5bfb16568ab2455dd6a",
+   "replay": {
+    "computed": 3,
+    "verdict": "MATCH",
+    "expr": "8 - 5",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D3"
+    ]
+   }
+  },
+  {
+   "rvid": "7acb4a38-e51a-4c48-aa0b-4d0bce402f2e",
+   "renderer": "legacy:objects",
+   "relation": "difference",
+   "answer_raw": "2",
+   "answer_num": 2.0,
+   "stem": "左边有6块积木，右边有4块积木。左边比右边多几块？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "drag",
+     "align",
+     "count",
+     "undo",
+     "reset"
+    ],
+    "prompt": "左边有6块积木，右边有4块积木。左边比右边多几块？",
+    "visual": {
+     "type": "objects",
+     "groups": [
+      {
+       "id": "g1",
+       "count": 6,
+       "label": "第1组",
+       "symbol": "🧱"
+      },
+      {
+       "id": "g2",
+       "count": 4,
+       "label": "第2组",
+       "symbol": "🧱"
+      }
+     ]
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "cc11310c456c3690d5a74c23aa31cc25b4e74cdae146c71e54ad9dbc1d109fde",
+   "ui_schema_sha256": "a8f0559a77605e99ca613268d3193fabd3c2e586493e50fca533f72fe6554b1c",
+   "replay": {
+    "computed": 2,
+    "verdict": "MATCH",
+    "expr": "6 - 4",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D3"
+    ]
+   }
+  },
+  {
+   "rvid": "cfc971b4-002f-42c3-8b00-993784a4f9ff",
+   "renderer": "legacy:objects",
+   "relation": "difference",
+   "answer_raw": "3",
+   "answer_num": 3.0,
+   "stem": "小红有8朵花，小蓝有5朵花。小红比小蓝多几朵？",
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "drag",
+     "align",
+     "count",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小红有8朵花，小蓝有5朵花。小红比小蓝多几朵？",
+    "visual": {
+     "type": "objects",
+     "groups": [
+      {
+       "id": "g1",
+       "count": 8,
+       "label": "第1组",
+       "symbol": "🌸"
+      },
+      {
+       "id": "g2",
+       "count": 5,
+       "label": "第2组",
+       "symbol": "🌸"
+      }
+     ]
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "a4aab3f1f08004e907d2357fafe74cab56359bcb32e23f52e7eb1d3a9c0a2ad3",
+   "ui_schema_sha256": "548c197dfe0055b8aa995a299be4832836470c13b45245caf63bd31d9d819b7a",
+   "replay": {
+    "computed": 3,
+    "verdict": "MATCH",
+    "expr": "8 - 5",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D3"
+    ]
+   }
+  },
+  {
+   "rvid": "8f603745-fc26-4402-9cd2-0fc20cfd401a",
+   "renderer": "legacy:objects",
+   "relation": "difference",
+   "answer_raw": "3",
+   "answer_num": 3.0,
+   "stem": "晨练时，小海跑了9圈，小森跑了6圈。小海比小森多跑几圈？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "drag",
+     "align",
+     "count",
+     "undo",
+     "reset"
+    ],
+    "prompt": "晨练时，小海跑了9圈，小森跑了6圈。小海比小森多跑几圈？",
+    "visual": {
+     "type": "objects",
+     "groups": [
+      {
+       "id": "g1",
+       "count": 9,
+       "label": "第1组",
+       "symbol": "●"
+      },
+      {
+       "id": "g2",
+       "count": 6,
+       "label": "第2组",
+       "symbol": "●"
+      }
+     ]
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "a4aab3f1f08004e907d2357fafe74cab56359bcb32e23f52e7eb1d3a9c0a2ad3",
+   "ui_schema_sha256": "9b5dc17f44eb17fb374dcc6689af5c86bdaf385d2947672b7e8afcd70c119a82",
+   "replay": {
+    "computed": 3,
+    "verdict": "MATCH",
+    "expr": "9 - 6",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D3"
+    ]
+   }
+  },
+  {
+   "rvid": "421ede36-8f1b-4b10-9433-e92f039231bd",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "18",
+   "answer_num": 18.0,
+   "stem": "小青有11张贴纸，小雨比小青少4张。两个人一共有多少张贴纸？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小青有11张贴纸，小雨比小青少4张。两个人一共有多少张贴纸？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 15,
+       "min": 0,
+       "label": "已知",
+       "value": 11
+      },
+      {
+       "id": "unknown",
+       "max": 15,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 17,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "0234a350f4d56ae45c5ece57b08c54496f372bc570bd83a465fb6d2d85531479",
+   "ui_schema_sha256": "cf0289c0205d1711e0d4c3c6d2c56913e0529f9db9738d08a5bf976656b57aa4",
+   "replay": {
+    "computed": 18,
+    "verdict": "MATCH",
+    "expr": "11 + (11 - 4)",
+    "visual_leak": [],
+    "unreachable_signal": "线索：最终答案 18 > 单条可摆放上限 17（不代表任务不可完成，需核验未知条应表示哪个量）",
+    "known_defects": [
+     "DEF-D2"
+    ]
+   }
+  },
+  {
+   "rvid": "6e5395f0-def7-4060-a501-044d8e9a3764",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "21",
+   "answer_num": 21.0,
+   "stem": "小明有9本故事书，小红比小明多3本。两个人一共有多少本故事书？",
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小明有9本故事书，小红比小明多3本。两个人一共有多少本故事书？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 12,
+       "min": 0,
+       "label": "已知",
+       "value": 9
+      },
+      {
+       "id": "unknown",
+       "max": 12,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 14,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "6f8f349216adc47cfd723001f3dfbfc11179e1b36c31ce51c85056026f3d85b9",
+   "ui_schema_sha256": "63b53023968853512929bd1179543bde7dc1f52d83682db468ad2d939635c022",
+   "replay": {
+    "computed": 21,
+    "verdict": "MATCH",
+    "expr": "9 + (9 + 3)",
+    "visual_leak": [],
+    "unreachable_signal": "线索：最终答案 21 > 单条可摆放上限 14（不代表任务不可完成，需核验未知条应表示哪个量）",
+    "known_defects": [
+     "DEF-D2"
+    ]
+   }
+  },
+  {
+   "rvid": "8981fbcc-5b92-44b6-ab89-6b8ef0e715fd",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "19",
+   "answer_num": 19.0,
+   "stem": "小兰有8颗糖，小杰比小兰多3颗。两个人一共有多少颗糖？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小兰有8颗糖，小杰比小兰多3颗。两个人一共有多少颗糖？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 11,
+       "min": 0,
+       "label": "已知",
+       "value": 8
+      },
+      {
+       "id": "unknown",
+       "max": 11,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 13,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "49f65dc5d4333e3ed1ba4c9bbea03134a985509541efa8a4955542d50dea45f0",
+   "ui_schema_sha256": "e0e3a7dda472a52b3f1468f2ab7a3899546f51c361866e8cc069729fd67f8728",
+   "replay": {
+    "computed": 19,
+    "verdict": "MATCH",
+    "expr": "8 + (8 + 3)",
+    "visual_leak": [],
+    "unreachable_signal": "线索：最终答案 19 > 单条可摆放上限 13（不代表任务不可完成，需核验未知条应表示哪个量）",
+    "known_defects": [
+     "DEF-D2"
+    ]
+   }
+  },
+  {
+   "rvid": "2dd5be20-77ea-400c-aa68-4702ecae705b",
+   "renderer": "legacy:direct",
+   "relation": "difference",
+   "answer_raw": "0",
+   "answer_num": 0.0,
+   "stem": "姐姐有13颗珠子，比弟弟多5颗。小明说“弟弟有18颗珠子”。请检查：正确填1，错误填0。",
+   "error_models": [
+    {
+     "code": "check",
+     "pattern": "check"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    }
+   ],
+   "ui_schema": {
+    "kind": "number",
+    "prompt": "姐姐有13颗珠子，比弟弟多5颗。小明说“弟弟有18颗珠子”。请检查：正确填1，错误填0。",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": false
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b",
+   "ui_schema_sha256": "e03a266ab74b8a9a55514d1c3a1e3b1e2c5e058d109e01430372dfabd2cb0dbe",
+   "replay": {
+    "computed": 0,
+    "verdict": "MATCH",
+    "expr": "int((13 - 5) == 18)",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "3ea61fc9-850f-4b59-987d-1a58fe00087f",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "8",
+   "answer_num": 8.0,
+   "stem": "姐姐有13颗珠子，比弟弟多5颗。弟弟有多少颗珠子？",
+   "error_models": [
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "姐姐有13颗珠子，比弟弟多5颗。弟弟有多少颗珠子？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 18,
+       "min": 0,
+       "label": "已知",
+       "value": 13
+      },
+      {
+       "id": "unknown",
+       "max": 18,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 20,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "ade1a1c2a61af0f279a4978dfddcdb6acd33f5a8b61e62c5fd881e8a88a387bc",
+   "ui_schema_sha256": "a91311504f416de12a10e4cdc713231aa269afbc4f181a49ebe5bedc07070176",
+   "replay": {
+    "computed": 8,
+    "verdict": "MATCH",
+    "expr": "13 - 5",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "7f22076d-e47d-46e4-a822-0528a90a451a",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "8",
+   "answer_num": 8.0,
+   "stem": "小安的棋子比小林少6颗。小林有14颗棋子。小安有多少颗棋子？",
+   "error_models": [
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小安的棋子比小林少6颗。小林有14颗棋子。小安有多少颗棋子？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 20,
+       "min": 0,
+       "label": "已知",
+       "value": 14
+      },
+      {
+       "id": "unknown",
+       "max": 20,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 22,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "ade1a1c2a61af0f279a4978dfddcdb6acd33f5a8b61e62c5fd881e8a88a387bc",
+   "ui_schema_sha256": "d207c6585c8f4d8021b83a96e16d047d8f709ae73506338395da87337829bb77",
+   "replay": {
+    "computed": 8,
+    "verdict": "MATCH",
+    "expr": "14 - 6",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "8612589b-80dd-4ac7-8658-c241b8d45153",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "7",
+   "answer_num": 7.0,
+   "stem": "哥哥有12个贝壳，比妹妹多5个。妹妹有多少个贝壳？",
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "哥哥有12个贝壳，比妹妹多5个。妹妹有多少个贝壳？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 17,
+       "min": 0,
+       "label": "已知",
+       "value": 12
+      },
+      {
+       "id": "unknown",
+       "max": 17,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 19,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "266aa5886067fbbc1a3a39fe432fc5bbf561abc90e4b8a322215ac17df6ce012",
+   "ui_schema_sha256": "314d860aa1ba9386f22a7a4f959b9ae595fa969a545367e2d9ba6c53038dda2e",
+   "replay": {
+    "computed": 7,
+    "verdict": "MATCH",
+    "expr": "12 - 5",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "ed97b114-6599-4cd3-ad0e-ca1c3509ed57",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "9",
+   "answer_num": 9.0,
+   "stem": "小芸比小康少5颗星星。小康有14颗星星。小芸有多少颗？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小芸比小康少5颗星星。小康有14颗星星。小芸有多少颗？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 19,
+       "min": 0,
+       "label": "已知",
+       "value": 14
+      },
+      {
+       "id": "unknown",
+       "max": 19,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 21,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "986b79d4b69dffb1d19836f47b27073d95bf55201b3385aceb7e0687a21d8667",
+   "ui_schema_sha256": "d6240e8b170e1d5343d1c2aaff5dd1888bc648c3b73a154eb40d0bce539ec8ca",
+   "replay": {
+    "computed": 9,
+    "verdict": "MATCH",
+    "expr": "14 - 5",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "c07482bb-8a60-4b18-b3c1-25532a77a339",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "11",
+   "answer_num": 11.0,
+   "stem": "小杰有7张卡片，小宁比小杰多4张。小宁有多少张卡片？",
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小杰有7张卡片，小宁比小杰多4张。小宁有多少张卡片？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 11,
+       "min": 0,
+       "label": "已知",
+       "value": 7
+      },
+      {
+       "id": "unknown",
+       "max": 11,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 13,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "f326bd84707ed76597becb832280595d1a5aaceb0905dc40e3553ebb861bde80",
+   "ui_schema_sha256": "d22a7d2c6365694c25908e424a5e2ea1da743d6ef00a80ca4cf3f0c16dfdd803",
+   "replay": {
+    "computed": 11,
+    "verdict": "MATCH",
+    "expr": "7 + 4",
+    "visual_leak": [
+     "bars[base].max",
+     "bars[unknown].max"
+    ],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D1"
+    ]
+   }
+  },
+  {
+   "rvid": "8b121389-2d87-4ea2-aef1-0a626e5464de",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "10",
+   "answer_num": 10.0,
+   "stem": "小雨有6本书，小安比小雨多4本。小安有多少本书？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小雨有6本书，小安比小雨多4本。小安有多少本书？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 10,
+       "min": 0,
+       "label": "已知",
+       "value": 6
+      },
+      {
+       "id": "unknown",
+       "max": 10,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 12,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "536549599ec6c3b859cd3970025779a13d061783c73e663fea7f963e98379aa8",
+   "ui_schema_sha256": "0bc30fa43e2e325f40628aba8c51759de7b222509aa4109f056eb53043893073",
+   "replay": {
+    "computed": 10,
+    "verdict": "MATCH",
+    "expr": "6 + 4",
+    "visual_leak": [
+     "bars[base].max",
+     "bars[unknown].max"
+    ],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D1"
+    ]
+   }
+  },
+  {
+   "rvid": "c88410f2-f810-47b4-8ae4-cc218b140a88",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "13",
+   "answer_num": 13.0,
+   "stem": "小雨今天走了9千步，小安比小雨多走4千步。小安今天走了多少千步？",
+   "error_models": [
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小雨今天走了9千步，小安比小雨多走4千步。小安今天走了多少千步？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 13,
+       "min": 0,
+       "label": "已知",
+       "value": 9
+      },
+      {
+       "id": "unknown",
+       "max": 13,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 15,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "e23f8f39182c82127c1bef3cbfd9b54e30e1df4916da81dcfc2a801c23f3bf01",
+   "ui_schema_sha256": "d045f262bb8317c7699c27aeb642c05c2648fe56a24c09f9d644ba4c1742f909",
+   "replay": {
+    "computed": 13,
+    "verdict": "MATCH",
+    "expr": "9 + 4",
+    "visual_leak": [
+     "bars[base].max",
+     "bars[unknown].max"
+    ],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D1"
+    ]
+   }
+  },
+  {
+   "rvid": "e5c13ef5-daa1-46c4-a545-a40f38ba1e79",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "11",
+   "answer_num": 11.0,
+   "stem": "小李有7本故事书，小美比小李多4本。小美有多少本故事书？",
+   "error_models": [
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小李有7本故事书，小美比小李多4本。小美有多少本故事书？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 11,
+       "min": 0,
+       "label": "已知",
+       "value": 7
+      },
+      {
+       "id": "unknown",
+       "max": 11,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 13,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "f326bd84707ed76597becb832280595d1a5aaceb0905dc40e3553ebb861bde80",
+   "ui_schema_sha256": "abbe11950fb1c9bd3224ce9861b5fdf0f6315f918c42696228bfc76d25558e69",
+   "replay": {
+    "computed": 11,
+    "verdict": "MATCH",
+    "expr": "7 + 4",
+    "visual_leak": [
+     "bars[base].max",
+     "bars[unknown].max"
+    ],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D1"
+    ]
+   }
+  },
+  {
+   "rvid": "04f97cb8-b918-4836-bf06-c39d8613fe0e",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "answer_raw": "11",
+   "answer_num": 11.0,
+   "stem": "小冬有7张卡片，小冬比小夏少4张。小夏有多少张卡片？",
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "label",
+     "align",
+     "undo",
+     "reset"
+    ],
+    "prompt": "小冬有7张卡片，小冬比小夏少4张。小夏有多少张卡片？",
+    "visual": {
+     "bars": [
+      {
+       "id": "base",
+       "max": 11,
+       "min": 0,
+       "label": "已知",
+       "value": 7
+      },
+      {
+       "id": "unknown",
+       "max": 11,
+       "min": 0,
+       "label": "未知",
+       "unknown": true
+      }
+     ],
+     "type": "bar-model",
+     "max_value": 13,
+     "relationship": "compare"
+    },
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "f326bd84707ed76597becb832280595d1a5aaceb0905dc40e3553ebb861bde80",
+   "ui_schema_sha256": "3b82a271fc95aa1966ca5a9452bb1bb2f94586b3b09025d0d1ec0ce76f35ebfd",
+   "replay": {
+    "computed": 11,
+    "verdict": "MATCH",
+    "expr": "7 + 4",
+    "visual_leak": [
+     "bars[base].max",
+     "bars[unknown].max"
+    ],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D1"
+    ]
+   }
+  },
+  {
+   "rvid": "76d49907-c092-4822-b0ea-344850970da0",
+   "renderer": "legacy:number-line",
+   "relation": "continuous",
+   "answer_raw": "9",
+   "answer_num": 9.0,
+   "stem": "停车场原来有8辆车，又开来5辆，后来开走4辆。现在停车场有多少辆车？",
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "select",
+     "jump",
+     "undo",
+     "reset"
+    ],
+    "prompt": "停车场原来有8辆车，又开来5辆，后来开走4辆。现在停车场有多少辆车？",
+    "visual": {
+     "max": 14,
+     "min": 0,
+     "step": 1,
+     "type": "number-line",
+     "start": 8
+    },
+    "ui_revision": "v1.1",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "986b79d4b69dffb1d19836f47b27073d95bf55201b3385aceb7e0687a21d8667",
+   "ui_schema_sha256": "127593984172009b2e6fd59b77c6e8af2ebf5502c56ccaeb8b5ca0d434cf5453",
+   "replay": {
+    "computed": 9,
+    "verdict": "MATCH",
+    "expr": "8 + 5 - 4",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D4"
+    ]
+   }
+  },
+  {
+   "rvid": "bb376fbd-06c8-4604-91c9-4cc195567a49",
+   "renderer": "legacy:number-line",
+   "relation": "continuous",
+   "answer_raw": "11",
+   "answer_num": 11.0,
+   "stem": "公交车上原来有9个人，到第一站上来6人，到第二站下去4人。现在车上有多少人？",
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "select",
+     "jump",
+     "undo",
+     "reset"
+    ],
+    "prompt": "公交车上原来有9个人，到第一站上来6人，到第二站下去4人。现在车上有多少人？",
+    "visual": {
+     "max": 16,
+     "min": 0,
+     "step": 1,
+     "type": "number-line",
+     "start": 9
+    },
+    "ui_revision": "v1.1",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "f326bd84707ed76597becb832280595d1a5aaceb0905dc40e3553ebb861bde80",
+   "ui_schema_sha256": "8e883a85da433cf523f9667e72d3ed14c5464280215facfeede386953d8e472a",
+   "replay": {
+    "computed": 11,
+    "verdict": "MATCH",
+    "expr": "9 + 6 - 4",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D4"
+    ]
+   }
+  },
+  {
+   "rvid": "552b39e3-7127-4c2d-a506-628259bb08c7",
+   "renderer": "legacy:number-line",
+   "relation": "continuous",
+   "answer_raw": "9",
+   "answer_num": 9.0,
+   "stem": "书架上原来有8本新书，老师又放上5本，后来同学借走4本。现在书架上有多少本书？",
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "manipulative",
+    "tools": [
+     "select",
+     "jump",
+     "undo",
+     "reset"
+    ],
+    "prompt": "书架上原来有8本新书，老师又放上5本，后来同学借走4本。现在书架上有多少本书？",
+    "visual": {
+     "max": 14,
+     "min": 0,
+     "step": 1,
+     "type": "number-line",
+     "start": 8
+    },
+    "ui_revision": "v1.1",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "986b79d4b69dffb1d19836f47b27073d95bf55201b3385aceb7e0687a21d8667",
+   "ui_schema_sha256": "6f5603a2528cd2ee794184a4f65dac9519898ab01accb2eeeeabb0c06e46a540",
+   "replay": {
+    "computed": 9,
+    "verdict": "MATCH",
+    "expr": "8 + 5 - 4",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": [
+     "DEF-D4"
+    ]
+   }
+  },
+  {
+   "rvid": "3706473c-8f57-45a5-b01a-d6470d826321",
+   "renderer": "legacy:direct",
+   "relation": "conditional",
+   "answer_raw": "8",
+   "answer_num": 8.0,
+   "stem": "桌上有6个苹果、2个梨，还有4支铅笔。苹果和梨一共有多少个？",
+   "error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "ui_schema": {
+    "kind": "number",
+    "prompt": "桌上有6个苹果、2个梨，还有4支铅笔。苹果和梨一共有多少个？",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": false
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "ade1a1c2a61af0f279a4978dfddcdb6acd33f5a8b61e62c5fd881e8a88a387bc",
+   "ui_schema_sha256": "fe7eb1f446e828f071de9a9e98a6bb8b52a3a063a85e9c43acf473c565edb411",
+   "replay": {
+    "computed": 8,
+    "verdict": "MATCH",
+    "expr": "6 + 2",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "6857ba8d-9130-4da3-97ad-267e06e87e97",
+   "renderer": "legacy:direct",
+   "relation": "conditional",
+   "answer_raw": "8",
+   "answer_num": 8.0,
+   "stem": "篮子里原来有12个橘子，吃掉4个，又放进3个苹果。篮子里还剩多少个橘子？",
+   "error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "number",
+    "prompt": "篮子里原来有12个橘子，吃掉4个，又放进3个苹果。篮子里还剩多少个橘子？",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": false
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "ade1a1c2a61af0f279a4978dfddcdb6acd33f5a8b61e62c5fd881e8a88a387bc",
+   "ui_schema_sha256": "4f9322b1074407f50893142c12f19b4e93c985925e758331bb61788779f7f017",
+   "replay": {
+    "computed": 8,
+    "verdict": "MATCH",
+    "expr": "12 - 4",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "76ce803c-cdf8-46c1-85f7-d5207bdca060",
+   "renderer": "legacy:direct",
+   "relation": "conditional",
+   "answer_raw": "12",
+   "answer_num": 12.0,
+   "stem": "盒子里有10颗糖，又放进5颗，后来吃掉3颗。旁边还有4块饼干。现在盒子里有多少颗糖？",
+   "error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "ui_schema": {
+    "kind": "number",
+    "prompt": "盒子里有10颗糖，又放进5颗，后来吃掉3颗。旁边还有4块饼干。现在盒子里有多少颗糖？",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": false
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "f9cacf3cb91a12e03bc4546834f95a50a4c5fe02276ac260148ea9296c442d39",
+   "ui_schema_sha256": "10b1ffb423888d66c2e9ef8f76e344a464697f67da633b228ada0a76f9960493",
+   "replay": {
+    "computed": 12,
+    "verdict": "MATCH",
+    "expr": "10 + 5 - 3",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  },
+  {
+   "rvid": "623b7f19-47ba-467f-bad7-2b87bc4a5401",
+   "renderer": "legacy:direct",
+   "relation": "conditional",
+   "answer_raw": "6",
+   "answer_num": 6.0,
+   "stem": "小芳有9张贴纸，送给小美3张。她的书包里还有2本练习册。小芳还剩几张贴纸？",
+   "error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "ui_schema": {
+    "kind": "number",
+    "prompt": "小芳有9张贴纸，送给小美3张。她的书包里还有2本练习册。小芳还剩几张贴纸？",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": false
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "answer_raw_sha256": "92e9e7e5922d26e17e48f0869ab25cc99499fdab722c065de8e0965c96c68e86",
+   "ui_schema_sha256": "244c7c2602d97e4a59d369f4c06519801e397d5de6d2e79aee0ebbb267286086",
+   "replay": {
+    "computed": 6,
+    "verdict": "MATCH",
+    "expr": "9 - 3",
+    "visual_leak": [],
+    "unreachable_signal": null,
+    "known_defects": []
+   }
+  }
+ ]
+}

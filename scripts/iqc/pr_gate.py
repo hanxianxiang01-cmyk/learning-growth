@@ -167,17 +167,27 @@ else:
     note("Q05 证据回归工件存在", False, "缺 rt1470/test_q05_evidence.py")
 
 # 12 Q03 第三批题意建模契约（FE-1471 §七：①known 角色不天然是独立事实
-#    ②保留手工推导真实性质 ③五类关系题面层判据）。另锁账目自洽：
-#    「额定 20 / 实核 29 / 差额 2 未解释」三个数必须与 CHECKS 现场对得上，
-#    不许文档写一套、工件写另一套（本批真实犯过：docstring 残留「20 题」）。
+#    ②保留手工推导真实性质 ③五类关系题面层判据）。
+#
+#    ★ 2026-10-21 复审实锤：本项此前是 `if os.path.exists(...)` 包裹的，
+#    删掉 test_batch3_contract.py 后第 12 项会**静默消失**并在第 13 项位置
+#    补一条「缺工件」——但如果只在末尾按 fails 判断，缺文件时整段被跳过，
+#    门禁仍然 PASS。缺了验证对象却报通过，是比失败更坏的结果。
+#    因此本项改为**缺失即显式 note(False)**，且额外把冻结输入快照一起纳入存在性检查。
 b3_test = os.path.join(HERE, "rt1471", "test_batch3_contract.py")
-if os.path.exists(b3_test):
+b3_snap = os.path.join(HERE, "rt1471", "batch3_frozen_inputs.json")
+if not os.path.exists(b3_test):
+    note("Q03 第三批题意建模契约工件存在", False,
+         "缺 rt1471/test_batch3_contract.py——不允许静默跳过")
+elif not os.path.exists(b3_snap):
+    note("Q03 第三批冻结输入快照存在", False,
+         "缺 rt1471/batch3_frozen_inputs.json——没有快照，"
+         "门禁无法离线回放 evaluate()，会退化成只查结构的空转门禁")
+else:
     r12 = subprocess.run([sys.executable, b3_test], capture_output=True, text=True)
     tail12 = (r12.stdout.strip().splitlines()[-1] if r12.stdout else r12.stderr[-200:])
     note("Q03 第三批题意建模契约 test_batch3_contract",
          r12.returncode == 0 and "Q03-BATCH3-GATE: PASS" in r12.stdout, tail12)
-else:
-    note("Q03 第三批契约工件存在", False, "缺 rt1471/test_batch3_contract.py")
 
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)
