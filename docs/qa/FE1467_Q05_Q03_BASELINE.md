@@ -105,15 +105,34 @@
 | Q05 待办 211 | `HISTORICAL_BASELINE_ONLY` | 211 | **209** | 旧基线基于 published=443 的另一集合，不可直接比较 |
 | Q03 待办 212 | `HISTORICAL_BASELINE_ONLY` | 212 | **212** | 数值巧合但集合不同，见第四节警示 |
 
+**211 / 212 的出处（可复算，非人工记忆）：**
+
+两个数字并非独立计数器，而是同一份历史工件里 `status` 枚举的两个桶：
+
+| 项 | 出处 |
+|---|---|
+| 工件 | `scripts/iqc/runs/FE1464_first_full_report.json` |
+| 路径 | `fe1464_first_full_baseline.current_published_findings` |
+| 对象集合 | `n = 443`（2026-10-17 首轮全量，当时 published=443） |
+| 211 | `status.REVISION_REQUIRED`（即 Q05 待办） |
+| 212 | `status.UNVERIFIED`（即 Q03 待办） |
+
+**恒等式自检：** `UNVERIFIED(212) + REVISION_REQUIRED(211) + PASS_RULES(13) + REVIEW_REQUIRED(7) = 443 = published(443)`。
+
+> 该恒等式现由 `rebuild_q05_q03_baseline.py` 的 `read_historical_provenance()` 在每次重建时读回工件并断言：若历史工件被改动、或 211/212 与工件不符，脚本直接非零退出而不是照抄旧数。历史工件本身按 §五「历史报告保持不变」未改动，脚本只读不写。
+>
+> 同一函数由 `test_baseline_provenance.py`（P1–P9，含三个变异对照）在 CI 侧复验，已挂进 `pr_gate.py` 第 6 项——即使有人不跑重建脚本，只要改了历史工件，PR 门禁就会红。
+
 ## 六、交付物
 
 | 文件 | 内容 |
 |---|---|
-| `scripts/iqc/runs/FE1467_q05_q03_baseline.json` | 新基线全量：口径声明、缺陷修复记录、差异归因、两份工作清单（逐 RVID + 标题 + 能力 + renderer + 证据） |
+| `scripts/iqc/runs/FE1467_q05_q03_baseline.json` | 新基线全量：口径声明、缺陷修复记录、211/212 出处、差异归因、两份工作清单（逐 RVID + 标题 + 能力 + renderer + 证据） |
 | `scripts/iqc/rt1464/rebuild_q05_q03_baseline.py` | 重建脚本（复用 inventory + scan，只读） |
 | `scripts/iqc/scan.py` | 口径缺陷修复（冻结逐题规则作用域） |
 | `scripts/iqc/test_scan_scope.py` | 口径回归测试（S1a–S3 + 变异对照） |
-| `scripts/iqc/pr_gate.py` | 门禁新增第 5 项 |
+| `scripts/iqc/rt1464/test_baseline_provenance.py` | 211/212 出处回归（P1–P9 + 三个变异对照） |
+| `scripts/iqc/pr_gate.py` | 门禁新增第 5、6 项 |
 
 ## 七、下一批工作建议
 
