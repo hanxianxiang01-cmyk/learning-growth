@@ -1,0 +1,74 @@
+{
+  "generated_at": "2026-10-21T02:55:36.999900+00:00",
+  "api": "http://127.0.0.1:8000",
+  "verdict": "NOT_RUN_READ_ONLY",
+  "mode": {
+    "execution_mode": "READ_ONLY",
+    "write_authorized": false,
+    "write_actions": [],
+    "write_action_count": 0,
+    "mode_note": "只读核查：未发起任何作答提交、未改任何任务状态；以下 SKIPPED_NOT_RUN 场景属未验证，不构成证据。"
+  },
+  "invariant": "（未执行）失效批处理与作答提交的行锁互斥需 --allow-write 验证。",
+  "steps": [
+    {
+      "step": "T0-INVALIDATION-HOLDS-LOCK",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "本测每一步都是写动作（FOR UPDATE 持锁 / UPDATE 状态 / 收尾复位），只读模式不执行；需 --allow-write 显式授权"
+    },
+    {
+      "step": "T2-SUBMIT-BLOCKED-ON-LOCK",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "本测每一步都是写动作（FOR UPDATE 持锁 / UPDATE 状态 / 收尾复位），只读模式不执行；需 --allow-write 显式授权"
+    },
+    {
+      "step": "T3-INVALIDATION-COMMITS",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "本测每一步都是写动作（FOR UPDATE 持锁 / UPDATE 状态 / 收尾复位），只读模式不执行；需 --allow-write 显式授权"
+    },
+    {
+      "step": "T4-RELEASED-EXPIRED-NO-WRITE",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "本测每一步都是写动作（FOR UPDATE 持锁 / UPDATE 状态 / 收尾复位），只读模式不执行；需 --allow-write 显式授权"
+    },
+    {
+      "step": "T5-ORDER-INVARIANT",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "本测每一步都是写动作（FOR UPDATE 持锁 / UPDATE 状态 / 收尾复位），只读模式不执行；需 --allow-write 显式授权"
+    },
+    {
+      "step": "T6-NO-DATA-LEAK-AND-SAMPLE-ATTRIBUTION",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "本测每一步都是写动作（FOR UPDATE 持锁 / UPDATE 状态 / 收尾复位），只读模式不执行；需 --allow-write 显式授权"
+    },
+    {
+      "step": "READONLY-SAMPLE-INVENTORY",
+      "passed": true,
+      "candidates_examined": 40,
+      "high_risk_skipped": 0,
+      "would_use_task": "00066de9-1bf3-4a27-9d69-b26e777ae017",
+      "would_use_attribution": {
+        "rvid": "eaa828b3-a633-4ab6-9cf5-8025a3687899",
+        "review_status": "published",
+        "renderers": [],
+        "has_process_constraint": false,
+        "evidence_targets": null,
+        "child": "00000000-0000-0000-0000-000000000099",
+        "session": "9d67dd0b-2a5d-4f5b-acc2-3be8281cd786",
+        "is_high_risk_channel": false
+      },
+      "global_counts_unchanged_probe": {
+        "attempt": 3938,
+        "mastery_evidence": 3133,
+        "learning_event": 3938
+      },
+      "note": "只读模式仅做盘点：未持锁、未提交任何请求、未改任务状态。本结果不构成并发互斥证据。"
+    }
+  ]
+}

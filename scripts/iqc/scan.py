@@ -51,6 +51,12 @@ def main():
     for it in items.values():
         it["_audit_sha"] = common.audit_input_sha(it)
 
+    # 逐题规则的作用域：**必须在 mapping 扩展之前冻结**。
+    # 2026-10-21 修：Q01 版本链会把 mapping 端点的历史版本（superseded 等）
+    # 补载进 items，若逐题规则跟着遍历 items，published 口径就会混进
+    # 非 published 版本——实测 published=225 却跑出 239 个 RVID 的 findings。
+    target_ids = list(items.keys())
+
     findings = []
     def F(rvid, rule, sev, status, ev, path, sugg, regr):
         findings.append(common.finding(rvid, rule, sev, status, ev, path, sugg, regr, run_id, snap))
@@ -74,7 +80,7 @@ def main():
     Q3_STATUS = {"Q03-OK": "PASS_RULES", "Q03-UNVERIFIED": "UNVERIFIED",
                  "Q03-ENCODING_FORM": "REVISION_REQUIRED", "Q03-ANSWER_MISMATCH": "FAIL_BLOCKING",
                  "Q03-NO-ANSWER-FIELD": "REVISION_REQUIRED"}
-    for it in items.values():
+    for it in (items[i] for i in target_ids):
         rid = it["resource_version_id"]
         for rule, sev, ev, _ in C.q02_schema_contract(it):
             F(rid, rule, sev, "BLOCKED_SCHEMA" if "BLOCKED" in rule else "REVISION_REQUIRED",
@@ -93,10 +99,14 @@ def main():
             f.write(json.dumps(x, ensure_ascii=False) + "\n")
 
     # Q10 自证：现行 published 聚合 vs manifest 同子集（重算对账）
-    pub = {k: v for k, v in items.items() if v["review_status"] == "published"}
+    # 口径与逐题规则一致：只看冻结的 target_ids，不把 mapping 补载的历史版本
+    # 算进 audited_published（否则 coverage 与 findings 对不同集合）。
+    pub = {k: items[k] for k in target_ids if items[k]["review_status"] == "published"}
     cov = {
         "run_id": run_id, "rules_version": common.RULES_VERSION,
         "manifest_snapshot": snap, "audited_published": len(pub),
+        "audited_scope": len(target_ids),
+        "mapping_side_loaded": len(items) - len(target_ids),
         "findings_total": len(findings),
         "by_status": dict(Counter(x["status"] for x in findings)),
         "by_rule": dict(Counter(x["rule_id"] for x in findings)),

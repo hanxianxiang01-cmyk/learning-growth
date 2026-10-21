@@ -1,0 +1,74 @@
+{
+  "generated_at": "2026-10-21T02:55:22.744640+00:00",
+  "api": "http://127.0.0.1:8000",
+  "verdict": "NOT_RUN_READ_ONLY",
+  "mode": {
+    "execution_mode": "READ_ONLY",
+    "write_authorized": false,
+    "write_actions": [],
+    "write_action_count": 0,
+    "mode_note": "只读核查：未发起任何作答提交、未改任何任务状态；以下 SKIPPED_NOT_RUN 场景属未验证，不构成证据。"
+  },
+  "cases": [
+    {
+      "case": "A-NEW-SUB-EXPIRED",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "需对 cancelled 任务发起一次真实提交；当前为只读模式（--no-write）",
+      "sample_hint": {
+        "cancelled_zero_history": "016ef12e-9366-4e70-971f-2c2e55c80a6c",
+        "cancelled_with_history": "0b6c7fe6-2b91-4823-85da-9ed21ce86785",
+        "history_attempt_count": 3,
+        "history_has_submission_id": true
+      }
+    },
+    {
+      "case": "B-REPLAY-EXACT",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "需以历史 submission_id 发起真实重放提交；当前为只读模式（--no-write）",
+      "sample_hint": {
+        "cancelled_zero_history": "016ef12e-9366-4e70-971f-2c2e55c80a6c",
+        "cancelled_with_history": "0b6c7fe6-2b91-4823-85da-9ed21ce86785",
+        "history_attempt_count": 3,
+        "history_has_submission_id": true
+      }
+    },
+    {
+      "case": "C-CONFLICT-409",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "需以历史 submission_id + 异内容发起真实提交；当前为只读模式（--no-write）",
+      "sample_hint": {
+        "cancelled_zero_history": "016ef12e-9366-4e70-971f-2c2e55c80a6c",
+        "cancelled_with_history": "0b6c7fe6-2b91-4823-85da-9ed21ce86785",
+        "history_attempt_count": 3,
+        "history_has_submission_id": true
+      }
+    },
+    {
+      "case": "D-V1-TRACK-REPLAY",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "需以 (task, attempt_no) 发起真实 V1 轨提交；当前为只读模式（--no-write）",
+      "sample_hint": {
+        "cancelled_zero_history": "016ef12e-9366-4e70-971f-2c2e55c80a6c",
+        "cancelled_with_history": "0b6c7fe6-2b91-4823-85da-9ed21ce86785",
+        "history_attempt_count": 3,
+        "history_has_submission_id": true
+      }
+    },
+    {
+      "case": "E-CONTROL-NORMAL",
+      "passed": null,
+      "skipped": "SKIPPED_NOT_RUN",
+      "reason": "需对 assigned 任务真实答题一次；当前为只读模式（--no-write）",
+      "sample_hint": {
+        "cancelled_zero_history": "016ef12e-9366-4e70-971f-2c2e55c80a6c",
+        "cancelled_with_history": "0b6c7fe6-2b91-4823-85da-9ed21ce86785",
+        "history_attempt_count": 3,
+        "history_has_submission_id": true
+      }
+    }
+  ]
+}
