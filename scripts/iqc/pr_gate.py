@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 """FE-1463 PR 增量质量门（DB-free，确定性，进 ci.yml）。
 
-六检查（任一 FAIL=退出非零阻断合并）：
+七检查（任一 FAIL=退出非零阻断合并）：
 1. 规则夹具回归：test_checks.py 25 负例全锁（已知缺陷可检出/已知非缺陷不误报）
 2. 契约自检：rules.json iqc 块完整 + 夹具数据分离纪律（skill 侧检查的仓内镜像，
    skill 目录不在 CI checkout 内时降级 SKIP 并显式打印，不谎称已验）
 3. 覆盖矩阵一致性：committed inventory manifest 中所有 renderer 必须
    (a) 在 rendererRegistry 协议枚举内，(b) 状态只允许 covered/partial/uncovered/
    BLOCKED-UNKNOWN-RENDERER——未登记 renderer=FAIL，禁止静默新增
-4. 执行模式闸门自证：验证脚本的 --no-write 必须同时拦住 HTTP 提交与 SQL 写，
-   且变异对照证明拦截非空跑（用户 2026-10-21 终审 §四）
+4. 执行模式闸门自证：--no-write 须覆盖 POST + 有副作用的 GET + SQL；且用注入
+   transport **计数**证明（而非"捕获到异常"证明），含属性恢复回归锁（终审 §四）
 5. 扫描口径回归：published 口径不得被 mapping 侧载的 superseded 撑大（FE-1467）
-6. 基线降级出处回归：211/212 必须能从历史工件复算，工件被篡改须报错（FE-1467 §五）
+6. 基线降级出处回归：211/212 须能从历史工件复算、单位口径须是 findings 数、
+   历史工件哈希须冻结（FE-1467 §五 + 2026-10-21 复审 §二.3）
+7. 静态可调用性：禁止"调用了未定义的辅助函数"与"except Exception 静默吞掉"
+   （2026-10-21 复审：_post 定义被删却仍被调用，靠静默 except 躲过两轮）
+8. 语义族判据回归：分族是启发式，错判不报错只会静默改结果，所以用真实题面
+   锁住已知事故（乘号 × 被当判断词、构造动词漏词、判据互为冗余兜底）（FE-1468）
 边界（裁决 §四）：本门只判规则明确证据充分的问题；不访问生产 DB；失败输出含
 rule_id+证据，不得为空。
 """
@@ -98,6 +103,28 @@ if os.path.exists(prov_test):
          r6.returncode == 0 and "BASELINE-PROVENANCE-GATE: PASS" in r6.stdout, tail6)
 else:
     note("基线降级出处回归工件存在", False, "缺 rt1464/test_baseline_provenance.py")
+
+# 7 静态可调用性（2026-10-21 复审：_post 定义被删、调用点却留着，
+#   而 submitter 里的 except Exception 把 NameError 吞掉了两轮）
+static_test = os.path.join(HERE, "test_static_callables.py")
+if os.path.exists(static_test):
+    r7 = subprocess.run([sys.executable, static_test], capture_output=True, text=True)
+    tail7 = (r7.stdout.strip().splitlines()[-1] if r7.stdout else r7.stderr[-200:])
+    note("静态可调用性 test_static_callables",
+         r7.returncode == 0 and "STATIC-CALLABLE-GATE: PASS" in r7.stdout, tail7)
+else:
+    note("静态可调用性工件存在", False, "缺 test_static_callables.py")
+
+# 8 语义族判据回归（FE-1468：分族是启发式，判错不会有任何报错，
+#   只能靠真实题面做定点回归。已知事故：× 当判断词、动词漏词、规则冗余兜底）
+fam_test = os.path.join(HERE, "rt1468", "test_worklist_family.py")
+if os.path.exists(fam_test):
+    r8 = subprocess.run([sys.executable, fam_test], capture_output=True, text=True)
+    tail8 = (r8.stdout.strip().splitlines()[-1] if r8.stdout else r8.stderr[-200:])
+    note("语义族判据回归 test_worklist_family",
+         r8.returncode == 0 and "FAMILY-GATE: PASS" in r8.stdout, tail8)
+else:
+    note("语义族判据回归工件存在", False, "缺 rt1468/test_worklist_family.py")
 
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)

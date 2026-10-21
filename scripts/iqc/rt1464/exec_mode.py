@@ -21,6 +21,17 @@
      SELECT ... FOR UPDATE（持锁阻塞他人）与 UPDATE task_instance 状态
      变更 + 收尾复位。这类动作必须按"写动作"登记，不得记作"零变化"。
 
+2026-10-21 复审补正（用户 §二.2）：**按副作用控制，不能按 HTTP 方法控制**。
+    GET 不等于只读——`GET /v1/learning/sessions/{sid}/result` 是会执行结算的
+    结果接口，可能带来状态或证据写入。因此本模块区分两类 GET：
+      guarded_get()            纯探测（健康检查、状态查询）——两模式都放行
+      guarded_effect_get()     有副作用的 GET（如结算）——受闸门约束
+    只拦 POST 等于漏掉结算路径，与"只拦 SQL"是同一个错误的另一种形态。
+
+另外：transport 可注入（默认走 urllib），使测试能**计数**而不真的发出请求。
+    "捕获到任意 Exception"不能证明到达了发送入口——异常也可能来自序列化或
+    参数处理。要证明闸门有效，必须能数清 transport 被调用了几次。
+
 用法：
     from exec_mode import add_mode_args, resolve_mode
     ap.add_argument(...); add_mode_args(ap)
@@ -49,6 +60,9 @@ class WriteBlocked(RuntimeError):
 class ExecMode:
     name: str
     write_actions: list[dict] = field(default_factory=list)
+    # 注入点：测试可替换成计数用替身，从而证明"是否真的到了发送入口"。
+    # 默认走 urllib，生产行为不变。
+    transport: object | None = None
 
     # ---------- 基本判断 ----------
     @property
@@ -79,6 +93,26 @@ class ExecMode:
         return conn.execute(sql, params)
 
     # ---------- HTTP 写 ----------
+    def _send(self, url: str, body: bytes | None, method: str, timeout: float):
+        """唯一的实际发送点。测试通过注入 transport 计数。"""
+        if self.transport is not None:
+            return self.transport(url, body, method, timeout)
+        req = urllib.request.Request(
+            url, data=body,
+            headers={"Content-Type": "application/json"}, method=method,
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.status, json.loads(r.read() or b"{}")
+        except urllib.error.HTTPError as e:
+            raw = e.read()
+            try:
+                return e.code, json.loads(raw or b"{}")
+            except json.JSONDecodeError:
+                return e.code, {"raw": raw.decode(errors="replace")}
+        except urllib.error.URLError as e:
+            return 0, {"unreachable": repr(e)}
+
     def guarded_post(self, api: str, path: str, payload: dict, timeout: float = 60.0):
         """唯一的写请求入口。只读模式下不发出任何字节，直接抛 WriteBlocked。
 
@@ -92,35 +126,27 @@ class ExecMode:
                         if k in ("task_instance_id", "attempt_no", "submission_id")},
                        ensure_ascii=False),
         )
-        body = json.dumps(payload).encode()
-        req = urllib.request.Request(
-            api.rstrip("/") + path, data=body,
-            headers={"Content-Type": "application/json"}, method="POST",
-        )
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as r:
-                return r.status, json.loads(r.read() or b"{}")
-        except urllib.error.HTTPError as e:
-            raw = e.read()
-            try:
-                return e.code, json.loads(raw or b"{}")
-            except json.JSONDecodeError:
-                return e.code, {"raw": raw.decode(errors="replace")}
+        return self._send(api.rstrip("/") + path, json.dumps(payload).encode(),
+                          "POST", timeout)
+
+    def guarded_effect_get(self, api: str, path: str, timeout: float = 15.0):
+        """**有副作用**的 GET（如 session 结算 result）：受闸门约束。
+
+        用户 §二.2 指出的缺口：结算读取路径可能带来状态或证据写入，
+        "只拦 POST" 会漏掉它。GET 是方法，不是副作用判据。
+        """
+        self.assert_can_write(f"GET {path}（有副作用：结算/状态写入）")
+        self.note_write("http_effect_get", path,
+                        "有副作用的 GET（结算路径）——只读模式不调用")
+        return self._send(api.rstrip("/") + path, None, "GET", timeout)
 
     def guarded_get(self, api: str, path: str, timeout: float = 15.0):
-        """只读探测（健康检查）。两种模式下都允许——不含写语义。"""
-        req = urllib.request.Request(api.rstrip("/") + path, method="GET")
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as r:
-                return r.status, json.loads(r.read() or b"{}")
-        except urllib.error.HTTPError as e:
-            raw = e.read()
-            try:
-                return e.code, json.loads(raw or b"{}")
-            except json.JSONDecodeError:
-                return e.code, {"raw": raw.decode(errors="replace")}
-        except urllib.error.URLError as e:
-            return 0, {"unreachable": repr(e)}
+        """**纯只读探测**（健康检查/状态查询）。两种模式下都允许。
+
+        仅限真的没有写语义的接口。任何会触发结算或状态变更的 GET 必须走
+        guarded_effect_get()——不要在这里放宽判据。
+        """
+        return self._send(api.rstrip("/") + path, None, "GET", timeout)
 
     # ---------- 跳过记录 ----------
     @staticmethod
@@ -170,6 +196,20 @@ def add_mode_args(ap: argparse.ArgumentParser) -> None:
 
 
 def resolve_mode(args) -> ExecMode:
-    if getattr(args, "allow_write", False):
+    """把 CLI 参数解析成执行模式。
+
+    用户 §二.2：`--allow-write` 与 `--no-write` 同时出现时应**拒绝执行**，
+    不能选其中一个继续跑。argparse 的互斥组已挡住多数情况，但本函数仍显式
+    再判一次——因为 resolve_mode 也可能被不经 argparse 的调用方使用，
+    那种情况下"悄悄选一个"正是最危险的失败形态。
+    """
+    no_write = getattr(args, "no_write", False)
+    allow_write = getattr(args, "allow_write", False)
+    if no_write and allow_write:
+        raise SystemExit(
+            "拒绝执行：--no-write 与 --allow-write 同时出现，语义冲突。"
+            "请明确二选一（默认只读，需要 QA 写入验证时显式加 --allow-write）。"
+        )
+    if allow_write:
         return ExecMode(WRITE)
     return ExecMode(READ_ONLY)
