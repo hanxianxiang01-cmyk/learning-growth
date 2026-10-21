@@ -1,0 +1,124 @@
+{
+ "title": "FE-1469｜Q03 独立核验首批（number-input 6 题）",
+ "chain": "题干 → 独立求解 → 与已存答案比较 → 留存推导与适用边界",
+ "discipline": [
+  "预期答案只由 expression 算出，不读 DB answer",
+  "DB answer 仅作比较对象，不参与生成预期",
+  "只读运行：不写库、不调会写学习记录的接口",
+  "q05_note 仅标候选信号，不判定错因是否有区分力"
+ ],
+ "summary": {
+  "total": 6,
+  "match": 6,
+  "mismatch": 0,
+  "not_found": 0
+ },
+ "items": [
+  {
+   "rvid": "066c5362-762c-4a52-995b-db7d55747a12",
+   "stem": "教室里摆了4排椅子，每排6把。一共有多少把椅子？请先用乘法思考，再在数字输入框中填写总数。",
+   "read": "4排椅子，每排6把 → 行×列",
+   "expression": "4 * 6",
+   "computed": 24,
+   "stated_answer": "24",
+   "verdict": "MATCH",
+   "boundary": "每排数量相同（题面无缺排），故为规则阵列；若排数不等需逐排累加",
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "code == pattern 同质占位，无法区分具体错法"
+  },
+  {
+   "rvid": "103b0e3f-4287-469c-96ec-6a173e84a4f5",
+   "stem": "47写成“4个十和几个一”？",
+   "read": "47 = 4个十 + ?个一 → 个位数字即所问",
+   "expression": "47 - 4 * 10",
+   "computed": 7,
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "boundary": "问的是『几个一』即个位数，不是剩余数值 7 之外的任何除法结果",
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "code == pattern 同质占位，无法区分具体错法"
+  },
+  {
+   "rvid": "19081b90-e789-4275-a60a-79815a80bc73",
+   "stem": "65里面有几个十？",
+   "read": "65里有几个十 → 十位数字（向下取整）",
+   "expression": "(65 - 65 % 10) // 10",
+   "computed": 6,
+   "stated_answer": "6",
+   "verdict": "MATCH",
+   "boundary": "问『几个整十』而非『能凑成几组十还有余』；余数 5 不计入",
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "code == pattern 同质占位，无法区分具体错法"
+  },
+  {
+   "rvid": "b7261e66-12fa-4c09-a070-5708b1d8da9d",
+   "stem": "有24张卡片，每6张分成一组，正好分完。可以分成几组？请在数字输入框中填写组数，并尝试用乘法检验。",
+   "read": "24张，每6张一组，正好分完 → 等分组数",
+   "expression": "24 // 6",
+   "computed": 4,
+   "stated_answer": "4",
+   "verdict": "MATCH",
+   "boundary": "题面声明『正好分完』，故无需处理余数；若有余数应问『几组余几张』",
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "code == pattern 同质占位，无法区分具体错法"
+  },
+  {
+   "rvid": "e0d22830-7ce7-4581-b1cd-db9ba2f3a8c5",
+   "stem": "树枝上停着7只小鸟，扑棱棱飞走了2只。还剩几只？把答案写在框里。",
+   "read": "原有7只，飞走2只 → 求剩余（减法而非加法）",
+   "expression": "7 - 2",
+   "computed": 5,
+   "stated_answer": "5",
+   "verdict": "MATCH",
+   "boundary": "『飞走』= 减少；若题面为『又飞来』则为加法。strategy 错因对应此反向",
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "code == pattern 同质占位，无法区分具体错法"
+  },
+  {
+   "rvid": "ffa54e00-0701-470e-9624-3d62a80a8832",
+   "stem": "38比42少几？",
+   "read": "38比42少几 → 大数减小数",
+   "expression": "42 - 38",
+   "computed": 4,
+   "stated_answer": "4",
+   "verdict": "MATCH",
+   "boundary": "『A比B少几』= B − A；若误作 A − B 得负数，是 reversed 类错误",
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "code == pattern 同质占位，无法区分具体错法"
+  }
+ ]
+}
