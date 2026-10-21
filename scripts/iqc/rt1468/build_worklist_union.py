@@ -87,7 +87,8 @@ RULE_HITS: Counter = Counter()
 # 最后比较答案」。所以维度名是 solve_path（求解路径），不是"方向"。
 SOLVE_PATHS: dict[str, str] = {
     "numeric_exact": "唯一数值：算式或计数直接得出，按标量相等比较",
-    "numeric_tolerance": "容差数值：参照量+取整/容差规则得出可接受集合，按容差判定",
+    "numeric_tolerance": ("参照量+取整规则得出**唯一标准答案**；配置里的 tolerance "
+                          "只用于反馈粒度（close/差很多），**不作判分区间**"),
     "sequence_order": "顺序/规律：求出有序序列或相位，再按提交契约编码",
     "digit_config": "数位配置：按卡片/位值/零与重复约束求合法排列",
     "geometry_constraint": "几何约束：在网格/画布边界内判定合法构造是否存在，再核验提交量",
@@ -113,13 +114,14 @@ def solve_path_of(task_type: str, answer, stem: str, renderer: str,
     s = str(answer).strip()
     stem = stem or ""
 
-    # 估算面板：看配置是容差型还是真开放
+    # 估算面板：看配置是「参照+取整」型还是真开放
     if renderer == "estimation-canvas" or tt == "estimation":
         cfg = _ws_config(ui_schema)
         if cfg.get("tolerance") is not None or cfg.get("reference") is not None:
             return ("numeric_tolerance",
                     f"estimation-canvas 且配置含 tolerance={cfg.get('tolerance')}"
-                    f"/reference={cfg.get('reference')}（参照+取整+容差）")
+                    f"/reference={cfg.get('reference')}；标准答案由"
+                    f"「参照+取整」唯一确定，tolerance 只是反馈粒度")
         return ("answer_type_unresolved", "estimation-canvas 但配置无容差/参照，需读题面")
 
     # 判断题：判「命题真假」，与值域无关地识别
@@ -380,9 +382,14 @@ def main() -> int:
             for (fam, sp), n in sp_count_by_family.most_common()
         },
         "solve_path_note": (
-            "求解路径回答『独立核验时到底算什么对象』，与族正交。同一族里"
-            "numeric_exact 与 numeric_tolerance 的核验方式不同（等式 vs 可接受集合），"
-            "不能因为都叫『数值题』就套同一个比较器。"
+            "求解路径回答『独立核验时到底算什么对象』，与族正交。"
+            "**注意 numeric_tolerance 不是『按容差判分』**：8 道 estimation-canvas 的"
+            "标准答案由 round(actual/10)*10 唯一确定（renderer 解析守卫强制此关系），"
+            "配置里的 tolerance 只用于 FAIL 分支的 close 反馈粒度，"
+            "判分本身是严格相等（evaluateEstimation 的 PASS 要求 e===expected；"
+            "后端 _judge 是 float 相等）。上一版把它写成『按可接受集合判定』是推得过远，"
+            "且 |actual-answer|<=6 无法区分正确答案与容差内的错误答案"
+            "（46 时 40 与 50 都在带内，但 40 不是最近整十）。"
         ),
         "unresolved_items": {
             "n": len(unresolved),

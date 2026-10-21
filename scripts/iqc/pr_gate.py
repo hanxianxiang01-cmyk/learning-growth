@@ -154,5 +154,17 @@ if os.path.exists(neg_test):
 else:
     note("比对效力边界工件存在", False, "缺 rt1470/test_batch2_negative.py")
 
+# 11 Q05 可观察证据逐题具体化（FE-1470 复审 §二.4：上一版 22 条
+#    `requirement` 全是同一句通用说明，等于「免责只写在 not_concluded、
+#    其余字段仍在直接诊断孩子」。这里锁两件事：不许套模板、不许空口诊断）
+q05_test = os.path.join(HERE, "rt1470", "test_q05_evidence.py")
+if os.path.exists(q05_test):
+    r11 = subprocess.run([sys.executable, q05_test], capture_output=True, text=True)
+    tail11 = (r11.stdout.strip().splitlines()[-1] if r11.stdout else r11.stderr[-200:])
+    note("Q05 证据逐题具体化 test_q05_evidence",
+         r11.returncode == 0 and "Q05-EVIDENCE-GATE: PASS" in r11.stdout, tail11)
+else:
+    note("Q05 证据回归工件存在", False, "缺 rt1470/test_q05_evidence.py")
+
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)

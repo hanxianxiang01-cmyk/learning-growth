@@ -33,8 +33,10 @@
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -76,9 +78,11 @@ CHECKS: list[dict] = [
         "read": "已有 3 个，再放 7 个 → 合并求总数",
         "object": "圆点总数",
         "expr": "3 + 7",
-        "boundary": "与 06546dfb 是同一模型的交换加数版本（3+7 vs 6+4）；"
-                    "若两条答案不同则说明模型不稳，不能只核单条",
-        "q05_hypothesis": "把两个加数位置对调后只报其中一个",
+        "boundary": "与 06546dfb（6+4）是同一个「先有 N 再放 M」模型的两个不同加数组合，"
+                    "**不是交换律对照**——3+7 与 6+4 相加的四个数都不同。"
+                    "真正的交换律对照是 3+7 与 7+3（同两数换位），本批没有 7+3 这条配置，"
+                    "所以本批不能就交换律下任何结论",
+        "q05_hypothesis": "只报新增的 7 个（3+7 中丢掉初始量）",
     },
     {
         "rvid": "f9fae106-45db-499f-9b85-f0d93d17c64b",
@@ -96,14 +100,27 @@ CHECKS: list[dict] = [
         "rvid": "fea38e2d-225e-44b7-9e02-f09803405b8d",
         "renderer": "ten-frame",
         "source": "题面「妈妈买了13颗糖…摆满十个打包装成一袋，剩下的散着放」；"
-                  "cfg.target_count=13, max_frames=2",
-        "read": "13 颗 → 装满 1 袋（10 颗）+ 散放 3 颗 → 被问的是**总颗数**",
-        "object": "糖的总颗数",
+                  "cfg.target_count=13, max_frames=2；"
+                  "content.goal=「用十格框表征 20 以内数的十与一结构（补十打包）」",
+        "read": "题面给的是**构造任务**不是问答题：给定量 13 已知，孩子要做的是把它"
+                "表示成「1 个十 + 3 个一」；所求的数是这次表征对应的总数（唯一值的量）",
+        "object": "提交的 total（= tens*10 + current_frame_count），数量上等于 13",
         "expr": "10 * 1 + 3",
-        "boundary": "本题问的是总数而非「几袋几颗」；若问「装了几袋还剩几颗」"
-                    "则答案是 (1, 3) 而非 13。题干结尾「摆好后提交」未指定提交量，"
-                    "**这是本批唯一一条提交契约不够明确的题**，已在 provenance 里标注",
-        "q05_hypothesis": "只报散放的 3，或只报装袋的 1",
+        "boundary": "**本题的提交对象已核清，依据是代码而非反推**："
+                    "(1) `tenFrameV2.ts::serializeTenFrameV2` 固定输出 "
+                    "`{tens, current_frame_count, total}`，其中 `total = totalOf(state)`；"
+                    "(2) `TenFrameV2.tsx` 提交时 `answer: String(totalOf(runtime.present))`；"
+                    "(3) `learning.py::_judge` 用 `float(expected) == float(user_answer)` "
+                    "比 `content.answer`（=13）；"
+                    "(4) ui_schema `response_contract.evidence_targets=[tens, current_frame_count]` "
+                    "——这两个是**证据字段**（记录结构），不是**判分字段**。"
+                    "所以「关注 tens/current_frame_count」与「answer 表示总数 13」并不矛盾："
+                    "evidence 要结构，判分要 total。"
+                    "仍需注明的是：题干只说「摆好后提交」，没写「一共几颗」这样的问句，"
+                    "孩子靠界面上的「现在一共 N 个（目标 13）」得知提交量——"
+                    "**提交量的提示来自 UI 而非题干**，这是内容设计上的可改进点，不是答案错误",
+        "q05_hypothesis": "只摆散放的 3 个（未打包）；或把 13 理解成「13 袋」；"
+                          "或摆到 10 就停（受满十框暗示）",
     },
 
     # ── object-counter：两组各若干，问一共 ──
@@ -135,8 +152,10 @@ CHECKS: list[dict] = [
         "read": "5 与 3 合并",
         "object": "积木总块数",
         "expr": "5 + 3",
-        "boundary": "5+3 与 cdcc6e30 的 3+7 都等于 10 但模型不同（跨框 vs 单组），"
-                    "两条都核过才能说明「等于 10」不是巧合",
+        "boundary": "5+3=8，**不等于 10**；与 ten-frame 的 cdcc6e30（3+7=10）不是等值对照——"
+                    "两者和不同（8 vs 10）、renderer 也不同（多组计数 vs 十格框），"
+                    "放在一起只能说明「不同配置会得到不同数」，说明不了任何等值关系。"
+                    "本题唯一可说的是：配置两组 5 与 3，合计数与存储值 8 一致",
         "q05_hypothesis": "把 5+3 当 5−3=2",
     },
     {
@@ -156,7 +175,9 @@ CHECKS: list[dict] = [
         "read": "6 与 6 合并",
         "object": "积木总块数",
         "expr": "6 + 6",
-        "boundary": "和为 12，超出单框 10，与本批 ten-frame 的 f9fae106 同值不同模型",
+        "boundary": "6+6=12；与本批 ten-frame 的 f9fae106（8+5=13）**不同值**，"
+                    "不能称为「同值不同模型」。可比的是「和都超过一框的 10」这一点，"
+                    "但那只是共同的下界性质，不构成等值对照",
         "q05_hypothesis": "受「两组一样多」暗示答 6",
     },
 
@@ -179,9 +200,12 @@ CHECKS: list[dict] = [
         "read": "90 减 27 → 求差",
         "object": "差",
         "expr": "90 - 27",
-        "boundary": "个位 0−7 需从十位退位，十位 9 退 1 成 8，8−2=6；"
-                    "本题是退位（borrow）的典型，未退位会得 73",
-        "q05_hypothesis": "个位 7−0 反减（未退位）→ 73 或 77",
+        "boundary": "个位 0−7 需从十位退位，十位 9 退 1 成 8，8−2=6 → 63。"
+                    "**错误步骤与错误结果一一对应**（不是「73 或 77」这种混写）："
+                    "① 每一位都拿大数字减小数字（十位 9−2、个位 7−0）→ 77；"
+                    "② 个位借十后算 10−7，但十位没有扣除借出的 1（十位仍算 9−2）→ 73。"
+                    "两条路径的中间量不同：①压根没有借位念头，②借了但没在十位扣账",
+        "q05_hypothesis": "①逐位大减小 → 77；②借位未在十位扣账 → 73",
     },
     {
         "rvid": "39ce2243-24f7-4901-98e2-4894a0c36d27",
@@ -190,9 +214,13 @@ CHECKS: list[dict] = [
         "read": "54 减 27 → 求差",
         "object": "差",
         "expr": "54 - 27",
-        "boundary": "个位 4−7 需退位成 14−7=7，十位 4−2=2 → 27；"
-                    "与 1b3c314e 同为退位题但退位发生在个位，不是 0−7 的极端情形",
-        "q05_hypothesis": "逐位反减（7−4、7−5）→ 33；或不退位 → 37",
+        "boundary": "个位 4−7 需退位成 14−7=7，十位 5 退 1 成 4，4−2=2 → 27。"
+                    "**错误步骤与错误结果一一对应**："
+                    "① 逐位大减小（十位 5−2、个位 7−4）→ 33；"
+                    "② 个位算 14−7=7，但十位仍算 5−2=3（未扣借出的 1）→ 37。"
+                    "与 1b3c314e 的②同为「借了不扣账」，差别在个位是否够减（本题个位 4<7 必借，"
+                    "90−27 个位 0<7 也必借），所以两条②的结构相同、数值不同",
+        "q05_hypothesis": "①逐位大减小 → 33；②借位未在十位扣账 → 37",
     },
 
     # ── formula-board：解一元等式 ──
@@ -259,13 +287,18 @@ CHECKS: list[dict] = [
         "rvid": "7abf0ae3-712e-4f07-a069-313066c5eb49",
         "renderer": "ruler",
         "source": "cfg.object=[3, 11]；题面断言「长10厘米」",
-        "read": "11 − 3；断言 10 是错的（那是把右端当长度）",
+        "read": "11 − 3 = 8；题面断言 10 与真长 8 不符（10 偏大 2），"
+                "所以「说法对吗」的答案是「不对」，正确长度是 8",
         "object": "线段实际长度",
         "expr": "11 - 3",
-        "boundary": "与 2c5f8ead 同型（断言错误），但错法不同："
-                    "2c5f8ead 断言 7 偏小，本题断言 10 偏大；"
-                    "若两条都答对，说明不是碰巧偏向某个方向",
-        "q05_hypothesis": "from_zero_reading → 11；或采信断言的 10",
+        "boundary": "与 2c5f8ead 同型（题面给了错误断言），两条的断言偏向相反："
+                    "2c5f8ead 物体 [4,10]、真长 6、断言「7厘米」→ 断言**偏大**（7>6）；"
+                    "本题物体 [3,11]、真长 8、断言「10厘米」→ 断言**也偏大**（10>8）。"
+                    "注意本题若「直接读右端」应得 **11**，不是 10——断言值 10 恰好与 "
+                    "2c5f8ead 的真长相同，是我上一版把它错写成「把右端当长度」的原因。"
+                    "两条都答对才能说明不是碰巧采信题面数字",
+        "q05_hypothesis": "from_zero_reading → 11（0..11 的精确靶，结构码会给出该标签）；"
+                          "或采信题面断言的 10",
     },
     {
         "rvid": "7f76aa86-eaa8-4bcb-a7cd-45d4b9033ac7",
@@ -281,9 +314,294 @@ CHECKS: list[dict] = [
 ]
 
 
+# ── Q05 可观察证据登记表（用户 2026-10-21 复审 §二.4）────────────────────────
+# 用户指出：上一版 22 条 `requirement` 全是同一句通用说明，
+# 「不能只放在 not_concluded 字段里，其他字段仍在直接诊断孩子」。
+#
+# 所以这里逐题登记三件事，且**只引用本项目真实存在的提交字段**：
+#   observable  — 该错法在提交物上留下什么可区分的痕迹（字段名 + 取值）
+#   competing   — 同一痕迹还能由哪些别的解释产生（不是唯一诊断）
+#   neutral     — 若要反馈，怎么说才不至于直接断言他用了某种错法
+#
+# 字段出处（均在仓库核实过，不是推测）：
+#   ten-frame         → serializeTenFrameV2: {tens, current_frame_count, total}
+#   object-counter    → serializeObjectCounterV2: {groups[].count, total}
+#   column-arithmetic → serializeColumnArithmetic: {result_digits[], carries[]}
+#                       + evaluateColumnArithmetic: {incorrect_places, incorrect_carries}
+#   formula-board     → serializeFormulaBoardV2: {filled{}, answer, structure.error}
+#   ruler             → serializeRulerV2: {marks[], span, reading, structure.error}
+#                       structure.error ∈ {"from_zero_reading", "wrong_span"}
+Q05_EVIDENCE: dict[str, dict] = {
+    # ── ten-frame ──
+    "06546dfb": {
+        "observable": "`total`=4 或 6 而非 10。`tens`/`current_frame_count` 可区分："
+                      "只放新增 4 个 → tens=0,current_frame_count=4,total=4；"
+                      "保持初始 6 个不动 → tens=0,current_frame_count=6,total=6",
+        "competing": "total=4 也可能是「只摆了一部分就提交」（操作未完成），"
+                     "或把「再放4个」读成「放到第4格」；仅凭终值不能定为「丢掉初始量」",
+        "neutral": "说「框里的圆点数和题目要的不一样，再看看框里现在有几个」，"
+                   "不说「你把原来的 6 个忘了」",
+    },
+    "939ab507": {
+        "observable": "`total`=3（只数新增）或 7（保持初始）。两者 `current_frame_count` "
+                      "不同（3 vs 7），可与「摆到一半就提交」区分开的是事件数："
+                      "`COUNTER_ADDED` 只发生 3 次 vs 10 次",
+        "competing": "total=3 也可能是孩子只点了 3 格就按提交（操作习惯），"
+                     "与「理解成只放 3 个」在终值上同形",
+        "neutral": "说「十格框里现在有 3 个圆点，题目要 10 个」，只报事实",
+    },
+    "cdcc6e30": {
+        "observable": "`total`=7 或 3；`tens`=0 恒成立（max_frames=1 且和恰为 10，本不该打包）。"
+                      "若出现 tens=1 才是「提前打包」，与本题两种错法都不同",
+        "competing": "total=7 也可能是「从 7 开始摆」（起点记错），"
+                     "与「3+7 只报 7」终值同形，轨迹不可分",
+        "neutral": "说「框里是 7 个，目标是 10 个」",
+    },
+    "f9fae106": {
+        "observable": "答 10 时 `tens` 的取值是关键区分："
+                      "tens=1,count=0,total=10 → 摆满一框就打包停住（没跨框）；"
+                      "tens=0,count=10 → 单框满但没打包。"
+                      "正解需要 tens=1,current_frame_count=3,total=13",
+        "competing": "total=10 也可能只是「摆到 10 就以为够了」（读题不完整），"
+                     "与「受满十暗示」在终态上无法区分——两者都停在 10",
+        "neutral": "说「一袋装满了，还剩 5 个没地方放，看看第二框」",
+    },
+    "fea38e2d": {
+        # 本题有两个错法码，**必须分开写**：modeling 是建模环节的错，
+        # calc 是算错了总数。二者留下的痕迹不同，不能共用一句。
+        "observable": {
+            "modeling": "结构没建对：`tens`=0 且 `total`∈{3,10}——"
+                        "即「散放 3 个没打包」(0,3,3) 或「摆满一框就停」(0,10,10)。"
+                        "正解结构是 (tens=1, current_frame_count=3, total=13)，"
+                        "**建模错在 tens 上，total 只是跟着错**",
+            "calc": "结构对但总数报错：`tens`=1、`current_frame_count`=3，"
+                    "而提交的 `total`≠13（如误报 103 或 4）。"
+                    "本 renderer 的 total 由 tens*10+count 唯一决定，"
+                    "所以 calc 类错在现有交互中**几乎不可达**——"
+                    "这一条本身是「错法码与实际可达状态不匹配」的证据",
+        },
+        "competing": "=(0,3) 也可能是「先摆散放的、还打算打包」的中间态——"
+                     "提交时机由孩子决定，终态不必然代表最终想法",
+        "neutral": "说「散放的有 3 颗，还差一袋没打」，指向状态不指向动机",
+    },
+    # ── object-counter（★ 本族有存量缺陷，见 q05_blocked_by）──
+    "079d72bd": {
+        "observable": "`groups[].count` 与 `total`。但**本族进入即满分**："
+                      "`initialObjectCounterV2State(config.groups)` 直接用 config 的 "
+                      "count(3,4) 作为初始态，`total=7` 一进页面就成立、"
+                      "`evaluateStructure` 直接 PASS。任何错答都要孩子**主动点减号**才出现",
+        "competing": "既然正解就是初始态，total=4 只能来自孩子点了 3 次减号——"
+                     "那更可能是误触/试探，不是「忘记左侧 3 块」的建模错误",
+        "neutral": "（暂不适用）在初始态缺陷修好前，本题不产生可解释的错误信号",
+    },
+    "08d4f5bc": {
+        "observable": "同上：config 给 (1,2)，初始态 total=3 即 PASS。"
+                      "total=2 需孩子主动减 1 次",
+        "competing": "同 079d72bd：减号误触与建模错误不可区分",
+        "neutral": "（暂不适用）",
+    },
+    "b9a431f0": {
+        "observable": "同上：config 给 (5,3)，初始态 total=8 即 PASS。"
+                      "本题的 `5+3=8` 与正确答案相同，纯计数错法在终值上**不会留下痕迹**",
+        "competing": "本题配置值恰好等于答案，任何「数错」都不会体现在 total 上"
+                     "（除非孩子改动了组内计数，而那需要主动操作）",
+        "neutral": "（暂不适用）",
+    },
+    "d7a7c884": {
+        "observable": "同上：config 给 (2,2)，初始态 total=4 即 PASS。"
+                      "「把一样多理解成差为 0」需要孩子**主动把一组清零**才会出现 total=2，"
+                      "而那与「只留一组」同形",
+        "competing": "total≠4 的路径全都要主动减数，与「比较」误读难以建立唯一联系",
+        "neutral": "（暂不适用）",
+    },
+    "f3bb5804": {
+        "observable": "同上：config 给 (6,6)，初始态 total=12 即 PASS。"
+                      "答 6 需孩子把其中一组清空（6 次减号或 1 次并入）",
+        "competing": "若孩子用 compose 把一组并入另一组，"
+                     "`composed_into`/`composed_count` 会留痕，那时 total 仍是 12"
+                     "（并入不改总数），所以「答 6」在 compose 路径下**根本不可达**",
+        "neutral": "（暂不适用）",
+    },
+    # ── column-arithmetic ──
+    "183c028f": {
+        # 两个错法码分开写：calc 是算错，strategy 是选错办法（把加法当减法）。
+        "observable": {
+            "calc": "`result_digits` 十位=6、个位=5，且个位进位标记 `carries` value=0；"
+                    "正解为十位=7、个位=5、个位进位 value=1。"
+                    "`incorrect_places`=[tens]、`incorrect_carries`=[ones] 精确定位到位置",
+            "strategy": "`result_digits` 十位=1、个位=9（19，即把「又买来」按减法做）。"
+                        "与 calc 的区别在整体数量级：calc 停在 65 附近，"
+                        "strategy 直接掉到 19，两者在 `result_digits` 上不会混淆",
+        },
+        "competing": "个位 5 写得对、十位 6 也可能是「心里进了位但忘了点进位标记」——"
+                     "本 renderer 把进位做成显式开关，两种解释都表现为 carries=0；"
+                     "而 19 也可能只是「随手填了个小一点的数」，需结合事件轨迹",
+        "neutral": "说「个位满十了，看看十位要不要多加 1」，指向位置不指向能力",
+    },
+    "1b3c314e": {
+        "observable": "**两条错法可被字段分开**："
+                      "① 逐位大减小 → result_digits 十位=7、个位=7（77），carries 全 0；"
+                      "② 借了未扣账 → result_digits 十位=7、个位=3（73），"
+                      "但个位 carries 标记 value=1（孩子点过借位）。"
+                      "即 73 与 77 的差别不在答案，在 `carries` 个位标记 1 vs 0",
+        "competing": "73 也可能是「个位算 10−7=3、十位漏算借位」，与②同形；"
+                     "77 也可能是「0−7 反成 7−0」的逐位反减，与①同形。"
+                     "carries 标记能分开这两类，但**分不开同一类内的不同想法**",
+        "neutral": "说「十位现在写的是 7，正确答案的十位是 6，看看个位借走的那 1 个」",
+    },
+    "39ce2243": {
+        "observable": "① 逐位大减小 → 十位=3、个位=3（33），carries 全 0；"
+                      "② 借了未扣账 → 十位=3、个位=7（37），个位 carries=1。"
+                      "与 1b3c314e 结构相同：答案差 4，`carries` 标记差 1",
+        "competing": "同 1b3c314e；另需注意 33 也可能来自「5−2=3、7−4=3」的逐位大减小，"
+                     "即孩子会做非退位减法但不会退位，这与「随机错」不同",
+        "neutral": "说「个位要向十位借 1 个十，十位就少 1」",
+    },
+    # ── formula-board ──
+    "506538f4": {
+        "observable": "`filled[missing]` 的值 + `structure.error`。"
+                      "答 25（方向反）= 17+8，structure.status=FAIL、error=\"relation\"；"
+                      "本题没有运算符槽（op 是给定的 \"+\"），"
+                      "所以 error 不可能是 \"operator\"——这条区分是稳定的",
+        "competing": "答 25 也可能来自「看到 17 和 8 就想加」，"
+                     "与「把等号两边关系弄反」在终值同形；"
+                     "本 renderer 的 error 码只能到 relation 这一层",
+        "neutral": "说「等号两边要一样多，8 再加多少才是 17」",
+    },
+    "8122c8c2": {
+        "observable": "`filled[missing]`=24（15+9）时 structure.error=\"relation\"；"
+                      "`filled[missing]`=9（把等号右边抄进来）时 error 也是 \"relation\"。"
+                      "两种错法**在 error 码上不可分**，只能靠 `filled` 的具体数值分",
+        "competing": "答 9 可能是「把右边的 9 当答案抄下来」（位置误读），"
+                     "答 24 是「把减号当加号」；两者数值不同但同属 relation 类",
+        "neutral": "说「15 减去多少才剩 9」",
+    },
+    "e29e7012": {
+        "observable": "`filled[missing]`=7（抄已知数）时 error=\"relation\"；"
+                      "正解 5。与 506538f4 配对：本题空格在右、那条在左，"
+                      "两条 `filled` 值可对照位置是否影响求解",
+        "competing": "答 7 也可能是「7 就是加数之一，填它试试」的试探，"
+                     "与「把已知数当答案」不可分",
+        "neutral": "说「7 加多少才是 12」",
+    },
+    # ── ruler ──
+    "2c5f8ead": {
+        "observable": "**本题有真实可区分的结构码**："
+                      "若孩子把标记放在 {0,10}，structure.error=\"from_zero_reading\"、span=10；"
+                      "若标记放在 {4,10}，span=6 → PASS。"
+                      "`marks` 数组直接给出两个刻度，可与「采信断言 7」区分："
+                      "答 7 需要 marks 间距为 7，如 {4,11} 或 {3,10}",
+        "competing": "span=7 也可能是「看得不准、随手点两个刻度」，"
+                     "与「相信题面写的 7」同形；marks 只能证明点在哪，证明不了为什么点那",
+        "neutral": "说「这条线段从左端 4 到右端 10，中间有几格」",
+    },
+    "770ab57a": {
+        "observable": "`marks`={0,12} → error=\"from_zero_reading\"、span=12；"
+                      "正解 marks={5,12}、span=7。本题**没有**误导断言，"
+                      "所以 from_zero_reading 是纯测量错法的干净样本",
+        "competing": "span=12 也可能是量偏；但 marks 不足 2 会判 EMPTY 而不是给 12，"
+                     "所以 12 必然来自两个刻度 {0,12}——这条比 2c5f8ead 干净",
+        "neutral": "说「从 5 到 12，走了几格」",
+    },
+    "7abf0ae3": {
+        "observable": "`marks`={0,11} → error=\"from_zero_reading\"、span=11；"
+                      "答 10（采信断言）需要 marks 间距 10，如 {1,11} 或 {3,13}(越界)；"
+                      "正解 marks={3,11}、span=8。三种想法对应三组不同 marks，**可区分**",
+        "competing": "span=10 也可能是量偏了（点错一格）；"
+                     "但 marks={0,11} 的 span=11 有专属结构码，不需推测",
+        "neutral": "说「他说的 10 厘米不对，尺子上从 3 到 11 才是这条线段」",
+    },
+    "7f76aa86": {
+        "observable": "`marks`={0,7} → error=\"from_zero_reading\"、span=7；"
+                      "正解 marks={2,7}、span=5。"
+                      "本题与 770ab57a 同为纯测量，两者 (left,right) 不同，"
+                      "若两条都判 from_zero_reading 才说明是稳定的读法问题",
+        "competing": "span=7 也可能来自 {0,7}（从零读）或 {2,9}（多量了 2）；"
+                     "只有 error 码为 from_zero_reading 时才是前者——这正是结构码的价值",
+        "neutral": "说「从 2 到 7，一共 5 格」",
+    },
+}
+
+# object-counter 五题共有的存量缺陷：`initialObjectCounterV2State(config.groups)`
+# 直接把 config 的 count 当初始态，导致「一进页面就是正确答案」。
+# 这不是本轮核验引入的判断，是 FE-1414 组件的既有行为；
+# 它使本族 5 题的 Q05 候选**在现有交互下不可能被观测**。
+# 按要求：登记为条件、不静默删除，也不改动组件（本轮只读）。
+Q05_BLOCKED_BY = {
+    "reason": "object-counter 初始态 = config.groups（含 count），"
+              "进入即 PASS，错误答案只能靠孩子主动减数产生",
+    "evidence": "apps/child-web/src/components/renderers/ObjectCounterV2.tsx::initial "
+                "→ initialObjectCounterV2State(config.groups)；"
+                "apps/child-web/src/features/task-renderer/objectCounterV2.ts:49",
+    "impact": "本族 5 题（079d72bd/08d4f5bc/b9a431f0/d7a7c884/f3bb5804）的 "
+              "Q05 候选无法在现有交互中留下可归因的痕迹",
+    "status": "已登记，待内容侧确认是否改为「空白起点 + 需孩子摆」；本轮不改组件",
+}
+
+
 def independent_eval(expr: str) -> float | int:
-    """只允许常量算术表达式。**不读任何 DB 字段。**"""
     return eval(expr, {"__builtins__": {}}, {})  # noqa: S307 常量算式
+
+
+def _sha256_file(path: str) -> str | None:
+    try:
+        with open(path, "rb") as f:
+            return hashlib.sha256(f.read()).hexdigest()
+    except OSError:
+        return None
+
+
+def _git_commit() -> str | None:
+    """当前 HEAD 提交；取不到就返回 None（不假装有出处）。"""
+    try:
+        return subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=REPO,
+            capture_output=True, text=True, timeout=10).stdout.strip() or None
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+def _script_provenance() -> dict:
+    """**出处必须能指出「哪份代码生成了这份报告」**（用户 2026-10-21 复审 §四）。
+
+    上一版 `solver_version.script` 只写了 rt1469 的模块名，而实际入口是
+    rt1470/q03_batch2.py —— 这是错的。现在分两项列明：
+      · entry   ：真正跑起来的入口
+      · shared  ：被 import 复用的模块（不是入口，但参与了绑定计算）
+    并补上 Git 提交与两个文件的 sha256：改动能被 diff 看见，不等于
+    离线报告已经说明了它由哪个版本生成。
+    """
+    entry = os.path.abspath(__file__)
+    shared = os.path.join(REPO, "scripts/iqc/rt1469/q03_number_input.py")
+    common = os.path.join(REPO, "scripts/iqc/common.py")
+    return {
+        "solver_version": {
+            "entry_script": os.path.relpath(entry, REPO),
+            "entry_sha256": _sha256_file(entry),
+            "shared_modules": [
+                {
+                    "path": os.path.relpath(shared, REPO),
+                    "sha256": _sha256_file(shared),
+                    "role": "bind_inputs / judge_binding（输入绑定与漂移判定）",
+                },
+                {
+                    "path": os.path.relpath(common, REPO),
+                    "sha256": _sha256_file(common),
+                    "role": "audit_input_sha（九域规范化哈希，与 scan.py 同一口径）",
+                },
+            ],
+            "git_commit": _git_commit(),
+            "expression_engine": "Python eval + 空 builtins（常量算式，无外部依赖）",
+            "note": "入口与共享模块**分别列出**——只写其中一个都不足以定位生成者。"
+                    "git_commit 是本报告生成时所在提交；若工作区有未提交改动，"
+                    "以 entry_sha256 为准（它反映实际执行的字节）。",
+        },
+        "result_chain": (
+            "当前工作清单中的 RVID → 被复用的冻结输入 "
+            "scripts/iqc/runs/inventory_manifest_r2.json（snapshot_sha256）"
+            "→ 逐题 audit_input_sha256（引用值 == 现场重算值）"
+            "→ 本次核验结果 verdict"),
+    }
 
 
 def judge_binding(ref_sha: str | None, recomputed: str | None) -> bool:
@@ -311,6 +629,20 @@ def evaluate(check: dict, stated_raw, ems: list, ui: dict) -> dict:
     homogeneous = bool(ems) and all(
         str(e.get("code")) == str(e.get("pattern")) for e in ems)
 
+    # 逐题取可观察证据登记（复审 §二.4 要求：不能 22 条同一句）。
+    # 登记表缺条目时**必须显式报缺口**，不允许退回通用句——
+    # 那正是上一版被打回的原因。
+    # `observable` 支持两种形态：字符串（单错法题）
+    # 或 {错误码: 描述} 字典（一题多错法，各错法痕迹本就不同）。
+    ev = Q05_EVIDENCE.get(check["rvid"][:8])
+    blocked = Q05_BLOCKED_BY if check["renderer"] == "object-counter" else None
+
+    def obs_for(code: str) -> str:
+        raw = (ev or {}).get("observable")
+        if isinstance(raw, dict):
+            return raw.get(code) or f"【缺口】本题未登记错误码 {code} 的可观察证据"
+        return raw or "【缺口】本题未登记可观察证据"
+
     return {
         "rvid": check["rvid"],
         "renderer": check["renderer"],
@@ -323,16 +655,26 @@ def evaluate(check: dict, stated_raw, ems: list, ui: dict) -> dict:
         "verdict": "MATCH" if match else "MISMATCH",
         "ui_config_seen": ws_cfg,
         "q05_error_models": ems,
+        "q05_blocked_by": blocked,
         "q05_candidates": [{
             "code": str(e.get("code")),
             "status": ("同质占位候选，区分力尚待验证" if homogeneous
                        else "非同质，区分力尚待逐条验证"),
             "hypothesis": check.get("q05_hypothesis"),
-            "requirement": ("需补充可观测证据：该错法在作答轨迹/中间量上留下"
-                            "什么可区分痕迹、与同题其它错法的判定边界在哪。"
-                            "仅有 code==pattern 不足以证明区分力。"),
+            # 三字段逐题具体化：可观察痕迹 / 竞争解释 / 中性反馈。
+            # **不是**「需补充证据」这种通用句，而是直接指出
+            # 「本题在哪个提交字段上留下什么值」。
+            "observable_evidence": obs_for(str(e.get("code"))),
+            "competing_explanations": (ev or {}).get("competing")
+                                      or "【缺口】本题未登记竞争解释",
+            "neutral_feedback": (ev or {}).get("neutral")
+                                or "【缺口】本题未登记中性反馈口径",
+            "evidence_fields_from": (
+                "renderer 序列化函数（见 q03_batch2.py::Q05_EVIDENCE 注释）"),
             "not_concluded": ("本条不主张该错法一定被孩子使用，"
-                              "也不主张它对应某种认知缺陷"),
+                              "也不主张它对应某种认知缺陷；"
+                              "上列痕迹只是「若成立应当看到什么」，"
+                              "不是「已经看到」"),
         } for e in ems],
     }
 
@@ -362,6 +704,37 @@ def main() -> int:
     spec.loader.exec_module(b1)
 
     rvids = [c["rvid"] for c in CHECKS]
+
+    # 硬前置：Q05 可观察证据必须逐题登记齐全，且三字段非空。
+    # 上一版被打回正是因为 22 条共用一句通用说明；这里让缺口直接失败，
+    # 而不是悄悄退回通用句。
+    missing = [c["rvid"][:8] for c in CHECKS
+               if c["rvid"][:8] not in Q05_EVIDENCE]
+    if missing:
+        print(f"Q05_EVIDENCE 缺 {len(missing)} 题登记：{missing}", file=sys.stderr)
+        return 1
+    empty = [f"{k}.{f}" for k, v in Q05_EVIDENCE.items()
+             for f in ("competing", "neutral") if not v.get(f)]
+    # observable 允许字符串或 {错误码: 描述}；两种形态都不许有空值
+    for k, v in Q05_EVIDENCE.items():
+        o = v.get("observable")
+        if isinstance(o, dict):
+            empty += [f"{k}.observable[{c}]" for c, s in o.items() if not s]
+        elif not o:
+            empty.append(f"{k}.observable")
+    if empty:
+        print(f"Q05_EVIDENCE 有空字段：{empty}", file=sys.stderr)
+        return 1
+    flat = [s if isinstance(v["observable"], str) else d2
+            for v in Q05_EVIDENCE.values()
+            for s, d2 in ([(v["observable"], None)] if isinstance(v["observable"], str)
+                          else v["observable"].items())]
+    dup = [s for s in set(flat) if flat.count(s) > 1]
+    if dup:
+        print(f"Q05_EVIDENCE 存在重复 observable（说明又在套模板）：{dup}",
+              file=sys.stderr)
+        return 1
+
     prov = b1.bind_inputs(db, common, rvids)
     import psycopg
     with psycopg.connect(db) as conn:
@@ -400,7 +773,7 @@ def main() -> int:
         },
         "chain": ["input_basis", "target_object", "derivation",
                   "applicable_conditions", "原值比较", "verdict"],
-        "provenance": prov,
+        "provenance": {**prov, **_script_provenance()},
         "summary": {
             "total": len(results),
             "match": sum(1 for r in results if r["verdict"] == "MATCH"),
@@ -408,6 +781,9 @@ def main() -> int:
             "not_found": sum(1 for r in results if r["verdict"] == "RVID_NOT_FOUND"),
             "drift": sum(1 for r in results if r.get("input_binding", {}).get("drift")),
             "by_renderer": {},
+            "q05_candidates_total": sum(len(r.get("q05_candidates") or [])
+                                        for r in results),
+            "q05_blocked_items": sum(1 for r in results if r.get("q05_blocked_by")),
         },
         "items": results,
     }
