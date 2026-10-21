@@ -47,6 +47,8 @@ import os
 import sys
 import threading
 import time
+import urllib.error
+import urllib.request
 import uuid
 from datetime import datetime, timezone
 
@@ -61,6 +63,32 @@ def _db_url() -> str:
     if not raw:
         sys.exit("缺少 DATABASE_URL")
     return raw.replace("postgresql+psycopg://", "postgresql://")
+
+
+def _post(api: str, path: str, payload: dict, timeout: float = 60.0):
+    """并发侧的提交请求。
+
+    2026-10-21 复审补正：本函数在 #124 改造 `_post`→`exec_mode` 时被删除，
+    但调用点仍留着（submitter 线程里）。后果很隐蔽——submitter 的
+    `except Exception` 会把 NameError 吞掉，只写进 result_holder["error"]，
+    于是"并发提交"分支可能在**从未发出任何 HTTP 请求**的情况下走到收尾判定。
+
+    现在保留为写模式的直连入口（写模式下才被调用；只读模式整段 T0-T6 SKIP，
+    不会到达这里）。请求语义与原实现一致。
+    """
+    req = urllib.request.Request(
+        api.rstrip("/") + path, data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"}, method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.status, json.loads(r.read() or b"{}")
+    except urllib.error.HTTPError as e:
+        raw = e.read()
+        try:
+            return e.code, json.loads(raw or b"{}")
+        except json.JSONDecodeError:
+            return e.code, {"raw": raw.decode(errors="replace")}
 
 
 def _task_counts(conn, tid: str) -> dict:
@@ -339,11 +367,14 @@ def main() -> int:
         # 上一轮直接 update 回 assigned 却不记录 RVID，无法判断复位是否重开了
         # 旧风险通道。本次：①先取样本归属 ②若样本属四类高风险暴露口径，
         # 拒绝复位（保持 cancelled）并登记 ③否则复位并显式记录归属与理由。
+        rollback_error = None
         try:
             if not inv.closed:
                 inv.rollback()
-        except Exception:  # noqa: BLE001
-            pass
+        except Exception as e:  # noqa: BLE001
+            # 不吞：收尾失败必须留痕。静默 pass 正是让「_post 未定义」这类
+            # 缺陷躲过两轮复核的机制（宽泛 except 把 NameError 也吃了）。
+            rollback_error = repr(e)
         inv.close()
         with psycopg.connect(url) as chk:
             meta = _task_meta(chk, tid)
@@ -398,6 +429,7 @@ def main() -> int:
             "status_final": meta_after.get("task_status"),
             "reset_reason": reset_reason,
             "final_counts_on_sample": final_counts,
+            "rollback_error": rollback_error,
             "note": "三表计数不变只证明无新增作答/证据/事件；任务终态由 "
                     "status_before_reset/status_final 单独记录，不被计入'零变化'",
         })

@@ -31,6 +31,11 @@ import tempfile
 from collections import Counter
 from datetime import datetime, timezone
 
+# 注意：psycopg 只在真正需要查库的函数里延迟导入。
+# 顶层 import 会让 DB-free 的 pr_gate 测试（test_baseline_provenance.py）
+# 在 CI 上直接 ModuleNotFoundError——那样这道门禁在 CI 里等于不存在。
+# 需要 psycopg 的：_status_breakdown()、main() 内的状态核对段。
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.abspath(os.path.join(HERE, "..", ".."))
 REPO = os.path.abspath(os.path.join(SCRIPTS, ".."))
@@ -61,8 +66,16 @@ def read_historical_provenance(repo: str = REPO) -> dict:
     出处（脚本内可复算，非人工记忆）：
       scripts/iqc/runs/FE1464_first_full_report.json
         → fe1464_first_full_baseline.current_published_findings
-    该段是 2026-10-17 首轮全量基线，对象集合 published=443，
-    status 分布 REVISION_REQUIRED=211（即 Q05 待办）、UNVERIFIED=212（即 Q03 待办）。
+
+    **单位口径（2026-10-21 复审纠正，用户 §二.3）：**
+    该字段名就是 `current_published_findings`，`n = 443` 是 **Findings 条数**，
+    不是 443 道 published 题。旁证：同工件 `resources_discovered = 264`，
+    全量 `findings_total = 520`，而 `layering.review_status` 三桶
+    27 + 443 + 50 = 520 恰好等于 findings_total——即该三桶是**按 review_status
+    把 findings 分桶**，不是资源版本计数。
+    因此恒等式 `212+211+13+7 = 443` 只证明 **findings 状态分桶合计一致**，
+    不证明题目 RVID 去重覆盖正确。排期清单必须由规则标识 + RVID 生成，
+    不可永久假定所有 REVISION_REQUIRED 都属于 Q05。
 
     纯度：只做读取+校验，不 sys.exit（供 pr_gate 的 DB-free 测试直接复用）。
     校验不过一律 raise ValueError，由调用方决定是退出还是判 FAIL。
@@ -70,24 +83,41 @@ def read_historical_provenance(repo: str = REPO) -> dict:
     p = os.path.join(repo, "scripts/iqc/runs/FE1464_first_full_report.json")
     if not os.path.exists(p):
         raise ValueError(f"历史基线工件缺失，无法证明 211/212 出处：{p}")
-    cur = json.load(open(p))["fe1464_first_full_baseline"]["current_published_findings"]
-    pub_n = cur["n"]
+    top = json.load(open(p))["fe1464_first_full_baseline"]
+    cur = top["current_published_findings"]
+    findings_n = cur["n"]
     st = cur["status"]
     rv, un = st.get("REVISION_REQUIRED"), st.get("UNVERIFIED")
-    # 恒等式：四类结论逐条覆盖每一条 published，不多不少。
+    # 恒等式：四类结论逐条覆盖每一条 finding，不多不少。
     total = sum(st.values())
-    if total != pub_n:
-        raise ValueError(f"历史基线自相矛盾：status 合计 {total} != published {pub_n}")
+    if total != findings_n:
+        raise ValueError(f"历史基线自相矛盾：status 合计 {total} != findings {findings_n}")
     if (rv, un) != (211, 212):
         raise ValueError(
             f"历史基线 drifted：REVISION_REQUIRED/UNVERIFIED = {rv}/{un}，"
             f"与终审引用的 211/212 不符——先查清再降级，不要照抄旧数")
+    # 单位旁证：三桶合计应等于 findings_total（若工件另给），且不得等于资源数。
+    layering = (top.get("layering") or {}).get("review_status") or {}
+    layering_sum = sum(layering.values()) if layering else None
+    if layering_sum is not None and layering_sum != top.get("findings_total"):
+        raise ValueError(
+            f"历史基线单位口径异常：layering.review_status 合计 {layering_sum} "
+            f"!= findings_total {top.get('findings_total')}，无法确认 443 是 findings 数")
+    resources = top.get("resources_discovered")
+    if resources is not None and findings_n == resources:
+        raise ValueError("443 同时等于资源数与 findings 数，单位口径无法区分——需先查清")
     return {
         "source_artifact": "scripts/iqc/runs/FE1464_first_full_report.json",
         "source_path": "fe1464_first_full_baseline.current_published_findings",
-        "historical_published": pub_n,
+        "historical_published_findings": findings_n,
+        "unit_note": ("443 是 Findings 条数，不是 published 题目数。旁证："
+                      f"resources_discovered={resources}，findings_total={top.get('findings_total')}，"
+                      f"layering.review_status 合计={layering_sum}（=findings_total）。"),
         "historical_status_distribution": st,
-        "identity_check": f"{'+'.join(f'{k}({v})' for k, v in st.items())} = {total} = published({pub_n})",
+        "identity_check": (f"{'+'.join(f'{k}({v})' for k, v in st.items())} = {total} "
+                           f"= historical_published_findings({findings_n})"),
+        "identity_scope": ("只证明 findings 状态分桶合计一致；**不证明**题目 RVID "
+                           "去重覆盖正确，也不证明所有 REVISION_REQUIRED 都属于 Q05。"),
         "mapping": {"Q05_211": "status.REVISION_REQUIRED",
                     "Q03_212": "status.UNVERIFIED"},
         "note": "211/212 出自同名 status 枚举，不是独立计数器；"
@@ -100,6 +130,21 @@ def _historical_212_211_provenance() -> dict:
         return read_historical_provenance()
     except ValueError as e:
         sys.exit(str(e))
+
+
+def _status_breakdown(db_url: str, rvids: list[str]) -> dict:
+    """按 DB 实际 review_status 分列（只读）。不做『全部 superseded』式概括。"""
+    if not rvids:
+        return {}
+    import psycopg   # 延迟导入：保持本模块顶层可被 DB-free 测试加载
+    with psycopg.connect(db_url) as c:
+        rows = c.execute(
+            "select review_status, count(*) from resource_version "
+            "where resource_version_id = any(%s::uuid[]) group by 1 order by 2 desc",
+            (rvids,)).fetchall()
+    out = {s: n for s, n in rows}
+    out["_total"] = sum(out.values())
+    return out
 
 
 def main() -> int:
@@ -196,21 +241,27 @@ def main() -> int:
             "Q05_211": {
                 "status": "HISTORICAL_BASELINE_ONLY",
                 "original": 211,
-                "original_context": f"2026-10-17 基线，当时 published="
-                                    f"{hist['historical_published']}；"
-                                    f"211 = {hist['mapping']['Q05_211']}",
+                "original_context": (
+                    f"2026-10-17 首轮全量基线，当时 historical_published_findings="
+                    f"{hist['historical_published_findings']}"
+                    f"（**findings 条数，非题目数**）；211 = "
+                    f"{hist['mapping']['Q05_211']}"),
                 "current": len(q05),
-                "reason": f"对象集合由 {hist['historical_published']} 变为 "
-                          f"{len(pub_rvids)}；旧数字是不同集合上的待办数，不可直接比较",
+                "reason": ("对象口径不同：旧值是 443 条 findings 上的状态分桶计数，"
+                           f"当前值是 {len(pub_rvids)} 条 published 题目上的规则命中数——"
+                           "计数单位与集合都不同，不可直接比较，也不可相减求差"),
             },
             "Q03_212": {
                 "status": "HISTORICAL_BASELINE_ONLY",
                 "original": 212,
-                "original_context": f"2026-10-17 基线，当时 published="
-                                    f"{hist['historical_published']}；"
-                                    f"212 = {hist['mapping']['Q03_212']}",
+                "original_context": (
+                    f"2026-10-17 首轮全量基线，当时 historical_published_findings="
+                    f"{hist['historical_published_findings']}；212 = "
+                    f"{hist['mapping']['Q03_212']}"),
                 "current": len(q03u),
-                "reason": "同上",
+                "reason": ("数值同为 212 纯属巧合：旧值是 findings 分桶计数（无 RVID 集合可查），"
+                           "当前值是 published 上的 Q03-UNVERIFIED 集合；"
+                           "两者的集合关系见 q03_set_comparisons"),
             },
         },
         "current_published_baseline": {
@@ -278,6 +329,61 @@ def main() -> int:
         h_rvids = {f["rvid"] for f in hist}
         only_old = sorted(h_rvids - rvids_with_findings)
         only_new = sorted(rvids_with_findings - h_rvids)
+
+        # ---- 用户 §二.3 指出的口径矛盾：必须分两种比较分别输出 ----
+        # 上一版把「225 集合的统计」与「212 的计数」混在一句话里，导致
+        # 「旧集合 212 却含 50 条 superseded」这种自相矛盾的表述。
+        # 这里把三件事分别算清、分别落盘：
+        #   A 旧工件 Q03（含污染）      vs 当前 Q03
+        #   B 旧工件 Q03 剔除非 published vs 当前 Q03
+        #   C FE1464 报告 status.UNVERIFIED（只有计数，无 RVID 集合）
+        h_q03_all = {f["rvid"] for f in hist if f["rule_id"] == "Q03-UNVERIFIED"}
+        status_of = {}
+        import psycopg   # 延迟导入（见文件头说明）
+        with psycopg.connect(db) as _c:
+            for r, s in _c.execute(
+                    "select resource_version_id::text, review_status from resource_version "
+                    "where resource_version_id = any(%s::uuid[])", (list(h_q03_all),)).fetchall():
+                status_of[r] = s
+        h_q03_pub = {r for r in h_q03_all if status_of.get(r) == "published"}
+
+        def _cmp(old_set):
+            return {
+                "old": len(old_set), "new": len(q03u),
+                "intersection": len(old_set & set(q03u)),
+                "only_old": len(old_set - set(q03u)),
+                "only_new": len(set(q03u) - old_set),
+            }
+
+        payload["q03_set_comparisons"] = {
+            "why": "用户 2026-10-21 复审 §二.3：两个 212 与「交集 175 / 旧含 50 条退出"
+                   "版本」不能同时成立——它们是不同比较对象的数字。此处分别输出，"
+                   "避免再次把正式口径与污染口径混为一谈。",
+            "A_old_artifact_all_vs_current": {
+                **_cmp(h_q03_all),
+                "source": "findings_fe1460_225.jsonl 中 rule_id=Q03-UNVERIFIED 的全部 RVID",
+                "note": "该集合含 superseded 污染，**不是**正式历史基线口径",
+            },
+            "B_old_artifact_published_only_vs_current": {
+                **_cmp(h_q03_pub),
+                "source": "同上，但剔除当前非 published 的行",
+                "note": "only_old=0 说明旧集合的已发布部分被当前集合完全包含；"
+                        "差异只剩 only_new（Q07 替代资源首次进入口径）",
+            },
+            "C_fe1464_report_count_only": {
+                "value": 212,
+                "source": "FE1464_first_full_report.json → status.UNVERIFIED",
+                "note": "**只有计数，没有 RVID 集合**，无法做集合比较，"
+                        "不可与 A/B 的交集/only 数字并列引用",
+            },
+            "old_artifact_q03_status_breakdown": {
+                "total_distinct_rvid": len(h_q03_all),
+                "published": len(h_q03_pub),
+                "non_published": len(h_q03_all) - len(h_q03_pub),
+                "by_status": {s: sum(1 for r in h_q03_all if status_of.get(r) == s)
+                              for s in sorted(set(status_of.values()))},
+            },
+        }
         payload["delta_vs_history_225"] = {
             "note": "与历史 findings_fe1460_225.jsonl 逐 RVID 集合对比。历史文件按终审 §五"
                     "『历史报告保持不变』未改动；本段只做归因，不改历史。",
@@ -289,9 +395,12 @@ def main() -> int:
             "only_new": len(only_new),
             "only_old_rvids": only_old,
             "only_new_rvids": only_new,
+            "only_old_status": _status_breakdown(db, only_old),
+            "only_new_status": _status_breakdown(db, only_new),
             "attribution": "only_old 应为治理中被替代的 superseded 版本（应退出 published 口径）；"
                            "only_new 应为 Q07 资源替代后新进入口径的 published 版本。"
-                           "归属状态请由重建时的 inventory.status_distribution 与 DB review_status 交叉核对。",
+                           "实际状态分布见 only_old_status / only_new_status——"
+                           "按实际值分列，不做『全部 superseded』式概括。",
             "by_rule_delta": (
                 {r: {"old": sum(1 for f in hist if f["rule_id"] == r),
                      "new": sum(1 for f in fs if f["rule_id"] == r)}

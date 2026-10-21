@@ -1,6 +1,6 @@
 {
  "title": "FE-1467｜Q05 / Q03 工作清单重建（以当前 Published RVID 为口径）",
- "generated_at": "2026-10-21T03:38:22.561799+00:00",
+ "generated_at": "2026-10-21T07:29:08.398595+00:00",
  "why": "用户 2026-10-21 终审 §五：211/212 是此前基线中的待办数量，不应未经复扫就继续作为当前精确数量。本文件是新基线；历史报告保持不变。",
  "method": {
   "object_scope_source": "scripts/iqc/inventory.py（review_status='published'）",
@@ -32,14 +32,16 @@
   "provenance": {
    "source_artifact": "scripts/iqc/runs/FE1464_first_full_report.json",
    "source_path": "fe1464_first_full_baseline.current_published_findings",
-   "historical_published": 443,
+   "historical_published_findings": 443,
+   "unit_note": "443 是 Findings 条数，不是 published 题目数。旁证：resources_discovered=264，findings_total=520，layering.review_status 合计=520（=findings_total）。",
    "historical_status_distribution": {
     "UNVERIFIED": 212,
     "REVISION_REQUIRED": 211,
     "PASS_RULES": 13,
     "REVIEW_REQUIRED": 7
    },
-   "identity_check": "UNVERIFIED(212)+REVISION_REQUIRED(211)+PASS_RULES(13)+REVIEW_REQUIRED(7) = 443 = published(443)",
+   "identity_check": "UNVERIFIED(212)+REVISION_REQUIRED(211)+PASS_RULES(13)+REVIEW_REQUIRED(7) = 443 = historical_published_findings(443)",
+   "identity_scope": "只证明 findings 状态分桶合计一致；**不证明**题目 RVID 去重覆盖正确，也不证明所有 REVISION_REQUIRED 都属于 Q05。",
    "mapping": {
     "Q05_211": "status.REVISION_REQUIRED",
     "Q03_212": "status.UNVERIFIED"
@@ -49,16 +51,16 @@
   "Q05_211": {
    "status": "HISTORICAL_BASELINE_ONLY",
    "original": 211,
-   "original_context": "2026-10-17 基线，当时 published=443；211 = status.REVISION_REQUIRED",
+   "original_context": "2026-10-17 首轮全量基线，当时 historical_published_findings=443（**findings 条数，非题目数**）；211 = status.REVISION_REQUIRED",
    "current": 209,
-   "reason": "对象集合由 443 变为 225；旧数字是不同集合上的待办数，不可直接比较"
+   "reason": "对象口径不同：旧值是 443 条 findings 上的状态分桶计数，当前值是 225 条 published 题目上的规则命中数——计数单位与集合都不同，不可直接比较，也不可相减求差"
   },
   "Q03_212": {
    "status": "HISTORICAL_BASELINE_ONLY",
    "original": 212,
-   "original_context": "2026-10-17 基线，当时 published=443；212 = status.UNVERIFIED",
+   "original_context": "2026-10-17 首轮全量基线，当时 historical_published_findings=443；212 = status.UNVERIFIED",
    "current": 212,
-   "reason": "同上"
+   "reason": "数值同为 212 纯属巧合：旧值是 findings 分桶计数（无 RVID 集合可查），当前值是 published 上的 Q03-UNVERIFIED 集合；两者的集合关系见 q03_set_comparisons"
   }
  },
  "current_published_baseline": {
@@ -3561,6 +3563,41 @@
   "identity_check": "Q03-UNVERIFIED(212)+Q03-OK(13)=225=published(225)",
   "priority": "交集 197 条优先（一题同时改两件事）"
  },
+ "q03_set_comparisons": {
+  "why": "用户 2026-10-21 复审 §二.3：两个 212 与「交集 175 / 旧含 50 条退出版本」不能同时成立——它们是不同比较对象的数字。此处分别输出，避免再次把正式口径与污染口径混为一谈。",
+  "A_old_artifact_all_vs_current": {
+   "old": 225,
+   "new": 212,
+   "intersection": 175,
+   "only_old": 50,
+   "only_new": 37,
+   "source": "findings_fe1460_225.jsonl 中 rule_id=Q03-UNVERIFIED 的全部 RVID",
+   "note": "该集合含 superseded 污染，**不是**正式历史基线口径"
+  },
+  "B_old_artifact_published_only_vs_current": {
+   "old": 175,
+   "new": 212,
+   "intersection": 175,
+   "only_old": 0,
+   "only_new": 37,
+   "source": "同上，但剔除当前非 published 的行",
+   "note": "only_old=0 说明旧集合的已发布部分被当前集合完全包含；差异只剩 only_new（Q07 替代资源首次进入口径）"
+  },
+  "C_fe1464_report_count_only": {
+   "value": 212,
+   "source": "FE1464_first_full_report.json → status.UNVERIFIED",
+   "note": "**只有计数，没有 RVID 集合**，无法做集合比较，不可与 A/B 的交集/only 数字并列引用"
+  },
+  "old_artifact_q03_status_breakdown": {
+   "total_distinct_rvid": 225,
+   "published": 175,
+   "non_published": 50,
+   "by_status": {
+    "published": 175,
+    "superseded": 50
+   }
+  }
+ },
  "delta_vs_history_225": {
   "note": "与历史 findings_fe1460_225.jsonl 逐 RVID 集合对比。历史文件按终审 §五『历史报告保持不变』未改动；本段只做归因，不改历史。",
   "history_artifact": "findings_fe1460_225.jsonl",
@@ -3661,7 +3698,15 @@
    "e8fd711d-223a-4f4a-b79e-0cd46536bac1",
    "fe2e4fbb-0a49-4479-9c14-564ffa994724"
   ],
-  "attribution": "only_old 应为治理中被替代的 superseded 版本（应退出 published 口径）；only_new 应为 Q07 资源替代后新进入口径的 published 版本。归属状态请由重建时的 inventory.status_distribution 与 DB review_status 交叉核对。",
+  "only_old_status": {
+   "superseded": 51,
+   "_total": 51
+  },
+  "only_new_status": {
+   "published": 37,
+   "_total": 37
+  },
+  "attribution": "only_old 应为治理中被替代的 superseded 版本（应退出 published 口径）；only_new 应为 Q07 资源替代后新进入口径的 published 版本。实际状态分布见 only_old_status / only_new_status——按实际值分列，不做『全部 superseded』式概括。",
   "by_rule_delta": {
    "Q03-OK": {
     "old": 14,
