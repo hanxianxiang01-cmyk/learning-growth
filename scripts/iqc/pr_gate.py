@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """FE-1463 PR 增量质量门（DB-free，确定性，进 ci.yml）。
 
-四检查（任一 FAIL=退出非零阻断合并）：
+六检查（任一 FAIL=退出非零阻断合并）：
 1. 规则夹具回归：test_checks.py 25 负例全锁（已知缺陷可检出/已知非缺陷不误报）
 2. 契约自检：rules.json iqc 块完整 + 夹具数据分离纪律（skill 侧检查的仓内镜像，
    skill 目录不在 CI checkout 内时降级 SKIP 并显式打印，不谎称已验）
@@ -10,6 +10,8 @@
    BLOCKED-UNKNOWN-RENDERER——未登记 renderer=FAIL，禁止静默新增
 4. 执行模式闸门自证：验证脚本的 --no-write 必须同时拦住 HTTP 提交与 SQL 写，
    且变异对照证明拦截非空跑（用户 2026-10-21 终审 §四）
+5. 扫描口径回归：published 口径不得被 mapping 侧载的 superseded 撑大（FE-1467）
+6. 基线降级出处回归：211/212 必须能从历史工件复算，工件被篡改须报错（FE-1467 §五）
 边界（裁决 §四）：本门只判规则明确证据充分的问题；不访问生产 DB；失败输出含
 rule_id+证据，不得为空。
 """
@@ -86,6 +88,16 @@ if os.path.exists(scope_test):
          r5.returncode == 0 and "SCAN-SCOPE-GATE: PASS" in r5.stdout, tail5)
 else:
     note("扫描口径回归工件存在", False, "缺 test_scan_scope.py")
+
+# 6 基线降级出处回归（FE-1467 §五：211/212 降级必须有可复算出处，且工件被篡改要报错）
+prov_test = os.path.join(HERE, "rt1464", "test_baseline_provenance.py")
+if os.path.exists(prov_test):
+    r6 = subprocess.run([sys.executable, prov_test], capture_output=True, text=True)
+    tail6 = (r6.stdout.strip().splitlines()[-1] if r6.stdout else r6.stderr[-200:])
+    note("基线降级出处回归 test_baseline_provenance",
+         r6.returncode == 0 and "BASELINE-PROVENANCE-GATE: PASS" in r6.stdout, tail6)
+else:
+    note("基线降级出处回归工件存在", False, "缺 rt1464/test_baseline_provenance.py")
 
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)

@@ -1,6 +1,6 @@
 {
  "title": "FE-1467｜Q05 / Q03 工作清单重建（以当前 Published RVID 为口径）",
- "generated_at": "2026-10-21T03:25:41.235176+00:00",
+ "generated_at": "2026-10-21T03:38:22.561799+00:00",
  "why": "用户 2026-10-21 终审 §五：211/212 是此前基线中的待办数量，不应未经复扫就继续作为当前精确数量。本文件是新基线；历史报告保持不变。",
  "method": {
   "object_scope_source": "scripts/iqc/inventory.py（review_status='published'）",
@@ -29,17 +29,34 @@
  },
  "baseline_downgrade": {
   "rule": "211／212 降级为历史基线数量，不沿用、不回填、不改历史报告。",
+  "provenance": {
+   "source_artifact": "scripts/iqc/runs/FE1464_first_full_report.json",
+   "source_path": "fe1464_first_full_baseline.current_published_findings",
+   "historical_published": 443,
+   "historical_status_distribution": {
+    "UNVERIFIED": 212,
+    "REVISION_REQUIRED": 211,
+    "PASS_RULES": 13,
+    "REVIEW_REQUIRED": 7
+   },
+   "identity_check": "UNVERIFIED(212)+REVISION_REQUIRED(211)+PASS_RULES(13)+REVIEW_REQUIRED(7) = 443 = published(443)",
+   "mapping": {
+    "Q05_211": "status.REVISION_REQUIRED",
+    "Q03_212": "status.UNVERIFIED"
+   },
+   "note": "211/212 出自同名 status 枚举，不是独立计数器；该工件按终审 §五『历史报告保持不变』未改动，本次只读取不重写。"
+  },
   "Q05_211": {
    "status": "HISTORICAL_BASELINE_ONLY",
    "original": 211,
-   "original_context": "2026-10-17 基线，当时 published=443",
+   "original_context": "2026-10-17 基线，当时 published=443；211 = status.REVISION_REQUIRED",
    "current": 209,
    "reason": "对象集合由 443 变为 225；旧数字是不同集合上的待办数，不可直接比较"
   },
   "Q03_212": {
    "status": "HISTORICAL_BASELINE_ONLY",
    "original": 212,
-   "original_context": "2026-10-17 基线，当时 published=443",
+   "original_context": "2026-10-17 基线，当时 published=443；212 = status.UNVERIFIED",
    "current": 212,
    "reason": "同上"
   }

@@ -51,6 +51,57 @@ def _run(args: list[str], step: str) -> None:
     print(r.stdout.strip()[:500])
 
 
+def read_historical_provenance(repo: str = REPO) -> dict:
+    """从历史工件里**读回** 211 / 212 的出处，而不是由脚本作者手写断言。
+
+    为什么要这段：终审 §五 要求把 211/212 降级为历史基线数量。既然要降级，
+    就必须说得清它们当初是在哪个对象集合上数出来的——否则「211 是历史数」
+    只是一句无法核验的话，读者无从判断能不能拿来和当前 209/212 比。
+
+    出处（脚本内可复算，非人工记忆）：
+      scripts/iqc/runs/FE1464_first_full_report.json
+        → fe1464_first_full_baseline.current_published_findings
+    该段是 2026-10-17 首轮全量基线，对象集合 published=443，
+    status 分布 REVISION_REQUIRED=211（即 Q05 待办）、UNVERIFIED=212（即 Q03 待办）。
+
+    纯度：只做读取+校验，不 sys.exit（供 pr_gate 的 DB-free 测试直接复用）。
+    校验不过一律 raise ValueError，由调用方决定是退出还是判 FAIL。
+    """
+    p = os.path.join(repo, "scripts/iqc/runs/FE1464_first_full_report.json")
+    if not os.path.exists(p):
+        raise ValueError(f"历史基线工件缺失，无法证明 211/212 出处：{p}")
+    cur = json.load(open(p))["fe1464_first_full_baseline"]["current_published_findings"]
+    pub_n = cur["n"]
+    st = cur["status"]
+    rv, un = st.get("REVISION_REQUIRED"), st.get("UNVERIFIED")
+    # 恒等式：四类结论逐条覆盖每一条 published，不多不少。
+    total = sum(st.values())
+    if total != pub_n:
+        raise ValueError(f"历史基线自相矛盾：status 合计 {total} != published {pub_n}")
+    if (rv, un) != (211, 212):
+        raise ValueError(
+            f"历史基线 drifted：REVISION_REQUIRED/UNVERIFIED = {rv}/{un}，"
+            f"与终审引用的 211/212 不符——先查清再降级，不要照抄旧数")
+    return {
+        "source_artifact": "scripts/iqc/runs/FE1464_first_full_report.json",
+        "source_path": "fe1464_first_full_baseline.current_published_findings",
+        "historical_published": pub_n,
+        "historical_status_distribution": st,
+        "identity_check": f"{'+'.join(f'{k}({v})' for k, v in st.items())} = {total} = published({pub_n})",
+        "mapping": {"Q05_211": "status.REVISION_REQUIRED",
+                    "Q03_212": "status.UNVERIFIED"},
+        "note": "211/212 出自同名 status 枚举，不是独立计数器；"
+                "该工件按终审 §五『历史报告保持不变』未改动，本次只读取不重写。",
+    }
+
+
+def _historical_212_211_provenance() -> dict:
+    try:
+        return read_historical_provenance()
+    except ValueError as e:
+        sys.exit(str(e))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.path.join(
@@ -116,6 +167,8 @@ def main() -> int:
     by_sev_pub = Counter(f["severity"] for f in fs)
     pub_only = [r for r in {f["rvid"] for f in fs} if r in pub_rvids]
 
+    hist = _historical_212_211_provenance()
+
     payload = {
         "title": "FE-1467｜Q05 / Q03 工作清单重建（以当前 Published RVID 为口径）",
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -139,17 +192,23 @@ def main() -> int:
         },
         "baseline_downgrade": {
             "rule": "211／212 降级为历史基线数量，不沿用、不回填、不改历史报告。",
+            "provenance": hist,
             "Q05_211": {
                 "status": "HISTORICAL_BASELINE_ONLY",
                 "original": 211,
-                "original_context": "2026-10-17 基线，当时 published=443",
+                "original_context": f"2026-10-17 基线，当时 published="
+                                    f"{hist['historical_published']}；"
+                                    f"211 = {hist['mapping']['Q05_211']}",
                 "current": len(q05),
-                "reason": "对象集合由 443 变为 225；旧数字是不同集合上的待办数，不可直接比较",
+                "reason": f"对象集合由 {hist['historical_published']} 变为 "
+                          f"{len(pub_rvids)}；旧数字是不同集合上的待办数，不可直接比较",
             },
             "Q03_212": {
                 "status": "HISTORICAL_BASELINE_ONLY",
                 "original": 212,
-                "original_context": "2026-10-17 基线，当时 published=443",
+                "original_context": f"2026-10-17 基线，当时 published="
+                                    f"{hist['historical_published']}；"
+                                    f"212 = {hist['mapping']['Q03_212']}",
                 "current": len(q03u),
                 "reason": "同上",
             },
