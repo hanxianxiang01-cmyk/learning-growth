@@ -74,26 +74,116 @@ JUDGE_MARKERS = ("判断", "检查", "对不对", "是否正确", "是不是", "
 # 与用户 §三「按任务语义族而不只按 Renderer」冲突。
 RULES: list[tuple[str, str]] = [
     ("R1", "task_type=estimation → 开放估算（天然多解/容差）"),
-    ("R2", "答案为布尔编码且题面含判断词 → 数值与判断"),
+    ("R2", "题面判定命题真假（判断词）→ 数值与判断；与答案值域无关"),
     ("R3", "构造类 renderer + 构造动词 → 构造与约束"),
-    ("R5", "默认 → 数值与判断"),
+    ("R5", "默认数值候选 → 数值与判断（**求解语义待逐题确认**）"),
 ]
 RULE_HITS: Counter = Counter()
+
+# 求值语义：与"族"正交的第二维。族回答"该按哪类思路组织核验"，
+# 这里回答"独立求解时到底要算什么对象"。
+# 用户 2026-10-21 复审 §二.2 明确要求补这一维，且指出方向不是"求数值 vs
+# 求顺序相反"——两者都是「按题意与约束求出数学对象，再按提交契约编码，
+# 最后比较答案」。所以维度名是 solve_path（求解路径），不是"方向"。
+SOLVE_PATHS: dict[str, str] = {
+    "numeric_exact": "唯一数值：算式或计数直接得出，按标量相等比较",
+    "numeric_tolerance": "容差数值：参照量+取整/容差规则得出可接受集合，按容差判定",
+    "sequence_order": "顺序/规律：求出有序序列或相位，再按提交契约编码",
+    "digit_config": "数位配置：按卡片/位值/零与重复约束求合法排列",
+    "geometry_constraint": "几何约束：在网格/画布边界内判定合法构造是否存在，再核验提交量",
+    "count_by_attribute": "按属性计数：从配置枚举对象并按属性筛选计数（答案值域可能为 0/1）",
+    "answer_type_unresolved": "答案类型未定：值域与题面语义不足以确定求解路径",
+}
+
+
+def solve_path_of(task_type: str, answer, stem: str, renderer: str,
+                  ui_schema: dict | None = None) -> tuple[str, str]:
+    """返回 (求解路径, 说明)。**只描述该算什么，不声称一定可自动求解。**
+
+    2026-10-21 用户复审指出的两个坑，这里逐个避开：
+      1. 「Renderer 叫估算面板」不等于开放题，也不等于可精算题——
+         实测 8 道 estimation-canvas/numeric_judge 全部是
+         "以 10 为参照取最近整十 + tolerance 6"，是**容差数值**，
+         既不是唯一精确等式，也不是无边界开放答案。
+      2. 「答案看起来像 0/1」不等于判断题——实测 4 道 shape-gallery 问
+         "这一类有几张卡"、1 道 direction-grid 问"终点格编码"，
+         值域同构而语义不同，必须按题干所求对象分路径。
+    """
+    tt = (task_type or "").lower()
+    s = str(answer).strip()
+    stem = stem or ""
+
+    # 估算面板：看配置是容差型还是真开放
+    if renderer == "estimation-canvas" or tt == "estimation":
+        cfg = _ws_config(ui_schema)
+        if cfg.get("tolerance") is not None or cfg.get("reference") is not None:
+            return ("numeric_tolerance",
+                    f"estimation-canvas 且配置含 tolerance={cfg.get('tolerance')}"
+                    f"/reference={cfg.get('reference')}（参照+取整+容差）")
+        return ("answer_type_unresolved", "estimation-canvas 但配置无容差/参照，需读题面")
+
+    # 判断题：判「命题真假」，与值域无关地识别
+    if any(m in stem for m in JUDGE_MARKERS):
+        return ("numeric_exact", "题面要求判定命题真假，按约定的 0/1 映射核验")
+
+    # 按属性计数：题面问「几张/几个」且配置有可枚举对象
+    if any(k in stem for k in ("几张", "几个", "数数这类")):
+        cfg = _ws_config(ui_schema)
+        if cfg.get("shapes") or cfg.get("items"):
+            return ("count_by_attribute",
+                    "题面问数量且配置有可枚举对象列表（按属性筛选计数，非布尔）")
+
+    # 格编码：坐标约定明确
+    if renderer == "direction-grid":
+        cfg = _ws_config(ui_schema)
+        if cfg.get("cols") and cfg.get("target"):
+            return ("numeric_exact",
+                    f"终点格编码 row*cols+col（cols={cfg.get('cols')}，行主序 0 起）")
+
+    if s in ("0", "1") and not any(m in stem for m in JUDGE_MARKERS):
+        return ("answer_type_unresolved",
+                "值域为 {0,1} 但题面无判断词，是否布尔或计数未定")
+
+    if renderer in ("sorting-board", "pattern-board"):
+        return ("sequence_order", f"{renderer}：求有序序列/周期相位后按契约编码")
+    if renderer == "place-value":
+        return ("digit_config", "place-value：按数位与卡片使用约束求合法排列")
+    if renderer in ("shape-canvas", "shape-gallery"):
+        return ("geometry_constraint" if renderer == "shape-canvas"
+                else "count_by_attribute",
+                f"{renderer}：几何约束求合法构造" if renderer == "shape-canvas"
+                else f"{renderer}：按图形属性分类计数")
+
+    return ("numeric_exact", "默认：按题意求唯一数值（求解语义待逐题确认）")
+
+
+def _ws_config(ui_schema: dict | None) -> dict:
+    """取首个 workspace 的 config；结构不认识就返回空 dict（不猜）。"""
+    if not isinstance(ui_schema, dict):
+        return {}
+    for ws in ui_schema.get("workspaces") or []:
+        if isinstance(ws, dict) and isinstance(ws.get("config"), dict):
+            return ws["config"]
+    return {}
 
 
 def semantic_family(task_type: str, answer, stem: str, renderer: str,
                     ui_schema: dict | None = None) -> tuple[str, str]:
-    """返回 (族, 判据说明)。判据必须能对人解释，且按真实语料校准过。"""
+    """返回 (族, 判据说明)。**族只是初步分流，不是逐题语义认证。**"""
     tt = (task_type or "").lower()
     if tt == "estimation":
         RULE_HITS["R1"] += 1
         return "open_estimate", "R1: task_type=estimation（估算类，天然多解/容差）"
 
-    is_judge = str(answer).strip() in ("0", "1", "True", "False", "true", "false") \
-        and any(m in stem for m in JUDGE_MARKERS)
+    # R2 判定依据是**题面是否要求判定命题真假**，不再用「答案看起来像 0/1」。
+    # 用户 §二.3 指出的口径冲突：上一版 answer_shape_note 说"答案形态不参与
+    # 判族"，R2 却依赖"答案为布尔编码"——两句话互相矛盾。现在 R2 只看题面，
+    # 值域另由 solve_path 处理，避免"错误的数据库答案反过来决定核验路径"。
+    is_judge = any(m in stem for m in JUDGE_MARKERS) and str(answer).strip() in (
+        "0", "1", "True", "False", "true", "false")
     if is_judge:
         RULE_HITS["R2"] += 1
-        return "numeric_judge", "R2: 答案为布尔编码且题面含判断词"
+        return "numeric_judge", "R2: 题面要求判定命题真假（答案按约定映射 0/1）"
 
     hit_v = [v for v in CONSTRUCT_VERBS if v in stem]
     if renderer in CONSTRUCT_RENDERERS and hit_v:
@@ -112,7 +202,7 @@ def semantic_family(task_type: str, answer, stem: str, renderer: str,
     # 与删除前一致（170/53/1）。教训：删规则时必须逐条比对，不能凭印象
     # 写"结果不变"——我第一版注释就是这么写错的，比对后才发现有 1 条漂移。
     RULE_HITS["R5"] += 1
-    return "numeric_judge", "R5: 默认，可数值化求解"
+    return "numeric_judge", "R5: 默认数值候选（求解语义待逐题确认，非「已确认可精算」）"
 
 
 def answer_shape(answer) -> str:
@@ -191,6 +281,9 @@ def main() -> int:
 
     fam_count = Counter()
     shape_count = Counter()
+    sp_count = Counter()
+    sp_count_by_family = Counter()
+    unresolved: list[dict] = []
     review_flags: list[dict] = []
     for rvid in union:
         tt, content, ems, ui = detail.get(rvid, (None, None, None, None))
@@ -199,14 +292,21 @@ def main() -> int:
         ans = content.get("answer")
         m = meta.get(rvid, {})
         renderer = m.get("renderer") or "none"
-        fam, why = semantic_family(tt, ans, stem, renderer)
+        fam, why = semantic_family(tt, ans, stem, renderer, ui)
         fam_count[fam] += 1
+        sp, sp_why = solve_path_of(tt, ans, stem, renderer, ui)
+        sp_count[sp] += 1
+        sp_count_by_family[(fam, sp)] += 1
         shape = answer_shape(ans)
         shape_count[(fam, shape)] += 1
         bool_note = bool_ambiguity(ans, stem)
         if bool_note:
             review_flags.append({"rvid": rvid, "flag": "bool_semantics",
                                  "detail": bool_note})
+        # 求解路径未定的题单列，便于下一批"明确写出缺什么"
+        if sp == "answer_type_unresolved":
+            unresolved.append({"rvid": rvid, "renderer": renderer,
+                               "reason": sp_why})
 
         # Q05 候选的信号：error_models 是否只是把 pattern 抄成 code
         em_list = ems or []
@@ -221,6 +321,8 @@ def main() -> int:
             "semantic_family": fam,
             "family_rule": why.split(":", 1)[0],
             "family_reason": why,
+            "solve_path": sp,
+            "solve_path_reason": sp_why,
             "answer_shape": shape,
             "needs_review": bool_note,
             "in_Q03": rvid in q03,
@@ -258,8 +360,36 @@ def main() -> int:
             "numeric_judge": "数值与判断：算术、差比、判断型 0/1、符号编码、时间与金额单位",
             "construct_constraint": "构造与约束：数位排列、凑付金额、规律延拓、几何构造",
             "open_estimate": "开放或资料不足：估算、理由、图形信息不足、语义不明确",
-            "rules_are_explainable": "分族依据 task_type + 答案形态 + 构造动词 + renderer，"
+            # 2026-10-21 用户 §二.3 指出的口径冲突：上一版这里写"依据 task_type
+            # + 答案形态 + ..."，但 R2 确实依赖答案值域，等于"用答案反推判族"。
+            # 现在 R2 只看题面，答案形态只做旁证（answer_shape），不进判族。
+            "rules_are_explainable": "分族依据 task_type + 题面判断词 + 构造动词 + "
+                                     "renderer；**答案形态不参与判族**。"
                                      "每条都带 family_reason，不用黑箱分类",
+            "family_scope": ("族只回答『按哪类思路组织核验』，**不回答**"
+                             "『这条一定可自动求解』。后一个问题由 solve_path 回答，"
+                             "且仍须逐题确认。"),
+            "R5_caveat": ("R5 是**默认兜底**，不是语义证明。它命中多少条，"
+                          "只说明其他规则没接住多少条，不能承担"
+                          "『已确认可数值化求解』的举证责任。"),
+        },
+        "solve_path_definition": SOLVE_PATHS,
+        "solve_path_distribution": dict(sp_count.most_common()),
+        "solve_path_by_family": {
+            f"{fam}/{sp}": n
+            for (fam, sp), n in sp_count_by_family.most_common()
+        },
+        "solve_path_note": (
+            "求解路径回答『独立核验时到底算什么对象』，与族正交。同一族里"
+            "numeric_exact 与 numeric_tolerance 的核验方式不同（等式 vs 可接受集合），"
+            "不能因为都叫『数值题』就套同一个比较器。"
+        ),
+        "unresolved_items": {
+            "n": len(unresolved),
+            "note": ("这些题**没有**被转人工签认，只是求解路径无法仅凭"
+                     "task_type + 答案值域 + 配置确定，需要读题面。"
+                     "下一批遇到时按『明确写出缺什么』处理，不靠改分族提高通过率。"),
+            "items": unresolved,
         },
         "family_distribution": dict(fam_count.most_common()),
         "family_rule_hits": {k: RULE_HITS.get(k, 0) for k, _ in RULES},
@@ -274,9 +404,15 @@ def main() -> int:
             for (fam, shape), n in shape_count.most_common()
         },
         "answer_shape_note": (
-            "答案形态只是**旁证**，不参与判族。multi_digit 不等于『由摆位决定』："
-            "实测 direction-grid 步数 4 与 place-value 组成 352 都会落在单一形态里，"
-            "无法据此区分求解路径。Q03 一律按『独立求解 / 枚举合法解集合』处理。"
+            "答案形态只是**旁证**，不参与判族，也不参与定求解路径。"
+            "multi_digit 不等于『由摆位决定』：实测 direction-grid 步数 4 与 "
+            "place-value 组成 352 都会落在单一形态里，无法据此区分求解路径。"
+            "更要紧的是相反方向：**值域相同 ≠ 语义相同**——"
+            "实测 4 道 shape-gallery『这一类有几张卡』答 1（数量）、"
+            "1 道 direction-grid『提交终点格编码』答 1（row*cols+col）、"
+            "真判断题答 1（真/假），三者同为 {0,1} 却是三种所求对象。"
+            "所以 Q03 一律按 solve_path 走『独立求解 / 枚举合法解集合』，"
+            "不因为值是 0/1 就判成布尔题，也不因为值是 0/1 就转人工。"
         ),
         "priority_distribution": dict(Counter(r["priority"] for r in rows).most_common()),
         "review_flags": review_flags,
@@ -298,6 +434,9 @@ def main() -> int:
         "family_rule_hits": payload["family_rule_hits"],
         "dead_rules": payload["family_rule_dead_warnings"],
         "answer_shape_by_family": payload["answer_shape_by_family"],
+        "solve_path_distribution": payload["solve_path_distribution"],
+        "solve_path_by_family": payload["solve_path_by_family"],
+        "unresolved_n": payload["unresolved_items"]["n"],
         "priority_distribution": payload["priority_distribution"],
     }, ensure_ascii=False, indent=1))
     print("out:", args.out)
