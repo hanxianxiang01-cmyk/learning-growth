@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-10-21T02:27:16.440565+00:00",
+  "api": "http://127.0.0.1:8000",
+  "purpose": "复核补正：新 submission 借旧 attempt_no 的绕过负例（用户 2026-10-21 §三）",
+  "verdict": "PASS",
+  "steps": [
+    {
+      "step": "N1-NEW-SUB-REUSE-OLD-ATTEMPT-NO-NOT-BYPASSED",
+      "passed": true,
+      "sample_task": "007a65e7-ffdb-499a-9a65-8aa13ee6828e",
+      "old_attempt_no": 1,
+      "new_submission_id": "8d13ba59-f44e-4127-8fef-4c97df827821",
+      "http_status": 200,
+      "expired": true,
+      "attempt_id": null,
+      "must_not_equal_historical": "96295684-399d-4cc5-b9d9-406ffce4745c",
+      "correct": null,
+      "evidence_id": null,
+      "next_action": {
+        "type": "RETRY",
+        "policy_id": "task_expired"
+      },
+      "counts_before": {
+        "attempt": 1,
+        "evidence": 1,
+        "event": 1
+      },
+      "counts_after": {
+        "attempt": 1,
+        "evidence": 1,
+        "event": 1
+      },
+      "history_unchanged": true
+    },
+    {
+      "step": "N2-REPLAY-KEYS-ON-SUBMISSION-NOT-ATTEMPT-NO",
+      "passed": true,
+      "historical_submission_id": "0189a9c9-a2e1-96c9-b419-aaf49c597644",
+      "request_attempt_no": 2,
+      "expected_attempt_id": "96295684-399d-4cc5-b9d9-406ffce4745c",
+      "replayed_attempt_id": "96295684-399d-4cc5-b9d9-406ffce4745c",
+      "http_status": 200,
+      "counts_before": {
+        "attempt": 1,
+        "evidence": 1,
+        "event": 1
+      },
+      "counts_after": {
+        "attempt": 1,
+        "evidence": 1,
+        "event": 1
+      }
+    },
+    {
+      "step": "N3-NEW-SUB-NEW-ATTEMPT-NO-REJECTED",
+      "passed": true,
+      "http_status": 200,
+      "expired": true,
+      "counts_before": {
+        "attempt": 1,
+        "evidence": 1,
+        "event": 1
+      },
+      "counts_after": {
+        "attempt": 1,
+        "evidence": 1,
+        "event": 1
+      }
+    },
+    {
+      "step": "N4-SAMPLE-TERMINAL-STATE-RECORDED",
+      "passed": true,
+      "sample_task": "007a65e7-ffdb-499a-9a65-8aa13ee6828e",
+      "final_task_status": "cancelled",
+      "rvid": "b978d294-7ea5-4670-8538-3c04c2113536",
+      "review_status": "superseded",
+      "renderers": [
+        "money-board"
+      ],
+      "looks_like_current_exposure": true,
+      "note": "本脚本不改任务状态、不新增业务数据；样本是否可提交由守卫在运行时拒绝（N1/N3 已实证拒绝），不靠状态名推断"
+    }
+  ]
+}
