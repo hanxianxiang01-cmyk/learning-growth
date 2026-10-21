@@ -1,6 +1,6 @@
 {
  "title": "FE-1467｜Q05 / Q03 工作清单重建（以当前 Published RVID 为口径）",
- "generated_at": "2026-10-21T03:08:36.527617+00:00",
+ "generated_at": "2026-10-21T03:25:41.235176+00:00",
  "why": "用户 2026-10-21 终审 §五：211/212 是此前基线中的待办数量，不应未经复扫就继续作为当前精确数量。本文件是新基线；历史报告保持不变。",
  "method": {
   "object_scope_source": "scripts/iqc/inventory.py（review_status='published'）",
@@ -3525,50 +3525,8 @@
   "exec_mode.py + test_exec_mode_gate.py（只读/写入双模式，PR-IQC-GATE 硬阻断）",
   "postmerge_evidence_scope_ledger（证据分账，不夸大覆盖范围）"
  ],
- "scope_bug_fixed_this_round": {
-  "summary": "重建过程中发现 scan.py 的 published 口径存在**范围扩大缺陷**，已修。",
-  "bug": "scan.py 为 Q01 版本链校验，会把 version_migration_map.csv 端点的历史版本（当前均为 superseded）补载进 items 字典；而随后的『逐题规则』循环遍历的是整个 items，于是 published 口径的 Q03/Q05/Q06 findings 混入了 14 条非 published 版本。",
-  "symptom": "published=225 却产出 239 个 RVID 的 findings（467 条），且 Q03-UNVERIFIED 恰好等于 225 = published 总数——因为 14 条 superseded 也被判 UNVERIFIED。",
-  "fix": "在 mapping 扩展之前冻结逐题规则的作用域（target_ids），逐题循环只走该快照；coverage 的 audited_published 同样按 target_ids 计算，并新增 audited_scope / mapping_side_loaded 两个显式字段。",
-  "verified": {
-   "published_after_fix": {
-    "audited_published": 225,
-    "audited_scope": 225,
-    "mapping_side_loaded": 14,
-    "findings_total": 440,
-    "distinct_rvids": 225
-   },
-   "coverage_identity": "Q03-UNVERIFIED(212) + Q03-OK(13) = 225 = published 总数（每条 published 恰有一条 Q03 结论）",
-   "all_scope_unaffected": {
-    "audited_scope": 304,
-    "mapping_side_loaded": 0,
-    "findings_total": 597
-   },
-   "gate_green": "pr_gate.py 全 6 项 PASS（含夹具 25/25、执行模式闸门自证）",
-   "q01_chain_still_checked": "mapping_side_loaded=14 说明 Q01 版本链端点仍被正确载入校验，修复未削弱规则"
-  },
-  "history_baseline_also_had_it": "历史 findings_fe1460_225.jsonl 同样带此缺陷（239 个 RVID / 470 条，audited_published 却写 225）。按用户 §五『历史报告保持不变』，该文件不改；本基线是修正后的口径，差异已在下节显式说明。"
- },
- "delta_vs_history_225": {
-  "note": "与历史 findings_fe1460_225.jsonl（同 snapshot 系族 cee1afda… 的前一版，本轮回扫快照 79f90852…）逐 RVID 集合对比，差异完全可由 Q07 治理事实解释，不是噪声。",
-  "old_distinct_rvids": 239,
-  "new_distinct_rvids": 225,
-  "overlap": 188,
-  "only_old": 51,
-  "only_new": 37,
-  "only_old_explained": "51 条经 DB 核对**全部**为当前 review_status='superseded'——即 Q07 治理中被替代的旧版本，本就应退出 published 治理口径。",
-  "only_new_explained": "37 条经 DB 核对**全部**为当前 review_status='published'——即 Q07 的 37 项资源替代版本，本轮首次进入 published 口径。",
-  "conclusion": "51=当前 superseded 总数、37=Q07 替代资源数，两个方向都对齐；说明差异是治理动作的真实投影，新基线可信。",
-  "by_rule_delta": {
-   "Q03-UNVERIFIED": "225 → 212（-13）",
-   "Q05-HOMOGENEOUS": "224 → 209（-15）",
-   "Q03-OK": "14 → 13（-1）",
-   "Q06-STEM-LEAK": "7 → 6（-1）"
-  },
-  "coincidence_flagged": "Q03-UNVERIFIED 在新旧两版都等于或接近 212/225，但**集合不同**（overlap 仅 175）。数值相近纯属偶然，不可据此认为『缺口没变』——旧 212 含 50 条已 superseded 的版本。"
- },
  "worklist_union": {
-  "note": "两清单按 RVID 合并后的真实待办量——排期必须按并集，不能按 209+212 相加。",
+  "note": "两清单按 RVID 合并后的真实待办量——排期必须按并集，不能按数量相加。",
   "Q05_n": 209,
   "Q03_n": 212,
   "intersection": 197,
@@ -3583,7 +3541,127 @@
     ]
    }
   ],
-  "identity_check": "Q03-UNVERIFIED(212)+Q03-OK(13)=225=published；未进待办的仅 Q03-OK 类",
+  "identity_check": "Q03-UNVERIFIED(212)+Q03-OK(13)=225=published(225)",
   "priority": "交集 197 条优先（一题同时改两件事）"
+ },
+ "delta_vs_history_225": {
+  "note": "与历史 findings_fe1460_225.jsonl 逐 RVID 集合对比。历史文件按终审 §五『历史报告保持不变』未改动；本段只做归因，不改历史。",
+  "history_artifact": "findings_fe1460_225.jsonl",
+  "old_distinct_rvids": 239,
+  "new_distinct_rvids": 225,
+  "overlap": 188,
+  "only_old": 51,
+  "only_new": 37,
+  "only_old_rvids": [
+   "05a2649f-0f90-442c-aeeb-370545a7dc7b",
+   "11aca9c8-067a-48e6-945e-959a20ce83f5",
+   "125e7a06-5376-44ef-86f1-bceaa14505b2",
+   "12f89452-ad38-4c24-af5d-d734f5b4c43b",
+   "1716d898-506d-4428-a9de-664bc60b528e",
+   "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "1ab893bf-b293-41bb-8514-310a8b832c3e",
+   "24e3c3f4-51bd-4411-a3c3-f4e7f5538d43",
+   "291106d7-45a5-4e79-8263-1b2e2e84dd11",
+   "2bbbc87a-db80-462a-83da-7027a4bbca93",
+   "2c46c271-1a2f-4f45-ad3c-b5719ad58ded",
+   "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+   "3527282b-7c3a-490b-805c-295294f25c35",
+   "3d60a583-d90d-442d-9e2d-d78ab970b414",
+   "4936b35f-a5dc-44d4-9b2e-e58c6f3b7c0e",
+   "4e850544-94db-4701-964e-3b939fb3cf42",
+   "55810dda-4636-4150-8c31-ff81af70c8f8",
+   "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "57c34c52-7fc2-4ba8-9f66-2a60c622d6f4",
+   "60039509-f8e6-47f5-a86a-04d9b84e05ef",
+   "68f68512-5167-4d30-8f31-a082e12a0244",
+   "6b87f039-372a-4146-80d2-6873e38001f9",
+   "75cae864-1d63-44d3-8bc4-3d300e81f550",
+   "7a168c3c-0342-43b4-9651-445b54e82375",
+   "831832e5-a14c-4902-8249-60eaa0b451a9",
+   "845c6fea-418f-4365-a25e-b50e5b5040f8",
+   "86672e3b-3678-4874-8d7c-5f588c8bb398",
+   "8d8c71fb-9c9d-45d6-9c8a-d395f202f9fa",
+   "8eb5de92-d04b-4d0a-abc5-eb2e58375fcd",
+   "95b16f9f-c5a4-4791-8f8a-00c25d744a61",
+   "95d79265-76d9-4625-bf83-3cb90d4fab5c",
+   "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "985156bc-c033-4911-8e92-46c984f7cb65",
+   "99b86483-6fe7-46bb-962d-ef298d779cce",
+   "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "a21d4278-9780-453c-a510-08ce184f764e",
+   "a7fc3314-72c6-4b58-998d-fa0111cd86fd",
+   "b7d09e76-58f2-40af-a8ea-7d31a1bc3f6e",
+   "b978d294-7ea5-4670-8538-3c04c2113536",
+   "be433fc9-af29-41dc-88c2-7d0a5d110459",
+   "cbcf5a5d-a88c-4463-b5ec-1aed74e17cce",
+   "d606f5a4-649e-4f4b-be4f-4ce63923263b",
+   "da0d938c-90f9-4e06-9b16-aa6af9e568df",
+   "df5c3a8b-1119-4624-ae7e-4997f9a9eef9",
+   "e02a5afe-f9ef-47a3-b0af-9f79d884a038",
+   "e1393f3d-2a02-4eba-b02e-5be1ee9b6a54",
+   "e946491c-ced3-4160-aa25-a2ccb0a10a7c",
+   "ec982464-72c9-40e1-9db0-20435c60b798",
+   "f281ec32-4680-4c0e-b875-5ee76e23205f"
+  ],
+  "only_new_rvids": [
+   "007b00b2-03bd-47d6-a58e-368ee1d00192",
+   "088d0469-b111-4dfd-9541-2df7154b206e",
+   "0b95c86f-99b3-421a-8a04-d328b4eb7eb7",
+   "0bfad10f-1e49-4625-ba5b-038de233f571",
+   "11129745-f159-4458-ba28-2b85503a1071",
+   "1d5fab4e-f752-4b7b-892b-82a0932d8cde",
+   "2f2e8491-151c-4959-94be-c7789d553895",
+   "3a80cfb1-d6a8-4cb2-b430-122a17f3a4ee",
+   "421427f3-8f7a-47b0-9c61-cf7724701d10",
+   "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "4e7aac4d-9fb1-49db-8d23-d777aad68e89",
+   "52578333-c17a-4786-bfa1-2f84b6bba858",
+   "5ee230c4-a9e3-4b24-8bb6-657571cced5f",
+   "6285f244-9d78-4df3-b700-462801281d27",
+   "66938277-896a-424c-ae85-3b8cf710d7a3",
+   "73c7e8c0-8b24-4ab3-b3f9-cddabf534d97",
+   "7c1b3466-dc9b-4630-b549-22432dca9418",
+   "82aabb99-d2a8-4885-9236-7e44395238d7",
+   "82ff6618-4fea-4b4b-80a3-2741cf014571",
+   "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "8a658f5e-f2ff-49c5-8e39-598e32a9681d",
+   "8b41e648-23dc-4a84-bc3c-d86293c358f9",
+   "a1b71f95-f8a8-4ea2-8942-8c93b532b46b",
+   "a6eebe9a-97e6-4bc0-a58f-727ede2cceed",
+   "aaf57012-1abc-48f5-822d-bfb0bf69a390",
+   "ae778338-3a06-417f-b889-f42ce4647f47",
+   "b2d0c748-518c-4000-a8b6-4dbd56bd2bdb",
+   "b38f8898-aed4-4238-b7d9-dda33092aae4",
+   "bd711387-6da6-4669-ac3f-fdbd59ffd265",
+   "c8aea8db-7a24-405f-beaa-f1e6b057ebaa",
+   "c9347ee4-5d75-4f2b-a9cc-b2a193c4961f",
+   "da7655e3-bd20-4fa2-b112-788d4e86edc8",
+   "e6bc5139-0be9-4981-92d0-094cfe133ca1",
+   "e6fd4a86-5211-4732-9962-cd619d35dd09",
+   "e8fd711d-223a-4f4a-b79e-0cd46536bac1",
+   "fe2e4fbb-0a49-4479-9c14-564ffa994724"
+  ],
+  "attribution": "only_old 应为治理中被替代的 superseded 版本（应退出 published 口径）；only_new 应为 Q07 资源替代后新进入口径的 published 版本。归属状态请由重建时的 inventory.status_distribution 与 DB review_status 交叉核对。",
+  "by_rule_delta": {
+   "Q03-OK": {
+    "old": 14,
+    "new": 13
+   },
+   "Q03-UNVERIFIED": {
+    "old": 225,
+    "new": 212
+   },
+   "Q05-HOMOGENEOUS": {
+    "old": 224,
+    "new": 209
+   },
+   "Q06-STEM-LEAK": {
+    "old": 7,
+    "new": 6
+   }
+  }
  }
 }

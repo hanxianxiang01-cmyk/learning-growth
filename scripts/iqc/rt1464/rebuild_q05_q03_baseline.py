@@ -191,6 +191,55 @@ def main() -> int:
     }
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
+
+    # 两清单的集合关系：排期必须按并集，不能按 209+212 相加。
+    rvids_with_findings = {f["rvid"] for f in fs}
+    not_in_either = sorted(rvids_with_findings - set(q05) - set(q03u))
+    payload["worklist_union"] = {
+        "note": "两清单按 RVID 合并后的真实待办量——排期必须按并集，不能按数量相加。",
+        "Q05_n": len(q05), "Q03_n": len(q03u),
+        "intersection": len(set(q05) & set(q03u)),
+        "Q05_only": len(set(q05) - set(q03u)),
+        "Q03_only": len(set(q03u) - set(q05)),
+        "union": len(set(q05) | set(q03u)),
+        "not_in_either": [
+            {"rvid": r, "rules": sorted({f["rule_id"] for f in fs if f["rvid"] == r})}
+            for r in not_in_either
+        ],
+        "identity_check": f"Q03-UNVERIFIED({len(q03u)})+Q03-OK({len(q03ok)})"
+                          f"={len(q03u) + len(q03ok)}=published({len(pub_rvids)})",
+        "priority": f"交集 {len(set(q05) & set(q03u))} 条优先（一题同时改两件事）",
+    }
+
+    # 与历史 findings_fe1460_225.jsonl 的逐 RVID 差异归因。
+    # 历史文件按用户 §五「历史报告保持不变」不改，这里只做只读比对。
+    hist_p = os.path.join(REPO, "scripts/iqc/runs/findings_fe1460_225.jsonl")
+    if os.path.exists(hist_p):
+        hist = [json.loads(l) for l in open(hist_p)]
+        h_rvids = {f["rvid"] for f in hist}
+        only_old = sorted(h_rvids - rvids_with_findings)
+        only_new = sorted(rvids_with_findings - h_rvids)
+        payload["delta_vs_history_225"] = {
+            "note": "与历史 findings_fe1460_225.jsonl 逐 RVID 集合对比。历史文件按终审 §五"
+                    "『历史报告保持不变』未改动；本段只做归因，不改历史。",
+            "history_artifact": os.path.basename(hist_p),
+            "old_distinct_rvids": len(h_rvids),
+            "new_distinct_rvids": len(rvids_with_findings),
+            "overlap": len(h_rvids & rvids_with_findings),
+            "only_old": len(only_old),
+            "only_new": len(only_new),
+            "only_old_rvids": only_old,
+            "only_new_rvids": only_new,
+            "attribution": "only_old 应为治理中被替代的 superseded 版本（应退出 published 口径）；"
+                           "only_new 应为 Q07 资源替代后新进入口径的 published 版本。"
+                           "归属状态请由重建时的 inventory.status_distribution 与 DB review_status 交叉核对。",
+            "by_rule_delta": (
+                {r: {"old": sum(1 for f in hist if f["rule_id"] == r),
+                     "new": sum(1 for f in fs if f["rule_id"] == r)}
+                 for r in sorted({f["rule_id"] for f in hist} | {f["rule_id"] for f in fs})}
+            ),
+        }
+
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=1)
 
@@ -201,6 +250,8 @@ def main() -> int:
         "Q03_OK": len(q03ok),
         "Q03_ANSWER_MISMATCH": len(q03mm),
         "findings_total": len(fs),
+        "union": payload["worklist_union"]["union"],
+        "intersection": payload["worklist_union"]["intersection"],
     }, ensure_ascii=False, indent=1))
     print("out:", args.out)
     return 0
