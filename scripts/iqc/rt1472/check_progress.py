@@ -29,11 +29,19 @@ BATCH_ARTIFACTS = [
     "FE1470_q03_batch2.json",
     "FE1471_q03_batch3.json",
     "FE1472_q03_batch4.json",
+    "FE1472_q03_batch5.json",
 ]
 
 # 文档中声明的数字（改文档时同步改这里，脚本会核对）
 EXPECTED = {"union": 224, "in_q03": 212, "in_q05": 209,
             "both": 197, "q03_only": 15, "q05_only": 12}
+
+# 文档声明的「去重完成合计」与由此推出的两个待办数。
+# **这三项必须显式声明**——第五批态下若仍用 75 就说明文档没同步，
+# 而此前正是「靠人算减法」把 Q05_only 写成 67 的。
+EXPECTED_DONE = 95
+EXPECTED_TODO_Q03 = 117      # 212 − 95
+EXPECTED_TODO_BOTH = 102     # 197 − 95
 
 
 def main() -> int:
@@ -84,6 +92,14 @@ def main() -> int:
 
     todo_q03 = actual["in_q03"] - len(done & {i["rvid"] for i in items if i["in_Q03"]})
     todo_both = actual["both"] - len(done & {i["rvid"] for i in items if i["in_Q03"] and i["in_Q05"]})
+
+    # 文档声明的完成数与两个待办数必须与实测相等（防「文档没同步」与「减法外推」）
+    if len(done) != EXPECTED_DONE:
+        fails.append(f"去重完成合计: 实测 {len(done)}，文档声明 {EXPECTED_DONE}")
+    if todo_q03 != EXPECTED_TODO_Q03:
+        fails.append(f"Q03 待核验: 实测 {todo_q03}，文档声明 {EXPECTED_TODO_Q03}")
+    if todo_both != EXPECTED_TODO_BOTH:
+        fails.append(f"both 待核验: 实测 {todo_both}，文档声明 {EXPECTED_TODO_BOTH}")
 
     print("── 集合口径（实测）──")
     for k in ("union", "in_q03", "in_q05", "both", "q03_only", "q05_only"):

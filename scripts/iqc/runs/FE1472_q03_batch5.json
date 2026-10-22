@@ -1,0 +1,1608 @@
+{
+ "title": "FE-1472 第五批｜Q03 20 题独立核验（先冻结 + 题面抽取）",
+ "generated_at": "2026-10-22T03:37:01.141813+00:00",
+ "chain": [
+  "题干",
+  "抽取题面事实",
+  "明确所求对象",
+  "独立推导（纯算术）",
+  "断言 config 已知量 ⊆ 题面事实",
+  "与存储答案比较"
+ ],
+ "independence": {
+  "rule": "computed 只由 derive(item) 从**题干文本**抽出的事实算出；config 只用于事后一致性核对，不参与计算；answer_raw 仅在比较一步出现",
+  "why_stronger_than_batch4": "前四批直接读 config 算数，只能证明 config 内部自洽；若 config 与题面不一致（如 config 写 7、题面写 8），前四批仍会 MATCH。本批先在一致性检查上暴露，再比较答案",
+  "enforced_by": "derive() 的入参是 item，其 answer 字段在调用前未被读取；independent_eval() 只对纯算术表达式求值",
+  "caveat": "独立推导能排除「照答案反推」，**不能证明题面解析正确**——若我把题意读错，MATCH 也只是「错误理解与答案巧合一致」"
+ },
+ "ledger": {
+  "quota": 20,
+  "verified": 20,
+  "quota_frozen_before_verify": true,
+  "quota_source": "scripts/iqc/rt1472/batch5_quota_list.json",
+  "pool_size": 75,
+  "note": "选题集合在核验前落盘；候选池 75 = 并集 224 − 四批已核 75 中 priority=both 且 semantic_family=numeric_judge 的部分。"
+ },
+ "summary": {
+  "total": 20,
+  "match": 20,
+  "mismatch": 0,
+  "config_inconsistent": 0,
+  "observation_counts": {
+   "EVIDENCE_DECLARED_BUT_NOT_ENFORCED": 18,
+   "GROUP_SIZE_IS_ANSWER_COPY": 3,
+   "INITIAL_COUNT_IGNORED": 4,
+   "JUMPS_NOT_ENFORCED_BY_COMPONENT": 3,
+   "JUMP_COUNT_ONE_TRIVIAL": 2,
+   "MODE_STEM_MISMATCH": 2
+  },
+  "process_constraint_declared": 0,
+  "by_renderer": {
+   "legacy:direct": {
+    "n": 2,
+    "match": 2,
+    "inconsistent": 0
+   },
+   "grouping-board": {
+    "n": 3,
+    "match": 3,
+    "inconsistent": 0
+   },
+   "bar-model": {
+    "n": 4,
+    "match": 4,
+    "inconsistent": 0
+   },
+   "number-line": {
+    "n": 3,
+    "match": 3,
+    "inconsistent": 0
+   },
+   "ten-frame": {
+    "n": 4,
+    "match": 4,
+    "inconsistent": 0
+   },
+   "ruler": {
+    "n": 4,
+    "match": 4,
+    "inconsistent": 0
+   }
+  },
+  "match_definition": "MATCH 只表示「从题面独立推导的结果与存储答案相等」，不表示该题的交互/配置无问题"
+ },
+ "items": [
+  {
+   "rvid": "079a7e47-fd86-46d9-92e6-6ff5c7b299e5",
+   "title": "检查加法答案",
+   "renderer": "legacy:direct",
+   "ability_id": "app_check",
+   "input_basis": "题面抽出两个加数与断言值，先算实际和再与之比较；**不读答案，也不预设「检查题答案多为 1」**",
+   "read": "小美有6支红笔和4支蓝笔。小东说“一共有10支笔”。请检查：正确填1，错误填0。→ 用题面两个数量 [6, 4] 重算得 10，与说法「10」比较",
+   "target_object": "判断结果（10 vs 10 → 对则 1，错则 0）",
+   "derivation": {
+    "expr": "6 + 4",
+    "encode": {
+     "kind": "judge_equal",
+     "compare_to": 10
+    }
+   },
+   "computed": 1,
+   "stated_answer": "1",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [],
+   "evidence_enforcement": {
+    "evidence_targets": null,
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {},
+   "workspace_mode": null,
+   "workspace_capabilities": null,
+   "stem": "小美有6支红笔和4支蓝笔。小东说“一共有10支笔”。请检查：正确填1，错误填0。",
+   "input_binding": {
+    "stem_sha256": "73f110c4de3140062db2804923fde1d69dab45eee05a0be1713c0acb6b480ad2",
+    "ui_schema_sha256": "dae307304a327f1cb988f0a982694460c8c39c6039dcae914251933295341f62"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`ui_schema` 为 schema_version=1.0 的 `kind:number`，**无 workspace、无 config、无表征**；提交 `answer` 只能是 1 或 0，本题正确值 10",
+     "competing_explanations": "可能的错值：1（一律判对）、0（一律判错）。**本题正确答案恰为 10，所以「恒定填 10」与「真算过」同值**",
+     "cannot_distinguish": "提交物只有一个二进制值，**分不开「重算后判断」与「猜/背答案」**；也没有中间算式可查",
+     "neutral_feedback": "说「再读一遍题目，看看它问的是哪一个数量」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "0da1d340-d51c-4b32-92d8-703daf8bac4e",
+   "title": "看清时间",
+   "renderer": "legacy:direct",
+   "ability_id": "app_rd",
+   "input_basis": "题面所问含限定词「上午」；候选数量 ['6']；**不读答案**",
+   "read": "小云上午画了6朵花，下午画了3棵树。老师问：小云上午画了几朵花？→ 题面问「问：小云上午画了几朵」，按问句限定的对象取数",
+   "target_object": "题面所问的那一个数量（不是总数）",
+   "derivation": {
+    "expr": "6",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 6,
+   "stated_answer": "6",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [],
+   "evidence_enforcement": {
+    "evidence_targets": null,
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {},
+   "workspace_mode": null,
+   "workspace_capabilities": null,
+   "stem": "小云上午画了6朵花，下午画了3棵树。老师问：小云上午画了几朵花？",
+   "input_binding": {
+    "stem_sha256": "ece0ffde3f3fc17733791b3131109a255fd29a08bf3be5818e67fedeb26dc7e7",
+    "ui_schema_sha256": "fb62866486b05906382da8f90f709bae826f9b0d5080eaa65ea71075e7391d87"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`ui_schema` 为 schema_version=1.0 的 `kind:number`，**无 workspace、无 config**；题面含干扰信息（另有与所问无关的数量），提交 `answer` 为所问数量 6",
+     "competing_explanations": "可能的错值：把题面里其他数量当答案。本题所问数量 6 与其余数量并列出现，选错任何一个都会给出非 6 的值",
+     "cannot_distinguish": "**能分开选错对象**（终值不同），但分不开「读懂了题目所问」与「恰好先看到那个数」——提交物只有终值，没有针对「问的是谁」的中间证据",
+     "neutral_feedback": "说「再读一遍题目，看看它问的是哪一个数量」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "1ee68418-9767-4330-8b36-42961fb06969",
+   "title": "[T155] V14-P0-065",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "input_basis": "题面抽出 total=12、groups=4；config.group_size=3 仅作交叉核对（**组件不读该字段**）；**不读答案**",
+   "read": "有12颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。→ 12 颗平均分给 4 人，求每人几颗",
+   "target_object": "每份颗数（12÷4）",
+   "derivation": {
+    "expr": "12 / 4",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 3.0,
+   "stated_answer": "3",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "GROUP_SIZE_IS_ANSWER_COPY",
+     "severity": "info",
+     "why": "`group_size` 不是输入，是答案副本；组件也不读它",
+     "evidence": "`groupingBoardV2.ts::parseGroupingConfig()` 只取 items/target_groups/max_groups；group_size 由 items÷groups 得出",
+     "consequence": "若把它当独立配置依据，会形成「用答案校答案」的循环",
+     "not_concluded": "本条是口径登记，不是缺陷"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['group_assignments', 'per_group_count']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "group_assignments",
+     "per_group_count"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "items": 12,
+    "total": 12,
+    "group_size": 3,
+    "max_groups": 6,
+    "target_groups": 4
+   },
+   "workspace_mode": "equal_sharing",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "有12颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "input_binding": {
+    "stem_sha256": "ecea519c5801142cee6b2e5aed0053690418d4b190ae0f2b7cf7fc78811a21fe",
+    "ui_schema_sha256": "6977f57a5dcb7c4e7ea1a2c093984e911ef4b22e0b5f310c9778ceafe2646a72"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.total`=12、`target_groups`=4、`group_size`=3；提交 `answer` 为每份 3。序列化层记录 `groups`（各组实际个数）、`pool_remaining`、`structure.error`（count/unequal）；**`group_size` 组件不读**，它是答案副本",
+     "competing_explanations": "可能的错值：4（把组数当每份数）；12（把总量当每份数）；8（把「发剩的」当每份）",
+     "cannot_distinguish": "`groups` 数组能分开「组数错（count）」与「各组不等（unequal）」；分不开「一次一颗轮着发」与「先算好每份数再一把倒进去」——最终各组数量相同",
+     "neutral_feedback": "说「一个一个轮着发，发完看看每个小朋友手里有几个」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "30a8e925-494f-4cf7-924f-0269af3e50cf",
+   "title": "[T155] V14-P0-013",
+   "renderer": "bar-model",
+   "ability_id": "app_model",
+   "input_basis": "题面抽出两部分 pa=7、pb=4；config.known (a=7, b=4) 仅作交叉核对；answer_bar=c、max_blocks=13；**不读答案**",
+   "read": "小明有7本书，小红比他多4本。用线段图表示两个数量的关系，再求小红有多少本。→ 题面两部分 7 与 4，求整体",
+   "target_object": "整体（答案条 c = 7+4）",
+   "derivation": {
+    "expr": "7 + 4",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 11,
+   "stated_answer": "11",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "MODE_STEM_MISMATCH",
+     "severity": "risk",
+     "why": "题面语义为 comparison，config.mode 声明 part_whole。两种表征摆出的条形不同，但提交答案恰好相同",
+     "evidence": "题面：「小明有7本书，小红比他多4本。用线段图表示两个数量的关系，再求小红有多少本。」；config.known={'a': 7, 'b': 4}、answer_bar=c",
+     "consequence": "孩子在界面看到的是「部分一 / 部分二 / 整体（一共）」三根条，而题目问的是「小红比小明多几本」——**要求把关系题摆成合并题**。答案数字仍可能对，但「用线段图表示两个数量的关系」这一目标未被界面支持",
+     "not_concluded": "本条不主张该题答案有误（答案已核 MATCH），只登记表征语义与题面不一致"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['bar_lengths', 'unknown_value']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "bar_lengths",
+     "unknown_value"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "mode": "part_whole",
+    "known": {
+     "a": 7,
+     "b": 4
+    },
+    "answer_bar": "c",
+    "max_blocks": 13
+   },
+   "workspace_mode": "part_whole",
+   "workspace_capabilities": [
+    "draw",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "小明有7本书，小红比他多4本。用线段图表示两个数量的关系，再求小红有多少本。",
+   "input_binding": {
+    "stem_sha256": "70c1bf421f0a10d36ccb4ce7d91e9b6ae4a79753ef3db9bbfea1e8585ec37112",
+    "ui_schema_sha256": "37ad62a7e27922e82526fa8dd6d4ae1b3831390a92344d00f88213332a48a3be"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.known`={a:7, b:4}、`answer_bar`=c、`max_blocks`=13；提交 `answer` 为整体条 11。序列化层三根条全量入库 `bars={a,b,c}` 与 `structure.error`（modeling/relation/calc）",
+     "competing_explanations": "可能的错值：7（只摆部分一条）；4（只摆部分二条）；3（把「多几」当整体）；12（多数一格）",
+     "cannot_distinguish": "三根条都入库，**能分开「已知条摆错（modeling）」与「算错（calc）」**；分不开「照着题面逐格数出来」与「先算出和再一把拖到位」——条形长度只能证明结果，证明不了过程",
+     "neutral_feedback": "说「两部分合起来就是整体，把两根条接在一起看看有多长」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "39b09e38-1abd-403d-ba6b-b3854c7a1abb",
+   "title": "[T155] V14-P0-011",
+   "renderer": "bar-model",
+   "ability_id": "app_rel",
+   "input_basis": "题面抽出两部分 pa=9、pb=4；config.known (a=9, b=4) 仅作交叉核对；answer_bar=c、max_blocks=15；**不读答案**",
+   "read": "手工课上先拿来9张彩纸，又拿来4张彩纸。请用线段图表示两次拿来的数量，再求总共有多少张。→ 题面两部分 9 与 4，求整体",
+   "target_object": "整体（答案条 c = 9+4）",
+   "derivation": {
+    "expr": "9 + 4",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 13,
+   "stated_answer": "13",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['bar_lengths', 'unknown_value']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "bar_lengths",
+     "unknown_value"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "mode": "part_whole",
+    "known": {
+     "a": 9,
+     "b": 4
+    },
+    "answer_bar": "c",
+    "max_blocks": 15
+   },
+   "workspace_mode": "part_whole",
+   "workspace_capabilities": [
+    "draw",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "手工课上先拿来9张彩纸，又拿来4张彩纸。请用线段图表示两次拿来的数量，再求总共有多少张。",
+   "input_binding": {
+    "stem_sha256": "cd170efeb7672ebb1a5cb61c19cc0b9bc6b6debad507bf03443e8e7ad62cf890",
+    "ui_schema_sha256": "fd624657c079bed50749bdfcd932078dc948b647deecd3b713596633d0c215c4"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.known`={a:9, b:4}、`answer_bar`=c、`max_blocks`=15；提交 `answer` 为整体条 13。序列化层三根条全量入库 `bars={a,b,c}` 与 `structure.error`（modeling/relation/calc）",
+     "competing_explanations": "可能的错值：9（只摆部分一条）；4（只摆部分二条）；5（把「多几」当整体）；14（多数一格）",
+     "cannot_distinguish": "三根条都入库，**能分开「已知条摆错（modeling）」与「算错（calc）」**；分不开「照着题面逐格数出来」与「先算出和再一把拖到位」——条形长度只能证明结果，证明不了过程",
+     "neutral_feedback": "说「两部分合起来就是整体，把两根条接在一起看看有多长」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "3b25ca25-ef47-4196-ab2a-3dd3e47a3c9c",
+   "title": "[T155] V14-P0-072",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "input_basis": "题面抽出 total=20、groups=4；config.group_size=5 仅作交叉核对（**组件不读该字段**）；**不读答案**",
+   "read": "有20颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。→ 20 颗平均分给 4 人，求每人几颗",
+   "target_object": "每份颗数（20÷4）",
+   "derivation": {
+    "expr": "20 / 4",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 5.0,
+   "stated_answer": "5",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "GROUP_SIZE_IS_ANSWER_COPY",
+     "severity": "info",
+     "why": "`group_size` 不是输入，是答案副本；组件也不读它",
+     "evidence": "`groupingBoardV2.ts::parseGroupingConfig()` 只取 items/target_groups/max_groups；group_size 由 items÷groups 得出",
+     "consequence": "若把它当独立配置依据，会形成「用答案校答案」的循环",
+     "not_concluded": "本条是口径登记，不是缺陷"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['group_assignments', 'per_group_count']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "group_assignments",
+     "per_group_count"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "items": 20,
+    "total": 20,
+    "group_size": 5,
+    "max_groups": 6,
+    "target_groups": 4
+   },
+   "workspace_mode": "equal_sharing",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "有20颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "input_binding": {
+    "stem_sha256": "f2ab1c2500b28607ca59dd98d62bba0af722af9029d5f79110ba81e63ff8bf74",
+    "ui_schema_sha256": "551001af7021e105989fa0aa7bff8a1b8073d6cb81b2b7934c2c6faa805af1b9"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.total`=20、`target_groups`=4、`group_size`=5；提交 `answer` 为每份 5。序列化层记录 `groups`（各组实际个数）、`pool_remaining`、`structure.error`（count/unequal）；**`group_size` 组件不读**，它是答案副本",
+     "competing_explanations": "可能的错值：4（把组数当每份数）；20（把总量当每份数）；16（把「发剩的」当每份）",
+     "cannot_distinguish": "`groups` 数组能分开「组数错（count）」与「各组不等（unequal）」；分不开「一次一颗轮着发」与「先算好每份数再一把倒进去」——最终各组数量相同",
+     "neutral_feedback": "说「一个一个轮着发，发完看看每个小朋友手里有几个」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "3b94815f-16a6-4a8f-a17d-2b1e2b229053",
+   "title": "[T155] V14-P0-024",
+   "renderer": "number-line",
+   "ability_id": "app_strat",
+   "input_basis": "题面抽出 start=30、dir=左、size=8、count=1；config 四项仅作交叉核对；**不读答案**",
+   "read": "在数轴上从30出发，向左每次跳8，连续跳1次。请完成跳步并写出终点。→ 从 30 向左跳 1 次、每次 8，求终点",
+   "target_object": "终点刻度（30-8×1）",
+   "derivation": {
+    "expr": "30 - 8 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 22,
+   "stated_answer": "22",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "JUMP_COUNT_ONE_TRIVIAL",
+     "severity": "risk",
+     "why": "jump_count=1 时题面「连续跳 1 次」与「跳一次」等价，「连续跳步」这一考点未被实际考查",
+     "evidence": "config.jump_size=8、jump_count=1、start=30",
+     "consequence": "孩子一次点到位即完成，`jumps` 数组只有一段，无法体现「等长重复跳」",
+     "not_concluded": "本条不主张答案有误；只登记考点强度"
+    },
+    {
+     "code": "JUMPS_NOT_ENFORCED_BY_COMPONENT",
+     "severity": "risk",
+     "why": "`applyJump` 只拒绝「跳到当前值」，不校验步长是否等于 jump_size、次数是否等于 jump_count",
+     "evidence": "`numberLineV2.ts::applyJump()` 仅判断 `state.current === null || v === state.current`；运行时实测：start=30 一步跳到 40 被接受（jumps=[{from:30,to:40}]）",
+     "consequence": "孩子可以直接从起点一步点到终点，判分只读 answer → 与「按规则一步步跳」同分",
+     "not_concluded": "本条不主张答案有误；只登记过程约束缺失"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['jumps', 'endpoint']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "jumps",
+     "endpoint"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "scale": {
+     "max": 40,
+     "min": 0,
+     "tick_step": 1
+    },
+    "direction": "left",
+    "jump_size": 8,
+    "jump_count": 1,
+    "start_marker": {
+     "value": 30,
+     "marker_id": "start"
+    }
+   },
+   "workspace_mode": "jump_sequence",
+   "workspace_capabilities": [
+    "jump",
+    "place_marker",
+    "undo",
+    "reset"
+   ],
+   "stem": "在数轴上从30出发，向左每次跳8，连续跳1次。请完成跳步并写出终点。",
+   "input_binding": {
+    "stem_sha256": "b2b7ebab22b553a320858e57dccca71ad949268c68bd8b265df2f65b43e227d0",
+    "ui_schema_sha256": "6d094acb2f7a64388c056cf13e8f39073f47c94ea71c954f9b180e7ad8507c07"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start_marker.value`=30、`jump_size`=8、`jump_count`=1、`direction`=left；提交 `answer` 为终点 22。**V2 组件 `applyJump` 只拒绝「跳到当前值」，不校验步长与次数**——孩子可以一步点到任意刻度",
+     "competing_explanations": "可能的错值：38（方向跳反）；-8（从 0 起算而非从起点）。**22 与正确答案同值**，该错法本题不成立",
+     "cannot_distinguish": "`jumps` 数组记录每次 from→to，能看出「跳了几步、每步多大」；但本题要求「每次跳 8、连续 1 次」，**组件不拦不合规的跳步**，所以「按规则跳」与「直接点到终点」在判分上不可分——判分只读 answer",
+     "neutral_feedback": "说「从起点开始，按方向一格一格地数，数完看看停在哪个数」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "52df263c-9da3-4a3c-b98e-c3e2b82c561b",
+   "title": "[T155] V14-P0-020",
+   "renderer": "number-line",
+   "ability_id": "app_strat",
+   "input_basis": "题面抽出 start=16、dir=左、size=7、count=1；config 四项仅作交叉核对；**不读答案**",
+   "read": "在数轴上从16出发，向左每次跳7，连续跳1次。请完成跳步并写出终点。→ 从 16 向左跳 1 次、每次 7，求终点",
+   "target_object": "终点刻度（16-7×1）",
+   "derivation": {
+    "expr": "16 - 7 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 9,
+   "stated_answer": "9",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "JUMP_COUNT_ONE_TRIVIAL",
+     "severity": "risk",
+     "why": "jump_count=1 时题面「连续跳 1 次」与「跳一次」等价，「连续跳步」这一考点未被实际考查",
+     "evidence": "config.jump_size=7、jump_count=1、start=16",
+     "consequence": "孩子一次点到位即完成，`jumps` 数组只有一段，无法体现「等长重复跳」",
+     "not_concluded": "本条不主张答案有误；只登记考点强度"
+    },
+    {
+     "code": "JUMPS_NOT_ENFORCED_BY_COMPONENT",
+     "severity": "risk",
+     "why": "`applyJump` 只拒绝「跳到当前值」，不校验步长是否等于 jump_size、次数是否等于 jump_count",
+     "evidence": "`numberLineV2.ts::applyJump()` 仅判断 `state.current === null || v === state.current`；运行时实测：start=30 一步跳到 40 被接受（jumps=[{from:30,to:40}]）",
+     "consequence": "孩子可以直接从起点一步点到终点，判分只读 answer → 与「按规则一步步跳」同分",
+     "not_concluded": "本条不主张答案有误；只登记过程约束缺失"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['jumps', 'endpoint']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "jumps",
+     "endpoint"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "scale": {
+     "max": 40,
+     "min": 0,
+     "tick_step": 1
+    },
+    "direction": "left",
+    "jump_size": 7,
+    "jump_count": 1,
+    "start_marker": {
+     "value": 16,
+     "marker_id": "start"
+    }
+   },
+   "workspace_mode": "jump_sequence",
+   "workspace_capabilities": [
+    "jump",
+    "place_marker",
+    "undo",
+    "reset"
+   ],
+   "stem": "在数轴上从16出发，向左每次跳7，连续跳1次。请完成跳步并写出终点。",
+   "input_binding": {
+    "stem_sha256": "a168b261345e3a4e40c5a5f9bbf79ba6eefb2dfbd577755597b01eacce9188f0",
+    "ui_schema_sha256": "0b786231d8bdd246f9699527b75ed3e0cf6b5b55e93c9ea7b9821d1a02a5be3b"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start_marker.value`=16、`jump_size`=7、`jump_count`=1、`direction`=left；提交 `answer` 为终点 9。**V2 组件 `applyJump` 只拒绝「跳到当前值」，不校验步长与次数**——孩子可以一步点到任意刻度",
+     "competing_explanations": "可能的错值：23（方向跳反）；-7（从 0 起算而非从起点）。**9 与正确答案同值**，该错法本题不成立",
+     "cannot_distinguish": "`jumps` 数组记录每次 from→to，能看出「跳了几步、每步多大」；但本题要求「每次跳 7、连续 1 次」，**组件不拦不合规的跳步**，所以「按规则跳」与「直接点到终点」在判分上不可分——判分只读 answer",
+     "neutral_feedback": "说「从起点开始，按方向一格一格地数，数完看看停在哪个数」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "5341fef6-3901-404d-accd-eb136cb99779",
+   "title": "[T155] V14-P0-016",
+   "renderer": "bar-model",
+   "ability_id": "app_rel",
+   "input_basis": "题面抽出两部分 pa=5、pb=13；config.known (a=5, b=13) 仅作交叉核对；answer_bar=c、max_blocks=20；**不读答案**",
+   "read": "小明有5本书，小红比他多13本。用线段图表示两个数量的关系，再求小红有多少本。→ 题面两部分 5 与 13，求整体",
+   "target_object": "整体（答案条 c = 5+13）",
+   "derivation": {
+    "expr": "5 + 13",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 18,
+   "stated_answer": "18",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "MODE_STEM_MISMATCH",
+     "severity": "risk",
+     "why": "题面语义为 comparison，config.mode 声明 part_whole。两种表征摆出的条形不同，但提交答案恰好相同",
+     "evidence": "题面：「小明有5本书，小红比他多13本。用线段图表示两个数量的关系，再求小红有多少本。」；config.known={'a': 5, 'b': 13}、answer_bar=c",
+     "consequence": "孩子在界面看到的是「部分一 / 部分二 / 整体（一共）」三根条，而题目问的是「小红比小明多几本」——**要求把关系题摆成合并题**。答案数字仍可能对，但「用线段图表示两个数量的关系」这一目标未被界面支持",
+     "not_concluded": "本条不主张该题答案有误（答案已核 MATCH），只登记表征语义与题面不一致"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['bar_lengths', 'unknown_value']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "bar_lengths",
+     "unknown_value"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "mode": "part_whole",
+    "known": {
+     "a": 5,
+     "b": 13
+    },
+    "answer_bar": "c",
+    "max_blocks": 20
+   },
+   "workspace_mode": "part_whole",
+   "workspace_capabilities": [
+    "draw",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "小明有5本书，小红比他多13本。用线段图表示两个数量的关系，再求小红有多少本。",
+   "input_binding": {
+    "stem_sha256": "ae57f20e781caa7221ea8c420099f5b4853300cac5e4d127977afb6baa7f595b",
+    "ui_schema_sha256": "fbff18c954ed54d6bb0bc862ef4a570e5b75aa61d4d3c621514f6788b20b899f"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.known`={a:5, b:13}、`answer_bar`=c、`max_blocks`=20；提交 `answer` 为整体条 18。序列化层三根条全量入库 `bars={a,b,c}` 与 `structure.error`（modeling/relation/calc）",
+     "competing_explanations": "可能的错值：5（只摆部分一条）；13（只摆部分二条）；8（把「多几」当整体）；19（多数一格）",
+     "cannot_distinguish": "三根条都入库，**能分开「已知条摆错（modeling）」与「算错（calc）」**；分不开「照着题面逐格数出来」与「先算出和再一把拖到位」——条形长度只能证明结果，证明不了过程",
+     "neutral_feedback": "说「两部分合起来就是整体，把两根条接在一起看看有多长」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "5417a9e6-f802-4d45-92e8-f7c35911a1c8",
+   "title": "[T155] V14-P0-019",
+   "renderer": "number-line",
+   "ability_id": "app_rel",
+   "input_basis": "题面抽出 start=20、dir=右、size=5、count=3；config 四项仅作交叉核对；**不读答案**",
+   "read": "在数轴上从20出发，向右每次跳5，连续跳3次。请完成跳步并写出终点。→ 从 20 向右跳 3 次、每次 5，求终点",
+   "target_object": "终点刻度（20+5×3）",
+   "derivation": {
+    "expr": "20 + 5 * 3",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 35,
+   "stated_answer": "35",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "JUMPS_NOT_ENFORCED_BY_COMPONENT",
+     "severity": "risk",
+     "why": "`applyJump` 只拒绝「跳到当前值」，不校验步长是否等于 jump_size、次数是否等于 jump_count",
+     "evidence": "`numberLineV2.ts::applyJump()` 仅判断 `state.current === null || v === state.current`；运行时实测：start=30 一步跳到 40 被接受（jumps=[{from:30,to:40}]）",
+     "consequence": "孩子可以直接从起点一步点到终点，判分只读 answer → 与「按规则一步步跳」同分",
+     "not_concluded": "本条不主张答案有误；只登记过程约束缺失"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['jumps', 'endpoint']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "jumps",
+     "endpoint"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "scale": {
+     "max": 45,
+     "min": 0,
+     "tick_step": 1
+    },
+    "direction": "right",
+    "jump_size": 5,
+    "jump_count": 3,
+    "start_marker": {
+     "value": 20,
+     "marker_id": "start"
+    }
+   },
+   "workspace_mode": "jump_sequence",
+   "workspace_capabilities": [
+    "jump",
+    "place_marker",
+    "undo",
+    "reset"
+   ],
+   "stem": "在数轴上从20出发，向右每次跳5，连续跳3次。请完成跳步并写出终点。",
+   "input_binding": {
+    "stem_sha256": "9d633e317ea4a0bbe773c1a1e1bb9575693c8fecd863d19596291eb78da9171d",
+    "ui_schema_sha256": "fdc9876a7dd752faca6664c8167c39ffca4fdc8c4ae6af421d32354026904581"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start_marker.value`=20、`jump_size`=5、`jump_count`=3、`direction`=right；提交 `answer` 为终点 35。**V2 组件 `applyJump` 只拒绝「跳到当前值」，不校验步长与次数**——孩子可以一步点到任意刻度",
+     "competing_explanations": "可能的错值：5（方向跳反）；15（从 0 起算而非从起点）；25（只跳一次）",
+     "cannot_distinguish": "`jumps` 数组记录每次 from→to，能看出「跳了几步、每步多大」；但本题要求「每次跳 5、连续 3 次」，**组件不拦不合规的跳步**，所以「按规则跳」与「直接点到终点」在判分上不可分——判分只读 answer",
+     "neutral_feedback": "说「从起点开始，按方向一格一格地数，数完看看停在哪个数」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "5ee5ff07-2b57-4ce5-9752-e40d528fb12e",
+   "title": "[T155] V14-P0-067",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "input_basis": "题面抽出 total=18、groups=3；config.group_size=6 仅作交叉核对（**组件不读该字段**）；**不读答案**",
+   "read": "有18颗玻璃珠，要平均分给3个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。→ 18 颗平均分给 3 人，求每人几颗",
+   "target_object": "每份颗数（18÷3）",
+   "derivation": {
+    "expr": "18 / 3",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 6.0,
+   "stated_answer": "6",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "GROUP_SIZE_IS_ANSWER_COPY",
+     "severity": "info",
+     "why": "`group_size` 不是输入，是答案副本；组件也不读它",
+     "evidence": "`groupingBoardV2.ts::parseGroupingConfig()` 只取 items/target_groups/max_groups；group_size 由 items÷groups 得出",
+     "consequence": "若把它当独立配置依据，会形成「用答案校答案」的循环",
+     "not_concluded": "本条是口径登记，不是缺陷"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['group_assignments', 'per_group_count']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "group_assignments",
+     "per_group_count"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "items": 18,
+    "total": 18,
+    "group_size": 6,
+    "max_groups": 6,
+    "target_groups": 3
+   },
+   "workspace_mode": "equal_sharing",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "有18颗玻璃珠，要平均分给3个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "input_binding": {
+    "stem_sha256": "5a9a50a253ea0b176f6e38715bf8e6dfdfbd11dcc3f257f3c127443c33b6adee",
+    "ui_schema_sha256": "8c7badae64be02f508327e324338174f8d289a6197bfb8cb2798fd9e7e7bfe65"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.total`=18、`target_groups`=3、`group_size`=6；提交 `answer` 为每份 6。序列化层记录 `groups`（各组实际个数）、`pool_remaining`、`structure.error`（count/unequal）；**`group_size` 组件不读**，它是答案副本",
+     "competing_explanations": "可能的错值：3（把组数当每份数）；18（把总量当每份数）；15（把「发剩的」当每份）",
+     "cannot_distinguish": "`groups` 数组能分开「组数错（count）」与「各组不等（unequal）」；分不开「一次一颗轮着发」与「先算好每份数再一把倒进去」——最终各组数量相同",
+     "neutral_feedback": "说「一个一个轮着发，发完看看每个小朋友手里有几个」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "6385e11e-3b06-42df-b8ed-80666ec64c65",
+   "title": "[T155] V14-P0-042",
+   "renderer": "ten-frame",
+   "ability_id": "app_rd",
+   "input_basis": "题面抽出 initial=8、add=2；config.target_count=10 仅作交叉核对；**不读答案**",
+   "read": "第一格框里已有8个圆点，接着再放2个。请在十格框中摆出变化，最后填写一共有多少个圆点。→ 已有 8 个、再放 2 个，求总个数",
+   "target_object": "圆点总数（8+2）",
+   "derivation": {
+    "expr": "8 + 2",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 10,
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "INITIAL_COUNT_IGNORED",
+     "severity": "risk",
+     "why": "`TenFrameV2` 不读 `initial_count`，起始状态恒为 count=0",
+     "evidence": "`tenFrameV2.ts::initialTenFrameV2State()` 返回 `{tens:0, count:0}`；`parseTenFrameConfig()` 只取 target 与 max_frames",
+     "consequence": "题面说「已有 8 个」，界面却是空框。孩子要自己从 0 点到 10，「接着放」这一动作在界面上不存在",
+     "not_concluded": "本条不主张答案有误；只登记题面与初始状态不一致"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['filled_count', 'counter_moves']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "filled_count",
+     "counter_moves"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max_frames": 1,
+    "target_count": 10,
+    "initial_count": 8
+   },
+   "workspace_mode": "quantity_structure",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "第一格框里已有8个圆点，接着再放2个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "input_binding": {
+    "stem_sha256": "939033560ec473610688cae1cae618d004c2ad9f530510489cdda82df67080a5",
+    "ui_schema_sha256": "1b8537bb8aac70749ad266b4f9b981ad328da712a541cb6c9f0bc3826df4524e"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.initial_count`=8、`target_count`=10；提交 `answer` 为总数 10。**注意：V2 组件 `TenFrameV2` 不读 `initial_count`**——`initialTenFrameV2State()` 恒返回 count=0，所以题面说的「已有 8 个」在界面上不存在，孩子必须从 0 点起",
+     "competing_explanations": "可能的错值：2（只数新放进去的那几个）；8（只报初始已有的数）；11（多数一个）",
+     "cannot_distinguish": "终值唯一，分不开「真的从 8 接着放」与「从 0 一路点到 10」——两种做法给出同一个提交值，界面也没有初始态可区分",
+     "neutral_feedback": "说「先看看框里现在有几个，再一格格地把要加的放进去」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "731d5899-b8c6-4adf-be50-0d0c3a5bba3b",
+   "title": "[T155] V14-P0-044",
+   "renderer": "ten-frame",
+   "ability_id": "app_cond",
+   "input_basis": "题面抽出 initial=9、add=1；config.target_count=10 仅作交叉核对；**不读答案**",
+   "read": "第一格框里已有9个圆点，接着再放1个。请在十格框中摆出变化，最后填写一共有多少个圆点。→ 已有 9 个、再放 1 个，求总个数",
+   "target_object": "圆点总数（9+1）",
+   "derivation": {
+    "expr": "9 + 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 10,
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "INITIAL_COUNT_IGNORED",
+     "severity": "risk",
+     "why": "`TenFrameV2` 不读 `initial_count`，起始状态恒为 count=0",
+     "evidence": "`tenFrameV2.ts::initialTenFrameV2State()` 返回 `{tens:0, count:0}`；`parseTenFrameConfig()` 只取 target 与 max_frames",
+     "consequence": "题面说「已有 9 个」，界面却是空框。孩子要自己从 0 点到 10，「接着放」这一动作在界面上不存在",
+     "not_concluded": "本条不主张答案有误；只登记题面与初始状态不一致"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['filled_count', 'counter_moves']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "filled_count",
+     "counter_moves"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max_frames": 1,
+    "target_count": 10,
+    "initial_count": 9
+   },
+   "workspace_mode": "quantity_structure",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "第一格框里已有9个圆点，接着再放1个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "input_binding": {
+    "stem_sha256": "4e1f2c7108a9a75be765acc24d88076a0637af7c630d78c64acd1d4c74d32f81",
+    "ui_schema_sha256": "e32149377b794b15784ef2017aa0380a0323306d02c701601425c5b401cc57cc"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.initial_count`=9、`target_count`=10；提交 `answer` 为总数 10。**注意：V2 组件 `TenFrameV2` 不读 `initial_count`**——`initialTenFrameV2State()` 恒返回 count=0，所以题面说的「已有 9 个」在界面上不存在，孩子必须从 0 点起",
+     "competing_explanations": "可能的错值：1（只数新放进去的那几个）；9（只报初始已有的数）；11（多数一个）",
+     "cannot_distinguish": "终值唯一，分不开「真的从 9 接着放」与「从 0 一路点到 10」——两种做法给出同一个提交值，界面也没有初始态可区分",
+     "neutral_feedback": "说「先看看框里现在有几个，再一格格地把要加的放进去」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "92450f93-ebb1-4376-b614-8bb58b189a27",
+   "title": "[T155] V14-P0-123",
+   "renderer": "ruler",
+   "ability_id": "app_model",
+   "input_basis": "题面抽出 left=1、right=6；config.object=[1, 6]（仅作交叉核对）；**不读答案**。左端不在 0，所以「直接取右端读数」必错",
+   "read": "请用尺子测量线段的两个端点在刻度1和6。线段长多少厘米？→ 左端 1、右端 6，求两端刻度差",
+   "target_object": "线段长度（6−1）",
+   "derivation": {
+    "expr": "6 - 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 5,
+   "stated_answer": "5",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['start', 'end', 'length']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "start",
+     "end",
+     "length"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max": 20,
+    "object": [
+     1,
+     6
+    ]
+   },
+   "workspace_mode": "measure",
+   "workspace_capabilities": [
+    "measure",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "请用尺子测量线段的两个端点在刻度1和6。线段长多少厘米？",
+   "input_binding": {
+    "stem_sha256": "5b6c51148ae324486ea6e6045c08e8ac81fc68a5d9363900f52f4edc36fd99d4",
+    "ui_schema_sha256": "56a4d0d1b3c3f8e6ac2b042246454a6b15a3626fdf06351d74440a7275b69ccf"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.object`=[1,6]；提交 `answer` 为两端刻度差 5。`capabilities` 含 measure/answer_input；序列化层记录 `marks` 两个刻度、`span`、以及 `structure.error`（from_zero_reading / wrong_span）",
+     "competing_explanations": "可能的错值：6（直接读右端刻度当长度（从 0 起量的惯性））；1（直接读左端刻度）；7（把两个刻度相加）",
+     "cannot_distinguish": "能分开「零起误读」与「两端差」，但**分不开「量对了」与「直接拿两个刻度相减」**——marks 只证明点在哪，证明不了为什么点那",
+     "neutral_feedback": "说「把左边对着的开始刻度记住，再看右边到哪，中间有几格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "98bb0ca7-74dc-4c24-aba0-abe0e4a37c2c",
+   "title": "画条形图算一共（V2 链 R02）",
+   "renderer": "bar-model",
+   "ability_id": "app_model",
+   "input_basis": "题面抽出两部分 pa=5、pb=3；config.known (a=5, b=3) 仅作交叉核对；answer_bar=c、max_blocks=12；**不读答案**",
+   "read": "小雨有5颗红星星，又画了3颗黄星星。把两根部分条摆出来，再把整体条摆得和加起来一样长。一共几颗？→ 题面两部分 5 与 3，求整体",
+   "target_object": "整体（答案条 c = 5+3）",
+   "derivation": {
+    "expr": "5 + 3",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 8,
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['bars', 'structure']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "bars",
+     "structure"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "mode": "part_whole",
+    "known": {
+     "a": 5,
+     "b": 3
+    },
+    "answer_bar": "c",
+    "max_blocks": 12
+   },
+   "workspace_mode": "part_whole",
+   "workspace_capabilities": [
+    "add_object",
+    "remove_object",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "小雨有5颗红星星，又画了3颗黄星星。把两根部分条摆出来，再把整体条摆得和加起来一样长。一共几颗？",
+   "input_binding": {
+    "stem_sha256": "b7fd65474f7493ea6d509c4b2578b1b62ce64b17a5502ec0780b67b553ef331a",
+    "ui_schema_sha256": "1a9677b4fcf133c70f5bedbc9695aa92f686d617bb9d95daadf18c0c4774a4ef"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.known`={a:5, b:3}、`answer_bar`=c、`max_blocks`=12；提交 `answer` 为整体条 8。序列化层三根条全量入库 `bars={a,b,c}` 与 `structure.error`（modeling/relation/calc）",
+     "competing_explanations": "可能的错值：5（只摆部分一条）；3（只摆部分二条）；2（把「多几」当整体）；9（多数一格）",
+     "cannot_distinguish": "三根条都入库，**能分开「已知条摆错（modeling）」与「算错（calc）」**；分不开「照着题面逐格数出来」与「先算出和再一把拖到位」——条形长度只能证明结果，证明不了过程",
+     "neutral_feedback": "说「两部分合起来就是整体，把两根条接在一起看看有多长」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "c2555798-1f10-4ba2-8a4f-90f483bdb630",
+   "title": "[T155] V14-P0-125",
+   "renderer": "ruler",
+   "ability_id": "app_model",
+   "input_basis": "题面抽出 left=1、right=8；config.object=[1, 8]（仅作交叉核对）；**不读答案**。左端不在 0，所以「直接取右端读数」必错",
+   "read": "线段左端在1厘米刻度、右端在8厘米刻度。请在尺子上标出端点，量出线段长度。→ 左端 1、右端 8，求两端刻度差",
+   "target_object": "线段长度（8−1）",
+   "derivation": {
+    "expr": "8 - 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 7,
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['start', 'end', 'length']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "start",
+     "end",
+     "length"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max": 20,
+    "object": [
+     1,
+     8
+    ]
+   },
+   "workspace_mode": "measure",
+   "workspace_capabilities": [
+    "measure",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "线段左端在1厘米刻度、右端在8厘米刻度。请在尺子上标出端点，量出线段长度。",
+   "input_binding": {
+    "stem_sha256": "096560eb60d89a0742a4a4305fa225a46c7c0052414559850408e438c3372ba9",
+    "ui_schema_sha256": "8a7408465780cac62e02ea17a88f328a137880e442c1f3d694b9f2e2bb1b76c0"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.object`=[1,8]；提交 `answer` 为两端刻度差 7。`capabilities` 含 measure/answer_input；序列化层记录 `marks` 两个刻度、`span`、以及 `structure.error`（from_zero_reading / wrong_span）",
+     "competing_explanations": "可能的错值：8（直接读右端刻度当长度（从 0 起量的惯性））；1（直接读左端刻度）；9（把两个刻度相加）",
+     "cannot_distinguish": "能分开「零起误读」与「两端差」，但**分不开「量对了」与「直接拿两个刻度相减」**——marks 只证明点在哪，证明不了为什么点那",
+     "neutral_feedback": "说「把左边对着的开始刻度记住，再看右边到哪，中间有几格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "e479b6ef-c53b-45e7-ae44-e7c5077028e3",
+   "title": "[T155] V14-P0-046",
+   "renderer": "ten-frame",
+   "ability_id": "app_rd",
+   "input_basis": "题面抽出 initial=5、add=5；config.target_count=10 仅作交叉核对；**不读答案**",
+   "read": "第一格框里已有5个圆点，接着再放5个。请在十格框中摆出变化，最后填写一共有多少个圆点。→ 已有 5 个、再放 5 个，求总个数",
+   "target_object": "圆点总数（5+5）",
+   "derivation": {
+    "expr": "5 + 5",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 10,
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "INITIAL_COUNT_IGNORED",
+     "severity": "risk",
+     "why": "`TenFrameV2` 不读 `initial_count`，起始状态恒为 count=0",
+     "evidence": "`tenFrameV2.ts::initialTenFrameV2State()` 返回 `{tens:0, count:0}`；`parseTenFrameConfig()` 只取 target 与 max_frames",
+     "consequence": "题面说「已有 5 个」，界面却是空框。孩子要自己从 0 点到 10，「接着放」这一动作在界面上不存在",
+     "not_concluded": "本条不主张答案有误；只登记题面与初始状态不一致"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['filled_count', 'counter_moves']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "filled_count",
+     "counter_moves"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max_frames": 1,
+    "target_count": 10,
+    "initial_count": 5
+   },
+   "workspace_mode": "quantity_structure",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "第一格框里已有5个圆点，接着再放5个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "input_binding": {
+    "stem_sha256": "7e6eb167c01e9e4bf720cd1a20bdc007c6f93080dcab3a435418cfb244d97d71",
+    "ui_schema_sha256": "f4767278df2b6b90890f6f12812824eca195e729342a15da1b9ad58d7f0a7dce"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.initial_count`=5、`target_count`=10；提交 `answer` 为总数 10。**注意：V2 组件 `TenFrameV2` 不读 `initial_count`**——`initialTenFrameV2State()` 恒返回 count=0，所以题面说的「已有 5 个」在界面上不存在，孩子必须从 0 点起",
+     "competing_explanations": "可能的错值：5（只数新放进去的那几个／只报初始已有的数 —— **两个错法同值，在该题内部不可分**）；11（多数一个）",
+     "cannot_distinguish": "终值唯一，分不开「真的从 5 接着放」与「从 0 一路点到 10」——两种做法给出同一个提交值，界面也没有初始态可区分；另有两条错法在本题同值（见上），不能当作两份独立证据",
+     "neutral_feedback": "说「先看看框里现在有几个，再一格格地把要加的放进去」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "e721a4c5-cee3-4660-9a4c-f33503bacaa6",
+   "title": "[T155] V14-P0-122",
+   "renderer": "ruler",
+   "ability_id": "app_check",
+   "input_basis": "题面抽出 left=2、right=9；config.object=[2, 9]（仅作交叉核对）；**不读答案**。左端不在 0，所以「直接取右端读数」必错",
+   "read": "请用尺子测量线段的两个端点在刻度2和9。线段长多少厘米？→ 左端 2、右端 9，求两端刻度差",
+   "target_object": "线段长度（9−2）",
+   "derivation": {
+    "expr": "9 - 2",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 7,
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['start', 'end', 'length']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "start",
+     "end",
+     "length"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max": 20,
+    "object": [
+     2,
+     9
+    ]
+   },
+   "workspace_mode": "measure",
+   "workspace_capabilities": [
+    "measure",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "请用尺子测量线段的两个端点在刻度2和9。线段长多少厘米？",
+   "input_binding": {
+    "stem_sha256": "f3af687bc538e9bd934a37e1e059f87b3d1532f0dea3019e956686f5b61ae928",
+    "ui_schema_sha256": "239a5df83cdeec3a17ffa85bf4e4cd78beb84d551ed98e492bd304c446f0eeb9"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.object`=[2,9]；提交 `answer` 为两端刻度差 7。`capabilities` 含 measure/answer_input；序列化层记录 `marks` 两个刻度、`span`、以及 `structure.error`（from_zero_reading / wrong_span）",
+     "competing_explanations": "可能的错值：9（直接读右端刻度当长度（从 0 起量的惯性））；2（直接读左端刻度）；11（把两个刻度相加）",
+     "cannot_distinguish": "能分开「零起误读」与「两端差」，但**分不开「量对了」与「直接拿两个刻度相减」**——marks 只证明点在哪，证明不了为什么点那",
+     "neutral_feedback": "说「把左边对着的开始刻度记住，再看右边到哪，中间有几格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "ec2f9d09-e870-4b20-8cc3-89e736417c4d",
+   "title": "[T155] V14-P0-121",
+   "renderer": "ruler",
+   "ability_id": "app_model",
+   "input_basis": "题面抽出 left=3、right=8；config.object=[3, 8]（仅作交叉核对）；**不读答案**。左端不在 0，所以「直接取右端读数」必错",
+   "read": "请用尺子测量线段的两个端点在刻度3和8。线段长多少厘米？→ 左端 3、右端 8，求两端刻度差",
+   "target_object": "线段长度（8−3）",
+   "derivation": {
+    "expr": "8 - 3",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 5,
+   "stated_answer": "5",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['start', 'end', 'length']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "start",
+     "end",
+     "length"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max": 20,
+    "object": [
+     3,
+     8
+    ]
+   },
+   "workspace_mode": "measure",
+   "workspace_capabilities": [
+    "measure",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "请用尺子测量线段的两个端点在刻度3和8。线段长多少厘米？",
+   "input_binding": {
+    "stem_sha256": "2d4216814bbca1cdd0b72453496c9730c59121b496ec5d7dde8ce47b06bb6c1d",
+    "ui_schema_sha256": "b74ffed7fcb0a343baf71ccf90ed3d9d18c41ef91b9000d2bc81e4fc07be3aa9"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.object`=[3,8]；提交 `answer` 为两端刻度差 5。`capabilities` 含 measure/answer_input；序列化层记录 `marks` 两个刻度、`span`、以及 `structure.error`（from_zero_reading / wrong_span）",
+     "competing_explanations": "可能的错值：8（直接读右端刻度当长度（从 0 起量的惯性））；3（直接读左端刻度）；11（把两个刻度相加）",
+     "cannot_distinguish": "能分开「零起误读」与「两端差」，但**分不开「量对了」与「直接拿两个刻度相减」**——marks 只证明点在哪，证明不了为什么点那",
+     "neutral_feedback": "说「把左边对着的开始刻度记住，再看右边到哪，中间有几格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "ef898a50-01a6-4600-88a9-643aeffb6dbd",
+   "title": "[T155] V14-P0-045",
+   "renderer": "ten-frame",
+   "ability_id": "app_model",
+   "input_basis": "题面抽出 initial=4、add=6；config.target_count=10 仅作交叉核对；**不读答案**",
+   "read": "第一格框里已有4个圆点，接着再放6个。请在十格框中摆出变化，最后填写一共有多少个圆点。→ 已有 4 个、再放 6 个，求总个数",
+   "target_object": "圆点总数（4+6）",
+   "derivation": {
+    "expr": "4 + 6",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案"
+    }
+   },
+   "computed": 10,
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "INITIAL_COUNT_IGNORED",
+     "severity": "risk",
+     "why": "`TenFrameV2` 不读 `initial_count`，起始状态恒为 count=0",
+     "evidence": "`tenFrameV2.ts::initialTenFrameV2State()` 返回 `{tens:0, count:0}`；`parseTenFrameConfig()` 只取 target 与 max_frames",
+     "consequence": "题面说「已有 4 个」，界面却是空框。孩子要自己从 0 点到 10，「接着放」这一动作在界面上不存在",
+     "not_concluded": "本条不主张答案有误；只登记题面与初始状态不一致"
+    },
+    {
+     "code": "EVIDENCE_DECLARED_BUT_NOT_ENFORCED",
+     "severity": "risk",
+     "why": "`response_contract.evidence_targets` 声明了过程字段，但 `workspaces[].config.process_constraint` 为 null",
+     "evidence": "evidence_targets=['filled_count', 'counter_moves']；process_constraint=null。`learning.py:958-971` 只在 `pc` 非空时才做过程校验，`pc=None` 时判分行为与未声明完全相同",
+     "consequence": "「过程证据」在数据里存在（v2_workspaces 会序列化进去），但**不参与判分**：终值对即 correct=True，过程缺失或矛盾都不影响结果",
+     "not_concluded": "本条不主张应立刻给所有题加 process_constraint（那会改变既有判分行为，属产品决策）；只登记「声明了证据目标但未启用校验」这一事实"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "filled_count",
+     "counter_moves"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max_frames": 1,
+    "target_count": 10,
+    "initial_count": 4
+   },
+   "workspace_mode": "quantity_structure",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "第一格框里已有4个圆点，接着再放6个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "input_binding": {
+    "stem_sha256": "d0bee4bcc79e795d4864285ac7621bd612c680475c9cefd7833f36d3e171081d",
+    "ui_schema_sha256": "b25f6f30f1d4db37dba760f21b481d99d809a374dbff3e02a4a3c90334dee7d1"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.initial_count`=4、`target_count`=10；提交 `answer` 为总数 10。**注意：V2 组件 `TenFrameV2` 不读 `initial_count`**——`initialTenFrameV2State()` 恒返回 count=0，所以题面说的「已有 4 个」在界面上不存在，孩子必须从 0 点起",
+     "competing_explanations": "可能的错值：6（只数新放进去的那几个）；4（只报初始已有的数）；11（多数一个）",
+     "cannot_distinguish": "终值唯一，分不开「真的从 4 接着放」与「从 0 一路点到 10」——两种做法给出同一个提交值，界面也没有初始态可区分",
+     "neutral_feedback": "说「先看看框里现在有几个，再一格格地把要加的放进去」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  }
+ ]
+}

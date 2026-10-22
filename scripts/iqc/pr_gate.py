@@ -21,8 +21,29 @@
    引用≠重算即漂移、缺原件即漂移；q05 只写候选不写结论（FE-1469）
 10. 比对效力边界：改存储答案只能证明比较器非永真，改配置独立事实才能证明
     推导依赖题面；必要条件不成立必须受控拒绝（FE-1470）
+11. Q05 证据逐题具体化：候选证据必须逐题生成，不得跨题引用他人 RVID、
+    不得并列同值错法（FE-1472）
+12. Q03 第三批题意建模契约：T1–T11 含**离线回放层**（冻结快照让 CI 无库也真跑
+    evaluate() 并做正负断言）；缺工件必须显式 FAIL，不得 `if os.path.exists` 静默跳过
+13. 进度账实核（check_progress）：并集口径六个数字逐条实测并校验恒等式；
+    **禁止减法外推**——`Q05_only` 曾被写成「38+29=67」，实际恒为 12（FE-1472）
+14. 第四批核验器区分力自证：答案篡改 20/20、配置篡改 8/8 必须检出（FE-1472）
+15. 第五批核验器区分力自证：**题干数字变异必须改变 computed**——证明推导读的是
+    题面而非 config。这是前四批做不到的证伪方式（FE-1472）
+16. 第五批语义观察项账实核：汇总 `observation_counts` 必须等于逐题重算；
+    选题清单↔产物 RVID 集合、名额、过程校验声明、题干哈希逐项对账。
+    针对「改总表 ≠ 改生成物」这一同型缺陷（D2 撤回时已踩过一次）（FE-1472）
+
 边界（裁决 §四）：本门只判规则明确证据充分的问题；不访问生产 DB；失败输出含
 rule_id+证据，不得为空。
+
+四条硬规则（历次踩坑固化，勿放宽）：
+  · 门禁不得逼内容说错话——禁止"必须至少一条 MISSING""文案必须唯一"这类
+    逼人改题的条款；文档校验用正向必要内容清单而非禁词表
+  · 缺工件即 `note(False)`，不静默跳过——`if os.path.exists` 式跳过是空转根因
+  · 两类失效都要防：①空转（不执行核验）②误拦（合规内容被判失败）。
+    第二类只能靠"合法样本必须 PASS"的定向对照证明
+  · 失败时 tail 优先取含 `✗` 的行，否则真因会被统计行盖掉
 """
 import json
 import subprocess
@@ -238,6 +259,76 @@ else:
               else (r14.stdout.strip().splitlines() or [""])[-1])
     note("第四批核验器区分力自证 q03_batch4 --selftest",
          r14.returncode == 0 and "Q03-BATCH4-SELFTEST: PASS" in r14.stdout, tail14)
+
+# 15 第五批核验器区分力自证（FE-1472）
+#
+#    第五批的方法学变了：前四批 `derive()` 直接读 config 算数，只能证明
+#    config 内部自洽；第五批改为**先从题干文本抽数**，config 只做交叉校验。
+#    因此本批的"全过"要能被三种方式证伪：
+#      · 答案篡改 → 必须 MISMATCH（证明比较器不是永真）
+#      · 题干数字变异 → computed 必须变（证明推导真读题面，不是读 config）
+#      · config 已知量改错 → 必须 INCONSISTENT（证明一致性检查非空转）
+#    第二类是前四批**做不到**的——这就是本批值得单独锁的原因。
+b5_script = os.path.join(HERE, "rt1472", "q03_batch5.py")
+b5_quota = os.path.join(HERE, "rt1472", "batch5_quota_list.json")
+if not os.path.exists(b5_script):
+    note("第五批核验器工件存在", False,
+         "缺 rt1472/q03_batch5.py——不允许静默跳过")
+elif not os.path.exists(b5_quota):
+    note("第五批选题清单存在", False,
+         "缺 rt1472/batch5_quota_list.json——没有先冻结选题集合，"
+         "核验范围无法自证（第四批踩过：额定 20 实核 29，差额无法反查）")
+else:
+    r15 = subprocess.run([sys.executable, b5_script, "--selftest"],
+                         capture_output=True, text=True)
+    _boom15 = [ln.strip() for ln in (r15.stderr + r15.stdout).splitlines()
+               if "✗" in ln]
+    tail15 = (_boom15[0] if _boom15
+              else (r15.stdout.strip().splitlines() or [""])[-1])
+    note("第五批核验器区分力自证 q03_batch5 --selftest",
+         r15.returncode == 0 and "Q03-BATCH5-SELFTEST: PASS" in r15.stdout, tail15)
+
+# 16 第五批语义观察项账实核（FE-1472）
+#
+#    **这一项针对本项目反复出现的同型缺陷**：改总表 ≠ 改生成物。
+#    2026-10-22 D2 撤回时就踩过——`KNOWN_DEFECTS` 总表改完了，
+#    但 `CHECKS`/`Q05_EVIDENCE` 的字段被 `evaluate()` 原样写进结果，
+#    产物里仍然写着"不可完成"。当时就是靠"生成物逐条复读"才抓到。
+#    第五批的 `observation_counts` 是同类风险面：汇总说 18 条
+#    `EVIDENCE_DECLARED_BUT_NOT_ENFORCED`，逐题可能一条都没有，
+#    而报告依旧显示"20/20 MATCH + 18 条观察项"。
+#    因此本项做纯离线逐条对账：集合 / 名额 / 观察项 / 过程校验声明 /
+#    一致性计数 / 题干哈希（与冻结清单比，证明核的就是冻结那一版）。
+#    脚本自带 --selftest（四种篡改必须检出），本项同时跑它。
+b5_ledger = os.path.join(HERE, "rt1472", "check_batch5_ledger.py")
+b5_result = os.path.join(HERE, "runs", "FE1472_q03_batch5.json")
+if not os.path.exists(b5_ledger):
+    note("第五批账实核工件存在", False,
+         "缺 rt1472/check_batch5_ledger.py——不允许静默跳过")
+elif not os.path.exists(b5_result):
+    note("第五批核验产物存在", False,
+         "缺 runs/FE1472_q03_batch5.json——没有产物，"
+         "汇总数字无从对账，门禁会退化成只查脚本存在")
+else:
+    # 16a 对账本体
+    r16 = subprocess.run([sys.executable, b5_ledger], capture_output=True, text=True)
+    _boom16 = [ln.strip() for ln in (r16.stderr + r16.stdout).splitlines()
+               if "✗" in ln]
+    tail16 = (_boom16[0] if _boom16
+              else (r16.stdout.strip().splitlines() or [""])[-1])
+    note("第五批账实核 check_batch5_ledger",
+         r16.returncode == 0 and "账实相符" in r16.stdout, tail16)
+
+    # 16b 对账器自身区分力："账实相符"必须能被证伪
+    r16s = subprocess.run([sys.executable, b5_ledger, "--selftest"],
+                          capture_output=True, text=True)
+    _boom16s = [ln.strip() for ln in (r16s.stderr + r16s.stdout).splitlines()
+                if "✗" in ln]
+    tail16s = (_boom16s[0] if _boom16s
+               else (r16s.stdout.strip().splitlines() or [""])[-1])
+    note("第五批账实核区分力自证 check_batch5_ledger --selftest",
+         r16s.returncode == 0 and "BATCH5-LEDGER-SELFTEST: PASS" in r16s.stdout,
+         tail16s)
 
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)

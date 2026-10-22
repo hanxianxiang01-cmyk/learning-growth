@@ -1,0 +1,1302 @@
+{
+ "title": "FE-1472 第五批｜Q03 选题集合（**先冻结再核验**）",
+ "generated_at": "2026-10-22T02:50:01.242052+00:00",
+ "why": "第四批用「先冻结」消除了额定/实核差额；本批沿用。名额按「该 renderer 在 V2 配置下是否核过」分配，而不是按类别名称排除。",
+ "selection_rule": "候选池 = 并集 224 − 前四批已核 75 = **149**；本批只取 priority==both 且 semantic_family==numeric_judge 的 75 题（数值判定类，独立推导可落成纯算术表达式）。按「该 renderer 在 V2 配置下是否核过」分配名额：ruler / ten-frame / grouping-board 三类**全取或半数取**（前四批只核过 legacy 同族，V2 配置字段是否被组件真正读取尚未验）；bar-model 取 4（第三批只核 2 题且均为 legacy:bar-model，V2 的 max_blocks 与答案关系未验）；number-line 取 3（第四批核 2 题，本轮补 jump_count=1 的题看考点是否空转）；legacy:direct 取 2（无 config，纯题面解析，抽样看阅读理解型的题面是否可独立推导）。**不因类别名称先行排除**：clock / direction-grid / estimation-canvas / shape-gallery 已在第四批各核 3 题，结论稳定，本批名额让给未覆盖者。",
+ "quota_by_renderer": {
+  "ruler": 4,
+  "ten-frame": 4,
+  "bar-model": 4,
+  "grouping-board": 3,
+  "number-line": 3,
+  "legacy:direct": 2
+ },
+ "picks_log": [
+  {
+   "renderer": "ruler",
+   "pool_n": 4,
+   "picked_n": 4,
+   "picked": [
+    "92450f93-ebb1-4376-b614-8bb58b189a27",
+    "c2555798-1f10-4ba2-8a4f-90f483bdb630",
+    "e721a4c5-cee3-4660-9a4c-f33503bacaa6",
+    "ec2f9d09-e870-4b20-8cc3-89e736417c4d"
+   ]
+  },
+  {
+   "renderer": "ten-frame",
+   "pool_n": 4,
+   "picked_n": 4,
+   "picked": [
+    "6385e11e-3b06-42df-b8ed-80666ec64c65",
+    "731d5899-b8c6-4adf-be50-0d0c3a5bba3b",
+    "e479b6ef-c53b-45e7-ae44-e7c5077028e3",
+    "ef898a50-01a6-4600-88a9-643aeffb6dbd"
+   ]
+  },
+  {
+   "renderer": "bar-model",
+   "pool_n": 8,
+   "picked_n": 4,
+   "picked": [
+    "30a8e925-494f-4cf7-924f-0269af3e50cf",
+    "39b09e38-1abd-403d-ba6b-b3854c7a1abb",
+    "5341fef6-3901-404d-accd-eb136cb99779",
+    "98bb0ca7-74dc-4c24-aba0-abe0e4a37c2c"
+   ]
+  },
+  {
+   "renderer": "grouping-board",
+   "pool_n": 6,
+   "picked_n": 3,
+   "picked": [
+    "1ee68418-9767-4330-8b36-42961fb06969",
+    "3b25ca25-ef47-4196-ab2a-3dd3e47a3c9c",
+    "5ee5ff07-2b57-4ce5-9752-e40d528fb12e"
+   ]
+  },
+  {
+   "renderer": "number-line",
+   "pool_n": 6,
+   "picked_n": 3,
+   "picked": [
+    "3b94815f-16a6-4a8f-a17d-2b1e2b229053",
+    "52df263c-9da3-4a3c-b98e-c3e2b82c561b",
+    "5417a9e6-f802-4d45-92e8-f7c35911a1c8"
+   ]
+  },
+  {
+   "renderer": "legacy:direct",
+   "pool_n": 10,
+   "picked_n": 2,
+   "picked": [
+    "079a7e47-fd86-46d9-92e6-6ff5c7b299e5",
+    "0da1d340-d51c-4b32-92d8-703daf8bac4e"
+   ]
+  }
+ ],
+ "not_selected_why": {
+  "clock": "第四批已核 3 题（CONFLICT 同值错法已登记），结论稳定，本批不重复",
+  "direction-grid": "第四批已核 3 题（编码契约 r*cols+c 三题自证），本批不重复",
+  "estimation-canvas": "第四批已核 3 题（严格相等判分已更正），本批不重复",
+  "shape-gallery": "第四批已核 3 题（按 kind 精确匹配已确认），本批不重复",
+  "column-arithmetic": "第二批核 3 + 第四批核 2，进位/退位两支已覆盖",
+  "object-counter": "第二批核 5 + 第四批核 2，config 给数与 expected 给数两支已覆盖",
+  "legacy:bar-model": "第三批核 14 题（DEF-D1/D2 全部来源），本批换 V2 bar-model 看差异",
+  "legacy:number-line": "第三批核 4 题（DEF-D4 来源），本批换 V2 number-line 看 jumps 字段",
+  "legacy:objects": "第三批核 4 题（DEF-D3），本批不重复"
+ },
+ "pool_size": 75,
+ "quota_n": 20,
+ "quota": [
+  "079a7e47-fd86-46d9-92e6-6ff5c7b299e5",
+  "0da1d340-d51c-4b32-92d8-703daf8bac4e",
+  "1ee68418-9767-4330-8b36-42961fb06969",
+  "30a8e925-494f-4cf7-924f-0269af3e50cf",
+  "39b09e38-1abd-403d-ba6b-b3854c7a1abb",
+  "3b25ca25-ef47-4196-ab2a-3dd3e47a3c9c",
+  "3b94815f-16a6-4a8f-a17d-2b1e2b229053",
+  "52df263c-9da3-4a3c-b98e-c3e2b82c561b",
+  "5341fef6-3901-404d-accd-eb136cb99779",
+  "5417a9e6-f802-4d45-92e8-f7c35911a1c8",
+  "5ee5ff07-2b57-4ce5-9752-e40d528fb12e",
+  "6385e11e-3b06-42df-b8ed-80666ec64c65",
+  "731d5899-b8c6-4adf-be50-0d0c3a5bba3b",
+  "92450f93-ebb1-4376-b614-8bb58b189a27",
+  "98bb0ca7-74dc-4c24-aba0-abe0e4a37c2c",
+  "c2555798-1f10-4ba2-8a4f-90f483bdb630",
+  "e479b6ef-c53b-45e7-ae44-e7c5077028e3",
+  "e721a4c5-cee3-4660-9a4c-f33503bacaa6",
+  "ec2f9d09-e870-4b20-8cc3-89e736417c4d",
+  "ef898a50-01a6-4600-88a9-643aeffb6dbd"
+ ],
+ "items": [
+  {
+   "rvid": "079a7e47-fd86-46d9-92e6-6ff5c7b299e5",
+   "title": "检查加法答案",
+   "renderer": "legacy:direct",
+   "ability_id": "app_check",
+   "solve_path": "numeric_exact",
+   "answer_shape": "boolean",
+   "stem": "小美有6支红笔和4支蓝笔。小东说“一共有10支笔”。请检查：正确填1，错误填0。",
+   "answer_raw": "1",
+   "goal": "能通过重新计算验证简单加法结果",
+   "ui_schema": {
+    "kind": "number",
+    "prompt": "小美有6支红笔和4支蓝笔。小东说“一共有10支笔”。请检查：正确填1，错误填0。",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": false
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "error_models": [
+    {
+     "code": "check",
+     "pattern": "check"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "73f110c4de3140062db2804923fde1d69dab45eee05a0be1713c0acb6b480ad2",
+   "ui_schema_sha256": "dae307304a327f1cb988f0a982694460c8c39c6039dcae914251933295341f62"
+  },
+  {
+   "rvid": "0da1d340-d51c-4b32-92d8-703daf8bac4e",
+   "title": "看清时间",
+   "renderer": "legacy:direct",
+   "ability_id": "app_rd",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "小云上午画了6朵花，下午画了3棵树。老师问：小云上午画了几朵花？",
+   "answer_raw": "6",
+   "goal": "能根据时间信息定位题目所问数量",
+   "ui_schema": {
+    "kind": "number",
+    "prompt": "小云上午画了6朵花，下午画了3棵树。老师问：小云上午画了几朵花？",
+    "schema_version": "1.0",
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": false
+    },
+    "answer_placeholder": "输入数字"
+   },
+   "error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    }
+   ],
+   "stem_sha256": "ece0ffde3f3fc17733791b3131109a255fd29a08bf3be5818e67fedeb26dc7e7",
+   "ui_schema_sha256": "fb62866486b05906382da8f90f709bae826f9b0d5080eaa65ea71075e7391d87"
+  },
+  {
+   "rvid": "1ee68418-9767-4330-8b36-42961fb06969",
+   "title": "[T155] V14-P0-065",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "有12颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "answer_raw": "3",
+   "goal": "把等量物品平均分给固定组数，求每组个数并验证等分。",
+   "ui_schema": {
+    "prompt": {
+     "text": "有12颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。"
+    },
+    "workspaces": [
+     {
+      "mode": "equal_sharing",
+      "config": {
+       "items": 12,
+       "total": 12,
+       "group_size": 3,
+       "max_groups": 6,
+       "target_groups": 4
+      },
+      "renderer": "grouping-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "grouping",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "group_assignments",
+      "per_group_count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "unequal_share",
+     "pattern": "unequal_share"
+    }
+   ],
+   "stem_sha256": "ecea519c5801142cee6b2e5aed0053690418d4b190ae0f2b7cf7fc78811a21fe",
+   "ui_schema_sha256": "6977f57a5dcb7c4e7ea1a2c093984e911ef4b22e0b5f310c9778ceafe2646a72"
+  },
+  {
+   "rvid": "30a8e925-494f-4cf7-924f-0269af3e50cf",
+   "title": "[T155] V14-P0-013",
+   "renderer": "bar-model",
+   "ability_id": "app_model",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "小明有7本书，小红比他多4本。用线段图表示两个数量的关系，再求小红有多少本。",
+   "answer_raw": "11",
+   "goal": "用部分—整体线段图建立两部分与总数的关系。",
+   "ui_schema": {
+    "prompt": {
+     "text": "小明有7本书，小红比他多4本。用线段图表示两个数量的关系，再求小红有多少本。"
+    },
+    "workspaces": [
+     {
+      "mode": "part_whole",
+      "config": {
+       "mode": "part_whole",
+       "known": {
+        "a": 7,
+        "b": 4
+       },
+       "answer_bar": "c",
+       "max_blocks": 13
+      },
+      "renderer": "bar-model",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "bar_model",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "bar_lengths",
+      "unknown_value"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "relation",
+     "pattern": "relation"
+    }
+   ],
+   "stem_sha256": "70c1bf421f0a10d36ccb4ce7d91e9b6ae4a79753ef3db9bbfea1e8585ec37112",
+   "ui_schema_sha256": "37ad62a7e27922e82526fa8dd6d4ae1b3831390a92344d00f88213332a48a3be"
+  },
+  {
+   "rvid": "39b09e38-1abd-403d-ba6b-b3854c7a1abb",
+   "title": "[T155] V14-P0-011",
+   "renderer": "bar-model",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "手工课上先拿来9张彩纸，又拿来4张彩纸。请用线段图表示两次拿来的数量，再求总共有多少张。",
+   "answer_raw": "13",
+   "goal": "用部分—整体线段图建立两部分与总数的关系。",
+   "ui_schema": {
+    "prompt": {
+     "text": "手工课上先拿来9张彩纸，又拿来4张彩纸。请用线段图表示两次拿来的数量，再求总共有多少张。"
+    },
+    "workspaces": [
+     {
+      "mode": "part_whole",
+      "config": {
+       "mode": "part_whole",
+       "known": {
+        "a": 9,
+        "b": 4
+       },
+       "answer_bar": "c",
+       "max_blocks": 15
+      },
+      "renderer": "bar-model",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "bar_model",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "bar_lengths",
+      "unknown_value"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "stem_sha256": "cd170efeb7672ebb1a5cb61c19cc0b9bc6b6debad507bf03443e8e7ad62cf890",
+   "ui_schema_sha256": "fd624657c079bed50749bdfcd932078dc948b647deecd3b713596633d0c215c4"
+  },
+  {
+   "rvid": "3b25ca25-ef47-4196-ab2a-3dd3e47a3c9c",
+   "title": "[T155] V14-P0-072",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "有20颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "answer_raw": "5",
+   "goal": "把等量物品平均分给固定组数，求每组个数并验证等分。",
+   "ui_schema": {
+    "prompt": {
+     "text": "有20颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。"
+    },
+    "workspaces": [
+     {
+      "mode": "equal_sharing",
+      "config": {
+       "items": 20,
+       "total": 20,
+       "group_size": 5,
+       "max_groups": 6,
+       "target_groups": 4
+      },
+      "renderer": "grouping-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "grouping",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "group_assignments",
+      "per_group_count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "unequal_share",
+     "pattern": "unequal_share"
+    }
+   ],
+   "stem_sha256": "f2ab1c2500b28607ca59dd98d62bba0af722af9029d5f79110ba81e63ff8bf74",
+   "ui_schema_sha256": "551001af7021e105989fa0aa7bff8a1b8073d6cb81b2b7934c2c6faa805af1b9"
+  },
+  {
+   "rvid": "3b94815f-16a6-4a8f-a17d-2b1e2b229053",
+   "title": "[T155] V14-P0-024",
+   "renderer": "number-line",
+   "ability_id": "app_strat",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "在数轴上从30出发，向左每次跳8，连续跳1次。请完成跳步并写出终点。",
+   "answer_raw": "22",
+   "goal": "用数轴上等长跳步表达加减变化并准确定位终点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在数轴上从30出发，向左每次跳8，连续跳1次。请完成跳步并写出终点。"
+    },
+    "workspaces": [
+     {
+      "mode": "jump_sequence",
+      "config": {
+       "scale": {
+        "max": 40,
+        "min": 0,
+        "tick_step": 1
+       },
+       "direction": "left",
+       "jump_size": 8,
+       "jump_count": 1,
+       "start_marker": {
+        "value": 30,
+        "marker_id": "start"
+       }
+      },
+      "renderer": "number-line",
+      "constraints": {},
+      "capabilities": [
+       "jump",
+       "place_marker",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "number_line",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "jumps",
+      "endpoint"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "stem_sha256": "b2b7ebab22b553a320858e57dccca71ad949268c68bd8b265df2f65b43e227d0",
+   "ui_schema_sha256": "6d094acb2f7a64388c056cf13e8f39073f47c94ea71c954f9b180e7ad8507c07"
+  },
+  {
+   "rvid": "52df263c-9da3-4a3c-b98e-c3e2b82c561b",
+   "title": "[T155] V14-P0-020",
+   "renderer": "number-line",
+   "ability_id": "app_strat",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "在数轴上从16出发，向左每次跳7，连续跳1次。请完成跳步并写出终点。",
+   "answer_raw": "9",
+   "goal": "用数轴上等长跳步表达加减变化并准确定位终点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在数轴上从16出发，向左每次跳7，连续跳1次。请完成跳步并写出终点。"
+    },
+    "workspaces": [
+     {
+      "mode": "jump_sequence",
+      "config": {
+       "scale": {
+        "max": 40,
+        "min": 0,
+        "tick_step": 1
+       },
+       "direction": "left",
+       "jump_size": 7,
+       "jump_count": 1,
+       "start_marker": {
+        "value": 16,
+        "marker_id": "start"
+       }
+      },
+      "renderer": "number-line",
+      "constraints": {},
+      "capabilities": [
+       "jump",
+       "place_marker",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "number_line",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "jumps",
+      "endpoint"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "stem_sha256": "a168b261345e3a4e40c5a5f9bbf79ba6eefb2dfbd577755597b01eacce9188f0",
+   "ui_schema_sha256": "0b786231d8bdd246f9699527b75ed3e0cf6b5b55e93c9ea7b9821d1a02a5be3b"
+  },
+  {
+   "rvid": "5341fef6-3901-404d-accd-eb136cb99779",
+   "title": "[T155] V14-P0-016",
+   "renderer": "bar-model",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "小明有5本书，小红比他多13本。用线段图表示两个数量的关系，再求小红有多少本。",
+   "answer_raw": "18",
+   "goal": "用部分—整体线段图建立两部分与总数的关系。",
+   "ui_schema": {
+    "prompt": {
+     "text": "小明有5本书，小红比他多13本。用线段图表示两个数量的关系，再求小红有多少本。"
+    },
+    "workspaces": [
+     {
+      "mode": "part_whole",
+      "config": {
+       "mode": "part_whole",
+       "known": {
+        "a": 5,
+        "b": 13
+       },
+       "answer_bar": "c",
+       "max_blocks": 20
+      },
+      "renderer": "bar-model",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "bar_model",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "bar_lengths",
+      "unknown_value"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "relation",
+     "pattern": "relation"
+    }
+   ],
+   "stem_sha256": "ae57f20e781caa7221ea8c420099f5b4853300cac5e4d127977afb6baa7f595b",
+   "ui_schema_sha256": "fbff18c954ed54d6bb0bc862ef4a570e5b75aa61d4d3c621514f6788b20b899f"
+  },
+  {
+   "rvid": "5417a9e6-f802-4d45-92e8-f7c35911a1c8",
+   "title": "[T155] V14-P0-019",
+   "renderer": "number-line",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "在数轴上从20出发，向右每次跳5，连续跳3次。请完成跳步并写出终点。",
+   "answer_raw": "35",
+   "goal": "用数轴上等长跳步表达加减变化并准确定位终点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在数轴上从20出发，向右每次跳5，连续跳3次。请完成跳步并写出终点。"
+    },
+    "workspaces": [
+     {
+      "mode": "jump_sequence",
+      "config": {
+       "scale": {
+        "max": 45,
+        "min": 0,
+        "tick_step": 1
+       },
+       "direction": "right",
+       "jump_size": 5,
+       "jump_count": 3,
+       "start_marker": {
+        "value": 20,
+        "marker_id": "start"
+       }
+      },
+      "renderer": "number-line",
+      "constraints": {},
+      "capabilities": [
+       "jump",
+       "place_marker",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "number_line",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "jumps",
+      "endpoint"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "stem_sha256": "9d633e317ea4a0bbe773c1a1e1bb9575693c8fecd863d19596291eb78da9171d",
+   "ui_schema_sha256": "fdc9876a7dd752faca6664c8167c39ffca4fdc8c4ae6af421d32354026904581"
+  },
+  {
+   "rvid": "5ee5ff07-2b57-4ce5-9752-e40d528fb12e",
+   "title": "[T155] V14-P0-067",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "有18颗玻璃珠，要平均分给3个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "answer_raw": "6",
+   "goal": "把等量物品平均分给固定组数，求每组个数并验证等分。",
+   "ui_schema": {
+    "prompt": {
+     "text": "有18颗玻璃珠，要平均分给3个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。"
+    },
+    "workspaces": [
+     {
+      "mode": "equal_sharing",
+      "config": {
+       "items": 18,
+       "total": 18,
+       "group_size": 6,
+       "max_groups": 6,
+       "target_groups": 3
+      },
+      "renderer": "grouping-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "grouping",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "group_assignments",
+      "per_group_count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "unequal_share",
+     "pattern": "unequal_share"
+    }
+   ],
+   "stem_sha256": "5a9a50a253ea0b176f6e38715bf8e6dfdfbd11dcc3f257f3c127443c33b6adee",
+   "ui_schema_sha256": "8c7badae64be02f508327e324338174f8d289a6197bfb8cb2798fd9e7e7bfe65"
+  },
+  {
+   "rvid": "6385e11e-3b06-42df-b8ed-80666ec64c65",
+   "title": "[T155] V14-P0-042",
+   "renderer": "ten-frame",
+   "ability_id": "app_rd",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "第一格框里已有8个圆点，接着再放2个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "answer_raw": "10",
+   "goal": "利用十格框的五格/十格结构合并和清点圆点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "第一格框里已有8个圆点，接着再放2个。请在十格框中摆出变化，最后填写一共有多少个圆点。"
+    },
+    "workspaces": [
+     {
+      "mode": "quantity_structure",
+      "config": {
+       "max_frames": 1,
+       "target_count": 10,
+       "initial_count": 8
+      },
+      "renderer": "ten-frame",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "ten_frame",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "filled_count",
+      "counter_moves"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "939033560ec473610688cae1cae618d004c2ad9f530510489cdda82df67080a5",
+   "ui_schema_sha256": "1b8537bb8aac70749ad266b4f9b981ad328da712a541cb6c9f0bc3826df4524e"
+  },
+  {
+   "rvid": "731d5899-b8c6-4adf-be50-0d0c3a5bba3b",
+   "title": "[T155] V14-P0-044",
+   "renderer": "ten-frame",
+   "ability_id": "app_cond",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "第一格框里已有9个圆点，接着再放1个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "answer_raw": "10",
+   "goal": "利用十格框的五格/十格结构合并和清点圆点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "第一格框里已有9个圆点，接着再放1个。请在十格框中摆出变化，最后填写一共有多少个圆点。"
+    },
+    "workspaces": [
+     {
+      "mode": "quantity_structure",
+      "config": {
+       "max_frames": 1,
+       "target_count": 10,
+       "initial_count": 9
+      },
+      "renderer": "ten-frame",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "ten_frame",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "filled_count",
+      "counter_moves"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "4e1f2c7108a9a75be765acc24d88076a0637af7c630d78c64acd1d4c74d32f81",
+   "ui_schema_sha256": "e32149377b794b15784ef2017aa0380a0323306d02c701601425c5b401cc57cc"
+  },
+  {
+   "rvid": "92450f93-ebb1-4376-b614-8bb58b189a27",
+   "title": "[T155] V14-P0-123",
+   "renderer": "ruler",
+   "ability_id": "app_model",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "请用尺子测量线段的两个端点在刻度1和6。线段长多少厘米？",
+   "answer_raw": "5",
+   "goal": "利用起点与终点刻度的差求线段长度，避免将右端读数直接当长度。",
+   "ui_schema": {
+    "prompt": {
+     "text": "请用尺子测量线段的两个端点在刻度1和6。线段长多少厘米？"
+    },
+    "workspaces": [
+     {
+      "mode": "measure",
+      "config": {
+       "max": 20,
+       "object": [
+        1,
+        6
+       ]
+      },
+      "renderer": "ruler",
+      "constraints": {},
+      "capabilities": [
+       "measure",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "measurement",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "start",
+      "end",
+      "length"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "from_zero_reading",
+     "pattern": "from_zero_reading"
+    }
+   ],
+   "stem_sha256": "5b6c51148ae324486ea6e6045c08e8ac81fc68a5d9363900f52f4edc36fd99d4",
+   "ui_schema_sha256": "56a4d0d1b3c3f8e6ac2b042246454a6b15a3626fdf06351d74440a7275b69ccf"
+  },
+  {
+   "rvid": "98bb0ca7-74dc-4c24-aba0-abe0e4a37c2c",
+   "title": "画条形图算一共（V2 链 R02）",
+   "renderer": "bar-model",
+   "ability_id": "app_model",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "小雨有5颗红星星，又画了3颗黄星星。把两根部分条摆出来，再把整体条摆得和加起来一样长。一共几颗？",
+   "answer_raw": "8",
+   "goal": "用条形图表征部分-整体关系（先摆已知，再摆整体）",
+   "ui_schema": {
+    "prompt": {
+     "text": "小雨有5颗红星星，又画了3颗黄星星。把两根部分条摆出来，再把整体条摆得和加起来一样长。一共几颗？"
+    },
+    "workspaces": [
+     {
+      "mode": "part_whole",
+      "config": {
+       "mode": "part_whole",
+       "known": {
+        "a": 5,
+        "b": 3
+       },
+       "answer_bar": "c",
+       "max_blocks": 12
+      },
+      "renderer": "bar-model",
+      "constraints": {
+       "structure": "whole_gt_parts"
+      },
+      "capabilities": [
+       "add_object",
+       "remove_object",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {
+       "bars": {
+        "a": 0,
+        "b": 0,
+        "c": 0
+       },
+       "answerTouched": false
+      },
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "rev-1",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "bar_model",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "bars",
+      "structure"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "b7fd65474f7493ea6d509c4b2578b1b62ce64b17a5502ec0780b67b553ef331a",
+   "ui_schema_sha256": "1a9677b4fcf133c70f5bedbc9695aa92f686d617bb9d95daadf18c0c4774a4ef"
+  },
+  {
+   "rvid": "c2555798-1f10-4ba2-8a4f-90f483bdb630",
+   "title": "[T155] V14-P0-125",
+   "renderer": "ruler",
+   "ability_id": "app_model",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "线段左端在1厘米刻度、右端在8厘米刻度。请在尺子上标出端点，量出线段长度。",
+   "answer_raw": "7",
+   "goal": "利用起点与终点刻度的差求线段长度，避免将右端读数直接当长度。",
+   "ui_schema": {
+    "prompt": {
+     "text": "线段左端在1厘米刻度、右端在8厘米刻度。请在尺子上标出端点，量出线段长度。"
+    },
+    "workspaces": [
+     {
+      "mode": "measure",
+      "config": {
+       "max": 20,
+       "object": [
+        1,
+        8
+       ]
+      },
+      "renderer": "ruler",
+      "constraints": {},
+      "capabilities": [
+       "measure",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "measurement",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "start",
+      "end",
+      "length"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "from_zero_reading",
+     "pattern": "from_zero_reading"
+    }
+   ],
+   "stem_sha256": "096560eb60d89a0742a4a4305fa225a46c7c0052414559850408e438c3372ba9",
+   "ui_schema_sha256": "8a7408465780cac62e02ea17a88f328a137880e442c1f3d694b9f2e2bb1b76c0"
+  },
+  {
+   "rvid": "e479b6ef-c53b-45e7-ae44-e7c5077028e3",
+   "title": "[T155] V14-P0-046",
+   "renderer": "ten-frame",
+   "ability_id": "app_rd",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "第一格框里已有5个圆点，接着再放5个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "answer_raw": "10",
+   "goal": "利用十格框的五格/十格结构合并和清点圆点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "第一格框里已有5个圆点，接着再放5个。请在十格框中摆出变化，最后填写一共有多少个圆点。"
+    },
+    "workspaces": [
+     {
+      "mode": "quantity_structure",
+      "config": {
+       "max_frames": 1,
+       "target_count": 10,
+       "initial_count": 5
+      },
+      "renderer": "ten-frame",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "ten_frame",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "filled_count",
+      "counter_moves"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "7e6eb167c01e9e4bf720cd1a20bdc007c6f93080dcab3a435418cfb244d97d71",
+   "ui_schema_sha256": "f4767278df2b6b90890f6f12812824eca195e729342a15da1b9ad58d7f0a7dce"
+  },
+  {
+   "rvid": "e721a4c5-cee3-4660-9a4c-f33503bacaa6",
+   "title": "[T155] V14-P0-122",
+   "renderer": "ruler",
+   "ability_id": "app_check",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "请用尺子测量线段的两个端点在刻度2和9。线段长多少厘米？",
+   "answer_raw": "7",
+   "goal": "利用起点与终点刻度的差求线段长度，避免将右端读数直接当长度。",
+   "ui_schema": {
+    "prompt": {
+     "text": "请用尺子测量线段的两个端点在刻度2和9。线段长多少厘米？"
+    },
+    "workspaces": [
+     {
+      "mode": "measure",
+      "config": {
+       "max": 20,
+       "object": [
+        2,
+        9
+       ]
+      },
+      "renderer": "ruler",
+      "constraints": {},
+      "capabilities": [
+       "measure",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "measurement",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "start",
+      "end",
+      "length"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "from_zero_reading",
+     "pattern": "from_zero_reading"
+    }
+   ],
+   "stem_sha256": "f3af687bc538e9bd934a37e1e059f87b3d1532f0dea3019e956686f5b61ae928",
+   "ui_schema_sha256": "239a5df83cdeec3a17ffa85bf4e4cd78beb84d551ed98e492bd304c446f0eeb9"
+  },
+  {
+   "rvid": "ec2f9d09-e870-4b20-8cc3-89e736417c4d",
+   "title": "[T155] V14-P0-121",
+   "renderer": "ruler",
+   "ability_id": "app_model",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "请用尺子测量线段的两个端点在刻度3和8。线段长多少厘米？",
+   "answer_raw": "5",
+   "goal": "利用起点与终点刻度的差求线段长度，避免将右端读数直接当长度。",
+   "ui_schema": {
+    "prompt": {
+     "text": "请用尺子测量线段的两个端点在刻度3和8。线段长多少厘米？"
+    },
+    "workspaces": [
+     {
+      "mode": "measure",
+      "config": {
+       "max": 20,
+       "object": [
+        3,
+        8
+       ]
+      },
+      "renderer": "ruler",
+      "constraints": {},
+      "capabilities": [
+       "measure",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "measurement",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "start",
+      "end",
+      "length"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "from_zero_reading",
+     "pattern": "from_zero_reading"
+    }
+   ],
+   "stem_sha256": "2d4216814bbca1cdd0b72453496c9730c59121b496ec5d7dde8ce47b06bb6c1d",
+   "ui_schema_sha256": "b74ffed7fcb0a343baf71ccf90ed3d9d18c41ef91b9000d2bc81e4fc07be3aa9"
+  },
+  {
+   "rvid": "ef898a50-01a6-4600-88a9-643aeffb6dbd",
+   "title": "[T155] V14-P0-045",
+   "renderer": "ten-frame",
+   "ability_id": "app_model",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "第一格框里已有4个圆点，接着再放6个。请在十格框中摆出变化，最后填写一共有多少个圆点。",
+   "answer_raw": "10",
+   "goal": "利用十格框的五格/十格结构合并和清点圆点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "第一格框里已有4个圆点，接着再放6个。请在十格框中摆出变化，最后填写一共有多少个圆点。"
+    },
+    "workspaces": [
+     {
+      "mode": "quantity_structure",
+      "config": {
+       "max_frames": 1,
+       "target_count": 10,
+       "initial_count": 4
+      },
+      "renderer": "ten-frame",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "ten_frame",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "filled_count",
+      "counter_moves"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "d0bee4bcc79e795d4864285ac7621bd612c680475c9cefd7833f36d3e171081d",
+   "ui_schema_sha256": "b25f6f30f1d4db37dba760f21b481d99d809a374dbff3e02a4a3c90334dee7d1"
+  }
+ ]
+}
