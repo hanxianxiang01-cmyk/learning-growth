@@ -1,0 +1,1491 @@
+{
+ "title": "FE-1472 第六批｜Q03 选题集合（construct_constraint 首次开族）",
+ "generated_at": "2026-10-22T08:03:13.617172+00:00",
+ "why": "第五批独立性复核实测：已完成 95 题全部是 numeric_judge，construct_constraint 0 题完成。本批补这一整族，名额按 solve_path 分配而非 renderer。",
+ "selection_rule": "候选池 = 并集 224 − 已核 95 = **129**；本批**只取 construct_constraint** （54 题，其中 both 47 / Q03_only 7）。理由：`check_independence.py` 实测已完成 95 题的 semantic_family 全部是 numeric_judge，construct_constraint **0 题完成**——「95/212」不能读作「各类型题都验过」。名额按 **solve_path** 分配而非 renderer：该族内 renderer 与 solve_path 不一一对应（pattern-board 同时属于 numeric_exact 与 sequence_order），按 renderer 分会看不出覆盖了什么。四类各取 5 题，共 20。**不因「难核」排除任何一类**：geometry_constraint 与 digit_config 在 numeric_judge 批里从未出现，正是本批要验的对象。",
+ "quota_by_solve_path": {
+  "digit_config": 5,
+  "geometry_constraint": 5,
+  "numeric_exact": 5,
+  "sequence_order": 5
+ },
+ "picks_log": [
+  {
+   "solve_path": "digit_config",
+   "pool_n": 9,
+   "picked_n": 5,
+   "picked": [
+    "0b95c86f-99b3-421a-8a04-d328b4eb7eb7",
+    "0bfad10f-1e49-4625-ba5b-038de233f571",
+    "11129745-f159-4458-ba28-2b85503a1071",
+    "6285f244-9d78-4df3-b700-462801281d27",
+    "7c1b3466-dc9b-4630-b549-22432dca9418"
+   ],
+   "renderers": [
+    "place-value"
+   ]
+  },
+  {
+   "solve_path": "geometry_constraint",
+   "pool_n": 9,
+   "picked_n": 5,
+   "picked": [
+    "1d5fab4e-f752-4b7b-892b-82a0932d8cde",
+    "73c7e8c0-8b24-4ab3-b3f9-cddabf534d97",
+    "8b41e648-23dc-4a84-bc3c-d86293c358f9",
+    "a1b71f95-f8a8-4ea2-8942-8c93b532b46b",
+    "b38f8898-aed4-4238-b7d9-dda33092aae4"
+   ],
+   "renderers": [
+    "shape-canvas"
+   ]
+  },
+  {
+   "solve_path": "numeric_exact",
+   "pool_n": 18,
+   "picked_n": 5,
+   "picked": [
+    "007b00b2-03bd-47d6-a58e-368ee1d00192",
+    "136385fb-26a2-4d3f-86e1-813037b23b59",
+    "e6bc5139-0be9-4981-92d0-094cfe133ca1",
+    "421427f3-8f7a-47b0-9c61-cf7724701d10",
+    "438696d1-2dfc-443a-9732-c34b3fe3a524"
+   ],
+   "renderers": [
+    "array-board",
+    "money-board",
+    "pattern-board"
+   ]
+  },
+  {
+   "solve_path": "sequence_order",
+   "pool_n": 18,
+   "picked_n": 5,
+   "picked": [
+    "34e1cead-8285-426e-9aad-80a1995c73d2",
+    "3a80cfb1-d6a8-4cb2-b430-122a17f3a4ee",
+    "4e7aac4d-9fb1-49db-8d23-d777aad68e89",
+    "59e3f13a-7d55-4e28-9e4b-1fe436f2536d",
+    "66938277-896a-424c-ae85-3b8cf710d7a3"
+   ],
+   "renderers": [
+    "pattern-board",
+    "sorting-board"
+   ]
+  }
+ ],
+ "not_selected_why": {
+  "numeric_judge": "本族已核 95/169，剩余 55 题。本批刻意**不加量**——同一族内继续抽样边际信息量低；先把 0 覆盖的族补上。",
+  "open_estimate": "全量仅 1 题，且属估算类（答案非唯一）。单列待定，不与构造类混批。"
+ },
+ "pool_size": 54,
+ "quota_n": 20,
+ "quota": [
+  "007b00b2-03bd-47d6-a58e-368ee1d00192",
+  "0b95c86f-99b3-421a-8a04-d328b4eb7eb7",
+  "0bfad10f-1e49-4625-ba5b-038de233f571",
+  "11129745-f159-4458-ba28-2b85503a1071",
+  "136385fb-26a2-4d3f-86e1-813037b23b59",
+  "1d5fab4e-f752-4b7b-892b-82a0932d8cde",
+  "34e1cead-8285-426e-9aad-80a1995c73d2",
+  "3a80cfb1-d6a8-4cb2-b430-122a17f3a4ee",
+  "421427f3-8f7a-47b0-9c61-cf7724701d10",
+  "438696d1-2dfc-443a-9732-c34b3fe3a524",
+  "4e7aac4d-9fb1-49db-8d23-d777aad68e89",
+  "59e3f13a-7d55-4e28-9e4b-1fe436f2536d",
+  "6285f244-9d78-4df3-b700-462801281d27",
+  "66938277-896a-424c-ae85-3b8cf710d7a3",
+  "73c7e8c0-8b24-4ab3-b3f9-cddabf534d97",
+  "7c1b3466-dc9b-4630-b549-22432dca9418",
+  "8b41e648-23dc-4a84-bc3c-d86293c358f9",
+  "a1b71f95-f8a8-4ea2-8942-8c93b532b46b",
+  "b38f8898-aed4-4238-b7d9-dda33092aae4",
+  "e6bc5139-0be9-4981-92d0-094cfe133ca1"
+ ],
+ "items": [
+  {
+   "rvid": "007b00b2-03bd-47d6-a58e-368ee1d00192",
+   "title": "[T155] V14-P0-139",
+   "renderer": "money-board",
+   "ability_id": "app_strat",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "文具摊上，一件文具标价20角，另一件标价15角。请用1角、5角、10角和50角币在货币板上凑出两件文具的总价。",
+   "answer_raw": "35",
+   "goal": "根据两件文具的价格计算目标金额，并用规定币值准确凑付。",
+   "ui_schema": {
+    "prompt": {
+     "text": "文具摊上，一件文具标价20角，另一件标价15角。请用1角、5角、10角和50角币在货币板上凑出两件文具的总价。"
+    },
+    "workspaces": [
+     {
+      "mode": "make_amount",
+      "config": {
+       "unit": "jiao",
+       "price": 35,
+       "target": {
+        "total": 35
+       },
+       "denominations": [
+        1,
+        5,
+        10,
+        50
+       ],
+       "process_constraint": {
+        "mode": "payment_change",
+        "params": {}
+       }
+      },
+      "renderer": "money-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "money",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "selected_denominations",
+      "total"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "denomination_confusion",
+     "pattern": "denomination_confusion"
+    }
+   ],
+   "stem_sha256": "c0ac990a28cf92c74893bf52faecfcf274df66ec9f9b4e45806ce9ec76dc85ae",
+   "ui_schema_sha256": "30234e708214f4f7db5b891544b80ff7e1d8d922b656f67fcccb187020861ed3"
+  },
+  {
+   "rvid": "0b95c86f-99b3-421a-8a04-d328b4eb7eb7",
+   "title": "[T155] V14-P0-039",
+   "renderer": "place-value",
+   "ability_id": "app_rd",
+   "solve_path": "digit_config",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "位值卡片[5, 8]已经准备好。请按“十位是5，个位是8”的要求拖到对应数位，再写出摆好的完整数字。",
+   "answer_raw": "58",
+   "goal": "正确把数字卡放入百十个位，并读写拼成的完整数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "位值卡片[5, 8]已经准备好。请按“十位是5，个位是8”的要求拖到对应数位，再写出摆好的完整数字。"
+    },
+    "workspaces": [
+     {
+      "mode": "place_value_arrangement",
+      "config": {
+       "pool": [
+        5,
+        8
+       ],
+       "target": 58,
+       "process_constraint": {
+        "mode": "place_value_build",
+        "params": {}
+       }
+      },
+      "renderer": "place-value",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "place_value",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "digits",
+      "place_assignments"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "36ca842e6323e2ea8498d5aec9d96c0decedf7b76ed0a5befa1d40e5391940bd",
+   "ui_schema_sha256": "a9ab2489199aee3aad4218e402fb7e6851280d12e124d97f08ec15a657cb2fb5"
+  },
+  {
+   "rvid": "0bfad10f-1e49-4625-ba5b-038de233f571",
+   "title": "[T155] V14-P0-037",
+   "renderer": "place-value",
+   "ability_id": "app_rd",
+   "solve_path": "digit_config",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "位值卡片[9, 2]已经准备好。请按“十位是9，个位是2”的要求拖到对应数位，再写出摆好的完整数字。",
+   "answer_raw": "92",
+   "goal": "正确把数字卡放入百十个位，并读写拼成的完整数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "位值卡片[9, 2]已经准备好。请按“十位是9，个位是2”的要求拖到对应数位，再写出摆好的完整数字。"
+    },
+    "workspaces": [
+     {
+      "mode": "place_value_arrangement",
+      "config": {
+       "pool": [
+        9,
+        2
+       ],
+       "target": 92,
+       "process_constraint": {
+        "mode": "place_value_build",
+        "params": {}
+       }
+      },
+      "renderer": "place-value",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "place_value",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "digits",
+      "place_assignments"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "55f818dbb767f727daf492be7e3eaf655ce065809b86eb0f10a8279ffdd7171b",
+   "ui_schema_sha256": "ed0727a4db4c8dee4a775c0296bd95730297eaf306186da1335fc63e8c0680c8"
+  },
+  {
+   "rvid": "11129745-f159-4458-ba28-2b85503a1071",
+   "title": "[T155] V14-P0-038",
+   "renderer": "place-value",
+   "ability_id": "app_cond",
+   "solve_path": "digit_config",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "位值卡片[1, 4, 0]已经准备好。请按“百位是1，十位是4，个位是0”的要求拖到对应数位，再写出摆好的完整数字。",
+   "answer_raw": "140",
+   "goal": "正确把数字卡放入百十个位，并读写拼成的完整数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "位值卡片[1, 4, 0]已经准备好。请按“百位是1，十位是4，个位是0”的要求拖到对应数位，再写出摆好的完整数字。"
+    },
+    "workspaces": [
+     {
+      "mode": "place_value_arrangement",
+      "config": {
+       "pool": [
+        1,
+        4,
+        0
+       ],
+       "target": 140,
+       "process_constraint": {
+        "mode": "place_value_build",
+        "params": {}
+       }
+      },
+      "renderer": "place-value",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "place_value",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "digits",
+      "place_assignments"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "8194ba1c861eb2567e9a6037f51318e9c37c5f3d887ee6763710c9323654c8ad",
+   "ui_schema_sha256": "944291030de8de6357c2508486b75b8b98d16d722b5a969f336a9bf6d19ef50e"
+  },
+  {
+   "rvid": "136385fb-26a2-4d3f-86e1-813037b23b59",
+   "title": "[T155] V14-P0-062",
+   "renderer": "array-board",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "每行摆4个棋子，共摆4行。请在阵列板上摆出阵列，并填写一共有多少个棋子。",
+   "answer_raw": "16",
+   "goal": "理解每行数量和行数，摆出阵列并求总数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "每行摆4个棋子，共摆4行。请在阵列板上摆出阵列，并填写一共有多少个棋子。"
+    },
+    "workspaces": [
+     {
+      "mode": "build_array",
+      "config": {
+       "max_cols": 8,
+       "max_rows": 8,
+       "target_cols": 4,
+       "target_rows": 4
+      },
+      "renderer": "array-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "array",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "rows",
+      "columns",
+      "total"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "count",
+     "pattern": "count"
+    }
+   ],
+   "stem_sha256": "720aa3c9183f070188094bae86401f2c144feafdc0c2d8151916bd05a730f2bb",
+   "ui_schema_sha256": "0e9b9ff248748570574a732d1d6db6fa80d021f164a7987653ead339939a165e"
+  },
+  {
+   "rvid": "1d5fab4e-f752-4b7b-892b-82a0932d8cde",
+   "title": "[T155] V14-P0-097",
+   "renderer": "shape-canvas",
+   "ability_id": "app_model",
+   "solve_path": "geometry_constraint",
+   "answer_shape": "single",
+   "priority": "both",
+   "stem": "在5×5方格纸上画一个底边2格、高3格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。",
+   "answer_raw": "6",
+   "goal": "在网格上绘制可评价的基本图形，计算其面积。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在5×5方格纸上画一个底边2格、高3格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。"
+    },
+    "workspaces": [
+     {
+      "mode": "shape_drawing",
+      "config": {
+       "base": 2,
+       "grid": 5,
+       "height": 3,
+       "target_area": 6,
+       "target_shape": "rectangle",
+       "process_constraint": {
+        "mode": "shape_drawing",
+        "params": {}
+       }
+      },
+      "renderer": "shape-canvas",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "shape_canvas",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "shape_vertices",
+      "computed_area"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "wrong_size",
+     "pattern": "wrong_size"
+    }
+   ],
+   "stem_sha256": "086db2e905f49f4f695eb8e5b3072a3b3b25f6cffb0516d6d771a1ca00935f93",
+   "ui_schema_sha256": "41f06e697f063ccc94db8674f4278809206dcba86a00d77a44765e08c43babff"
+  },
+  {
+   "rvid": "34e1cead-8285-426e-9aad-80a1995c73d2",
+   "title": "[T155] V14-P0-110",
+   "renderer": "sorting-board",
+   "ability_id": "app_cond",
+   "solve_path": "sequence_order",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "桌上有4张数字卡，当前从左到右依次是[4, 9, 1, 6]。请拖动卡片，把它们按数字从小到大排好，再提交完整顺序。",
+   "answer_raw": "1469",
+   "goal": "按照数值从小到大重新排列卡片，保持排序结果唯一。",
+   "ui_schema": {
+    "prompt": {
+     "text": "桌上有4张数字卡，当前从左到右依次是[4, 9, 1, 6]。请拖动卡片，把它们按数字从小到大排好，再提交完整顺序。"
+    },
+    "workspaces": [
+     {
+      "mode": "ascending_order",
+      "config": {
+       "items": [
+        {
+         "id": "item-1",
+         "value": 4,
+         "visual_rank": 1
+        },
+        {
+         "id": "item-2",
+         "value": 9,
+         "visual_rank": 2
+        },
+        {
+         "id": "item-3",
+         "value": 1,
+         "visual_rank": 3
+        },
+        {
+         "id": "item-4",
+         "value": 6,
+         "visual_rank": 4
+        }
+       ],
+       "direction": "asc",
+       "initial_order": [
+        "item-1",
+        "item-2",
+        "item-3",
+        "item-4"
+       ]
+      },
+      "renderer": "sorting-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "sorting",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "item_order",
+      "order_edits"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "disordered",
+     "pattern": "disordered"
+    }
+   ],
+   "stem_sha256": "846849c17ef5b168b0eb7f1048d4cba2211f7634dd2440cd1fe626ca52895ccd",
+   "ui_schema_sha256": "876a675d2b3e93a810730d45de1c8e938b777d41358141858628bd6820cbf8cb"
+  },
+  {
+   "rvid": "3a80cfb1-d6a8-4cb2-b430-122a17f3a4ee",
+   "title": "[T155] V14-P0-148",
+   "renderer": "pattern-board",
+   "ability_id": "app_cond",
+   "solve_path": "sequence_order",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "颜色编码规律板的前四格依次是 4、2、4、2（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。",
+   "answer_raw": "42",
+   "goal": "识别 ABAB 的两个交替符号，并按顺序补齐后续位置。",
+   "ui_schema": {
+    "prompt": {
+     "text": "颜色编码规律板的前四格依次是 4、2、4、2（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。"
+    },
+    "workspaces": [
+     {
+      "mode": "repeat_pattern",
+      "config": {
+       "blanks": 2,
+       "palette": [
+        4,
+        2
+       ],
+       "visible": [
+        4,
+        2,
+        4,
+        2
+       ],
+       "process_constraint": {
+        "mode": "pattern_extension",
+        "params": {}
+       }
+      },
+      "renderer": "pattern-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "pattern",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "visible_tokens",
+      "blank_fills",
+      "pattern_phase"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "phase_shift",
+     "pattern": "phase_shift"
+    }
+   ],
+   "stem_sha256": "b0161ab13fa03c6d196361f5b8d9d20630ea9e06bae5326d202fcc684d95e62f",
+   "ui_schema_sha256": "fcea3523f4bcc0ba4836009ab47d092ab68dc9f907d386ad28d2394116fa0ead"
+  },
+  {
+   "rvid": "421427f3-8f7a-47b0-9c61-cf7724701d10",
+   "title": "[T155] V14-P0-137",
+   "renderer": "money-board",
+   "ability_id": "app_cond",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "文具摊上，一件文具标价5角，另一件标价20角。请用1角、5角、10角和50角币在货币板上凑出两件文具的总价。",
+   "answer_raw": "25",
+   "goal": "根据两件文具的价格计算目标金额，并用规定币值准确凑付。",
+   "ui_schema": {
+    "prompt": {
+     "text": "文具摊上，一件文具标价5角，另一件标价20角。请用1角、5角、10角和50角币在货币板上凑出两件文具的总价。"
+    },
+    "workspaces": [
+     {
+      "mode": "make_amount",
+      "config": {
+       "unit": "jiao",
+       "price": 25,
+       "target": {
+        "total": 25
+       },
+       "denominations": [
+        1,
+        5,
+        10,
+        50
+       ],
+       "process_constraint": {
+        "mode": "payment_change",
+        "params": {}
+       }
+      },
+      "renderer": "money-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "money",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "selected_denominations",
+      "total"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "denomination_confusion",
+     "pattern": "denomination_confusion"
+    }
+   ],
+   "stem_sha256": "5e819d514615c5ae62aff3407644429d95a792132857701ab372982a256ec132",
+   "ui_schema_sha256": "31dc249917881958b1d21f8775ebfaa3f67fecea32924b6448778ef451b8d326"
+  },
+  {
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "title": "[T155] V14-P0-143",
+   "renderer": "money-board",
+   "ability_id": "app_strat",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "文具店一本练习本标价35角。请用货币板上的1角、5角、10角或50角硬币，选出正好能凑齐货款的组合，并提交所选硬币的总金额。",
+   "answer_raw": "35",
+   "goal": "使用支持的四种硬币币值正确凑付指定价格，并完成金额核对。",
+   "ui_schema": {
+    "prompt": {
+     "text": "文具店一本练习本标价35角。请用货币板上的1角、5角、10角或50角硬币，选出正好能凑齐货款的组合，并提交所选硬币的总金额。"
+    },
+    "workspaces": [
+     {
+      "mode": "change",
+      "config": {
+       "unit": "jiao",
+       "price": 35,
+       "target": {
+        "total": 35
+       },
+       "denominations": [
+        1,
+        5,
+        10,
+        50
+       ],
+       "process_constraint": {
+        "mode": "payment_change",
+        "params": {}
+       }
+      },
+      "renderer": "money-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "money",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "selected_denominations",
+      "total"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "denomination_confusion",
+     "pattern": "denomination_confusion"
+    }
+   ],
+   "stem_sha256": "1155e8ee4160ad39f352338d54f97b10b88bc8f07cadc39a66266aaf62cb840c",
+   "ui_schema_sha256": "954cb26b6082d6f7418c93aebc44b0c263479fed20d54fcf4c58753efabfc9ce"
+  },
+  {
+   "rvid": "4e7aac4d-9fb1-49db-8d23-d777aad68e89",
+   "title": "[T155] V14-P0-150",
+   "renderer": "pattern-board",
+   "ability_id": "app_cond",
+   "solve_path": "sequence_order",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "颜色编码规律板的前四格依次是 2、5、2、5（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。",
+   "answer_raw": "25",
+   "goal": "识别 ABAB 的两个交替符号，并按顺序补齐后续位置。",
+   "ui_schema": {
+    "prompt": {
+     "text": "颜色编码规律板的前四格依次是 2、5、2、5（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。"
+    },
+    "workspaces": [
+     {
+      "mode": "repeat_pattern",
+      "config": {
+       "blanks": 2,
+       "palette": [
+        2,
+        5
+       ],
+       "visible": [
+        2,
+        5,
+        2,
+        5
+       ],
+       "process_constraint": {
+        "mode": "pattern_extension",
+        "params": {}
+       }
+      },
+      "renderer": "pattern-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "pattern",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "visible_tokens",
+      "blank_fills",
+      "pattern_phase"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "phase_shift",
+     "pattern": "phase_shift"
+    }
+   ],
+   "stem_sha256": "713b774ca5e9057f937c6e274ba18fe2652f0313546dddf36b41c0cc58c18eaa",
+   "ui_schema_sha256": "32fa33c584b9ae6a129d8747db08d3887f493596ec674ff62f53ecbc5415dac8"
+  },
+  {
+   "rvid": "59e3f13a-7d55-4e28-9e4b-1fe436f2536d",
+   "title": "[T155] V14-P0-106",
+   "renderer": "sorting-board",
+   "ability_id": "app_cond",
+   "solve_path": "sequence_order",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "桌上有4张数字卡，当前从左到右依次是[9, 1, 5, 3]。请拖动卡片，把它们按数字从小到大排好，再提交完整顺序。",
+   "answer_raw": "1359",
+   "goal": "按照数值从小到大重新排列卡片，保持排序结果唯一。",
+   "ui_schema": {
+    "prompt": {
+     "text": "桌上有4张数字卡，当前从左到右依次是[9, 1, 5, 3]。请拖动卡片，把它们按数字从小到大排好，再提交完整顺序。"
+    },
+    "workspaces": [
+     {
+      "mode": "ascending_order",
+      "config": {
+       "items": [
+        {
+         "id": "item-1",
+         "value": 9,
+         "visual_rank": 1
+        },
+        {
+         "id": "item-2",
+         "value": 1,
+         "visual_rank": 2
+        },
+        {
+         "id": "item-3",
+         "value": 5,
+         "visual_rank": 3
+        },
+        {
+         "id": "item-4",
+         "value": 3,
+         "visual_rank": 4
+        }
+       ],
+       "direction": "asc",
+       "initial_order": [
+        "item-1",
+        "item-2",
+        "item-3",
+        "item-4"
+       ]
+      },
+      "renderer": "sorting-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "sorting",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "item_order",
+      "order_edits"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "disordered",
+     "pattern": "disordered"
+    }
+   ],
+   "stem_sha256": "63652e3bf99214fdaaeab3447cf2ec372b98bf6367353acedbfa25a92e761ed9",
+   "ui_schema_sha256": "55cb80b49c57456cae9b08dd76dd53d966969c350da4b3416c918349d4f56d57"
+  },
+  {
+   "rvid": "6285f244-9d78-4df3-b700-462801281d27",
+   "title": "[T155] V14-P0-040",
+   "renderer": "place-value",
+   "ability_id": "app_strat",
+   "solve_path": "digit_config",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "位值卡片[2, 0, 6]已经准备好。请按“百位是2，十位是0，个位是6”的要求拖到对应数位，再写出摆好的完整数字。",
+   "answer_raw": "206",
+   "goal": "正确把数字卡放入百十个位，并读写拼成的完整数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "位值卡片[2, 0, 6]已经准备好。请按“百位是2，十位是0，个位是6”的要求拖到对应数位，再写出摆好的完整数字。"
+    },
+    "workspaces": [
+     {
+      "mode": "place_value_arrangement",
+      "config": {
+       "pool": [
+        2,
+        0,
+        6
+       ],
+       "target": 206,
+       "process_constraint": {
+        "mode": "place_value_build",
+        "params": {}
+       }
+      },
+      "renderer": "place-value",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "place_value",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "digits",
+      "place_assignments"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "7f69b46df12b467a4f9baf407d44808f361dd0099e337e33486965e60a6ed72c",
+   "ui_schema_sha256": "fdfeb6ab91d2dfeda0c71f9e7d2e393ed73b8cd6f146fda26b30f5ccf96d9d7f"
+  },
+  {
+   "rvid": "66938277-896a-424c-ae85-3b8cf710d7a3",
+   "title": "[T155] V14-P0-146",
+   "renderer": "pattern-board",
+   "ability_id": "app_cond",
+   "solve_path": "sequence_order",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "颜色编码规律板的前四格依次是 2、3、2、3（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。",
+   "answer_raw": "23",
+   "goal": "识别 ABAB 的两个交替符号，并按顺序补齐后续位置。",
+   "ui_schema": {
+    "prompt": {
+     "text": "颜色编码规律板的前四格依次是 2、3、2、3（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。"
+    },
+    "workspaces": [
+     {
+      "mode": "repeat_pattern",
+      "config": {
+       "blanks": 2,
+       "palette": [
+        2,
+        3
+       ],
+       "visible": [
+        2,
+        3,
+        2,
+        3
+       ],
+       "process_constraint": {
+        "mode": "pattern_extension",
+        "params": {}
+       }
+      },
+      "renderer": "pattern-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "pattern",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "visible_tokens",
+      "blank_fills",
+      "pattern_phase"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "phase_shift",
+     "pattern": "phase_shift"
+    }
+   ],
+   "stem_sha256": "4ce4bc6cf4f14c86970cfaab97986207e9394e23c7ca52d95407498ccc423362",
+   "ui_schema_sha256": "b6cc2344cbedaa02979fe4ffd7a08ff3039f835dcb6df387ba3ac43706909569"
+  },
+  {
+   "rvid": "73c7e8c0-8b24-4ab3-b3f9-cddabf534d97",
+   "title": "[T155] V14-P0-103",
+   "renderer": "shape-canvas",
+   "ability_id": "app_cond",
+   "solve_path": "geometry_constraint",
+   "answer_shape": "single",
+   "priority": "both",
+   "stem": "在5×5方格纸上画一个底边3格、高3格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。",
+   "answer_raw": "9",
+   "goal": "在网格上绘制可评价的基本图形，计算其面积。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在5×5方格纸上画一个底边3格、高3格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。"
+    },
+    "workspaces": [
+     {
+      "mode": "shape_drawing",
+      "config": {
+       "base": 3,
+       "grid": 5,
+       "height": 3,
+       "target_area": 9,
+       "target_shape": "rectangle",
+       "process_constraint": {
+        "mode": "shape_drawing",
+        "params": {}
+       }
+      },
+      "renderer": "shape-canvas",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "shape_canvas",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "shape_vertices",
+      "computed_area"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "wrong_size",
+     "pattern": "wrong_size"
+    }
+   ],
+   "stem_sha256": "9b776d7cb108cdb10608794983c62da29be449a1ce2050518ff5dc49fbc89029",
+   "ui_schema_sha256": "0578873024115ccf2c259fd4d76ccaf2a5cbebaac5c92e88f0cbc4337d475f17"
+  },
+  {
+   "rvid": "7c1b3466-dc9b-4630-b549-22432dca9418",
+   "title": "[T155] V14-P0-035",
+   "renderer": "place-value",
+   "ability_id": "app_rd",
+   "solve_path": "digit_config",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "位值卡片[8, 0]已经准备好。请按“十位是8，个位是0”的要求拖到对应数位，再写出摆好的完整数字。",
+   "answer_raw": "80",
+   "goal": "正确把数字卡放入百十个位，并读写拼成的完整数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "位值卡片[8, 0]已经准备好。请按“十位是8，个位是0”的要求拖到对应数位，再写出摆好的完整数字。"
+    },
+    "workspaces": [
+     {
+      "mode": "place_value_arrangement",
+      "config": {
+       "pool": [
+        8,
+        0
+       ],
+       "target": 80,
+       "process_constraint": {
+        "mode": "place_value_build",
+        "params": {}
+       }
+      },
+      "renderer": "place-value",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "place_value",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "digits",
+      "place_assignments"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "8c24386b590dc47407f3f3b6fa95c5dd8d8c9a01e5e8a1b82c419816a7439b66",
+   "ui_schema_sha256": "4357e1ec8299843834a3ee989f7ede741c18b7e31532ba40212b89fe8e0f4726"
+  },
+  {
+   "rvid": "8b41e648-23dc-4a84-bc3c-d86293c358f9",
+   "title": "[T155] V14-P0-102",
+   "renderer": "shape-canvas",
+   "ability_id": "app_model",
+   "solve_path": "geometry_constraint",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "在5×5方格纸上画一个长5格、宽2格的长方形，四边落在格线上。请数格或计算它的面积是多少平方格。",
+   "answer_raw": "10",
+   "goal": "在点阵网格内画出指定长宽的长方形，并验证面积等于长乘宽。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在5×5方格纸上画一个长5格、宽2格的长方形，四边落在格线上。请数格或计算它的面积是多少平方格。"
+    },
+    "workspaces": [
+     {
+      "mode": "shape_drawing",
+      "config": {
+       "base": 5,
+       "grid": 5,
+       "height": 2,
+       "target_area": 10,
+       "target_shape": "rectangle",
+       "process_constraint": {
+        "mode": "shape_drawing",
+        "params": {}
+       }
+      },
+      "renderer": "shape-canvas",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "shape_canvas",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "shape_vertices",
+      "computed_area"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "wrong_size",
+     "pattern": "wrong_size"
+    }
+   ],
+   "stem_sha256": "a370124efcae743c8a2a2bdbd099c48b4f3bb605f047203c7561f7d429b2c1d4",
+   "ui_schema_sha256": "ca3b202d179009240a04179c6fa8b83884c1625cabdfd286450cfba37a567f0c"
+  },
+  {
+   "rvid": "a1b71f95-f8a8-4ea2-8942-8c93b532b46b",
+   "title": "[T155] V14-P0-099",
+   "renderer": "shape-canvas",
+   "ability_id": "app_cond",
+   "solve_path": "geometry_constraint",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "在5×5方格纸上画一个底边3格、高4格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。",
+   "answer_raw": "12",
+   "goal": "在网格上绘制可评价的基本图形，计算其面积。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在5×5方格纸上画一个底边3格、高4格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。"
+    },
+    "workspaces": [
+     {
+      "mode": "shape_drawing",
+      "config": {
+       "base": 3,
+       "grid": 5,
+       "height": 4,
+       "target_area": 12,
+       "target_shape": "rectangle",
+       "process_constraint": {
+        "mode": "shape_drawing",
+        "params": {}
+       }
+      },
+      "renderer": "shape-canvas",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "shape_canvas",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "shape_vertices",
+      "computed_area"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "wrong_size",
+     "pattern": "wrong_size"
+    }
+   ],
+   "stem_sha256": "a26083b846942acfb5299e8f765b9be1fa079a7dffdaa7bec82ae1eb035d0f3d",
+   "ui_schema_sha256": "0bcef29bc476190debab87a054862b10a547a08ebd32c05f41b77e1173099239"
+  },
+  {
+   "rvid": "b38f8898-aed4-4238-b7d9-dda33092aae4",
+   "title": "[T155] V14-P0-100",
+   "renderer": "shape-canvas",
+   "ability_id": "app_rd",
+   "solve_path": "geometry_constraint",
+   "answer_shape": "single",
+   "priority": "both",
+   "stem": "在5×5方格纸上画一个长4格、宽2格的长方形，四边落在格线上。请数格或计算它的面积是多少平方格。",
+   "answer_raw": "8",
+   "goal": "在点阵网格内画出指定长宽的长方形，并验证面积等于长乘宽。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在5×5方格纸上画一个长4格、宽2格的长方形，四边落在格线上。请数格或计算它的面积是多少平方格。"
+    },
+    "workspaces": [
+     {
+      "mode": "shape_drawing",
+      "config": {
+       "base": 4,
+       "grid": 5,
+       "height": 2,
+       "target_area": 8,
+       "target_shape": "rectangle",
+       "process_constraint": {
+        "mode": "shape_drawing",
+        "params": {}
+       }
+      },
+      "renderer": "shape-canvas",
+      "constraints": {},
+      "capabilities": [
+       "draw",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "shape_canvas",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "shape_vertices",
+      "computed_area"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "wrong_size",
+     "pattern": "wrong_size"
+    }
+   ],
+   "stem_sha256": "51b86a79c4aa7fc0b7c01019b03d1065fbbfe67b1c9b36e8a7704c4a995d494b",
+   "ui_schema_sha256": "489010e83cb488dfb29082545dcff1b996aff858aa08bf9cf09b2a086f293f69"
+  },
+  {
+   "rvid": "e6bc5139-0be9-4981-92d0-094cfe133ca1",
+   "title": "[T155] V14-P0-147",
+   "renderer": "pattern-board",
+   "ability_id": "app_check",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "priority": "both",
+   "stem": "乐乐看到前四格颜色编码是3、1、3、1，就把后两格写成“3、3”，并说：“我接对了。”请先检查他的两格是否都符合交替规律；如果不对，请在规律板的两个空格里改填正确的编码；如果对，就照他填的编码提交。",
+   "answer_raw": "31",
+   "goal": "检查给定的补全结论，逐格比较交替周期，并提交核验后的两格编码。",
+   "ui_schema": {
+    "prompt": {
+     "text": "乐乐看到前四格颜色编码是3、1、3、1，就把后两格写成“3、3”，并说：“我接对了。”请先检查他的两格是否都符合交替规律；如果不对，请在规律板的两个空格里改填正确的编码；如果对，就照他填的编码提交。"
+    },
+    "workspaces": [
+     {
+      "mode": "repeat_pattern",
+      "config": {
+       "blanks": 2,
+       "palette": [
+        3,
+        1
+       ],
+       "visible": [
+        3,
+        1,
+        3,
+        1
+       ],
+       "process_constraint": {
+        "mode": "pattern_extension",
+        "params": {}
+       }
+      },
+      "renderer": "pattern-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "pattern",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "visible_tokens",
+      "blank_fills",
+      "pattern_phase"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "phase_shift",
+     "pattern": "phase_shift"
+    }
+   ],
+   "stem_sha256": "673760585dd668069ad9ae7b926002cead21c7e064c61db152dbf8c0c26e8f84",
+   "ui_schema_sha256": "6f40c5c235738cdbe94166f9cbdc673232f80b0da943204af9edee2a148fd5f4"
+  }
+ ]
+}

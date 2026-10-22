@@ -1,0 +1,2410 @@
+{
+ "title": "FE-1472 第六批｜Q03 construct_constraint 族 20 题独立核验",
+ "generated_at": "2026-10-22T08:22:35.432044+00:00",
+ "chain": [
+  "题干",
+  "抽取题面事实",
+  "明确所求对象",
+  "独立推导/构造（纯算术）",
+  "断言 config 已知量 ⊆ 题面事实",
+  "题面可完成性（新增维度）",
+  "与存储答案比较"
+ ],
+ "family_scope": {
+  "semantic_family": "construct_constraint",
+  "why_this_batch": "前五批 95 题的 semantic_family 全部是 numeric_judge；construct_constraint 54 题此前 0 题完成。本批首次开族，名额按 solve_path 分配。",
+  "total_in_family": 54,
+  "verified_here": 20,
+  "quota_by_solve_path": {
+   "digit_config": 5,
+   "geometry_constraint": 5,
+   "numeric_exact": 5,
+   "sequence_order": 5
+  },
+  "pool_size": 54,
+  "process_constraint_coverage": {
+   "family_total": 54,
+   "with_process_constraint": 37,
+   "without_process_constraint": 17,
+   "by_renderer": {
+    "array-board": {
+     "n": 8,
+     "with_pc": 0
+    },
+    "money-board": {
+     "n": 9,
+     "with_pc": 9
+    },
+    "pattern-board": {
+     "n": 10,
+     "with_pc": 10
+    },
+    "place-value": {
+     "n": 9,
+     "with_pc": 9
+    },
+    "shape-canvas": {
+     "n": 9,
+     "with_pc": 9
+    },
+    "sorting-board": {
+     "n": 9,
+     "with_pc": 0
+    }
+   },
+   "renderers_without_any_pc": [
+    "array-board",
+    "sorting-board"
+   ],
+   "backend_supported_modes": [
+    "pattern_extension",
+    "payment_change",
+    "shape_drawing",
+    "place_value_build"
+   ],
+   "why_the_gap": "不带 pc 的题**全部**落在 array-board / sorting-board 两个 renderer；而后端 `process_validate.py` 的 RULES 只有 pattern_extension / payment_change / shape_drawing / place_value_build 四个 mode，没有 array / sorting 的校验器。故这不是「题目漏配」，是**该两类求解形态没有过程校验能力**——即使补上 process_constraint 也会落 unknown_mode → unverifiable。",
+   "correction": "更正上一轮笔记的错误口径：曾记为「54 题全部带 process_constraint」，实地统计为 37/54。本批 20 题实核 17/20 与该缺口一致（差额 3 题 = 1 题 array-board + 2 题 sorting-board）。"
+  }
+ },
+ "independence": {
+  "rule": "computed 只由 derive(item) 从**题干文本**抽出的事实算出；config 只用于事后一致性核对，不参与计算；answer_raw 仅在比较一步出现",
+  "new_in_this_batch": "construct_constraint 族的答案是「构造结果的编码」（排序拼接/按位拼数/空格拼接/面积），故 expr 中会出现位权 10/100/1000——那是编码规则常量。本批把它单列进 derivation.encoding_constants 并写明 purpose，不据此指控「推导不独立」。",
+  "enforced_by": "derive() 只吃 item，其 answer 字段在 evaluate() 的比较步才被读取；independent_eval() 只对纯算术表达式求值",
+  "caveat": "独立推导能排除「照答案反推」，**不能证明题面解析正确**——若我把题意读错，MATCH 也只是「错误理解与答案巧合一致」"
+ },
+ "feasibility_dimension": {
+  "why": "本族含 geometry_constraint（shape-canvas 9 题），存在「答案算得出、但界面画不出」的可能，故单列一条维度。",
+  "method": "从题面抽 grid 与两条边长，用组件源码事实（applyAddPoint 约束 0<=x<grid、span=(grid-1)*CELL）判断可行性；并对每个 target_area 穷举钉位组合验证面积是否可达。",
+  "infeasible_count": 1
+ },
+ "summary": {
+  "total": 20,
+  "match": 20,
+  "mismatch": 0,
+  "config_inconsistent": 0,
+  "infeasible_on_component": 1,
+  "observation_counts": {
+   "DISTRACTOR_DIMENSION_PRESENT": 2,
+   "ERROR_SPACE_RESTRICTED_TO_POSITION": 5,
+   "GRID_SEMANTICS_OFF_BY_ONE": 4,
+   "INFEASIBLE_ON_COMPONENT": 1,
+   "NO_PROCESS_VALIDATOR_FOR_RENDERER": 3,
+   "PATTERN_DISTRACTOR_TARGETS": 4,
+   "PROCESS_CONSTRAINT_BLIND_TO_SHAPE": 5,
+   "PROCESS_CONSTRAINT_ENABLED": 17
+  },
+  "process_constraint_declared": 17,
+  "by_renderer": {
+   "money-board": {
+    "n": 3,
+    "match": 3,
+    "inconsistent": 0,
+    "infeasible": 0
+   },
+   "place-value": {
+    "n": 5,
+    "match": 5,
+    "inconsistent": 0,
+    "infeasible": 0
+   },
+   "array-board": {
+    "n": 1,
+    "match": 1,
+    "inconsistent": 0,
+    "infeasible": 0
+   },
+   "shape-canvas": {
+    "n": 5,
+    "match": 5,
+    "inconsistent": 0,
+    "infeasible": 1
+   },
+   "sorting-board": {
+    "n": 2,
+    "match": 2,
+    "inconsistent": 0,
+    "infeasible": 0
+   },
+   "pattern-board": {
+    "n": 4,
+    "match": 4,
+    "inconsistent": 0,
+    "infeasible": 0
+   }
+  },
+  "by_solve_path": {
+   "numeric_exact": {
+    "n": 5,
+    "match": 5
+   },
+   "digit_config": {
+    "n": 5,
+    "match": 5
+   },
+   "geometry_constraint": {
+    "n": 5,
+    "match": 5
+   },
+   "sequence_order": {
+    "n": 5,
+    "match": 5
+   }
+  },
+  "match_definition": "MATCH 只表示「从题面独立推导/构造的结果与存储答案相等」，不表示该题的交互、可完成性或教学质量已验收"
+ },
+ "items": [
+  {
+   "rvid": "007b00b2-03bd-47d6-a58e-368ee1d00192",
+   "title": "[T155] V14-P0-139",
+   "renderer": "money-board",
+   "solve_path": "numeric_exact",
+   "ability_id": "app_strat",
+   "priority": "both",
+   "input_basis": "题面抽出标价 [20, 15]（two_items_sum）；config.price=35、target.total=35 仅作交叉核对；**不读答案**",
+   "read": "文具摊上，一件文具标价20角，另一件标价15角。请用1角、5角、10角和50角币在货币板上凑出两件文具的总价。→ 两件标价 20 角与 15 角，求总价",
+   "target_object": "总价（20+15 角）",
+   "derivation": {
+    "expr": "20 + 15",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "money_variant": "two_items_sum"
+    }
+   },
+   "computed": 35,
+   "stated_answer": "35",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=payment_change` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"payment_change\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "selected_denominations",
+     "total"
+    ],
+    "process_constraint": {
+     "mode": "payment_change",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "unit": "jiao",
+    "price": 35,
+    "target": {
+     "total": 35
+    },
+    "denominations": [
+     1,
+     5,
+     10,
+     50
+    ],
+    "process_constraint": {
+     "mode": "payment_change",
+     "params": {}
+    }
+   },
+   "workspace_mode": "make_amount",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "文具摊上，一件文具标价20角，另一件标价15角。请用1角、5角、10角和50角币在货币板上凑出两件文具的总价。",
+   "input_binding": {
+    "stem_sha256": "c0ac990a28cf92c74893bf52faecfcf274df66ec9f9b4e45806ce9ec76dc85ae",
+    "ui_schema_sha256": "30234e708214f4f7db5b891544b80ff7e1d8d922b656f67fcccb187020861ed3"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.price`=35、`denominations`=[1, 5, 10, 50]；提交 `answer` 为付出总角数 35。序列化层记 `counts`（面额→枚数）与 `selection_history`；过程约束 `payment_change` 会核 `sum(sel)==price`",
+     "competing_explanations": "可能的错值：20（只算第一件 20 角）；15（只算第二件 15 角）；5（把两件的差当总价）",
+     "cannot_distinguish": "本题两件是 20 角与 15 角，求 35 角。`counts` 能分开「少算了某一件」与「换算错」；但**分不开「先相加再凑币」与「边凑边加」**——终态 counts 相同",
+     "neutral_feedback": "说「先看清两样东西各多少钱，再把它们合起来」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "0b95c86f-99b3-421a-8a04-d328b4eb7eb7",
+   "title": "[T155] V14-P0-039",
+   "renderer": "place-value",
+   "solve_path": "digit_config",
+   "ability_id": "app_rd",
+   "priority": "both",
+   "input_basis": "题面抽出卡片池 [5, 8] 与位名指派；位权 10/1 是十进制编码规则（encoding constant），不是 config 数据；config.target=58 仅作交叉核对；**不读答案**",
+   "read": "位值卡片[5, 8]已经准备好。请按“十位是5，个位是8”的要求拖到对应数位，再写出摆好的完整数字。→ 卡片池 [5, 8]，位名指派 {'十': 5, '个': 8}",
+   "target_object": "按位拼出的数（十5/个8）",
+   "derivation": {
+    "expr": "5 * 10 + 8 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 1,
+      "purpose": "个位位权=1（`d * 1` 即不乘位权，句式产物）"
+     },
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "place_assignment": {
+      "十": 5,
+      "个": 8
+     },
+     "digit_count": 2
+    }
+   },
+   "computed": 58,
+   "stated_answer": "58",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=place_value_build` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"place_value_build\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "ERROR_SPACE_RESTRICTED_TO_POSITION",
+     "severity": "info",
+     "why": "`parsePlaceValueConfig` 强制 pool 与 target 的各位数字 multiset 相等，于是孩子**不可能**填出数字错、只能是位置错",
+     "evidence": "config.pool=[5, 8]、target=58；`placeValueV2.ts` 用 `sorted(pool)!==sorted(expected)` 直接拒配",
+     "consequence": "诊断靶唯一（place_confusion），好处是判定干净；代价是「拿错卡片」这一类错因在本 renderer 下不可观测",
+     "not_concluded": "本条是能力边界登记，不是缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "digits",
+     "place_assignments"
+    ],
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "pool": [
+     5,
+     8
+    ],
+    "target": 58,
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    }
+   },
+   "workspace_mode": "place_value_arrangement",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "位值卡片[5, 8]已经准备好。请按“十位是5，个位是8”的要求拖到对应数位，再写出摆好的完整数字。",
+   "input_binding": {
+    "stem_sha256": "36ca842e6323e2ea8498d5aec9d96c0decedf7b76ed0a5befa1d40e5391940bd",
+    "ui_schema_sha256": "a9ab2489199aee3aad4218e402fb7e6851280d12e124d97f08ec15a657cb2fb5"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.pool`=[5, 8]、`target`=58；题面位名指派 {'十': 5, '个': 8}；提交 `answer` 为框拼出的数 58。序列化层记 `slots`（各框）与 `pool`（余牌），结构判定 EMPTY/PASS/place_confusion；过程约束 `place_value_build` 会按位重算",
+     "competing_explanations": "可能的错值：85（整体逆序摆放（每个数字都放到了对称的位上）／最高位（十）与最低位（个）互换 —— **两个错法同值，在该题内部不可分**）；50（漏掉最低位（个位没放））",
+     "cannot_distinguish": "`slots` 数组能分开「哪个位放错」，这是本 renderer 的强项；但**分不开「知道自己放在十位」与「只是把牌塞进了空格」**——框的语义由界面给出，提交物只记位置不记理解",
+     "neutral_feedback": "说「先找到十位在哪一格，再看个位该放哪个数字」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "0bfad10f-1e49-4625-ba5b-038de233f571",
+   "title": "[T155] V14-P0-037",
+   "renderer": "place-value",
+   "solve_path": "digit_config",
+   "ability_id": "app_rd",
+   "priority": "both",
+   "input_basis": "题面抽出卡片池 [9, 2] 与位名指派；位权 10/1 是十进制编码规则（encoding constant），不是 config 数据；config.target=92 仅作交叉核对；**不读答案**",
+   "read": "位值卡片[9, 2]已经准备好。请按“十位是9，个位是2”的要求拖到对应数位，再写出摆好的完整数字。→ 卡片池 [9, 2]，位名指派 {'十': 9, '个': 2}",
+   "target_object": "按位拼出的数（十9/个2）",
+   "derivation": {
+    "expr": "9 * 10 + 2 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 1,
+      "purpose": "个位位权=1（`d * 1` 即不乘位权，句式产物）"
+     },
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "place_assignment": {
+      "十": 9,
+      "个": 2
+     },
+     "digit_count": 2
+    }
+   },
+   "computed": 92,
+   "stated_answer": "92",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=place_value_build` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"place_value_build\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "ERROR_SPACE_RESTRICTED_TO_POSITION",
+     "severity": "info",
+     "why": "`parsePlaceValueConfig` 强制 pool 与 target 的各位数字 multiset 相等，于是孩子**不可能**填出数字错、只能是位置错",
+     "evidence": "config.pool=[9, 2]、target=92；`placeValueV2.ts` 用 `sorted(pool)!==sorted(expected)` 直接拒配",
+     "consequence": "诊断靶唯一（place_confusion），好处是判定干净；代价是「拿错卡片」这一类错因在本 renderer 下不可观测",
+     "not_concluded": "本条是能力边界登记，不是缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "digits",
+     "place_assignments"
+    ],
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "pool": [
+     9,
+     2
+    ],
+    "target": 92,
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    }
+   },
+   "workspace_mode": "place_value_arrangement",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "位值卡片[9, 2]已经准备好。请按“十位是9，个位是2”的要求拖到对应数位，再写出摆好的完整数字。",
+   "input_binding": {
+    "stem_sha256": "55f818dbb767f727daf492be7e3eaf655ce065809b86eb0f10a8279ffdd7171b",
+    "ui_schema_sha256": "ed0727a4db4c8dee4a775c0296bd95730297eaf306186da1335fc63e8c0680c8"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.pool`=[9, 2]、`target`=92；题面位名指派 {'十': 9, '个': 2}；提交 `answer` 为框拼出的数 92。序列化层记 `slots`（各框）与 `pool`（余牌），结构判定 EMPTY/PASS/place_confusion；过程约束 `place_value_build` 会按位重算",
+     "competing_explanations": "可能的错值：29（整体逆序摆放（每个数字都放到了对称的位上）／最高位（十）与最低位（个）互换 —— **两个错法同值，在该题内部不可分**）；90（漏掉最低位（个位没放））",
+     "cannot_distinguish": "`slots` 数组能分开「哪个位放错」，这是本 renderer 的强项；但**分不开「知道自己放在十位」与「只是把牌塞进了空格」**——框的语义由界面给出，提交物只记位置不记理解",
+     "neutral_feedback": "说「先找到十位在哪一格，再看个位该放哪个数字」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "11129745-f159-4458-ba28-2b85503a1071",
+   "title": "[T155] V14-P0-038",
+   "renderer": "place-value",
+   "solve_path": "digit_config",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出卡片池 [1, 4, 0] 与位名指派；位权 100/10/1 是十进制编码规则（encoding constant），不是 config 数据；config.target=140 仅作交叉核对；**不读答案**",
+   "read": "位值卡片[1, 4, 0]已经准备好。请按“百位是1，十位是4，个位是0”的要求拖到对应数位，再写出摆好的完整数字。→ 卡片池 [1, 4, 0]，位名指派 {'百': 1, '十': 4, '个': 0}",
+   "target_object": "按位拼出的数（百1/十4/个0）",
+   "derivation": {
+    "expr": "1 * 100 + 4 * 10 + 0 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     },
+     {
+      "value": 100,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "place_assignment": {
+      "百": 1,
+      "十": 4,
+      "个": 0
+     },
+     "digit_count": 3
+    }
+   },
+   "computed": 140,
+   "stated_answer": "140",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=place_value_build` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"place_value_build\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "ERROR_SPACE_RESTRICTED_TO_POSITION",
+     "severity": "info",
+     "why": "`parsePlaceValueConfig` 强制 pool 与 target 的各位数字 multiset 相等，于是孩子**不可能**填出数字错、只能是位置错",
+     "evidence": "config.pool=[1, 4, 0]、target=140；`placeValueV2.ts` 用 `sorted(pool)!==sorted(expected)` 直接拒配",
+     "consequence": "诊断靶唯一（place_confusion），好处是判定干净；代价是「拿错卡片」这一类错因在本 renderer 下不可观测",
+     "not_concluded": "本条是能力边界登记，不是缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "digits",
+     "place_assignments"
+    ],
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "pool": [
+     1,
+     4,
+     0
+    ],
+    "target": 140,
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    }
+   },
+   "workspace_mode": "place_value_arrangement",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "位值卡片[1, 4, 0]已经准备好。请按“百位是1，十位是4，个位是0”的要求拖到对应数位，再写出摆好的完整数字。",
+   "input_binding": {
+    "stem_sha256": "8194ba1c861eb2567e9a6037f51318e9c37c5f3d887ee6763710c9323654c8ad",
+    "ui_schema_sha256": "944291030de8de6357c2508486b75b8b98d16d722b5a969f336a9bf6d19ef50e"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.pool`=[1, 4, 0]、`target`=140；题面位名指派 {'百': 1, '十': 4, '个': 0}；提交 `answer` 为框拼出的数 140。序列化层记 `slots`（各框）与 `pool`（余牌），结构判定 EMPTY/PASS/place_confusion；过程约束 `place_value_build` 会按位重算",
+     "competing_explanations": "可能的错值：41（整体逆序摆放（每个数字都放到了对称的位上）／最高位（百）与最低位（个）互换 —— **两个错法同值，在该题内部不可分**）。**140 与正确答案同值**（本题位值对称，该错法不可分）",
+     "cannot_distinguish": "`slots` 数组能分开「哪个位放错」，这是本 renderer 的强项；但**分不开「知道自己放在十位」与「只是把牌塞进了空格」**——框的语义由界面给出，提交物只记位置不记理解",
+     "neutral_feedback": "说「先找到十位在哪一格，再看个位该放哪个数字」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "136385fb-26a2-4d3f-86e1-813037b23b59",
+   "title": "[T155] V14-P0-062",
+   "renderer": "array-board",
+   "solve_path": "numeric_exact",
+   "ability_id": "app_rel",
+   "priority": "both",
+   "input_basis": "题面抽出每行 cols=4、rows=4；config.target_cols/rows=4/4 仅作交叉核对；**不读答案**",
+   "read": "每行摆4个棋子，共摆4行。请在阵列板上摆出阵列，并填写一共有多少个棋子。→ 每行 4 个、共 4 行，求总数",
+   "target_object": "棋子总数（4×4）",
+   "derivation": {
+    "expr": "4 * 4",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "cols": 4,
+     "rows": 4
+    }
+   },
+   "computed": 16,
+   "stated_answer": "16",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "NO_PROCESS_VALIDATOR_FOR_RENDERER",
+     "severity": "risk",
+     "why": "`config.process_constraint` 为 null，且后端 `process_validate.py` 的 RULES **没有 array-board 的校验器**（只有 pattern_extension / payment_change / shape_drawing / place_value_build 四个 mode）",
+     "evidence": "`process_validate.py:199-204` RULES 字典逐项列出四个 mode，无 array-board 项；`learning.py` 在 pc=None 时不做过程校验，判分行为与未声明完全相同",
+     "consequence": "本题属 construct_constraint 族，考点是「array_build」这一构造过程，但**过程证据不进入判分**：终值对即 correct=True。即使人为补上 process_constraint，mode 也不在 RULES 里，会落 `unknown_mode` → unverifiable，等于没校验",
+     "not_concluded": "本条不主张应该立刻为这两个 renderer 写校验器（属产品决策），也不主张本题答案有误（已 MATCH）；只登记「该求解形态缺过程校验能力」这一事实",
+     "scope": "全族 54 题中 17 题无 pc，缺口**全部**在这两个 renderer：array-board 8/8、sorting-board 9/9；其余四类 renderer 均 100% 覆盖"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "rows",
+     "columns",
+     "total"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "max_cols": 8,
+    "max_rows": 8,
+    "target_cols": 4,
+    "target_rows": 4
+   },
+   "workspace_mode": "build_array",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "每行摆4个棋子，共摆4行。请在阵列板上摆出阵列，并填写一共有多少个棋子。",
+   "input_binding": {
+    "stem_sha256": "720aa3c9183f070188094bae86401f2c144feafdc0c2d8151916bd05a730f2bb",
+    "ui_schema_sha256": "0e9b9ff248748570574a732d1d6db6fa80d021f164a7987653ead339939a165e"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.target_cols`=4、`target_rows`=4、`max_cols/max_rows`=8/8；提交 `answer` 为积 16。无 process_constraint——本族内 array-board 属少数未声明过程约束的 renderer",
+     "competing_explanations": "可能的错值：4（把每行个数 4 当总数／把行数 4 当总数 —— **两个错法同值，在该题内部不可分**）；8（把行数与列数相加）",
+     "cannot_distinguish": "本题 4×4，行与列数量相同。若相同，摆成转置（行列互换）乘积不变，`structure.error=transpose` 可留痕；若不同，转置会变成另一个积，可被终值检出。**共同盲区**：分不开「按行列数出来」与「背乘法表」",
+     "neutral_feedback": "说「一行有几个，一共有几行，想一想行和行之间是怎么重复的」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "1d5fab4e-f752-4b7b-892b-82a0932d8cde",
+   "title": "[T155] V14-P0-097",
+   "renderer": "shape-canvas",
+   "solve_path": "geometry_constraint",
+   "ability_id": "app_model",
+   "priority": "both",
+   "input_basis": "题面抽出 base_height base=2、height=3；**config.base/height 组件不读**（`parseShapeCanvasConfig` 只取 grid/target_area/target_shape），故这两字段仅作题面↔config 交叉核对；面积由题面两数相乘得出；**不读答案**",
+   "read": "在5×5方格纸上画一个底边2格、高3格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。→ base_height：2 格 × 3 格，求面积",
+   "target_object": "面积（2×3 平方格）",
+   "derivation": {
+    "expr": "2 * 3",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "feasibility": {
+      "stem_grid_declared": 5,
+      "component_grid": 5,
+      "component_span": 4,
+      "required_base": 2,
+      "required_height": 3,
+      "stem_self_consistent": true,
+      "fits_component_board": true,
+      "area_reachable_on_component": true,
+      "area_reachable_without_side_constraint": true,
+      "verdict": "FEASIBLE"
+     },
+     "dimension_form": "base_height"
+    }
+   },
+   "computed": 6,
+   "stated_answer": "6",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": {
+    "stem_grid_declared": 5,
+    "component_grid": 5,
+    "component_span": 4,
+    "required_base": 2,
+    "required_height": 3,
+    "stem_self_consistent": true,
+    "fits_component_board": true,
+    "area_reachable_on_component": true,
+    "area_reachable_without_side_constraint": true,
+    "verdict": "FEASIBLE"
+   },
+   "semantic_observations": [
+    {
+     "code": "GRID_SEMANTICS_OFF_BY_ONE",
+     "severity": "info",
+     "why": "题面「5×5 方格纸」与组件「5 个钉位」是两个概念：后者只能画 4 格跨度。本题尺寸未越界故可完成，但题面描述与界面呈现相差一档",
+     "evidence": "stem_grid_declared=5、component_span=4",
+     "consequence": "孩子按「5×5 方格纸」理解，会去找 5 格长边，而板上最长只有 4 格——本题只需 2×3 尚不受影响，但这种表述差异会让边界尺寸题（如 5 格）直接失效",
+     "not_concluded": "本条是口径登记，不主张本题有缺陷"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_BLIND_TO_SHAPE",
+     "severity": "risk",
+     "why": "`process_constraint.mode=shape_drawing` 已声明，后端会校验；但 `_rule_shape` 只重算**面积**与**直角数**，**不读 config.base / config.height**",
+     "evidence": "`process_validate.py:154-168`：`_rule_shape` 取 vertices 算 shoelace 面积与 right_angles，面积 == target_area 且直角 == 4 即 valid；base/height 在整个函数内未被引用",
+     "consequence": "斜正方形（面积相同、四个直角）过程校验也判 valid。即：启用 process_constraint **不能**弥补上面那条「画错形状却判对」——两道防线在同一处失效",
+     "not_concluded": "本条不主张过程校验写错了（它按冻结契约只验面积/直角），只登记「该契约无法表达边长约束」这一能力边界"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=shape_drawing` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"shape_drawing\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "shape_vertices",
+     "computed_area"
+    ],
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "base": 2,
+    "grid": 5,
+    "height": 3,
+    "target_area": 6,
+    "target_shape": "rectangle",
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    }
+   },
+   "workspace_mode": "shape_drawing",
+   "workspace_capabilities": [
+    "draw",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "在5×5方格纸上画一个底边2格、高3格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。",
+   "input_binding": {
+    "stem_sha256": "086db2e905f49f4f695eb8e5b3072a3b3b25f6cffb0516d6d771a1ca00935f93",
+    "ui_schema_sha256": "41f06e697f063ccc94db8674f4278809206dcba86a00d77a44765e08c43babff"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.target_area`=6、`grid`=5；题面 2×3；提交 `answer` 为面积 6。序列化层记 `vertices`（顶点序）与几何属性；过程约束 `shape_drawing` 会重算面积与直角数。",
+     "competing_explanations": "可能的错值：5（把两条边长相加当面积／数格时漏一格 —— **两个错法同值，在该题内部不可分**）；8（多数一条边）",
+     "cannot_distinguish": "`vertices` 能分开「顶点数错」「非直角」「尺寸错」三态；**但分不开「按边数格子」与「画个面积相同的斜正方形」**——`_rule_shape` 只验面积与直角数，不读 base/height",
+     "neutral_feedback": "说「先数一数底边有几格，再数高有几格，长方形里面一共盖住多少格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "34e1cead-8285-426e-9aad-80a1995c73d2",
+   "title": "[T155] V14-P0-110",
+   "renderer": "sorting-board",
+   "solve_path": "sequence_order",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出卡片 [4, 9, 1, 6] 与方向 asc；排序是题面要求，位权展开是编码规则（encoding constant）；config.items 仅作集合交叉核对；**不读答案**",
+   "read": "桌上有4张数字卡，当前从左到右依次是[4, 9, 1, 6]。请拖动卡片，把它们按数字从小到大排好，再提交完整顺序。→ 数字卡 [4, 9, 1, 6]，按「从小到大」排",
+   "target_object": "排序后拼接的数（1→4→6→9）",
+   "derivation": {
+    "expr": "1 * 1000 + 4 * 100 + 6 * 10 + 9 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     },
+     {
+      "value": 100,
+      "purpose": "进位权（十进制位值编码规则）"
+     },
+     {
+      "value": 1000,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "ordered": [
+      1,
+      4,
+      6,
+      9
+     ],
+     "direction": "asc"
+    }
+   },
+   "computed": 1469,
+   "stated_answer": "1469",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "DISTRACTOR_DIMENSION_PRESENT",
+     "severity": "info",
+     "why": "卡片字号档位（visual_rank）与数值序故意不一致，用于区分「按数值排」与「按看起来大小排」",
+     "evidence": "数值序=['item-3', 'item-1', 'item-4', 'item-2']；视觉序=['item-4', 'item-3', 'item-2', 'item-1']；两者不同",
+     "consequence": "「按字大排」会给出与正解不同的拼接值，可被终值检出；但**分不开**「真的比较了数值」与「只是没看字号」",
+     "not_concluded": "本条是设计意图登记，不是缺陷"
+    },
+    {
+     "code": "NO_PROCESS_VALIDATOR_FOR_RENDERER",
+     "severity": "risk",
+     "why": "`config.process_constraint` 为 null，且后端 `process_validate.py` 的 RULES **没有 sorting-board 的校验器**（只有 pattern_extension / payment_change / shape_drawing / place_value_build 四个 mode）",
+     "evidence": "`process_validate.py:199-204` RULES 字典逐项列出四个 mode，无 sorting-board 项；`learning.py` 在 pc=None 时不做过程校验，判分行为与未声明完全相同",
+     "consequence": "本题属 construct_constraint 族，考点是「order_sort」这一构造过程，但**过程证据不进入判分**：终值对即 correct=True。即使人为补上 process_constraint，mode 也不在 RULES 里，会落 `unknown_mode` → unverifiable，等于没校验",
+     "not_concluded": "本条不主张应该立刻为这两个 renderer 写校验器（属产品决策），也不主张本题答案有误（已 MATCH）；只登记「该求解形态缺过程校验能力」这一事实",
+     "scope": "全族 54 题中 17 题无 pc，缺口**全部**在这两个 renderer：array-board 8/8、sorting-board 9/9；其余四类 renderer 均 100% 覆盖"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "item_order",
+     "order_edits"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "items": [
+     {
+      "id": "item-1",
+      "value": 4,
+      "visual_rank": 1
+     },
+     {
+      "id": "item-2",
+      "value": 9,
+      "visual_rank": 2
+     },
+     {
+      "id": "item-3",
+      "value": 1,
+      "visual_rank": 3
+     },
+     {
+      "id": "item-4",
+      "value": 6,
+      "visual_rank": 4
+     }
+    ],
+    "direction": "asc",
+    "initial_order": [
+     "item-1",
+     "item-2",
+     "item-3",
+     "item-4"
+    ]
+   },
+   "workspace_mode": "ascending_order",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "桌上有4张数字卡，当前从左到右依次是[4, 9, 1, 6]。请拖动卡片，把它们按数字从小到大排好，再提交完整顺序。",
+   "input_binding": {
+    "stem_sha256": "846849c17ef5b168b0eb7f1048d4cba2211f7634dd2440cd1fe626ca52895ccd",
+    "ui_schema_sha256": "876a675d2b3e93a810730d45de1c8e938b777d41358141858628bd6820cbf8cb"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.items`=[(4, 1), (9, 2), (1, 3), (6, 4)]（值为数值、rank 为字号档）；题面初始序 [4, 9, 1, 6]；提交 `answer` 为排序后拼接 1469。序列化层记 `order` 与 `swaps`。**本 renderer 无 process_constraint**",
+     "competing_explanations": "可能的错值：9641（整串降序（方向反了））；4916（照初始顺序原样提交（没排））",
+     "cannot_distinguish": "本题 4 张卡，`swaps` 记录每次交换。能分开「降序」（reversed）与「按字号排」（dimension_confusion）两个靶；**但分不开「真比较了数值」与「恰好按出现顺序蒙对」**——后者会给出初始序拼接值，仅当初始序≠正解时才可排除",
+     "neutral_feedback": "说「先找出最小的那个数，再在剩下的里面找最小的」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "3a80cfb1-d6a8-4cb2-b430-122a17f3a4ee",
+   "title": "[T155] V14-P0-148",
+   "renderer": "pattern-board",
+   "solve_path": "sequence_order",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出 visible=[4, 2, 4, 2]、blanks=2；周期 2 由题面「两次重复」独立推得，不读 config.palette；空格拼接的位权是编码规则；config.visible/blanks/palette 仅作交叉核对；**不读答案**",
+   "read": "颜色编码规律板的前四格依次是 4、2、4、2（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。→ 可见 [4, 2, 4, 2]，周期 2，缺 2 格 → 应补 [4, 2]",
+   "target_object": "空格编码拼接（4→2）",
+   "derivation": {
+    "expr": "4 * 10 + 2 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 1,
+      "purpose": "个位位权=1（`d * 1` 即不乘位权，句式产物）"
+     },
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "period": 2,
+     "expected_tokens": [
+      4,
+      2
+     ],
+     "variant": "plain_extend"
+    }
+   },
+   "computed": 42,
+   "stated_answer": "42",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=pattern_extension` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"pattern_extension\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "PATTERN_DISTRACTOR_TARGETS",
+     "severity": "info",
+     "why": "相位靶（整体后移一位）与惯性靶（全填末颗）是否与正解互异，决定分诊是否成立",
+     "evidence": "expected=[4, 2]、phase_shift=[2, 4]、rule_ignored=[2, 2]",
+     "consequence": "三者互异 → 两种错法都能被 `evaluatePattern` 单独识别；",
+     "not_concluded": "本条只核对分诊靶位是否互异，不主张题目有缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "visible_tokens",
+     "blank_fills",
+     "pattern_phase"
+    ],
+    "process_constraint": {
+     "mode": "pattern_extension",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "blanks": 2,
+    "palette": [
+     4,
+     2
+    ],
+    "visible": [
+     4,
+     2,
+     4,
+     2
+    ],
+    "process_constraint": {
+     "mode": "pattern_extension",
+     "params": {}
+    }
+   },
+   "workspace_mode": "repeat_pattern",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "颜色编码规律板的前四格依次是 4、2、4、2（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。",
+   "input_binding": {
+    "stem_sha256": "b0161ab13fa03c6d196361f5b8d9d20630ea9e06bae5326d202fcc684d95e62f",
+    "ui_schema_sha256": "fcea3523f4bcc0ba4836009ab47d092ab68dc9f907d386ad28d2394116fa0ead"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.visible`=[4, 2, 4, 2]、`blanks`=2、`palette`=[4, 2]；周期由题面推出为 2；提交 `answer` 为空格编码拼接 42。序列化层记 `beads`、`attempt_history`、`pattern_text`；过程约束 `pattern_extension` 会按 visible+period 重算",
+     "competing_explanations": "可能的错值：22（无脑延续末颗（惯性靶 rule_ignored））；24（周期读对但相位后移一位（phase_shift））",
+     "cannot_distinguish": "`attempt_history` 记每次 [slot, from, to]，能分开相位错与惯性错；**但分不开「推出周期 2」与「看到 3、1 就接着写 3、1」**——本题可见段本身就是两个完整周期，规律强度不足",
+     "neutral_feedback": "说「看看前面几个数是一组一组重复的，一组里面是什么顺序」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "421427f3-8f7a-47b0-9c61-cf7724701d10",
+   "title": "[T155] V14-P0-137",
+   "renderer": "money-board",
+   "solve_path": "numeric_exact",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出标价 [5, 20]（two_items_sum）；config.price=25、target.total=25 仅作交叉核对；**不读答案**",
+   "read": "文具摊上，一件文具标价5角，另一件标价20角。请用1角、5角、10角和50角币在货币板上凑出两件文具的总价。→ 两件标价 5 角与 20 角，求总价",
+   "target_object": "总价（5+20 角）",
+   "derivation": {
+    "expr": "5 + 20",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "money_variant": "two_items_sum"
+    }
+   },
+   "computed": 25,
+   "stated_answer": "25",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=payment_change` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"payment_change\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "selected_denominations",
+     "total"
+    ],
+    "process_constraint": {
+     "mode": "payment_change",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "unit": "jiao",
+    "price": 25,
+    "target": {
+     "total": 25
+    },
+    "denominations": [
+     1,
+     5,
+     10,
+     50
+    ],
+    "process_constraint": {
+     "mode": "payment_change",
+     "params": {}
+    }
+   },
+   "workspace_mode": "make_amount",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "文具摊上，一件文具标价5角，另一件标价20角。请用1角、5角、10角和50角币在货币板上凑出两件文具的总价。",
+   "input_binding": {
+    "stem_sha256": "5e819d514615c5ae62aff3407644429d95a792132857701ab372982a256ec132",
+    "ui_schema_sha256": "31dc249917881958b1d21f8775ebfaa3f67fecea32924b6448778ef451b8d326"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.price`=25、`denominations`=[1, 5, 10, 50]；提交 `answer` 为付出总角数 25。序列化层记 `counts`（面额→枚数）与 `selection_history`；过程约束 `payment_change` 会核 `sum(sel)==price`",
+     "competing_explanations": "可能的错值：5（只算第一件 5 角）；20（只算第二件 20 角）；15（把两件的差当总价）",
+     "cannot_distinguish": "本题两件是 5 角与 20 角，求 25 角。`counts` 能分开「少算了某一件」与「换算错」；但**分不开「先相加再凑币」与「边凑边加」**——终态 counts 相同",
+     "neutral_feedback": "说「先看清两样东西各多少钱，再把它们合起来」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "title": "[T155] V14-P0-143",
+   "renderer": "money-board",
+   "solve_path": "numeric_exact",
+   "ability_id": "app_strat",
+   "priority": "both",
+   "input_basis": "题面抽出标价 [35]（single_item_direct）；config.price=35、target.total=35 仅作交叉核对；**不读答案**",
+   "read": "文具店一本练习本标价35角。请用货币板上的1角、5角、10角或50角硬币，选出正好能凑齐货款的组合，并提交所选硬币的总金额。→ 题面已给单件总价 35 角，无需再运算",
+   "target_object": "总价（题面直给 35 角）",
+   "derivation": {
+    "expr": "35 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "money_variant": "single_item_direct"
+    }
+   },
+   "computed": 35,
+   "stated_answer": "35",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=payment_change` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"payment_change\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "selected_denominations",
+     "total"
+    ],
+    "process_constraint": {
+     "mode": "payment_change",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "unit": "jiao",
+    "price": 35,
+    "target": {
+     "total": 35
+    },
+    "denominations": [
+     1,
+     5,
+     10,
+     50
+    ],
+    "process_constraint": {
+     "mode": "payment_change",
+     "params": {}
+    }
+   },
+   "workspace_mode": "change",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "文具店一本练习本标价35角。请用货币板上的1角、5角、10角或50角硬币，选出正好能凑齐货款的组合，并提交所选硬币的总金额。",
+   "input_binding": {
+    "stem_sha256": "1155e8ee4160ad39f352338d54f97b10b88bc8f07cadc39a66266aaf62cb840c",
+    "ui_schema_sha256": "954cb26b6082d6f7418c93aebc44b0c263479fed20d54fcf4c58753efabfc9ce"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.price`=35（单件，题面直给 35 角）、`denominations`=[1, 5, 10, 50]；提交 `answer` 为 35。本题**不含加法**——只有凑币，没有两数合并",
+     "competing_explanations": "可能的错值：3（只算元位、漏掉角位）；5（只算角位）；45（多算一元）",
+     "cannot_distinguish": "单件直给价，分不开「看懂面额」与「试凑到对」——凑币过程本身即答案，没有中间表征可查",
+     "neutral_feedback": "说「先看清两样东西各多少钱，再把它们合起来」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "4e7aac4d-9fb1-49db-8d23-d777aad68e89",
+   "title": "[T155] V14-P0-150",
+   "renderer": "pattern-board",
+   "solve_path": "sequence_order",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出 visible=[2, 5, 2, 5]、blanks=2；周期 2 由题面「两次重复」独立推得，不读 config.palette；空格拼接的位权是编码规则；config.visible/blanks/palette 仅作交叉核对；**不读答案**",
+   "read": "颜色编码规律板的前四格依次是 2、5、2、5（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。→ 可见 [2, 5, 2, 5]，周期 2，缺 2 格 → 应补 [2, 5]",
+   "target_object": "空格编码拼接（2→5）",
+   "derivation": {
+    "expr": "2 * 10 + 5 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 1,
+      "purpose": "个位位权=1（`d * 1` 即不乘位权，句式产物）"
+     },
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "period": 2,
+     "expected_tokens": [
+      2,
+      5
+     ],
+     "variant": "plain_extend"
+    }
+   },
+   "computed": 25,
+   "stated_answer": "25",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=pattern_extension` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"pattern_extension\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "PATTERN_DISTRACTOR_TARGETS",
+     "severity": "info",
+     "why": "相位靶（整体后移一位）与惯性靶（全填末颗）是否与正解互异，决定分诊是否成立",
+     "evidence": "expected=[2, 5]、phase_shift=[5, 2]、rule_ignored=[5, 5]",
+     "consequence": "三者互异 → 两种错法都能被 `evaluatePattern` 单独识别；",
+     "not_concluded": "本条只核对分诊靶位是否互异，不主张题目有缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "visible_tokens",
+     "blank_fills",
+     "pattern_phase"
+    ],
+    "process_constraint": {
+     "mode": "pattern_extension",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "blanks": 2,
+    "palette": [
+     2,
+     5
+    ],
+    "visible": [
+     2,
+     5,
+     2,
+     5
+    ],
+    "process_constraint": {
+     "mode": "pattern_extension",
+     "params": {}
+    }
+   },
+   "workspace_mode": "repeat_pattern",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "颜色编码规律板的前四格依次是 2、5、2、5（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。",
+   "input_binding": {
+    "stem_sha256": "713b774ca5e9057f937c6e274ba18fe2652f0313546dddf36b41c0cc58c18eaa",
+    "ui_schema_sha256": "32fa33c584b9ae6a129d8747db08d3887f493596ec674ff62f53ecbc5415dac8"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.visible`=[2, 5, 2, 5]、`blanks`=2、`palette`=[2, 5]；周期由题面推出为 2；提交 `answer` 为空格编码拼接 25。序列化层记 `beads`、`attempt_history`、`pattern_text`；过程约束 `pattern_extension` 会按 visible+period 重算",
+     "competing_explanations": "可能的错值：55（无脑延续末颗（惯性靶 rule_ignored））；52（周期读对但相位后移一位（phase_shift））",
+     "cannot_distinguish": "`attempt_history` 记每次 [slot, from, to]，能分开相位错与惯性错；**但分不开「推出周期 2」与「看到 3、1 就接着写 3、1」**——本题可见段本身就是两个完整周期，规律强度不足",
+     "neutral_feedback": "说「看看前面几个数是一组一组重复的，一组里面是什么顺序」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "59e3f13a-7d55-4e28-9e4b-1fe436f2536d",
+   "title": "[T155] V14-P0-106",
+   "renderer": "sorting-board",
+   "solve_path": "sequence_order",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出卡片 [9, 1, 5, 3] 与方向 asc；排序是题面要求，位权展开是编码规则（encoding constant）；config.items 仅作集合交叉核对；**不读答案**",
+   "read": "桌上有4张数字卡，当前从左到右依次是[9, 1, 5, 3]。请拖动卡片，把它们按数字从小到大排好，再提交完整顺序。→ 数字卡 [9, 1, 5, 3]，按「从小到大」排",
+   "target_object": "排序后拼接的数（1→3→5→9）",
+   "derivation": {
+    "expr": "1 * 1000 + 3 * 100 + 5 * 10 + 9 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     },
+     {
+      "value": 100,
+      "purpose": "进位权（十进制位值编码规则）"
+     },
+     {
+      "value": 1000,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "ordered": [
+      1,
+      3,
+      5,
+      9
+     ],
+     "direction": "asc"
+    }
+   },
+   "computed": 1359,
+   "stated_answer": "1359",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "DISTRACTOR_DIMENSION_PRESENT",
+     "severity": "info",
+     "why": "卡片字号档位（visual_rank）与数值序故意不一致，用于区分「按数值排」与「按看起来大小排」",
+     "evidence": "数值序=['item-2', 'item-4', 'item-3', 'item-1']；视觉序=['item-4', 'item-3', 'item-2', 'item-1']；两者不同",
+     "consequence": "「按字大排」会给出与正解不同的拼接值，可被终值检出；但**分不开**「真的比较了数值」与「只是没看字号」",
+     "not_concluded": "本条是设计意图登记，不是缺陷"
+    },
+    {
+     "code": "NO_PROCESS_VALIDATOR_FOR_RENDERER",
+     "severity": "risk",
+     "why": "`config.process_constraint` 为 null，且后端 `process_validate.py` 的 RULES **没有 sorting-board 的校验器**（只有 pattern_extension / payment_change / shape_drawing / place_value_build 四个 mode）",
+     "evidence": "`process_validate.py:199-204` RULES 字典逐项列出四个 mode，无 sorting-board 项；`learning.py` 在 pc=None 时不做过程校验，判分行为与未声明完全相同",
+     "consequence": "本题属 construct_constraint 族，考点是「order_sort」这一构造过程，但**过程证据不进入判分**：终值对即 correct=True。即使人为补上 process_constraint，mode 也不在 RULES 里，会落 `unknown_mode` → unverifiable，等于没校验",
+     "not_concluded": "本条不主张应该立刻为这两个 renderer 写校验器（属产品决策），也不主张本题答案有误（已 MATCH）；只登记「该求解形态缺过程校验能力」这一事实",
+     "scope": "全族 54 题中 17 题无 pc，缺口**全部**在这两个 renderer：array-board 8/8、sorting-board 9/9；其余四类 renderer 均 100% 覆盖"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "item_order",
+     "order_edits"
+    ],
+    "process_constraint": null,
+    "enforced_by_backend": false
+   },
+   "ui_config_seen": {
+    "items": [
+     {
+      "id": "item-1",
+      "value": 9,
+      "visual_rank": 1
+     },
+     {
+      "id": "item-2",
+      "value": 1,
+      "visual_rank": 2
+     },
+     {
+      "id": "item-3",
+      "value": 5,
+      "visual_rank": 3
+     },
+     {
+      "id": "item-4",
+      "value": 3,
+      "visual_rank": 4
+     }
+    ],
+    "direction": "asc",
+    "initial_order": [
+     "item-1",
+     "item-2",
+     "item-3",
+     "item-4"
+    ]
+   },
+   "workspace_mode": "ascending_order",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "桌上有4张数字卡，当前从左到右依次是[9, 1, 5, 3]。请拖动卡片，把它们按数字从小到大排好，再提交完整顺序。",
+   "input_binding": {
+    "stem_sha256": "63652e3bf99214fdaaeab3447cf2ec372b98bf6367353acedbfa25a92e761ed9",
+    "ui_schema_sha256": "55cb80b49c57456cae9b08dd76dd53d966969c350da4b3416c918349d4f56d57"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.items`=[(9, 1), (1, 2), (5, 3), (3, 4)]（值为数值、rank 为字号档）；题面初始序 [9, 1, 5, 3]；提交 `answer` 为排序后拼接 1359。序列化层记 `order` 与 `swaps`。**本 renderer 无 process_constraint**",
+     "competing_explanations": "可能的错值：9531（整串降序（方向反了））；9153（照初始顺序原样提交（没排））",
+     "cannot_distinguish": "本题 4 张卡，`swaps` 记录每次交换。能分开「降序」（reversed）与「按字号排」（dimension_confusion）两个靶；**但分不开「真比较了数值」与「恰好按出现顺序蒙对」**——后者会给出初始序拼接值，仅当初始序≠正解时才可排除",
+     "neutral_feedback": "说「先找出最小的那个数，再在剩下的里面找最小的」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "6285f244-9d78-4df3-b700-462801281d27",
+   "title": "[T155] V14-P0-040",
+   "renderer": "place-value",
+   "solve_path": "digit_config",
+   "ability_id": "app_strat",
+   "priority": "both",
+   "input_basis": "题面抽出卡片池 [2, 0, 6] 与位名指派；位权 100/10/1 是十进制编码规则（encoding constant），不是 config 数据；config.target=206 仅作交叉核对；**不读答案**",
+   "read": "位值卡片[2, 0, 6]已经准备好。请按“百位是2，十位是0，个位是6”的要求拖到对应数位，再写出摆好的完整数字。→ 卡片池 [2, 0, 6]，位名指派 {'百': 2, '十': 0, '个': 6}",
+   "target_object": "按位拼出的数（百2/十0/个6）",
+   "derivation": {
+    "expr": "2 * 100 + 0 * 10 + 6 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 1,
+      "purpose": "个位位权=1（`d * 1` 即不乘位权，句式产物）"
+     },
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     },
+     {
+      "value": 100,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "place_assignment": {
+      "百": 2,
+      "十": 0,
+      "个": 6
+     },
+     "digit_count": 3
+    }
+   },
+   "computed": 206,
+   "stated_answer": "206",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=place_value_build` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"place_value_build\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "ERROR_SPACE_RESTRICTED_TO_POSITION",
+     "severity": "info",
+     "why": "`parsePlaceValueConfig` 强制 pool 与 target 的各位数字 multiset 相等，于是孩子**不可能**填出数字错、只能是位置错",
+     "evidence": "config.pool=[2, 0, 6]、target=206；`placeValueV2.ts` 用 `sorted(pool)!==sorted(expected)` 直接拒配",
+     "consequence": "诊断靶唯一（place_confusion），好处是判定干净；代价是「拿错卡片」这一类错因在本 renderer 下不可观测",
+     "not_concluded": "本条是能力边界登记，不是缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "digits",
+     "place_assignments"
+    ],
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "pool": [
+     2,
+     0,
+     6
+    ],
+    "target": 206,
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    }
+   },
+   "workspace_mode": "place_value_arrangement",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "位值卡片[2, 0, 6]已经准备好。请按“百位是2，十位是0，个位是6”的要求拖到对应数位，再写出摆好的完整数字。",
+   "input_binding": {
+    "stem_sha256": "7f69b46df12b467a4f9baf407d44808f361dd0099e337e33486965e60a6ed72c",
+    "ui_schema_sha256": "fdfeb6ab91d2dfeda0c71f9e7d2e393ed73b8cd6f146fda26b30f5ccf96d9d7f"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.pool`=[2, 0, 6]、`target`=206；题面位名指派 {'百': 2, '十': 0, '个': 6}；提交 `answer` 为框拼出的数 206。序列化层记 `slots`（各框）与 `pool`（余牌），结构判定 EMPTY/PASS/place_confusion；过程约束 `place_value_build` 会按位重算",
+     "competing_explanations": "可能的错值：602（整体逆序摆放（每个数字都放到了对称的位上）／最高位（百）与最低位（个）互换 —— **两个错法同值，在该题内部不可分**）；200（漏掉最低位（个位没放））",
+     "cannot_distinguish": "`slots` 数组能分开「哪个位放错」，这是本 renderer 的强项；但**分不开「知道自己放在十位」与「只是把牌塞进了空格」**——框的语义由界面给出，提交物只记位置不记理解",
+     "neutral_feedback": "说「先找到十位在哪一格，再看个位该放哪个数字」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "66938277-896a-424c-ae85-3b8cf710d7a3",
+   "title": "[T155] V14-P0-146",
+   "renderer": "pattern-board",
+   "solve_path": "sequence_order",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出 visible=[2, 3, 2, 3]、blanks=2；周期 2 由题面「两次重复」独立推得，不读 config.palette；空格拼接的位权是编码规则；config.visible/blanks/palette 仅作交叉核对；**不读答案**",
+   "read": "颜色编码规律板的前四格依次是 2、3、2、3（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。→ 可见 [2, 3, 2, 3]，周期 2，缺 2 格 → 应补 [2, 3]",
+   "target_object": "空格编码拼接（2→3）",
+   "derivation": {
+    "expr": "2 * 10 + 3 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 1,
+      "purpose": "个位位权=1（`d * 1` 即不乘位权，句式产物）"
+     },
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "period": 2,
+     "expected_tokens": [
+      2,
+      3
+     ],
+     "variant": "plain_extend"
+    }
+   },
+   "computed": 23,
+   "stated_answer": "23",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=pattern_extension` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"pattern_extension\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "PATTERN_DISTRACTOR_TARGETS",
+     "severity": "info",
+     "why": "相位靶（整体后移一位）与惯性靶（全填末颗）是否与正解互异，决定分诊是否成立",
+     "evidence": "expected=[2, 3]、phase_shift=[3, 2]、rule_ignored=[3, 3]",
+     "consequence": "三者互异 → 两种错法都能被 `evaluatePattern` 单独识别；",
+     "not_concluded": "本条只核对分诊靶位是否互异，不主张题目有缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "visible_tokens",
+     "blank_fills",
+     "pattern_phase"
+    ],
+    "process_constraint": {
+     "mode": "pattern_extension",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "blanks": 2,
+    "palette": [
+     2,
+     3
+    ],
+    "visible": [
+     2,
+     3,
+     2,
+     3
+    ],
+    "process_constraint": {
+     "mode": "pattern_extension",
+     "params": {}
+    }
+   },
+   "workspace_mode": "repeat_pattern",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "颜色编码规律板的前四格依次是 2、3、2、3（两个编码代表两种颜色）。观察两次重复，再按顺序补上接下来的两格。",
+   "input_binding": {
+    "stem_sha256": "4ce4bc6cf4f14c86970cfaab97986207e9394e23c7ca52d95407498ccc423362",
+    "ui_schema_sha256": "b6cc2344cbedaa02979fe4ffd7a08ff3039f835dcb6df387ba3ac43706909569"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.visible`=[2, 3, 2, 3]、`blanks`=2、`palette`=[2, 3]；周期由题面推出为 2；提交 `answer` 为空格编码拼接 23。序列化层记 `beads`、`attempt_history`、`pattern_text`；过程约束 `pattern_extension` 会按 visible+period 重算",
+     "competing_explanations": "可能的错值：33（无脑延续末颗（惯性靶 rule_ignored））；32（周期读对但相位后移一位（phase_shift））",
+     "cannot_distinguish": "`attempt_history` 记每次 [slot, from, to]，能分开相位错与惯性错；**但分不开「推出周期 2」与「看到 3、1 就接着写 3、1」**——本题可见段本身就是两个完整周期，规律强度不足",
+     "neutral_feedback": "说「看看前面几个数是一组一组重复的，一组里面是什么顺序」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "73c7e8c0-8b24-4ab3-b3f9-cddabf534d97",
+   "title": "[T155] V14-P0-103",
+   "renderer": "shape-canvas",
+   "solve_path": "geometry_constraint",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出 base_height base=3、height=3；**config.base/height 组件不读**（`parseShapeCanvasConfig` 只取 grid/target_area/target_shape），故这两字段仅作题面↔config 交叉核对；面积由题面两数相乘得出；**不读答案**",
+   "read": "在5×5方格纸上画一个底边3格、高3格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。→ base_height：3 格 × 3 格，求面积",
+   "target_object": "面积（3×3 平方格）",
+   "derivation": {
+    "expr": "3 * 3",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "feasibility": {
+      "stem_grid_declared": 5,
+      "component_grid": 5,
+      "component_span": 4,
+      "required_base": 3,
+      "required_height": 3,
+      "stem_self_consistent": true,
+      "fits_component_board": true,
+      "area_reachable_on_component": true,
+      "area_reachable_without_side_constraint": true,
+      "verdict": "FEASIBLE"
+     },
+     "dimension_form": "base_height"
+    }
+   },
+   "computed": 9,
+   "stated_answer": "9",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": {
+    "stem_grid_declared": 5,
+    "component_grid": 5,
+    "component_span": 4,
+    "required_base": 3,
+    "required_height": 3,
+    "stem_self_consistent": true,
+    "fits_component_board": true,
+    "area_reachable_on_component": true,
+    "area_reachable_without_side_constraint": true,
+    "verdict": "FEASIBLE"
+   },
+   "semantic_observations": [
+    {
+     "code": "GRID_SEMANTICS_OFF_BY_ONE",
+     "severity": "info",
+     "why": "题面「5×5 方格纸」与组件「5 个钉位」是两个概念：后者只能画 4 格跨度。本题尺寸未越界故可完成，但题面描述与界面呈现相差一档",
+     "evidence": "stem_grid_declared=5、component_span=4",
+     "consequence": "孩子按「5×5 方格纸」理解，会去找 5 格长边，而板上最长只有 4 格——本题只需 3×3 尚不受影响，但这种表述差异会让边界尺寸题（如 5 格）直接失效",
+     "not_concluded": "本条是口径登记，不主张本题有缺陷"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_BLIND_TO_SHAPE",
+     "severity": "risk",
+     "why": "`process_constraint.mode=shape_drawing` 已声明，后端会校验；但 `_rule_shape` 只重算**面积**与**直角数**，**不读 config.base / config.height**",
+     "evidence": "`process_validate.py:154-168`：`_rule_shape` 取 vertices 算 shoelace 面积与 right_angles，面积 == target_area 且直角 == 4 即 valid；base/height 在整个函数内未被引用",
+     "consequence": "斜正方形（面积相同、四个直角）过程校验也判 valid。即：启用 process_constraint **不能**弥补上面那条「画错形状却判对」——两道防线在同一处失效",
+     "not_concluded": "本条不主张过程校验写错了（它按冻结契约只验面积/直角），只登记「该契约无法表达边长约束」这一能力边界"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=shape_drawing` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"shape_drawing\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "shape_vertices",
+     "computed_area"
+    ],
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "base": 3,
+    "grid": 5,
+    "height": 3,
+    "target_area": 9,
+    "target_shape": "rectangle",
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    }
+   },
+   "workspace_mode": "shape_drawing",
+   "workspace_capabilities": [
+    "draw",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "在5×5方格纸上画一个底边3格、高3格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。",
+   "input_binding": {
+    "stem_sha256": "9b776d7cb108cdb10608794983c62da29be449a1ce2050518ff5dc49fbc89029",
+    "ui_schema_sha256": "0578873024115ccf2c259fd4d76ccaf2a5cbebaac5c92e88f0cbc4337d475f17"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.target_area`=9、`grid`=5；题面 3×3；提交 `answer` 为面积 9。序列化层记 `vertices`（顶点序）与几何属性；过程约束 `shape_drawing` 会重算面积与直角数。",
+     "competing_explanations": "可能的错值：6（把两条边长相加当面积）；12（多数一条边）；8（数格时漏一格）",
+     "cannot_distinguish": "`vertices` 能分开「顶点数错」「非直角」「尺寸错」三态；**但分不开「按边数格子」与「画个面积相同的斜正方形」**——`_rule_shape` 只验面积与直角数，不读 base/height",
+     "neutral_feedback": "说「先数一数底边有几格，再数高有几格，长方形里面一共盖住多少格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "7c1b3466-dc9b-4630-b549-22432dca9418",
+   "title": "[T155] V14-P0-035",
+   "renderer": "place-value",
+   "solve_path": "digit_config",
+   "ability_id": "app_rd",
+   "priority": "both",
+   "input_basis": "题面抽出卡片池 [8, 0] 与位名指派；位权 10/1 是十进制编码规则（encoding constant），不是 config 数据；config.target=80 仅作交叉核对；**不读答案**",
+   "read": "位值卡片[8, 0]已经准备好。请按“十位是8，个位是0”的要求拖到对应数位，再写出摆好的完整数字。→ 卡片池 [8, 0]，位名指派 {'十': 8, '个': 0}",
+   "target_object": "按位拼出的数（十8/个0）",
+   "derivation": {
+    "expr": "8 * 10 + 0 * 1",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [
+     {
+      "value": 1,
+      "purpose": "个位位权=1（`d * 1` 即不乘位权，句式产物）"
+     },
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "place_assignment": {
+      "十": 8,
+      "个": 0
+     },
+     "digit_count": 2
+    }
+   },
+   "computed": 80,
+   "stated_answer": "80",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=place_value_build` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"place_value_build\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "ERROR_SPACE_RESTRICTED_TO_POSITION",
+     "severity": "info",
+     "why": "`parsePlaceValueConfig` 强制 pool 与 target 的各位数字 multiset 相等，于是孩子**不可能**填出数字错、只能是位置错",
+     "evidence": "config.pool=[8, 0]、target=80；`placeValueV2.ts` 用 `sorted(pool)!==sorted(expected)` 直接拒配",
+     "consequence": "诊断靶唯一（place_confusion），好处是判定干净；代价是「拿错卡片」这一类错因在本 renderer 下不可观测",
+     "not_concluded": "本条是能力边界登记，不是缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "digits",
+     "place_assignments"
+    ],
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "pool": [
+     8,
+     0
+    ],
+    "target": 80,
+    "process_constraint": {
+     "mode": "place_value_build",
+     "params": {}
+    }
+   },
+   "workspace_mode": "place_value_arrangement",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "位值卡片[8, 0]已经准备好。请按“十位是8，个位是0”的要求拖到对应数位，再写出摆好的完整数字。",
+   "input_binding": {
+    "stem_sha256": "8c24386b590dc47407f3f3b6fa95c5dd8d8c9a01e5e8a1b82c419816a7439b66",
+    "ui_schema_sha256": "4357e1ec8299843834a3ee989f7ede741c18b7e31532ba40212b89fe8e0f4726"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.pool`=[8, 0]、`target`=80；题面位名指派 {'十': 8, '个': 0}；提交 `answer` 为框拼出的数 80。序列化层记 `slots`（各框）与 `pool`（余牌），结构判定 EMPTY/PASS/place_confusion；过程约束 `place_value_build` 会按位重算",
+     "competing_explanations": "可能的错值：8（整体逆序摆放（每个数字都放到了对称的位上）／最高位（十）与最低位（个）互换 —— **两个错法同值，在该题内部不可分**）。**80 与正确答案同值**（本题位值对称，该错法不可分）",
+     "cannot_distinguish": "`slots` 数组能分开「哪个位放错」，这是本 renderer 的强项；但**分不开「知道自己放在十位」与「只是把牌塞进了空格」**——框的语义由界面给出，提交物只记位置不记理解",
+     "neutral_feedback": "说「先找到十位在哪一格，再看个位该放哪个数字」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "8b41e648-23dc-4a84-bc3c-d86293c358f9",
+   "title": "[T155] V14-P0-102",
+   "renderer": "shape-canvas",
+   "solve_path": "geometry_constraint",
+   "ability_id": "app_model",
+   "priority": "both",
+   "input_basis": "题面抽出 length_width base=5、height=2；**config.base/height 组件不读**（`parseShapeCanvasConfig` 只取 grid/target_area/target_shape），故这两字段仅作题面↔config 交叉核对；面积由题面两数相乘得出；**不读答案**",
+   "read": "在5×5方格纸上画一个长5格、宽2格的长方形，四边落在格线上。请数格或计算它的面积是多少平方格。→ length_width：5 格 × 2 格，求面积",
+   "target_object": "面积（5×2 平方格）",
+   "derivation": {
+    "expr": "5 * 2",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "feasibility": {
+      "stem_grid_declared": 5,
+      "component_grid": 5,
+      "component_span": 4,
+      "required_base": 5,
+      "required_height": 2,
+      "stem_self_consistent": true,
+      "fits_component_board": false,
+      "area_reachable_on_component": false,
+      "area_reachable_without_side_constraint": true,
+      "verdict": "INFEASIBLE_ON_COMPONENT"
+     },
+     "dimension_form": "length_width"
+    }
+   },
+   "computed": 10,
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": {
+    "stem_grid_declared": 5,
+    "component_grid": 5,
+    "component_span": 4,
+    "required_base": 5,
+    "required_height": 2,
+    "stem_self_consistent": true,
+    "fits_component_board": false,
+    "area_reachable_on_component": false,
+    "area_reachable_without_side_constraint": true,
+    "verdict": "INFEASIBLE_ON_COMPONENT"
+   },
+   "semantic_observations": [
+    {
+     "code": "INFEASIBLE_ON_COMPONENT",
+     "severity": "risk",
+     "why": "题面要求的边长超出组件板可画跨度。组件 grid 是**钉位数**不是格数：grid=5 → 渲染跨度 4 格（`ShapeCanvasV2.tsx:140` span=(grid-1)*CELL，`applyAddPoint` 约束 0<=x<grid），而题面要求长 5 格 × 宽 2 格",
+     "evidence": "题面自称「5×5 方格纸」（题面自洽：5 <= 5）；组件 component_grid=5、component_span=4 → fits_component_board=False",
+     "consequence": "孩子在板上画不出题面要求的 5×2 长方形。但面积 10 在板上仍可达——穷举 5×5 钉位后，存在**倾斜正方形**（顶点 (0,1)(1,4)(4,3)(3,0)，边长 √10、四个直角、面积恰为 10）能通过 `evaluateShapeCanvas`，于是「画不出正解」与「画错形状却判对」同时成立",
+     "not_concluded": "本条不主张该题答案有误（独立推导与存储答案一致，已 MATCH），只登记「题面所要求之图形在组件上不可构造」；修法涉及改 grid 语义或改题目尺寸，属产品决策",
+     "scope_check": "全量 published shape-canvas 共 9 题，逐题穷举后**仅此题**不可达（其余 8 题 fits=True）——是单题缺陷，不是 renderer 系统性问题"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_BLIND_TO_SHAPE",
+     "severity": "risk",
+     "why": "`process_constraint.mode=shape_drawing` 已声明，后端会校验；但 `_rule_shape` 只重算**面积**与**直角数**，**不读 config.base / config.height**",
+     "evidence": "`process_validate.py:154-168`：`_rule_shape` 取 vertices 算 shoelace 面积与 right_angles，面积 == target_area 且直角 == 4 即 valid；base/height 在整个函数内未被引用",
+     "consequence": "斜正方形（面积相同、四个直角）过程校验也判 valid。即：启用 process_constraint **不能**弥补上面那条「画错形状却判对」——两道防线在同一处失效",
+     "not_concluded": "本条不主张过程校验写错了（它按冻结契约只验面积/直角），只登记「该契约无法表达边长约束」这一能力边界"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=shape_drawing` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"shape_drawing\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "shape_vertices",
+     "computed_area"
+    ],
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "base": 5,
+    "grid": 5,
+    "height": 2,
+    "target_area": 10,
+    "target_shape": "rectangle",
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    }
+   },
+   "workspace_mode": "shape_drawing",
+   "workspace_capabilities": [
+    "draw",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "在5×5方格纸上画一个长5格、宽2格的长方形，四边落在格线上。请数格或计算它的面积是多少平方格。",
+   "input_binding": {
+    "stem_sha256": "a370124efcae743c8a2a2bdbd099c48b4f3bb605f047203c7561f7d429b2c1d4",
+    "ui_schema_sha256": "ca3b202d179009240a04179c6fa8b83884c1625cabdfd286450cfba37a567f0c"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.target_area`=10、`grid`=5；题面 5×2；提交 `answer` 为面积 10。序列化层记 `vertices`（顶点序）与几何属性；过程约束 `shape_drawing` 会重算面积与直角数。 **注意：本题题面要求 5×2，而组件 grid=5 只能画到跨度 4 格——该长方形在板上画不出来**；面积 10 却可由倾斜正方形（顶点 (0,1)(1,4)(4,3)(3,0)）凑出并通过判分。",
+     "competing_explanations": "可能的错值：7（把两条边长相加当面积）；15（多数一条边）；9（数格时漏一格）",
+     "cannot_distinguish": "`vertices` 能分开「顶点数错」「非直角」「尺寸错」三态；**但分不开「按边数格子」与「画个面积相同的斜正方形」**——`_rule_shape` 只验面积与直角数，不读 base/height",
+     "neutral_feedback": "说「先数一数底边有几格，再数高有几格，长方形里面一共盖住多少格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "a1b71f95-f8a8-4ea2-8942-8c93b532b46b",
+   "title": "[T155] V14-P0-099",
+   "renderer": "shape-canvas",
+   "solve_path": "geometry_constraint",
+   "ability_id": "app_cond",
+   "priority": "both",
+   "input_basis": "题面抽出 base_height base=3、height=4；**config.base/height 组件不读**（`parseShapeCanvasConfig` 只取 grid/target_area/target_shape），故这两字段仅作题面↔config 交叉核对；面积由题面两数相乘得出；**不读答案**",
+   "read": "在5×5方格纸上画一个底边3格、高4格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。→ base_height：3 格 × 4 格，求面积",
+   "target_object": "面积（3×4 平方格）",
+   "derivation": {
+    "expr": "3 * 4",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "feasibility": {
+      "stem_grid_declared": 5,
+      "component_grid": 5,
+      "component_span": 4,
+      "required_base": 3,
+      "required_height": 4,
+      "stem_self_consistent": true,
+      "fits_component_board": true,
+      "area_reachable_on_component": true,
+      "area_reachable_without_side_constraint": true,
+      "verdict": "FEASIBLE"
+     },
+     "dimension_form": "base_height"
+    }
+   },
+   "computed": 12,
+   "stated_answer": "12",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": {
+    "stem_grid_declared": 5,
+    "component_grid": 5,
+    "component_span": 4,
+    "required_base": 3,
+    "required_height": 4,
+    "stem_self_consistent": true,
+    "fits_component_board": true,
+    "area_reachable_on_component": true,
+    "area_reachable_without_side_constraint": true,
+    "verdict": "FEASIBLE"
+   },
+   "semantic_observations": [
+    {
+     "code": "GRID_SEMANTICS_OFF_BY_ONE",
+     "severity": "info",
+     "why": "题面「5×5 方格纸」与组件「5 个钉位」是两个概念：后者只能画 4 格跨度。本题尺寸未越界故可完成，但题面描述与界面呈现相差一档",
+     "evidence": "stem_grid_declared=5、component_span=4",
+     "consequence": "孩子按「5×5 方格纸」理解，会去找 5 格长边，而板上最长只有 4 格——本题只需 3×4 尚不受影响，但这种表述差异会让边界尺寸题（如 5 格）直接失效",
+     "not_concluded": "本条是口径登记，不主张本题有缺陷"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_BLIND_TO_SHAPE",
+     "severity": "risk",
+     "why": "`process_constraint.mode=shape_drawing` 已声明，后端会校验；但 `_rule_shape` 只重算**面积**与**直角数**，**不读 config.base / config.height**",
+     "evidence": "`process_validate.py:154-168`：`_rule_shape` 取 vertices 算 shoelace 面积与 right_angles，面积 == target_area 且直角 == 4 即 valid；base/height 在整个函数内未被引用",
+     "consequence": "斜正方形（面积相同、四个直角）过程校验也判 valid。即：启用 process_constraint **不能**弥补上面那条「画错形状却判对」——两道防线在同一处失效",
+     "not_concluded": "本条不主张过程校验写错了（它按冻结契约只验面积/直角），只登记「该契约无法表达边长约束」这一能力边界"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=shape_drawing` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"shape_drawing\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "shape_vertices",
+     "computed_area"
+    ],
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "base": 3,
+    "grid": 5,
+    "height": 4,
+    "target_area": 12,
+    "target_shape": "rectangle",
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    }
+   },
+   "workspace_mode": "shape_drawing",
+   "workspace_capabilities": [
+    "draw",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "在5×5方格纸上画一个底边3格、高4格的长方形，使边落在格线上。请数格或计算它的面积是多少平方格。",
+   "input_binding": {
+    "stem_sha256": "a26083b846942acfb5299e8f765b9be1fa079a7dffdaa7bec82ae1eb035d0f3d",
+    "ui_schema_sha256": "0bcef29bc476190debab87a054862b10a547a08ebd32c05f41b77e1173099239"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.target_area`=12、`grid`=5；题面 3×4；提交 `answer` 为面积 12。序列化层记 `vertices`（顶点序）与几何属性；过程约束 `shape_drawing` 会重算面积与直角数。",
+     "competing_explanations": "可能的错值：7（把两条边长相加当面积）；15（多数一条边）；11（数格时漏一格）",
+     "cannot_distinguish": "`vertices` 能分开「顶点数错」「非直角」「尺寸错」三态；**但分不开「按边数格子」与「画个面积相同的斜正方形」**——`_rule_shape` 只验面积与直角数，不读 base/height",
+     "neutral_feedback": "说「先数一数底边有几格，再数高有几格，长方形里面一共盖住多少格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "b38f8898-aed4-4238-b7d9-dda33092aae4",
+   "title": "[T155] V14-P0-100",
+   "renderer": "shape-canvas",
+   "solve_path": "geometry_constraint",
+   "ability_id": "app_rd",
+   "priority": "both",
+   "input_basis": "题面抽出 length_width base=4、height=2；**config.base/height 组件不读**（`parseShapeCanvasConfig` 只取 grid/target_area/target_shape），故这两字段仅作题面↔config 交叉核对；面积由题面两数相乘得出；**不读答案**",
+   "read": "在5×5方格纸上画一个长4格、宽2格的长方形，四边落在格线上。请数格或计算它的面积是多少平方格。→ length_width：4 格 × 2 格，求面积",
+   "target_object": "面积（4×2 平方格）",
+   "derivation": {
+    "expr": "4 * 2",
+    "encode": {
+     "kind": "direct",
+     "note": "算术值即答案（构造结果的编码）"
+    },
+    "encoding_constants": [],
+    "extra": {
+     "feasibility": {
+      "stem_grid_declared": 5,
+      "component_grid": 5,
+      "component_span": 4,
+      "required_base": 4,
+      "required_height": 2,
+      "stem_self_consistent": true,
+      "fits_component_board": true,
+      "area_reachable_on_component": true,
+      "area_reachable_without_side_constraint": true,
+      "verdict": "FEASIBLE"
+     },
+     "dimension_form": "length_width"
+    }
+   },
+   "computed": 8,
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": {
+    "stem_grid_declared": 5,
+    "component_grid": 5,
+    "component_span": 4,
+    "required_base": 4,
+    "required_height": 2,
+    "stem_self_consistent": true,
+    "fits_component_board": true,
+    "area_reachable_on_component": true,
+    "area_reachable_without_side_constraint": true,
+    "verdict": "FEASIBLE"
+   },
+   "semantic_observations": [
+    {
+     "code": "GRID_SEMANTICS_OFF_BY_ONE",
+     "severity": "info",
+     "why": "题面「5×5 方格纸」与组件「5 个钉位」是两个概念：后者只能画 4 格跨度。本题尺寸未越界故可完成，但题面描述与界面呈现相差一档",
+     "evidence": "stem_grid_declared=5、component_span=4",
+     "consequence": "孩子按「5×5 方格纸」理解，会去找 5 格长边，而板上最长只有 4 格——本题只需 4×2 尚不受影响，但这种表述差异会让边界尺寸题（如 5 格）直接失效",
+     "not_concluded": "本条是口径登记，不主张本题有缺陷"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_BLIND_TO_SHAPE",
+     "severity": "risk",
+     "why": "`process_constraint.mode=shape_drawing` 已声明，后端会校验；但 `_rule_shape` 只重算**面积**与**直角数**，**不读 config.base / config.height**",
+     "evidence": "`process_validate.py:154-168`：`_rule_shape` 取 vertices 算 shoelace 面积与 right_angles，面积 == target_area 且直角 == 4 即 valid；base/height 在整个函数内未被引用",
+     "consequence": "斜正方形（面积相同、四个直角）过程校验也判 valid。即：启用 process_constraint **不能**弥补上面那条「画错形状却判对」——两道防线在同一处失效",
+     "not_concluded": "本条不主张过程校验写错了（它按冻结契约只验面积/直角），只登记「该契约无法表达边长约束」这一能力边界"
+    },
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=shape_drawing` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"shape_drawing\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "shape_vertices",
+     "computed_area"
+    ],
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "base": 4,
+    "grid": 5,
+    "height": 2,
+    "target_area": 8,
+    "target_shape": "rectangle",
+    "process_constraint": {
+     "mode": "shape_drawing",
+     "params": {}
+    }
+   },
+   "workspace_mode": "shape_drawing",
+   "workspace_capabilities": [
+    "draw",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "在5×5方格纸上画一个长4格、宽2格的长方形，四边落在格线上。请数格或计算它的面积是多少平方格。",
+   "input_binding": {
+    "stem_sha256": "51b86a79c4aa7fc0b7c01019b03d1065fbbfe67b1c9b36e8a7704c4a995d494b",
+    "ui_schema_sha256": "489010e83cb488dfb29082545dcff1b996aff858aa08bf9cf09b2a086f293f69"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.target_area`=8、`grid`=5；题面 4×2；提交 `answer` 为面积 8。序列化层记 `vertices`（顶点序）与几何属性；过程约束 `shape_drawing` 会重算面积与直角数。",
+     "competing_explanations": "可能的错值：6（把两条边长相加当面积）；12（多数一条边）；7（数格时漏一格）",
+     "cannot_distinguish": "`vertices` 能分开「顶点数错」「非直角」「尺寸错」三态；**但分不开「按边数格子」与「画个面积相同的斜正方形」**——`_rule_shape` 只验面积与直角数，不读 base/height",
+     "neutral_feedback": "说「先数一数底边有几格，再数高有几格，长方形里面一共盖住多少格」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "e6bc5139-0be9-4981-92d0-094cfe133ca1",
+   "title": "[T155] V14-P0-147",
+   "renderer": "pattern-board",
+   "solve_path": "numeric_exact",
+   "ability_id": "app_check",
+   "priority": "both",
+   "input_basis": "题面抽出 visible=[3, 1, 3, 1]、blanks=2；周期 2 由题面「两次重复」独立推得，不读 config.palette；空格拼接的位权是编码规则；config.visible/blanks/palette 仅作交叉核对；**不读答案**",
+   "read": "乐乐看到前四格颜色编码是3、1、3、1，就把后两格写成“3、3”，并说：“我接对了。”请先检查他的两格是否都符合交替规律；如果不对，请在规律板的两个空格里改填正确的编码；如果对，就照他填的编码提交。→ 可见 [3, 1, 3, 1]，周期 2，缺 2 格 → 应补 [3, 1]；乐乐写成 [3, 3]（错）",
+   "target_object": "空格编码拼接（3→1）",
+   "derivation": {
+    "expr": "3 * 10 + 1 * 1",
+    "encode": {
+     "kind": "judge_then_fill",
+     "claimed": [
+      3,
+      3
+     ],
+     "expected": [
+      3,
+      1
+     ],
+     "claim_correct": false,
+     "note": "他填错了，须改填正确编码"
+    },
+    "encoding_constants": [
+     {
+      "value": 10,
+      "purpose": "进位权（十进制位值编码规则）"
+     }
+    ],
+    "extra": {
+     "period": 2,
+     "expected_tokens": [
+      3,
+      1
+     ],
+     "variant": "judge_claimed"
+    }
+   },
+   "computed": 31,
+   "stated_answer": "31",
+   "verdict": "MATCH",
+   "config_vs_stem": {
+    "checked": true,
+    "issues": [],
+    "status": "CONSISTENT"
+   },
+   "feasibility": null,
+   "semantic_observations": [
+    {
+     "code": "PROCESS_CONSTRAINT_ENABLED",
+     "severity": "info",
+     "why": "`process_constraint.mode=pattern_extension` 已声明且 `params` 为空；后端 `process_validate` 会真校验（第五批同位置 20 题全为 null）",
+     "evidence": "config.process_constraint={\"mode\": \"pattern_extension\", \"params\": {}}；`process_validate.py` RULES 含该 mode",
+     "consequence": "过程证据进入判分链，这是本族与 numeric_judge 批的结构性差异。但「已启用」不等于「能判所有错法」——见同题其他观察项",
+     "not_concluded": "本条不主张该题过程校验充分，只登记其已启用"
+    },
+    {
+     "code": "PATTERN_DISTRACTOR_TARGETS",
+     "severity": "info",
+     "why": "相位靶（整体后移一位）与惯性靶（全填末颗）是否与正解互异，决定分诊是否成立",
+     "evidence": "expected=[3, 1]、phase_shift=[1, 3]、rule_ignored=[1, 1]",
+     "consequence": "三者互异 → 两种错法都能被 `evaluatePattern` 单独识别；",
+     "not_concluded": "本条只核对分诊靶位是否互异，不主张题目有缺陷"
+    }
+   ],
+   "evidence_enforcement": {
+    "evidence_targets": [
+     "visible_tokens",
+     "blank_fills",
+     "pattern_phase"
+    ],
+    "process_constraint": {
+     "mode": "pattern_extension",
+     "params": {}
+    },
+    "enforced_by_backend": true
+   },
+   "ui_config_seen": {
+    "blanks": 2,
+    "palette": [
+     3,
+     1
+    ],
+    "visible": [
+     3,
+     1,
+     3,
+     1
+    ],
+    "process_constraint": {
+     "mode": "pattern_extension",
+     "params": {}
+    }
+   },
+   "workspace_mode": "repeat_pattern",
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "乐乐看到前四格颜色编码是3、1、3、1，就把后两格写成“3、3”，并说：“我接对了。”请先检查他的两格是否都符合交替规律；如果不对，请在规律板的两个空格里改填正确的编码；如果对，就照他填的编码提交。",
+   "input_binding": {
+    "stem_sha256": "673760585dd668069ad9ae7b926002cead21c7e064c61db152dbf8c0c26e8f84",
+    "ui_schema_sha256": "6f40c5c235738cdbe94166f9cbdc673232f80b0da943204af9edee2a148fd5f4"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.visible`=[3, 1, 3, 1]、`blanks`=2、`palette`=[3, 1]；周期由题面推出为 2；提交 `answer` 为空格编码拼接 31。序列化层记 `beads`、`attempt_history`、`pattern_text`；过程约束 `pattern_extension` 会按 visible+period 重算",
+     "competing_explanations": "可能的错值：11（无脑延续末颗（惯性靶 rule_ignored））；13（周期读对但相位后移一位（phase_shift））",
+     "cannot_distinguish": "`attempt_history` 记每次 [slot, from, to]，能分开相位错与惯性错；**但分不开「推出周期 2」与「看到 3、1 就接着写 3、1」**——本题可见段本身就是两个完整周期，规律强度不足",
+     "neutral_feedback": "说「看看前面几个数是一组一组重复的，一组里面是什么顺序」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  }
+ ]
+}
