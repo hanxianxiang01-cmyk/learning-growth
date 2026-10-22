@@ -74,11 +74,21 @@ B = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(B)
 
 fails: list[str] = []
+infos: list[str] = []
 
 
 def check(cond: bool, msg: str) -> None:
     if not cond:
         fails.append(msg)
+
+
+def note(msg: str) -> None:
+    """提示项：**计入统计但不判失败**。
+
+    用于「重复本身不是错误」这类情形——记录它，是为了让复盘时看得到
+    「有几处共享了同一事实」，而不是把它们推到 FAIL 栏里逼人改文案。
+    """
+    infos.append(msg)
 
 
 def _must_exist(path: str, label: str) -> bool:
@@ -232,11 +242,24 @@ check(bool(B.KNOWN_DEFECTS["DEF-D2"].get("verification_plan")),
       "T6j DEF-D2 必须给出定向核验计划（表征对象/正确候选/负例/提交关联）")
 
 # ── T7 Q05 三字段 + 去重口径 ─────────────────────────────────────────────
+# ★ 已撤销 T7d「同 renderer 内 observable 重复即 FAIL」。
+#   理由（复审两轮均已指出）：两题若物件数量、对齐字段与可观察限制**确实相同**，
+#   那么观察描述相同就是**正确的**；把文案改得不一样并不能提升区分力，
+#   只会让人为了过门禁而改写事实描述——这与「不能让门禁逼内容说错话」直接冲突。
+#   对照实验：eaa828b3 与 cfc971b4 同为「8 与 5 两组物件比较」，共用同一段
+#   真实观察说明是完全正当的，旧规则会把它判失败。
+#   替代检查（都不依赖"文案唯一"）：
+#     · 字段非空（T7a/T7b/T7c 保留）
+#     · 来源可追溯（T7e：每题必须能在 CHECKS 里找到对应 renderer）
+#     · 必须写明"现有证据不能区分什么"（T7f：见 evaluate() 的 cannot_distinguish）
+#     · 重复只作**提示**计入统计，不作不合格的充分条件
 renderer_of = {c["rvid"][:8]: c["renderer"] for c in B.CHECKS}
 seen: dict[tuple[str, str], str] = {}
+_dup_pairs: list[tuple[str, str, str]] = []
 for rid, ev in B.Q05_EVIDENCE.items():
     check(bool(ev.get("competing")), f"T7a {rid} 缺 competing_explanations")
     check(bool(ev.get("neutral")), f"T7b {rid} 缺 neutral_feedback")
+    check(rid in renderer_of, f"T7e {rid} 不在 CHECKS 里，来源不可追溯")
     o = ev.get("observable")
     if isinstance(o, dict):
         items = list(o.items())
@@ -246,8 +269,70 @@ for rid, ev in B.Q05_EVIDENCE.items():
     for code, text in items:
         key = (renderer_of.get(rid, "?"), text)
         if key in seen and seen[key] != rid:
-            check(False, f"T7d 同 renderer 内 observable 重复（又套模板）：{(key, seen[key], rid)}")
+            _dup_pairs.append((seen[key], rid, renderer_of.get(rid, "?")))
         seen[key] = rid
+
+# T7d（已降级为提示项）：重复不判失败，但要能在复盘时看到。
+#   跨题共用同一段 observable **完全可能是正确的**（两题物件数量与可观察限制
+#   真的一样时，描述相同才是如实登记）。因此这里只记录、不判失败。
+if _dup_pairs:
+    note(f"T7d(提示) {len(_dup_pairs)} 处跨题共享同一段 observable：" +
+         "; ".join(f"{a}≡{b}" for a, b, _ in _dup_pairs))
+
+# T7f 真正该管的是**同一题之内**：多个错误码若共用同一段观察事实，
+#   就必须声明「这些错法在现有字段下无法区分」。这与文案是否跨题重复无关，
+#   也不要求任何人改写措辞——只是不许在事实不可分时仍声称能分开。
+for _rid, _ev in B.Q05_EVIDENCE.items():
+    _o = _ev.get("observable")
+    if not isinstance(_o, dict) or len(_o) < 2:
+        continue
+    _vals = list(_o.values())
+    if len(set(_vals)) < len(_vals):      # 至少两个码共用同一段
+        check(bool(_ev.get("cannot_distinguish")),
+              f"T7f {_rid} 有多个错误码共用同一段 observable，"
+              "却没有登记 cannot_distinguish（哪些错法无法区分）")
+
+
+def _evidence_self_consistent() -> list[str]:
+    """逐题自检：已撤回的定性不得再出现在**当前生效**的逐题字段里。
+
+    复审指出过一次真实失效：`KNOWN_DEFECTS["DEF-D2"]` 已改成「线索、待核验」，
+    但三题的 `config_role` / `boundary` / `Q05_EVIDENCE` 仍在输出「摆不出」
+    「不存在正确终态」「奖励半成品」。`evaluate()` 会把它们原样写进结果，
+    于是同一条记录里 `confirmed=False` 与「必然全错」并存——自相矛盾。
+    这里按「同一 RVID 的逐题字段 + 总表定性」组合检查，而不是全文禁词，
+    以免连"撤回记录"里引用旧说法也判错。
+    """
+    problems: list[str] = []
+    for did in ("DEF-D2",):
+        d = B.KNOWN_DEFECTS[did]
+        if d.get("confirmed"):
+            continue          # 若将来真的确权了，这些措辞就恢复合法性
+        banned = ("物理上摆不到", "必然全错", "不存在正确终态",
+                  "系统性地奖励半成品", "界面在奖励做一半",
+                  "模板用错了题", "该摆的", "题意要三根条",
+                  "配置层判 NOT_READY")
+        for rid in d.get("affected", []):
+            c = next((x for x in B.CHECKS if x["rvid"][:8] == rid), None)
+            ev = B.Q05_EVIDENCE.get(rid, {})
+            fields = {
+                "config_role": (c or {}).get("config_role", ""),
+                "boundary": (c or {}).get("boundary", ""),
+                "q05_hypothesis": (c or {}).get("q05_hypothesis", ""),
+                "observable": str(ev.get("observable", "")),
+                "competing": str(ev.get("competing", "")),
+            }
+            for fname, ftext in fields.items():
+                for w in banned:
+                    if w in ftext:
+                        problems.append(
+                            f"{rid}.{fname} 仍在输出已撤回的定性「{w}」"
+                            f"（{did}.confirmed=False，逐题字段必须同步为线索表述）")
+    return problems
+
+
+for _p in _evidence_self_consistent():
+    check(False, "T13 " + _p)
 
 # ── T8 对照声明 ───────────────────────────────────────────────────────────
 kinds = [p["kind"] for p in B.CONTRAST_PAIRS]
@@ -450,6 +535,19 @@ if _must_exist(_doc_path, "批次报告文档"):
 SNAP = os.path.join(HERE, "batch3_frozen_inputs.json")
 if _must_exist(SNAP, "冻结输入快照 batch3_frozen_inputs.json"):
     snap = json.load(open(SNAP, encoding="utf-8"))
+    # ★ T12a0 必须在建 by_id **之前**核对「行数 / 唯一 RVID 数 / 声明 count / 核验集合」
+    #   四项相等。原因：`by_id = {it["rvid"]: it ...}` 是字典推导，
+    #   一旦快照里出现重复 RVID，后一行会**静默覆盖**前一行——
+    #   门禁看到的仍然是一个 29 项的合法集合，异常被吞掉。
+    #   若两行内容不同，还会变成「用后行做回放、用前行骗过 sha」，
+    #   此时再多的一致性检查都查不出来。所以这条必须前置。
+    _ids = [it["rvid"] for it in snap.get("items", [])]
+    check(len(_ids) == len(set(_ids)),
+          f"T12a0 冻结快照存在重复 RVID：{len(_ids)} 行 / "
+          f"{len(set(_ids))} 个唯一值（字典推导会静默覆盖，回放输入不可信）")
+    check(len(_ids) == snap.get("count") == len(B.CHECKS),
+          f"T12a0b 快照行数 {len(_ids)} / 声明 count={snap.get('count')} / "
+          f"核验集合 {len(B.CHECKS)} 不相等")
     by_id = {it["rvid"]: it for it in snap["items"]}
     check(set(by_id) == {c["rvid"] for c in B.CHECKS},
           "T12a 快照覆盖的 RVID 与 CHECKS 不一致")

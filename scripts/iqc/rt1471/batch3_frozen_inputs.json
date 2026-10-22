@@ -1,7 +1,7 @@
 {
  "title": "FE-1471｜第三批 29 题冻结输入快照（供离线 gate 回放 evaluate()）",
  "purpose": "门禁原先只查结构、不执行数学核验，导致 independent_eval 恒 0 / match 恒 True 仍 PASS。本快照把 answer / error_models / ui_schema 冻结下来，使门禁可在无数据库的 CI 上真实跑一遍 evaluate()。",
- "frozen_at_commit": "dbbd429c4542d6cb1eddefcf141419de8158dbea",
+ "frozen_at_commit": "77892f7bc74c1d54385b75e0afe897adab86c7a0",
  "provenance": {
   "source": "resource_version.content->>'answer' / content->>'stem' / error_models / ui_schema（运行时原值，未规整）",
   "readonly": "psycopg3 with-connect，零 DML 路径",
