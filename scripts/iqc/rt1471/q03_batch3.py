@@ -1181,6 +1181,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "另注：`visual` 无单位字段，"
                      "所以 `unknown.value=13` 与题面「13 千步」在表征层无连接，"
                      "**单位语义丢失**（登记为观察项）",
+        "cannot_distinguish": (
+            '未知条值为 13 时，无法区分「拖到上限」与「算出 9+4」——`unknown.max` 恰等于答案，两者是同一状态；`math_lang`/`modeling`/`strategy` 三个码共用同一段观察，本字段不能把三者分开，只能说明「结果对」'),
         "neutral": "说「小安比小雨多走 4 千步，未知条要多出 4 格」",
     },
     "e5c13ef5": {
@@ -1202,6 +1204,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "但两条都拖到底得 11 → **对照被 DEF-D1 破坏**。"
                      "这是本批最能说明「配置缺陷会毁掉教学设计」的实例："
                      "题目本身设计得当，UI 让它失效",
+        "cannot_distinguish": (
+            '未知条值 11 同形：①算出 7+4；②直接拖到底（max=11）。三个码共用此段观察，故无法在该题内部区分是语序理解、建模还是策略问题；与 c07482bb 的语序对照也因此失效，不能当作两份独立证据'),
         "neutral": "说「小冬比小夏少 4 张，那谁更多？多的那条要多 4 格」",
     },
     "76d49907": {
@@ -1220,6 +1224,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "另：`[6,4]`（把「下去」当加）会停在 19，"
                      "超出 max=16 → 物理上跳不到，孩子会被迫回头，"
                      "**这个约束反而帮了忙**：19 不可达意味着错误路径会被界面挡住",
+        "cannot_distinguish": (
+            '终态 `current=11` 下，`jumps=[6,-4]`、`[11]`、甚至 `[11]` 拆分都停在同一处；`modeling`/`reading`/`strategy` 三个码共用同一段观察，本字段只能说明「终态对」，无法区分是读题、建模还是跳步策略的问题'),
         "neutral": "说「车上先上来 6 个人，再下去 4 个人，人数怎么变」",
     },
     "552b39e3": {
@@ -1264,6 +1270,8 @@ Q05_EVIDENCE: dict[str, dict] = {
         "competing": "`unknown.value=20` → 做了 14+6（方向反）；"
                      "`unknown.value=14` → 直接抄已知量。"
                      "两种错法**值不同**，可分开",
+        "cannot_distinguish": (
+            '`unknown.value=20` 与 `=14` 虽可分开（前者方向反、后者抄已知量），但 `math_lang`/`modeling`/`strategy` 三个码共用同一段观察说明：从这一段文字无法判断孩子是读错关系、建模错、还是策略错——码与观察之间没有一一对应，本字段不承担该区分'),
         "neutral": "说「小安比小林少 6 颗，小安那条比 14 长还是短」",
     },
     "8612589b": {
@@ -1273,6 +1281,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "`unknown.value=5` → 把差量当答案。"
                      "两种错法值不同，可分开这两个假设"
                      "（**可分开假设 ≠ 可归因**：仍只说明与该假设相容）",
+        "cannot_distinguish": (
+            '`unknown.value=17`（12+5）与 `=5`（抄差量）可分开，但这只是「与某假设相容」；`math_lang`/`modeling`/`strategy` 三个码共用同一段观察，无法据此把三者分开'),
         "neutral": "说「妹妹比哥哥少 5 个，妹妹那条该短 5 格」",
     },
     "ed97b114": {
@@ -1294,6 +1304,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "两种错法值不同，可分开——"
                      "**本题的 bars 结构（三根条：整体/已知部分/未知部分）"
                      "比 compare 族的两根条更能暴露「整体与部分混淆」**",
+        "cannot_distinguish": (
+            '`unknown.value=13`（抄整体）与 `=5`（抄已知部分）可分开，但 `calc`/`modeling`/`strategy` 三个码共用同一段观察；「抄整体」既可能被标成 modeling 也可能被标成 strategy，本字段不能裁决'),
         "neutral": "说「整条是 13，红的占了 5 格，剩下那截是黄的」",
     },
     "f5fb6594": {
@@ -1305,6 +1317,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "所以本题看不到方向错的证据。"
                      "这是与 240ff07b（unknown.max=13=整体，21 也不可达）"
                      "相同的限制，须与「孩子不会犯方向错」区分开",
+        "cannot_distinguish": (
+            '`unknown.value=15`（抄整体）与 `=6`（抄已知）可分开；但 21（方向反）在 max=15 下不可达，所以本题**看不到方向错的证据**。`calc`/`modeling`/`strategy` 共用同一段观察，且「看不到」不等于「不会犯」'),
         "neutral": "说「书架共 15 本，故事书占 6 本，剩下的是科普书」",
     },
     # ── legacy:objects（groups[].count 固定，只有对齐痕迹）──
@@ -1317,6 +1331,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "**不说明孩子看懂了多出 3 个**——"
                      "对齐是单键操作，一键完成，无过程可分。"
                      "`aligned=false` 也不能推出「没理解」（可能孩子不用对齐也能算）",
+        "cannot_distinguish": (
+            '`count` 写死为 8/5，representation 只有 `items[].x` 与 `aligned` 会变。`aligned` 是单键操作、无过程可分，因此 `calc`/`math_lang`/`modeling` 三个码共用同一段观察时，无法区分是算错、读错还是建模错；「点过对齐」也不能当作理解的证据'),
         "neutral": "说「把两支队伍一排一排对齐，看哪一列多出来了」",
     },
     "7acb4a38": {
@@ -1327,6 +1343,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "但 representation 形态**完全相同**，"
                      "所以「建模能力」在本题没有独立的可观察证据——"
                      "这是标签与证据不匹配",
+        "cannot_distinguish": (
+            '`count` 固定（6/4），只有 `items[].x`/`aligned` 可变。`calc`/`modeling` 两码共用同一段观察，无法区分算错与建模错；另：本题 `ability_id=app_model` 但 representation 与 app_rel 题完全同形，所以该标签在本批没有独立可观察证据'),
         "neutral": "说「左边的积木比右边多，多出来的那几块在哪」",
     },
     "cfc971b4": {
@@ -1337,6 +1355,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "若孩子都用对齐，两条的痕迹一模一样。"
                      "这意味着：本题的 Q05 证据与 eaa828b3 的不可区分，"
                      "不能当成两份独立证据",
+        "cannot_distinguish": (
+            '`count` 固定（8/5），与 eaa828b3 的 groups 逐字段相同。`calc`/`modeling`/`strategy` 三码共用同一段观察，无法分开；且本题与 eaa828b3 的痕迹必然一致，不能当成两份独立证据'),
         "neutral": "说「两行花排齐后，多出来的那一行有几朵」",
     },
     # ── legacy:bar-model DEF-D2 三条（答案摆不出，证据被结构性污染）──
@@ -1390,6 +1410,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "另：本条标 app_transfer（迁移），但**本批找不到同值的"
                      "非迁移配对**（9−6 只出现这一次），"
                      "所以迁移结论没有对照，`competing` 里也没有可比的错法模式",
+        "cannot_distinguish": (
+            '`count` 固定（9/6），只有 `items[].x`/`aligned` 可变。`math_lang`/`modeling`/`strategy` 三码共用同一段观察，无法分开；本条标 app_transfer 但同批无同值非迁移配对，迁移结论本无对照'),
         "neutral": "说「两个人跑的圈数排成两行，哪一行长出来了」",
     },
     # ── legacy:direct（kind=number，走 NumberRenderer 的 AnswerComposer）──
@@ -1412,6 +1434,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "这是本批第二个「证据本身失效」的情形（第一个是 c07482bb 的"
                      "滑杆）。区别在于：c07482bb 是配置泄露，"
                      "本条是**题型设计缺少区分字段**",
+        "cannot_distinguish": (
+            "提交值只有 `answer`，`answer='0'` 既可读作「断言为假」也可读作「数量为 0」，`interaction_events` 不带输入值、无法还原输入历史。`check`/`math_lang`/`strategy` 三码共用同一段观察，本字段无法区分三者"),
         "neutral": "说「先算算弟弟到底几颗，再和小明说的 18 比一比」",
     },
     "3706473c": {
@@ -1425,6 +1449,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "这是本题作为条件筛选题的**根本弱点**："
                      "干扰项 4 加进去是 12，减出去是 8，"
                      "但答 8 也可能是「只加了苹果」（漏了梨）",
+        "cannot_distinguish": (
+            "只有 `answer`，正解 `'8'`。8 没有唯一分解（6+2、8−0 等均可），`calc`/`modeling`/`reading` 三码共用同一段观察：答对 8 只证明没把 4 算进去，无法证明条件筛选的读题与建模都对"),
         "neutral": "说「题目问的是水果，桌子上的铅笔要不要算」",
     },
     "6857ba8d": {
@@ -1437,6 +1463,8 @@ Q05_EVIDENCE: dict[str, dict] = {
                      "②是只要有「放进来」就加），但提交值都是 11。"
                      "这是本批唯一「两种错法同值」的题——"
                      "如果要分开，需要额外要求写过程，当前题型做不到",
+        "cannot_distinguish": (
+            "`answer='11'` 有两种同值错法（12−4+3 与 12+3−4），数学含义不同但提交值相同；`modeling`/`reading`/`strategy` 三码共用同一段观察，本字段无法把「条件筛选失败」与「见加就加」分开，也分不开读题与策略"),
         "neutral": "说「放进来的是苹果，篮子里问的是橘子，苹果算不算橘子的数」",
     },
     "76ce803c": {

@@ -1,0 +1,1174 @@
+{
+ "title": "FE-1472｜Q03 第四批 20 题独立核验（先冻结选题集合）",
+ "generated_at": "2026-10-22T02:05:06.887692+00:00",
+ "chain": [
+  "题干与必要配置",
+  "明确所求对象",
+  "独立推导",
+  "按已确认契约编码",
+  "与存储答案比较"
+ ],
+ "independence": {
+  "rule": "computed 只由 derive(item) 计算，derive 不接收 answer_raw；answer_raw 仅在比较一步出现，不参与推导",
+  "enforced_by": "derive() 的入参是 item，其中 answer 字段在调用前未被读取；independent_eval() 只对纯算术表达式求值",
+  "caveat": "独立推导能排除「照答案反推」，但**不能证明题面解析正确**——若我把题意读错，MATCH 也只是「错误理解与答案巧合一致」"
+ },
+ "ledger": {
+  "quota": 20,
+  "verified": 20,
+  "quota_frozen_before_verify": true,
+  "quota_source": "scripts/iqc/rt1472/batch4_quota_list.json",
+  "note": "本批选题集合在核验前落盘，因此不再有第三批那种「29 实核 vs 约 20 计划」的未解释差额。"
+ },
+ "summary": {
+  "total": 20,
+  "match": 20,
+  "mismatch": 0,
+  "by_renderer": {
+   "grouping-board": {
+    "n": 2,
+    "match": 2
+   },
+   "number-line": {
+    "n": 2,
+    "match": 2
+   },
+   "clock": {
+    "n": 3,
+    "match": 3
+   },
+   "estimation-canvas": {
+    "n": 3,
+    "match": 3
+   },
+   "object-counter": {
+    "n": 2,
+    "match": 2
+   },
+   "direction-grid": {
+    "n": 3,
+    "match": 3
+   },
+   "shape-gallery": {
+    "n": 3,
+    "match": 3
+   },
+   "column-arithmetic": {
+    "n": 2,
+    "match": 2
+   }
+  },
+  "match_definition": "MATCH 只表示「按题面独立推导的结果与存储答案相等」，不表示该题的交互/配置无问题"
+ },
+ "encoding_contracts": {
+  "clock": "分钟码 h*60+m（4:30→270、11:00→660、5:00→300 三题自证）",
+  "direction-grid": "格编码 r*cols+c（(0,4)→4、(4,2)→22、(4,0)→20 三题自证）",
+  "estimation-canvas": "最近整十数 round(actual/10)*10；**expected/target 与答案同值，按前批口径视为答案副本，不作独立依据**",
+  "shape-gallery": "按 kind 精确匹配计数，正方形不计入长方形（与第二批同口径）"
+ },
+ "items": [
+  {
+   "rvid": "00186559-7273-40cc-9732-9def81ce9693",
+   "title": "[T155] V14-P0-069",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "input_basis": "cfg.total=16, cfg.target_groups=4",
+   "read": "有16颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。→ 16 颗平均分给 4 人，求每份",
+   "target_object": "每份颗数",
+   "derivation": {
+    "expr": "16 / 4"
+   },
+   "computed": 4.0,
+   "stated_answer": "4",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "items": 16,
+    "total": 16,
+    "group_size": 4,
+    "max_groups": 6,
+    "target_groups": 4
+   },
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "有16颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "input_binding": {
+    "stem_sha256": "66140ced893d187991099f8fc2443128e11112e0070548b073d84de96fd67a22",
+    "ui_schema_sha256": "3c2650f146a1ac28b8de52795f550070554a0b1e1243770c4490570ec9459111"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.total`=16、`target_groups`=4、`group_size`=4；拖动可形成分组，但提交 `answer` 为每份数量 4",
+     "competing_explanations": "可能的错值：12（把「剩下的」当每份）。**本题 group_size 与 target_groups 同为 4，「答份数」与「答每份数」在提交值上完全同形**，本字段无法区分这两种理解",
+     "cannot_distinguish": "分不开「把份数当每份数」与「正确求每份数」",
+     "neutral_feedback": "说「一颗一颗轮着发，看看每个小朋友拿到几颗」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "020bd81e-02f9-425b-95ea-db208191cedf",
+   "title": "[T155] V14-P0-022",
+   "renderer": "number-line",
+   "ability_id": "app_rel",
+   "input_basis": "cfg.start_marker=25, jump_size=10, jump_count=1, direction=left",
+   "read": "在数轴上从25出发，向左每次跳10，连续跳1次。请完成跳步并写出终点。→ 从 25 出发向left跳 1 次、每次 10",
+   "target_object": "终点刻度",
+   "derivation": {
+    "expr": "25 - 10 * 1"
+   },
+   "computed": 15,
+   "stated_answer": "15",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "scale": {
+     "max": 40,
+     "min": 0,
+     "tick_step": 1
+    },
+    "direction": "left",
+    "jump_size": 10,
+    "jump_count": 1,
+    "start_marker": {
+     "value": 25,
+     "marker_id": "start"
+    }
+   },
+   "workspace_capabilities": [
+    "jump",
+    "place_marker",
+    "undo",
+    "reset"
+   ],
+   "stem": "在数轴上从25出发，向左每次跳10，连续跳1次。请完成跳步并写出终点。",
+   "input_binding": {
+    "stem_sha256": "f443a3bb06237a24067baa64a1ee45acb7ba3786ce9bb34a7531a8ffe91ce9d1",
+    "ui_schema_sha256": "e17c1ab39f372f5ef3b1ae94bb32c28aae69e02fba236ca1fd0aee827d42daec"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start_marker.value`=25、`jump_size`=10、`jump_count`=1、`direction`=left；提交 `answer` 为终点刻度 15。`jumps` 数组是否记录取决于 renderer，本批**未核**",
+     "competing_explanations": "可能的错值：35（方向反）；-10（从 0 起算而非从起点）。另：15（只跳一次） **与本正确答案同值**——jump_count=1 时这与正确做法等价，**该错法在本题不构成可区分证据**",
+     "cannot_distinguish": "本题 jump_count=1，「连跳几次」这一考点未被实际考查；终点值唯一，分不清是「按方向数格」还是「直接算出 25−10」",
+     "neutral_feedback": "说「从起点出发，按方向一格一格地数」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "031fb221-a20a-4e9d-aa29-0d23e8088f76",
+   "title": "[T155] V14-P0-134",
+   "renderer": "clock",
+   "ability_id": "app_rel",
+   "input_basis": "cfg.target=[5,0]；编码契约见 CLOCK_ENCODING",
+   "read": "钟面现在是4点半。请把时针和分针调整到5点整，再提交。→ 目标时刻 5:00，按分钟编码提交",
+   "target_object": "目标时刻的分钟码（h*60+m）",
+   "derivation": {
+    "expr": "5 * 60 + 0"
+   },
+   "computed": 300,
+   "stated_answer": "300",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "start": [
+     4,
+     30
+    ],
+    "target": [
+     5,
+     0
+    ]
+   },
+   "workspace_capabilities": [
+    "set_time",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "钟面现在是4点半。请把时针和分针调整到5点整，再提交。",
+   "input_binding": {
+    "stem_sha256": "5347678a5ef1fb60e6e643b1903c755f63d3aa374d14225117a4409aa22a4dda",
+    "ui_schema_sha256": "2997bcdac868a67b344a7cf3cc13cba4a705b341192c8b2ee32e276cebf61d63"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start`=[4, 30]、`target`=[5, 0]；提交 `answer` 为分钟码 300（h*60+m）。界面可点选时针/分针，`interaction_events` 记 `set_time` 动作但**不带中间时刻**",
+     "competing_explanations": "可能的错值：330（只拨时针、分针仍停在 30／把 5 点整读成 5 点半 —— **两个错法同值，在该题内部不可分**）；240（只拨分针、时针仍停在 4 点）。**这几类在本 schema 下不可分**——提交值只有一个数，事件里没有中间时刻",
+     "cannot_distinguish": "终值分钟码唯一决定判定；分不清是读时错、针别错，还是只改了一根针；另有两条错法在本题同值（见上），也不能当作两份独立证据",
+     "neutral_feedback": "说「先看分针指到几，再看时针该在哪个数上」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "0865553f-71a4-4c78-9841-f5271834c3e5",
+   "title": "[T155] V14-P0-017",
+   "renderer": "number-line",
+   "ability_id": "app_cond",
+   "input_basis": "cfg.start_marker=8, jump_size=3, jump_count=1, direction=right",
+   "read": "在数轴上从8出发，向右每次跳3，连续跳1次。请完成跳步并写出终点。→ 从 8 出发向right跳 1 次、每次 3",
+   "target_object": "终点刻度",
+   "derivation": {
+    "expr": "8 + 3 * 1"
+   },
+   "computed": 11,
+   "stated_answer": "11",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "scale": {
+     "max": 40,
+     "min": 0,
+     "tick_step": 1
+    },
+    "direction": "right",
+    "jump_size": 3,
+    "jump_count": 1,
+    "start_marker": {
+     "value": 8,
+     "marker_id": "start"
+    }
+   },
+   "workspace_capabilities": [
+    "jump",
+    "place_marker",
+    "undo",
+    "reset"
+   ],
+   "stem": "在数轴上从8出发，向右每次跳3，连续跳1次。请完成跳步并写出终点。",
+   "input_binding": {
+    "stem_sha256": "110081d37a23f2e66b81633daf870a73a13ed604183cc3c45c23fc9796b5647b",
+    "ui_schema_sha256": "932f41911755e3eedc0d40ce0deaca5365a781ddfa760bac77217c875abfc6cd"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start_marker.value`=8、`jump_size`=3、`jump_count`=1、`direction`=right；提交 `answer` 为终点刻度 11。`jumps` 数组是否记录取决于 renderer，本批**未核**",
+     "competing_explanations": "可能的错值：5（方向反）；3（从 0 起算而非从起点）。另：11（只跳一次） **与本正确答案同值**——jump_count=1 时这与正确做法等价，**该错法在本题不构成可区分证据**",
+     "cannot_distinguish": "本题 jump_count=1，「连跳几次」这一考点未被实际考查；终点值唯一，分不清是「按方向数格」还是「直接算出 8+3」",
+     "neutral_feedback": "说「从起点出发，按方向一格一格地数」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "09f916e8-7d78-44a5-a202-f5025ba352f1",
+   "title": "[T155] V14-P0-131",
+   "renderer": "clock",
+   "ability_id": "app_cond",
+   "input_basis": "cfg.target=[11,0]；编码契约见 CLOCK_ENCODING",
+   "read": "钟面现在是10点半。请把时针和分针调整到11点整，再提交。→ 目标时刻 11:00，按分钟编码提交",
+   "target_object": "目标时刻的分钟码（h*60+m）",
+   "derivation": {
+    "expr": "11 * 60 + 0"
+   },
+   "computed": 660,
+   "stated_answer": "660",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "start": [
+     10,
+     30
+    ],
+    "target": [
+     11,
+     0
+    ]
+   },
+   "workspace_capabilities": [
+    "set_time",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "钟面现在是10点半。请把时针和分针调整到11点整，再提交。",
+   "input_binding": {
+    "stem_sha256": "8420bc8686ce36ebd553383153b39a5cffff7640377400fe7510d5f8897e4bb6",
+    "ui_schema_sha256": "02c59ec71820cffd631e1844725c99dce2e5bbe88fd45955465fa5fffedd0db8"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start`=[10, 30]、`target`=[11, 0]；提交 `answer` 为分钟码 660（h*60+m）。界面可点选时针/分针，`interaction_events` 记 `set_time` 动作但**不带中间时刻**",
+     "competing_explanations": "可能的错值：690（只拨时针、分针仍停在 30／把 11 点整读成 11 点半 —— **两个错法同值，在该题内部不可分**）；600（只拨分针、时针仍停在 10 点）。**这几类在本 schema 下不可分**——提交值只有一个数，事件里没有中间时刻",
+     "cannot_distinguish": "终值分钟码唯一决定判定；分不清是读时错、针别错，还是只改了一根针；另有两条错法在本题同值（见上），也不能当作两份独立证据",
+     "neutral_feedback": "说「先看分针指到几，再看时针该在哪个数上」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "0d7ae14e-26c3-4413-a610-2c036dc16a92",
+   "title": "[T155] V14-P0-066",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "input_basis": "cfg.total=15, cfg.target_groups=3",
+   "read": "有15颗玻璃珠，要平均分给3个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。→ 15 颗平均分给 3 人，求每份",
+   "target_object": "每份颗数",
+   "derivation": {
+    "expr": "15 / 3"
+   },
+   "computed": 5.0,
+   "stated_answer": "5",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "items": 15,
+    "total": 15,
+    "group_size": 5,
+    "max_groups": 6,
+    "target_groups": 3
+   },
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "有15颗玻璃珠，要平均分给3个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "input_binding": {
+    "stem_sha256": "88359cb2bcfe664c1170f9546005654b8e307b122917f753701747384221b20b",
+    "ui_schema_sha256": "3e76b72705de18992782c7dba6d23106f3c1034d0fcb6b1496bc10d45505ede6"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.total`=15、`target_groups`=3、`group_size`=5；拖动可形成分组，但提交 `answer` 为每份数量 5",
+     "competing_explanations": "可能的错值：3（把份数当每份数）；10（把「剩下的」当每份）",
+     "cannot_distinguish": "本题 5≠3，可分开「答份数」与「答每份数」；但分不开「每份不等却报平均值」与「真的平分成 5」",
+     "neutral_feedback": "说「一颗一颗轮着发，看看每个小朋友拿到几颗」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "13c3b756-29fb-440d-8ebc-1ed1ca12975b",
+   "title": "[T155] V14-P0-081",
+   "renderer": "estimation-canvas",
+   "ability_id": "app_model",
+   "input_basis": "cfg.actual=18, cfg.reference=10（**不读 expected/target：它们与答案同值，按前批口径属答案副本**）, tolerance=6",
+   "read": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。→ 实际 18 个，以 10 为参照取最近整十数",
+   "target_object": "最近整十数",
+   "derivation": {
+    "expr": "((18 + 5) // 10) * 10"
+   },
+   "computed": 20,
+   "stated_answer": "20",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max": 60,
+    "min": 0,
+    "actual": 18,
+    "target": 20,
+    "expected": 20,
+    "reference": 10,
+    "tolerance": 6
+   },
+   "workspace_capabilities": [
+    "estimate",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。",
+   "input_binding": {
+    "stem_sha256": "ff2eb46af704d1b802d042765f200d6fbf6b55a66efe9d4c09d8194fd0cb9b31",
+    "ui_schema_sha256": "55edf4bd66935dba8e0b55991d3e05418cf63055aa3f4a194e517e599d4dce50"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.actual`=18 是画布真实散点数；`target`=`expected`=20 与答案同值（按前批口径属**答案副本**，不作独立依据）；`tolerance`=±6；滑条提交整十值",
+     "competing_explanations": "可能的错值：10（少估一档，偏差 8）、30（多估一档，偏差 12）；正确档与 actual 的偏差为 2。两者均超出容差 ±6 → 在容差口径下本题只有唯一可判状态",
+     "cannot_distinguish": "能分开「偏离超过一个整十」与「只差一个整十」，分不开「分组数错」与「四舍五入方向错」——两者得到同一个整十值",
+     "neutral_feedback": "说「先圈出十个一堆，再数有几堆」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "17599601-dac5-4fe1-b391-69b4e519136f",
+   "title": "[T155] V14-P0-133",
+   "renderer": "clock",
+   "ability_id": "app_cond",
+   "input_basis": "cfg.target=[4,30]；编码契约见 CLOCK_ENCODING",
+   "read": "钟面现在是3点整。请把时针和分针调整到4点半，再提交。→ 目标时刻 4:30，按分钟编码提交",
+   "target_object": "目标时刻的分钟码（h*60+m）",
+   "derivation": {
+    "expr": "4 * 60 + 30"
+   },
+   "computed": 270,
+   "stated_answer": "270",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "start": [
+     3,
+     0
+    ],
+    "target": [
+     4,
+     30
+    ]
+   },
+   "workspace_capabilities": [
+    "set_time",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "钟面现在是3点整。请把时针和分针调整到4点半，再提交。",
+   "input_binding": {
+    "stem_sha256": "cd9f694a14d840220976691ca7f230aaa178d5cb6589116f8d6ca12e83de96f2",
+    "ui_schema_sha256": "589076932579c4233311bd757c5041aa81db2fddb9b6c51930e9f3960d0064ee"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start`=[3, 0]、`target`=[4, 30]；提交 `answer` 为分钟码 270（h*60+m）。界面可点选时针/分针，`interaction_events` 记 `set_time` 动作但**不带中间时刻**",
+     "competing_explanations": "可能的错值：240（只拨时针、分针仍停在 00）；210（只拨分针、时针仍停在 3 点）。**这几类在本 schema 下不可分**——提交值只有一个数，事件里没有中间时刻",
+     "cannot_distinguish": "终值分钟码唯一决定判定；分不清是读时错、针别错，还是只改了一根针",
+     "neutral_feedback": "说「先看分针指到几，再看时针该在哪个数上」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "24a50da9-303b-41b0-9bb4-6c10797f7c70",
+   "title": "[T155] V14-P0-002",
+   "renderer": "object-counter",
+   "ability_id": "app_rd",
+   "input_basis": "cfg.groups[].count=[3, 4]（config 已给出各组数量）",
+   "read": "桌上左边摆着3块积木，右边又摆了4块。请把两组积木放到数数区，数出一共有多少块。→ 两组数量分别为 [3, 4]，求总数",
+   "target_object": "总数",
+   "derivation": {
+    "expr": "3 + 4"
+   },
+   "computed": 7,
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "groups": [
+     {
+      "count": 3,
+      "label": "左侧积木",
+      "locked": true,
+      "symbol": "block",
+      "group_id": "g1"
+     },
+     {
+      "count": 4,
+      "label": "右侧积木",
+      "locked": false,
+      "symbol": "block",
+      "group_id": "g2"
+     }
+    ],
+    "expected": [
+     3,
+     4
+    ]
+   },
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "桌上左边摆着3块积木，右边又摆了4块。请把两组积木放到数数区，数出一共有多少块。",
+   "input_binding": {
+    "stem_sha256": "7945268adac61840b887ad251a085196e51a34c90d9d20ad71656e09ec9d7a5e",
+    "ui_schema_sha256": "adb1f1f52873280f46b33adf9a7a31b5d25e6b8f2359ae1039b73d8f1cfa65d5"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "各组数量来源：`groups[].count`（config 直接给出） = [3, 4]；提交 `answer` 为总数 7。`drag` 动作不进入判分",
+     "competing_explanations": "可能的错值：3（只数第一组）；1（把两组相减）；8（多数一个）",
+     "cannot_distinguish": "config 已给出各组数量，分不开「真的数了」与「直接相加」——拖动过程不进入判分",
+     "neutral_feedback": "说「先把两堆各自数清楚，再合起来数一遍」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "302d9de3-c27a-49a4-bae6-007557957b1d",
+   "title": "[T155] V14-P0-114",
+   "renderer": "direction-grid",
+   "ability_id": "app_cond",
+   "input_basis": "cfg.target={'c': 4, 'r': 0, 'col': 4, 'row': 0}, cfg.cols=5；start={'c': 3, 'r': 2, 'col': 3, 'row': 2}（起点不参与编码推导）",
+   "read": "在5×5方格盘中，行和列都从0开始编号。棋子从(2,3)出发，要到(0,4)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。→ 目标格 (行0, 列4)，按 r*cols+c 编码提交",
+   "target_object": "终点格编码（r*cols+c，行优先 0 起）",
+   "derivation": {
+    "expr": "0 * 5 + 4"
+   },
+   "computed": 4,
+   "stated_answer": "4",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "cols": 5,
+    "grid": {
+     "cols": 5,
+     "rows": 5
+    },
+    "rows": 5,
+    "start": {
+     "c": 3,
+     "r": 2,
+     "col": 3,
+     "row": 2
+    },
+    "target": {
+     "c": 4,
+     "r": 0,
+     "col": 4,
+     "row": 0
+    }
+   },
+   "workspace_capabilities": [
+    "move",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "在5×5方格盘中，行和列都从0开始编号。棋子从(2,3)出发，要到(0,4)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。",
+   "input_binding": {
+    "stem_sha256": "6dad1ae31292e64c21f274fa51d8cea4afcdf9552bf53c30ad30bf7fbe7791a3",
+    "ui_schema_sha256": "b5039511f3f7cfb5c0ba4e3a7acd29ff99478079f2ed58a074f528ddd3fdbda8"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start`=(2,3)、`target`=(0,4)、`cols`=5；提交 `answer` 为格编码 4（r*cols+c）。`move` 动作可记录但本 schema 未要求提交路径",
+     "competing_explanations": "可能的错值：20（行列互换）；10（0 起编号当 1 起）。**编码值可分开上述错型**，但「算对编码」不等于「真的画出了含转向的路线」——题意要求「包含行、列两个方向移动」，而**提交物只有终点编码**",
+     "cannot_distinguish": "能分开「编码算错」与「编码算对」，但分不开「按路线走到目标」与「直接算出编码」——路径未被提交物约束",
+     "neutral_feedback": "说「先横着走几格，再竖着走几格，最后看看停在第几行第几列」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "31554b60-52f5-4f51-86ee-04aea3d09c08",
+   "title": "[T155] V14-P0-090",
+   "renderer": "shape-gallery",
+   "ability_id": "app_cond",
+   "input_basis": "cfg.shapes[].kind 精确匹配；**按 kind 判定，不按名称/颜色，正方形不计入长方形**（与第二批同口径）",
+   "read": "图形盘中有6张图形卡。请把所有“正方形”放进对应的家，再数数这一类一共有几张卡。→ 统计 kind==square 的卡片数（全盘：['circle', 'square', 'rectangle', 'triangle', 'rectangle', 'triangle']）",
+   "target_object": "square 的卡片数",
+   "derivation": {
+    "expr": "1"
+   },
+   "computed": 1,
+   "stated_answer": "1",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "shapes": [
+     {
+      "id": "90-shape-1",
+      "kind": "circle",
+      "name": "卡1",
+      "color": "red"
+     },
+     {
+      "id": "90-shape-2",
+      "kind": "square",
+      "name": "卡2",
+      "color": "blue"
+     },
+     {
+      "id": "90-shape-3",
+      "kind": "rectangle",
+      "name": "卡3",
+      "color": "green"
+     },
+     {
+      "id": "90-shape-4",
+      "kind": "triangle",
+      "name": "卡4",
+      "color": "yellow"
+     },
+     {
+      "id": "90-shape-5",
+      "kind": "rectangle",
+      "name": "卡5",
+      "color": "purple"
+     },
+     {
+      "id": "90-shape-6",
+      "kind": "triangle",
+      "name": "卡6",
+      "color": "orange"
+     }
+    ],
+    "target_kind": "square"
+   },
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "图形盘中有6张图形卡。请把所有“正方形”放进对应的家，再数数这一类一共有几张卡。",
+   "input_binding": {
+    "stem_sha256": "42bff3fdf61b126c1f25d08eec3ee427dd35b23c960a3e458ff630ccc8ed3bad",
+    "ui_schema_sha256": "284c5fcf2a22cb62fa2731a60c2ecd5e2d188717210558bf20e86b9dd5a96ce8"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.shapes[].kind` 为唯一类别依据（另有 name/color，均不作判定）；本题全盘 6 张、各类计数 {'circle': 1, 'square': 1, 'rectangle': 2, 'triangle': 2}；提交 `answer` 为「square」的张数 1。拖卡动作是否分类正确**不进入判分**",
+     "competing_explanations": "可能的错值：2（多算一张）；0（漏算一张）；3（把长方形也当正方形）。**判分只看计数**，所以「分类动手过程」与「口头数数」不可分",
+     "cannot_distinguish": "分不开「分类对但数错」与「分类错而数对」——两者可能给出同一个计数",
+     "neutral_feedback": "说「四条边都一样长的是正方形，只有对边一样长的是长方形」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "3354ec11-536c-4a13-b55b-0b94ea1395fc",
+   "title": "[T155] V14-P0-049",
+   "renderer": "column-arithmetic",
+   "ability_id": "app_rel",
+   "input_basis": "cfg.operands=[47, 28], workspaces[0].mode=addition",
+   "read": "请用竖式计算：47 + 28。把每一位数字和需要的进位/退位填写完整，最后提交答案。→ 竖式加法 [47, 28]",
+   "target_object": "竖式计算结果",
+   "derivation": {
+    "expr": "47 + 28"
+   },
+   "computed": 75,
+   "stated_answer": "75",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "places": [
+     "ones",
+     "tens",
+     "hundreds"
+    ],
+    "operands": [
+     47,
+     28
+    ],
+    "operand_layout": "fixed"
+   },
+   "workspace_capabilities": [
+    "input_digit",
+    "place_carry",
+    "edit_carry",
+    "step_submit",
+    "undo",
+    "reset"
+   ],
+   "stem": "请用竖式计算：47 + 28。把每一位数字和需要的进位/退位填写完整，最后提交答案。",
+   "input_binding": {
+    "stem_sha256": "25beb859d87800a1ddc8ef2fbc0ad62c36cc1ee8e5a2c6296ef56cb67e0e7c52",
+    "ui_schema_sha256": "01e1afe06aed216a2feec9e9cae08fb88f424f55305fdabe4e3cd35eabf5c866"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.operands`=[47, 28]、`workspaces[0].mode`=addition、`places`=['ones', 'tens', 'hundreds']；提交 `answer` 为结果 75。`step_submit`/`place_carry` 能力存在",
+     "competing_explanations": "可能的错值：65（忘记进位）；85（进位多记一次）。本题**需要进位**（个位 7 与 8）",
+     "cannot_distinguish": "结果值能分开上述错型；分不开「心算对了但没填进位」与「填了进位」——若判分只看 answer",
+     "neutral_feedback": "说「先算个位，满十就把 1 记在十位上」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "3f97f749-deb5-4bf7-a14b-c2eb1b71c89f",
+   "title": "[T155] V14-P0-091",
+   "renderer": "shape-gallery",
+   "ability_id": "app_rd",
+   "input_basis": "cfg.shapes[].kind 精确匹配；**按 kind 判定，不按名称/颜色，正方形不计入长方形**（与第二批同口径）",
+   "read": "图形盘中有6张图形卡。请把所有“长方形”放进对应的家，再数数这一类一共有几张卡。→ 统计 kind==rectangle 的卡片数（全盘：['square', 'rectangle', 'triangle', 'square', 'triangle', 'circle']）",
+   "target_object": "rectangle 的卡片数",
+   "derivation": {
+    "expr": "1"
+   },
+   "computed": 1,
+   "stated_answer": "1",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "shapes": [
+     {
+      "id": "91-shape-1",
+      "kind": "square",
+      "name": "卡1",
+      "color": "red"
+     },
+     {
+      "id": "91-shape-2",
+      "kind": "rectangle",
+      "name": "卡2",
+      "color": "blue"
+     },
+     {
+      "id": "91-shape-3",
+      "kind": "triangle",
+      "name": "卡3",
+      "color": "green"
+     },
+     {
+      "id": "91-shape-4",
+      "kind": "square",
+      "name": "卡4",
+      "color": "yellow"
+     },
+     {
+      "id": "91-shape-5",
+      "kind": "triangle",
+      "name": "卡5",
+      "color": "purple"
+     },
+     {
+      "id": "91-shape-6",
+      "kind": "circle",
+      "name": "卡6",
+      "color": "orange"
+     }
+    ],
+    "target_kind": "rectangle"
+   },
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "图形盘中有6张图形卡。请把所有“长方形”放进对应的家，再数数这一类一共有几张卡。",
+   "input_binding": {
+    "stem_sha256": "91ef551c5705fcd33d078787422af333148b1131ca82b083605bc215f5b9643d",
+    "ui_schema_sha256": "9528d07fcdd0d7d6051f331065f1ffbd3f62753ba2e96e6ba8b894c11eadeed7"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.shapes[].kind` 为唯一类别依据（另有 name/color，均不作判定）；本题全盘 6 张、各类计数 {'square': 2, 'rectangle': 1, 'triangle': 2, 'circle': 1}；提交 `answer` 为「rectangle」的张数 1。拖卡动作是否分类正确**不进入判分**",
+     "competing_explanations": "可能的错值：2（多算一张）；0（漏算一张）；3（把正方形也当长方形）。**判分只看计数**，所以「分类动手过程」与「口头数数」不可分",
+     "cannot_distinguish": "分不开「分类对但数错」与「分类错而数对」——两者可能给出同一个计数",
+     "neutral_feedback": "说「四条边都一样长的是正方形，只有对边一样长的是长方形」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "41c2c254-2cd8-41eb-9eaa-cf1b62e472ac",
+   "title": "[T155] V14-P0-117",
+   "renderer": "direction-grid",
+   "ability_id": "app_model",
+   "input_basis": "cfg.target={'c': 2, 'r': 4, 'col': 2, 'row': 4}, cfg.cols=5；start={'c': 3, 'r': 3, 'col': 3, 'row': 3}（起点不参与编码推导）",
+   "read": "在5×5方格盘中，行和列都从0开始编号。棋子从(3,3)出发，要到(4,2)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。→ 目标格 (行4, 列2)，按 r*cols+c 编码提交",
+   "target_object": "终点格编码（r*cols+c，行优先 0 起）",
+   "derivation": {
+    "expr": "4 * 5 + 2"
+   },
+   "computed": 22,
+   "stated_answer": "22",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "cols": 5,
+    "grid": {
+     "cols": 5,
+     "rows": 5
+    },
+    "rows": 5,
+    "start": {
+     "c": 3,
+     "r": 3,
+     "col": 3,
+     "row": 3
+    },
+    "target": {
+     "c": 2,
+     "r": 4,
+     "col": 2,
+     "row": 4
+    }
+   },
+   "workspace_capabilities": [
+    "move",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "在5×5方格盘中，行和列都从0开始编号。棋子从(3,3)出发，要到(4,2)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。",
+   "input_binding": {
+    "stem_sha256": "50745c871068a709aa06760470a4f84f6bc5c08d9eb4e671fdaa817697b6697f",
+    "ui_schema_sha256": "9021b85b8dce8b8e75108b0fce1d3cf5b087193f8daa558bf5a04b3b27157262"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start`=(3,3)、`target`=(4,2)、`cols`=5；提交 `answer` 为格编码 22（r*cols+c）。`move` 动作可记录但本 schema 未要求提交路径",
+     "competing_explanations": "可能的错值：14（行列互换）；28（0 起编号当 1 起）。**编码值可分开上述错型**，但「算对编码」不等于「真的画出了含转向的路线」——题意要求「包含行、列两个方向移动」，而**提交物只有终点编码**",
+     "cannot_distinguish": "能分开「编码算错」与「编码算对」，但分不开「按路线走到目标」与「直接算出编码」——路径未被提交物约束",
+     "neutral_feedback": "说「先横着走几格，再竖着走几格，最后看看停在第几行第几列」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "449175a1-15e8-48d6-828f-f5d271897341",
+   "title": "[T155] V14-P0-054",
+   "renderer": "column-arithmetic",
+   "ability_id": "app_rel",
+   "input_basis": "cfg.operands=[81, 29], workspaces[0].mode=subtraction",
+   "read": "请用竖式计算：81 - 29。把每一位数字和需要的进位/退位填写完整，最后提交答案。→ 竖式减法 [81, 29]",
+   "target_object": "竖式计算结果",
+   "derivation": {
+    "expr": "81 - 29"
+   },
+   "computed": 52,
+   "stated_answer": "52",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "places": [
+     "ones",
+     "tens",
+     "hundreds"
+    ],
+    "operands": [
+     81,
+     29
+    ],
+    "operand_layout": "fixed"
+   },
+   "workspace_capabilities": [
+    "input_digit",
+    "place_carry",
+    "edit_carry",
+    "step_submit",
+    "undo",
+    "reset"
+   ],
+   "stem": "请用竖式计算：81 - 29。把每一位数字和需要的进位/退位填写完整，最后提交答案。",
+   "input_binding": {
+    "stem_sha256": "f082ed8a245adf1a206fedcfc552f036d81d9eebe9e7be9e1f160f147c543972",
+    "ui_schema_sha256": "9df36992a731dba2e45862f351c88074cdd28648dfeb3a33d1c9c6f5601db603"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.operands`=[81, 29]、`workspaces[0].mode`=subtraction、`places`=['ones', 'tens', 'hundreds']；提交 `answer` 为结果 52。`step_submit`/`place_carry` 能力存在",
+     "competing_explanations": "可能的错值：68（个位倒减（借位方向错））；42（退位多退一次）。本题**需要退位**（个位 1 与 9）",
+     "cannot_distinguish": "结果值能分开上述错型；分不开「心算对了但没填退位」与「填了退位」——若判分只看 answer",
+     "neutral_feedback": "说「先算个位，满十就把 1 记在十位上」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "46b80862-2973-4737-a4bc-dbfdab4dae83",
+   "title": "[T155] V14-P0-083",
+   "renderer": "estimation-canvas",
+   "ability_id": "app_strat",
+   "input_basis": "cfg.actual=47, cfg.reference=10（**不读 expected/target：它们与答案同值，按前批口径属答案副本**）, tolerance=6",
+   "read": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。→ 实际 47 个，以 10 为参照取最近整十数",
+   "target_object": "最近整十数",
+   "derivation": {
+    "expr": "((47 + 5) // 10) * 10"
+   },
+   "computed": 50,
+   "stated_answer": "50",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max": 60,
+    "min": 0,
+    "actual": 47,
+    "target": 50,
+    "expected": 50,
+    "reference": 10,
+    "tolerance": 6
+   },
+   "workspace_capabilities": [
+    "estimate",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。",
+   "input_binding": {
+    "stem_sha256": "ff2eb46af704d1b802d042765f200d6fbf6b55a66efe9d4c09d8194fd0cb9b31",
+    "ui_schema_sha256": "87fc2f09f13c487d9416bc2c8a3fd11746dc931a0f185b9ce55f44b80c2c2fcd"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.actual`=47 是画布真实散点数；`target`=`expected`=50 与答案同值（按前批口径属**答案副本**，不作独立依据）；`tolerance`=±6；滑条提交整十值",
+     "competing_explanations": "可能的错值：40（少估一档，偏差 7）、60（多估一档，偏差 13）；正确档与 actual 的偏差为 3。两者均超出容差 ±6 → 在容差口径下本题只有唯一可判状态",
+     "cannot_distinguish": "能分开「偏离超过一个整十」与「只差一个整十」，分不开「分组数错」与「四舍五入方向错」——两者得到同一个整十值",
+     "neutral_feedback": "说「先圈出十个一堆，再数有几堆」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "4821e8a3-dadd-4dcb-8660-f0d1fb9ad465",
+   "title": "[T155] V14-P0-094",
+   "renderer": "shape-gallery",
+   "ability_id": "app_cond",
+   "input_basis": "cfg.shapes[].kind 精确匹配；**按 kind 判定，不按名称/颜色，正方形不计入长方形**（与第二批同口径）",
+   "read": "图形盘中有6张图形卡。请把所有“三角形”放进对应的家，再数数这一类一共有几张卡。→ 统计 kind==triangle 的卡片数（全盘：['circle', 'square', 'rectangle', 'triangle', 'square', 'triangle']）",
+   "target_object": "triangle 的卡片数",
+   "derivation": {
+    "expr": "2"
+   },
+   "computed": 2,
+   "stated_answer": "2",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "shapes": [
+     {
+      "id": "94-shape-1",
+      "kind": "circle",
+      "name": "卡1",
+      "color": "red"
+     },
+     {
+      "id": "94-shape-2",
+      "kind": "square",
+      "name": "卡2",
+      "color": "blue"
+     },
+     {
+      "id": "94-shape-3",
+      "kind": "rectangle",
+      "name": "卡3",
+      "color": "green"
+     },
+     {
+      "id": "94-shape-4",
+      "kind": "triangle",
+      "name": "卡4",
+      "color": "yellow"
+     },
+     {
+      "id": "94-shape-5",
+      "kind": "square",
+      "name": "卡5",
+      "color": "purple"
+     },
+     {
+      "id": "94-shape-6",
+      "kind": "triangle",
+      "name": "卡6",
+      "color": "orange"
+     }
+    ],
+    "target_kind": "triangle"
+   },
+   "workspace_capabilities": [
+    "drag",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "图形盘中有6张图形卡。请把所有“三角形”放进对应的家，再数数这一类一共有几张卡。",
+   "input_binding": {
+    "stem_sha256": "7ee7d102e59f808152c055594f7a1d0f1c1806b98ed4ae997995aa784cf6a30b",
+    "ui_schema_sha256": "77cff181d94dad3e3ae018ed533d8a55f9fe7c4202b342afcab00931fdbe352e"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.shapes[].kind` 为唯一类别依据（另有 name/color，均不作判定）；本题全盘 6 张、各类计数 {'circle': 1, 'square': 2, 'rectangle': 1, 'triangle': 2}；提交 `answer` 为「triangle」的张数 2。拖卡动作是否分类正确**不进入判分**",
+     "competing_explanations": "可能的错值：3（多算一张）；1（漏算一张）。**判分只看计数**，所以「分类动手过程」与「口头数数」不可分",
+     "cannot_distinguish": "分不开「分类对但数错」与「分类错而数对」——两者可能给出同一个计数",
+     "neutral_feedback": "说「四条边都一样长的是正方形，只有对边一样长的是长方形」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "48817fba-ee0d-4101-8cb2-9ac5b4e66b91",
+   "title": "[T155] V14-P0-082",
+   "renderer": "estimation-canvas",
+   "ability_id": "app_check",
+   "input_basis": "cfg.actual=31, cfg.reference=10（**不读 expected/target：它们与答案同值，按前批口径属答案副本**）, tolerance=6",
+   "read": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。→ 实际 31 个，以 10 为参照取最近整十数",
+   "target_object": "最近整十数",
+   "derivation": {
+    "expr": "((31 + 5) // 10) * 10"
+   },
+   "computed": 30,
+   "stated_answer": "30",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "max": 60,
+    "min": 0,
+    "actual": 31,
+    "target": 30,
+    "expected": 30,
+    "reference": 10,
+    "tolerance": 6
+   },
+   "workspace_capabilities": [
+    "estimate",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。",
+   "input_binding": {
+    "stem_sha256": "ff2eb46af704d1b802d042765f200d6fbf6b55a66efe9d4c09d8194fd0cb9b31",
+    "ui_schema_sha256": "7322f47255f4bf4bbbc4352325d393b91853b26f81fc2bee03acb87574ccae56"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.actual`=31 是画布真实散点数；`target`=`expected`=30 与答案同值（按前批口径属**答案副本**，不作独立依据）；`tolerance`=±6；滑条提交整十值",
+     "competing_explanations": "可能的错值：20（少估一档，偏差 11）、40（多估一档，偏差 9）；正确档与 actual 的偏差为 1。两者均超出容差 ±6 → 在容差口径下本题只有唯一可判状态",
+     "cannot_distinguish": "能分开「偏离超过一个整十」与「只差一个整十」，分不开「分组数错」与「四舍五入方向错」——两者得到同一个整十值",
+     "neutral_feedback": "说「先圈出十个一堆，再数有几堆」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "5b5adf98-e92a-4e3c-b2ba-725c5465e682",
+   "title": "[T155] V14-P0-115",
+   "renderer": "direction-grid",
+   "ability_id": "app_model",
+   "input_basis": "cfg.target={'c': 0, 'r': 4, 'col': 0, 'row': 4}, cfg.cols=5；start={'c': 2, 'r': 3, 'col': 2, 'row': 3}（起点不参与编码推导）",
+   "read": "在5×5方格盘中，行和列都从0开始编号。棋子从(3,2)出发，要到(4,0)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。→ 目标格 (行4, 列0)，按 r*cols+c 编码提交",
+   "target_object": "终点格编码（r*cols+c，行优先 0 起）",
+   "derivation": {
+    "expr": "4 * 5 + 0"
+   },
+   "computed": 20,
+   "stated_answer": "20",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "cols": 5,
+    "grid": {
+     "cols": 5,
+     "rows": 5
+    },
+    "rows": 5,
+    "start": {
+     "c": 2,
+     "r": 3,
+     "col": 2,
+     "row": 3
+    },
+    "target": {
+     "c": 0,
+     "r": 4,
+     "col": 0,
+     "row": 4
+    }
+   },
+   "workspace_capabilities": [
+    "move",
+    "answer_input",
+    "undo",
+    "reset"
+   ],
+   "stem": "在5×5方格盘中，行和列都从0开始编号。棋子从(3,2)出发，要到(4,0)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。",
+   "input_binding": {
+    "stem_sha256": "92e075de78de9115725d00607223ed1b444833a964daad3aecff9dac899d0632",
+    "ui_schema_sha256": "e04d6ba2fc2505e2382a647c68edc94334edf47fd8414a68bde31357f6547e4d"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "`config.start`=(3,2)、`target`=(4,0)、`cols`=5；提交 `answer` 为格编码 20（r*cols+c）。`move` 动作可记录但本 schema 未要求提交路径",
+     "competing_explanations": "可能的错值：4（行列互换）；26（0 起编号当 1 起）。**编码值可分开上述错型**，但「算对编码」不等于「真的画出了含转向的路线」——题意要求「包含行、列两个方向移动」，而**提交物只有终点编码**",
+     "cannot_distinguish": "能分开「编码算错」与「编码算对」，但分不开「按路线走到目标」与「直接算出编码」——路径未被提交物约束",
+     "neutral_feedback": "说「先横着走几格，再竖着走几格，最后看看停在第几行第几列」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  },
+  {
+   "rvid": "77b35d05-f75d-48a6-a01a-fc681c69b455",
+   "title": "气球合起来（V2 链 R01）",
+   "renderer": "object-counter",
+   "ability_id": "app_rel",
+   "input_basis": "cfg.expected=[{'group_id': 'g1', 'min_count': 4}, {'group_id': 'g2', 'min_count': 3}]；count=0 表示初始为空、需孩子自己摆出",
+   "read": "小雨有4个红气球，又拿来了3个蓝气球。把两堆合起来数一数，一共有多少个气球？→ 各组需求 [4, 3]（config.count 为 0，实际数量在 expected 里），求总数",
+   "target_object": "总数",
+   "derivation": {
+    "expr": "4 + 3"
+   },
+   "computed": 7,
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "ui_config_seen": {
+    "groups": [
+     {
+      "count": 0,
+      "label": "红气球",
+      "locked": false,
+      "symbol": "🎈",
+      "group_id": "g1"
+     },
+     {
+      "count": 0,
+      "label": "蓝气球",
+      "locked": false,
+      "symbol": "🎈",
+      "group_id": "g2"
+     }
+    ],
+    "expected": [
+     {
+      "group_id": "g1",
+      "min_count": 4
+     },
+     {
+      "group_id": "g2",
+      "min_count": 3
+     }
+    ],
+    "max_total_count": 12
+   },
+   "workspace_capabilities": [
+    "add_object",
+    "remove_object",
+    "compose_groups",
+    "decompose_group",
+    "undo",
+    "reset"
+   ],
+   "stem": "小雨有4个红气球，又拿来了3个蓝气球。把两堆合起来数一数，一共有多少个气球？",
+   "input_binding": {
+    "stem_sha256": "080cca8f6940e58fa0346ad12fb2610d7550d631aac9434a0d23acb41481212c",
+    "ui_schema_sha256": "d611ee1bfb673d26d826df9dc2b8e5d3fdc9f640c088efbfeaa8656386194b94"
+   },
+   "q05_candidates": [
+    {
+     "code": "同质占位候选",
+     "status": "同质占位候选，区分力尚待验证",
+     "observable_evidence": "各组数量来源：`expected[].min_count`（count 全为 0，需孩子先摆出） = [4, 3]；提交 `answer` 为总数 7。`drag` 动作不进入判分",
+     "competing_explanations": "可能的错值：4（只数第一组）；1（把两组相减）；8（多数一个）。**本题要求先摆再数，摆错与数错在提交值上不可分**",
+     "cannot_distinguish": "分不开「摆错」与「数错」；也分不开「只数一组」与「把一组当另一组」",
+     "neutral_feedback": "说「先把两堆各自数清楚，再合起来数一遍」",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」"
+    }
+   ]
+  }
+ ]
+}
