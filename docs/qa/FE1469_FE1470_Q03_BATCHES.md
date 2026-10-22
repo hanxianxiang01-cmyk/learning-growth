@@ -1074,3 +1074,343 @@ def verify() -> None:
 
 **新增项也遵守既定红线**：缺失即 `note(False)` 显式失败，不用
 `if os.path.exists(...)` 包住整段——那正是 §8.1 记录过的空转成因。
+
+---
+
+## 十、第五批（FE-1472）：20 题独立核验 + 方法学换向（2026-10-22）
+
+本批与前十节的关系：**结论延续，方法换向**。前四批的 `derive()` 都是
+直接读 `ui_schema.config` 里的数算一遍——这只能证明 **config 内部自洽**，
+不能证明答案是否由**题面**事实推出。本批改为先从题干文本抽数推导，
+config 只在事后做交叉校验。这一改动当场抓到了自己的问题（见 10.3）。
+
+### 10.1 选题集合先冻结，再核验
+
+延续第四批纪律（§9.1），产物 `scripts/iqc/rt1472/batch5_quota_list.json`：
+
+| 项 | 值 |
+|---|---|
+| 候选池 | 并集 224 − 前四批已核 75 = **149** |
+| 本批取数范围 | `priority=both` ∩ `semantic_family=numeric_judge` = **75** |
+| 本批题数 | **20** |
+| 名额分配 | ruler 4 / ten-frame 4 / bar-model 4 / grouping-board 3 / number-line 3 / legacy:direct 2 |
+
+名额按「**该 renderer 在 V2 配置下是否核过**」分配，不按类别名称排除：
+ruler / ten-frame / grouping-board 三类前四批只核过 legacy 同族，V2 配置字段
+是否被组件真正读取尚未验，故全取或半数取；clock / direction-grid /
+estimation-canvas / shape-gallery 已在第四批各核 3 题，结论稳定，名额让出。
+
+每题冻结 `stem` / `ui_schema` / `answer_raw` / `goal` / `error_models` 与
+canonical JSON 哈希（`stem_sha256` / `ui_schema_sha256`），**核验的就是冻结那一版**。
+
+### 10.2 结果
+
+```
+Q03-BATCH5: 20 MATCH / 0 MISMATCH / 20 题
+  config↔题面不一致：0 题
+  bar-model 4/4   grouping-board 3/3   legacy:direct 2/2
+  number-line 3/3   ruler 4/4   ten-frame 4/4
+```
+
+三类变异全过（`--selftest`，已进 CI 第 15 项）：
+
+| 变异 | 期望 | 实测 |
+|---|---|---|
+| 篡改存储答案 | 必须 MISMATCH | **20/20 检出** |
+| 题干数字 +Δ（改题面不改 config） | `computed` 必须变 | **6/6 检出** |
+| config 已知量改成 91 | 必须 INCONSISTENT | **5/5 检出** |
+
+第二类是**前四批做不到**的证伪方式：前四批的 `derive()` 读 config，
+改题面不会改变结果，所以那种变异对前四批无意义。本批能检出，
+才说明推导真的读了题面。
+
+### 10.3 自证当场抓到的自身缺陷（本批最有价值的一条）
+
+`--selftest` 第一次跑，bar-model 的「题干数字变异」**未检出**。追查发现
+`expr` 写的是 `f"{known['a']} + {known['b']}"`——`known` 取自 **config**，
+不是题面。也就是说这一族的 `derive()` 名义上「从题面推导」，实际仍在读 config。
+
+修法不是放宽检测器，而是改成从题面取数：
+
+```python
+qty = re.findall(r"(\d+)\s*[本张颗个支只条]", stem)   # 题面前两个带单位数字
+# config 只做交叉核对：
+if (pa, pb) != (a, b):
+    cons.append(f"题面数量 ({a},{b}) ≠ config ({pa},{pb})")
+```
+
+这正是 §8.5「变异无效 ≠ 检测器失效」的**反面**：这一次变异是有效的，
+暴露的是被测代码真的没读题面。**区分这两种情况的唯一办法是去看代码路径，
+不能只看 selftest 的 PASS/FAIL。**
+
+### 10.4 13 条语义观察项（**不改变 verdict**，按分账原则登记）
+
+先明确口径：下列观察项**都不构成 MISMATCH**。答案数字是对的，
+Q03 的结论是「存储答案可由题面独立复算」。观察项说的是**另一件事**：
+表征层能否承载这道题问的东西。两者必须分账，不能因为答案对就
+宣布交互与教学效度也已验收。
+
+`observation_counts` 实测（与逐题重算相等，见门禁第 16 项）：
+
+| 观察项 | 条数 | 含义 |
+|---|---:|---|
+| `EVIDENCE_DECLARED_BUT_NOT_ENFORCED` | **18** | `ui_schema` 声明了 `jumps`/`bars`/`filled_count` 等过程字段，但 `config.process_constraint` 全为 `null` → `learning.py:958-971` 不做过程校验 |
+| `INITIAL_COUNT_IGNORED` | **4** | `TenFrameV2` 不读 `initial_count`，起始恒为 0 |
+| `GROUP_SIZE_IS_ANSWER_COPY` | **3** | `group_size` 不是输入，是答案副本（`items÷groups`），组件也不读 |
+| `JUMPS_NOT_ENFORCED_BY_COMPONENT` | **3** | `applyJump` 不校验步长与次数 |
+| `MODE_STEM_MISMATCH` | **2** | 题面是比较语义，`config.mode` 声明 `part_whole` |
+| `JUMP_COUNT_ONE_TRIVIAL` | **2** | `jump_count=1` 时「连续跳步」考点空转 |
+
+`process_constraint` 声明数：**0 题**。
+
+#### 10.4.1 `EVIDENCE_DECLARED_BUT_NOT_ENFORCED` 的准确含义
+
+18 题（= 20 − 2 题 `legacy:direct`，后者没有 `ui_schema` 过程字段）
+在 `ui_schema.response_contract.evidence_targets` 里声明了过程字段，
+例如：
+
+```json
+"evidence_targets": ["jumps", "endpoint"]
+```
+
+但 `config.process_constraint` 为 `null`。后端判分链路是：
+
+```python
+pc = get_process_constraint(rv.ui_schema if rv else None)
+pv = process_validate(pc, response) if pc else None    # ← 为 None 就整段跳过
+correct = _judge(expected, user_answer)                # ← 只比最终答案
+```
+
+因此**过程证据存在、但不参与判分**。成人视角容易误读成
+「这题有过程校验」，实际没有。
+
+**这不构成本批的缺陷结论，也不能据此推断产品缺陷**：
+是否给这 20 题加 `process_constraint` 是**产品决策**——加了就改变既有判分行为
+（从"只看最终答案"变成"过程不对也判错"），会影响已发布题目。
+按用户口径「不能为了保持 20/20 而修改题目含义」，本批**一题都没有加**。
+建议单独立项，与 FE-1455 已做的四类过程校验接线一并评估。
+
+#### 10.4.2 `MODE_STEM_MISMATCH`：答案对、表征目标未被满足
+
+2 题（`30a8e925`、`5341fef6`）。以 `30a8e925` 为例：
+题面「小明有 7 本，小红比他多 4 本」，问的是**小红的量**；
+`config.mode = "part_whole"`。
+
+两种配置 `solveExpected` 都得 **11**，所以答案数字没错——这也是为什么
+单看 MATCH 永远发现不了。差别在 `bars` 形状与**界面标签**：
+
+| `mode` | `bars` | 三条的标签 |
+|---|---|---|
+| `comparison` | `{a:11, b:7, c:4}` | 大条（多的一方）/ 小条（少的一方）/ **差（多几？）** |
+| `part_whole` | `{a:7, b:4, c:11}` | 部分一 / 部分二 / **整体（一共多少？）** |
+
+孩子看到的是「部分一 / 部分二 / 整体（一共多少？）」，而题目要的是
+「小红有多少本」——即 `comparison` 语义下的**大条**。表征的目标对象
+与题目问的对象不一致。
+
+**处置分账，四禁不动**（与 §9.5 一致）：
+不改 `mode`（会改变已发布题的界面与判分输入形状）、不改答案、不改 Published、
+不扩滑杆容量。登记为表征层风险，交教研判定「措辞清晰度」是否足够。
+
+#### 10.4.3 `INITIAL_COUNT_IGNORED`：运行时实测，不是读代码推测
+
+4 题。用 `tsc` 编译 `tenFrameV2.ts` 后直接 `node` 调用，实测：
+
+```
+parseTenFrameConfig({initial_count:8, target:10, max_frames:1})
+  → {"target":10,"maxFrames":1}          ← initial_count 没有返回
+initialTenFrameV2State()
+  → {"tens":0,"count":0}                 ← 起始恒为 0
+```
+
+后果：题面「盒子里已有 8 个，再放几个就满 10 个？」在界面上从空框开始，
+孩子要**点 10 次**才能到 10，事件数是 10 而不是 2。答案 2 依旧正确
+（10−8=2），但界面没有把「已有 8 个」这件事表达出来。
+
+#### 10.4.4 `JUMPS_NOT_ENFORCED_BY_COMPONENT`：一步跳完也算完成
+
+3 题。`numberLineV2.ts::applyJump` 实测：`start=30` 直接跳 `40`
+被接受，`jumps=[{from:30,to:40}]`，**不校验 `|Δ| === jump_size`**，
+也不校验跳了几次。`endpointAnswer(state)` 只看 `state.current`。
+
+`JUMP_COUNT_ONE_TRIVIAL`（2 题）是它的退化情形：`jump_count=1` 时
+「连续跳步」这个考点本身空转——一次跳对就到终点，与普通「求结果」等价。
+
+### 10.5 进度（第五批后）
+
+| 指标 | 四批后 | **五批后** | 算法 |
+|---|---:|---:|---|
+| Q03 完成（去重 RVID） | 75 | **95** | 75 + 20（实测重叠 0） |
+| Q03 待核验（`in_Q03`=212） | 137 | **117** | 212 − 95 |
+| `both` 待核验（`both`=197） | 122 | **102** | 197 − 95 |
+| `Q03_only` | 15 | **15** | 本批未消耗 |
+| `Q05_only` | 12 | **12** | 固定集合归属，做 Q03 不会变 |
+| 并集 | 224 | **224** | 工作总量不变 |
+
+用 `check_progress.py` 逐条实测（不减法外推），输出：
+
+```
+去重完成合计: 95 / Q03 待核验: 117 / both 待核验: 102 / 账实相符
+```
+
+**Q05 侧仍为 0 题完成。** 20 题各产出候选记录，逐题生成、三条机器校验
+（不引用他题 RVID / 无跨题固定答案串 / 同值错法必须并列注明
+「在该题内部不可分」），但全部仍是占位候选，未经真实儿童交互验证。
+
+### 10.6 本批的缺口（诚实登记）
+
+| 缺口 | 说明 |
+|---|---|
+| 20 题未在真实界面提交 | 全部结论由题面解析 + 配置运行时探针得出，**没有跑 Playwright 摆条/点格/跳步后提交** |
+| `process_constraint` 全未声明 | 见 10.4.1，属产品决策，本批不动 |
+| D2 三题**完整**提交判分未跑 | 前端层已实测（见 §10.8），但 `POST /v1/learning/sessions` 因**只读凭证**被拒，完整提交→后端判分链路本轮未跑 |
+| 结论不外推同族 | 每题独立推导，未按 renderer 复用结论 |
+| 名额分配是抽样非全量 | 候选池 75 只取 20，剩余 55 题未核 |
+
+### 10.7 门禁从 16 项扩到 16 项主体 / 19 个 PASS 行
+
+本批新增两项（第 15、16 项），同样是因为**本批自己犯的错，原门禁抓不到**：
+
+| 本批犯的错 | 原门禁是否能抓 | 新增项 |
+|---|---|---|
+| §10.3：bar-model 名义读题面、实际读 config，"全过"未暴露 | **不能**。第 14 项只测"答案篡改能否检出"，不测"推导是否依赖题面" | **15 `q03_batch5 --selftest`**：题干数字变异必须改变 `computed` |
+| 汇总写 18 条观察项，逐题可能一条都没有；名额分配写了 ruler 4 题，实核可能挑的是别的 | **不能**。第 13 项只核进度数字，不核产物内部账实 | **16 `check_batch5_ledger`**（+ 其 `--selftest`）：RVID 集合 / 名额 / 观察项 / 过程校验声明 / 一致性计数 / 题干哈希逐项对账 |
+
+第 16 项针对的是本项目**反复出现的同型缺陷**：改总表 ≠ 改生成物。
+2026-10-22 D2 撤回时就踩过一次——`KNOWN_DEFECTS` 总表改完了，
+但 `CHECKS` / `Q05_EVIDENCE` 的字段被 `evaluate()` 原样写进结果，
+产物里仍写着"不可完成"。当时就是靠"生成物逐条复读"才抓到。
+
+反向验证（都做到"改坏必失败"）：
+
+| 变异 | 结果 |
+|---|---|
+| 删 `q03_batch5.py` | **FAIL**：`缺 rt1472/q03_batch5.py——不允许静默跳过` |
+| 删 `batch5_quota_list.json` | **FAIL**：缺选题清单，核验范围无法自证 |
+| 汇总某类观察项 +1 | **FAIL**（M1 检出） |
+| 逐题删一条观察项 | **FAIL**（M2 检出） |
+| `quota_by_renderer` 某类 +1（总量仍 20） | **FAIL**（M3 检出） |
+| 题干改一个字符 | **FAIL**（M4 检出） |
+
+门禁现在 **16 项 / 19 个 PASS 行**，`PR-IQC-GATE: PASS`。
+
+#### 10.7.1 一次真实的判据错误（记账，不是"一切顺利"）
+
+第 16 项首次运行，20 题**全部报**「stem_sha256 与现场重算不符」。
+追查结果是**判据写错了，不是数据错**：冻结侧 `_sha()` 用的是 canonical JSON
+（`json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",",":"))`），
+对字符串会带上引号；我第一版写成 `sha256(stem.encode())`，裸编码。
+
+修法是让核对侧使用与冻结侧**同一个函数**：
+
+```python
+def canon_sha256(obj):
+    raw = json.dumps(obj, ensure_ascii=False, sort_keys=True,
+                     separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+```
+
+同类第二处：观察项我按 `detail` 字段判"有没有解释"，实际字段是
+`severity` / `why` / `evidence` / `consequence` / `not_concluded`——比
+`detail` 更全，于是 33 条全部误报。
+
+**这两处都是"判据错 → 误拦"**，即 §8.3 记过的第二类失效。
+如果当时选择"放宽判据让它通过"，就会把真缺陷一起放过；
+正确做法是**先确认数据对不对，再改判据**——两处都做到了。
+
+### 10.8 DEF-D2 三题真实页面实测（补 §9.5 缺的交互层）
+
+用户裁决要求「按正确候选状态 11/7、9/12、8/11 与数字答案 18、21、19
+执行定向验证。**没有真实交互证据前，不改滑杆容量、不增加第三根条**」。
+本轮把三件套拉起来实测，**只测量、不修改任何生产内容**。
+
+#### 10.8.1 先拿现场 ui_schema（不凭记忆）
+
+三题的 `ui_schema.visual` 实测：
+
+| RVID | 已知条 value | 单条 max | `visual.max_value` | 答案 |
+|---|---:|---:|---:|---:|
+| `421ede36…` | 11 | **15** | 17 | 18 |
+| `6e5395f0…` | 9 | **12** | 14 | 21 |
+| `8981fbcc…` | 8 | **11** | 13 | 19 |
+
+关键：**`max_value` 三个值（17/14/13）全都小于答案（18/21/19）**，
+而单条 `max`（15/12/11）也小于答案。这说明无论按哪种口径读，
+「两根条装着合计」都装不下——这是 §9.5 那条表征层事实的数值基础。
+
+#### 10.8.2 前端层实测结果（真实 DOM）
+
+用 Playwright 在真实页面渲染并在浏览器内注入现场 `ui_schema`，
+**拦截所有后端调用**（因此不写任何表）：
+
+| 实测项 | 421ede36 | 6e5395f0 | 8981fbcc |
+|---|---|---|---|
+| 滑条数 | 2 | 2 | 2 |
+| 未知条 `min` / `max` | 0 / **15** | 0 / **12** | 0 / **11** |
+| 未知条初值 | 6 | 5 | 4 |
+| 摆到「另一个人的数量」 | 7 ✓ | 12 ✓ | 11 ✓ |
+| 尝试设为合计 → 实际值 | 18 → **15** | 21 → **12** | 19 → **11** |
+
+四条结论：
+
+1. **H1 上限口径确认**：未知条滑条上限取**该条自己的 `max`**，不是
+   `visual.max_value`。源码 `BarModel.tsx:44-66` 与运行时读数一致。
+2. **H2 正确候选可达**：未知条能摆到「另一个人的数量」（7/12/11）——
+   即 §9.5 所说的「未知条可表达另一个人的数量」在真实界面上成立。
+3. **H3 合计不可达**：设成 18/21/19 会被浏览器**夹到上限**（15/12/11），
+   界面根本不接受合计值。
+4. **H4 提交门槛是「表征存在」而非「表征正确」**：`AnswerComposer` 的
+   禁用条件是 `representation_required && !response.representation`
+   （`TaskRenderer.tsx` NumberRenderer）。表征一旦存在（初始就有值），
+   答案框即可用；**半成品表征 + 正确数字答案可以提交**。
+   实测抓到的请求体：`answer="18"` 而 `unknown.value=15`——两者不一致仍能提交。
+
+#### 10.8.3 负对照（证明断言不是摆设）
+
+把未知条 `max` 改成 `max_value` 口径（模拟"以为上限是 max_value"），
+`d2-1` 立刻 FAIL：
+
+```
+Error: 未知条滑条上限应等于该条自己的 max=15，而不是 visual.max_value=17
+  Expected: 15
+  Received: 17
+```
+
+恢复后 3/3 通过。这条负对照的意义是：H1 与 H3 是**可被证伪的实测**，
+不是把代码读一遍就写下的判断。
+
+#### 10.8.4 本轮**没有**做到的那一层（诚实登记）
+
+启动三件套后 `POST /v1/learning/sessions` 返回 500，后端日志实测：
+
+```
+psycopg.errors.InsufficientPrivilege:
+permission denied for table learning_session
+```
+
+本机 Keychain 只有 `iqc-database-url`，实测 `current_user = iqc_readonly`，
+`learning_session` 仅 SELECT 权限（见 `information_schema.table_privileges`）。
+
+**E2E 提交必须写库**，这一层本轮无法执行，也不应绕过权限去做。
+因此以下仍未验：
+
+| 未验项 | 影响 |
+|---|---|
+| 半成品表征 + 正确答案时**后端**是否判对 | §9.5 的「判分只读 `content.answer` vs `response.answer`」仍是**代码路径推断**，未经真实提交验证 |
+| 真实 `interaction_events` 落库形态 | 未采集 |
+| `attempt_no` 递增 / HINT / 重试链 | 未跑（`r02-bar-model.spec.mjs` 已有这些用例，但需要可写凭证） |
+
+**这仍然满足用户设定的前置约束**：在没有完整交互证据之前，没有改滑杆容量、
+没有加第三根条、没有改答案、没有改 Published。四禁全部遵守。
+
+#### 10.8.5 顺带记录的判据教训
+
+第一条实测版本我写的是「按 RVID 直接钉题 + 完整提交」，第一跑就 500。
+如果当时按「环境问题、先记一笔」放过，就会把「只读凭证」误当成
+「服务没起来」。真实原因是权限，两者修法完全不同：
+
+- 服务没起 → 重启
+- 只读凭证 → 需要人工提供可写凭证（不能自行造）
+
+**日志第一行（`InsufficientPrivilege`）才是结论，`500` 只是表象。**
+这与 §8.1 记过的「500 空响应先查进程存活」是同一条纪律的两个方向。
