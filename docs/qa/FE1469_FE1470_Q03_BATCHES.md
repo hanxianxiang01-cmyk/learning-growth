@@ -1704,3 +1704,123 @@ config 不一致 6/6 检出；可完成性变异 1 检出、合法 4/5 通过）
 本批同类必须也是 0）。第③项才是真正有区分力的对照。
 
 这与 §10.7.1 的 sha256 事件同型：**判据写错时先怀疑判据**。
+
+## 十二、验收方意见处置：H4 补正 + 两点状态纠正（2026-10-22 晚）
+
+本轮为**非 GitHub 验收方**意见的处置记录。未处理 PR、未改生产题目 / `Published` /
+历史 Evidence。四禁遵守：未改 `grid`、未改题目尺寸、未改答案、未改 `Published`。
+
+### 12.1 验收方对的部分，逐条认账
+
+| 验收方指出 | 实核结果 | 处置 |
+|---|---|---|
+| H4 只 `console.log(isDisabled())` 未断言 | **成立**。原 `:205` 仅记录 | 改 `toBeEnabled()` |
+| 提交体 `bars ?? null` + `if (repBars)` 会静默跳过 | **成立**。缺字段反而不 FAIL | 改无条件断言 |
+| 第六批原始工件未收到，无法独立复跑 | **成立**（分发问题，非漏提交，见 12.2） | 补分发清单 |
+| `process_constraint` 存在 ≠ 能验全部约束 | 成立，与 §11.5 一致 | 维持 |
+| 37/54 缺口在 array-board/sorting-board | 成立，与 §11.5.1 一致 | 维持 |
+| Q05 仍 0 题 | 成立 | 维持 |
+
+### 12.2 状态纠正：工件在仓库里，是分发面漏了
+
+验收方称缺 `FE1472_q03_batch6.json` / `batch6_quota_list.json` / 核验脚本。
+实核 **五个工件全部已提交在 `c05acf5`**：
+
+| 工件 | 大小 |
+|---|---|
+| `scripts/iqc/rt1472/q03_batch6.py` | 74,327 B |
+| `scripts/iqc/rt1472/batch6_quota_list.json` | 41,856 B |
+| `scripts/iqc/runs/FE1472_q03_batch6.json` | 106,262 B |
+| `scripts/iqc/rt1472/check_batch6_ledger.py` | 23,821 B |
+| `scripts/iqc/rt1472/check_independence.py` | 11,462 B |
+
+**结论：不是没提交，是验收方只拿到了报告 md。** 故「独立复跑待补」这一状态
+应表述为「工件已可获取，待验收方取回后复跑」，而不是「我方未提供原始工件」。
+
+验收方那条纪律本身是对的，本轮继续遵守：**不把「报告写 20/20」当「本轮已独立复验 20/20」**。
+我方本地重跑的证据（24 PASS 行、`20 MATCH / 0 MISMATCH`）与 CI 一致，
+但那是**我方执行**，不能替代**验收方执行**。
+
+### 12.3 H4 补正：改了什么，以及为什么负例必须换路径
+
+#### 12.3.1 两处空转已修
+
+- `:205` `console.log(... isDisabled())` → `await expect(input).toBeEnabled()`
+- `:214` `body?.response?.representation?.bars ?? null` + `if (repBars)`
+  → 无条件 `expect(body.response.representation).toBeTruthy()` + 逐字段断言
+  （`type=bar-model`、`bars` 是数组、长度 2、含 `id=unknown`）
+
+改后断言数 22 → 24。
+
+#### 12.3.2 关键发现：bar-model 上「表征缺失」不可达
+
+验收方建议「单独构造表征缺失的状态」。实核源码后**这条在 D2 三题上做不到**：
+
+- `createInitialRepresentation()`（`math-workspace/model.ts:18-66`）对
+  `objects` / `bar-model` / `number-line` 三种 visual **都无条件返回非空对象**；
+- `WorkspaceProvider.tsx:51-58` 挂载即 `REINITIALIZE` 并经 `onWorkspaceChange` 回填 `present`；
+- `RESET` 复位到 `state.initial`（同样非空）；`UNDO` 无历史时直接 `return state`。
+
+**所以 bar-model 上不存在「表征为 null」的合法 UI 状态。** 若硬在三题上
+"构造"，只能改写组件内部 state 伪造——那是假证据，不是浏览器实测。
+这点必须写清，否则后人会以为「补一个负例」很简单。
+
+#### 12.3.3 改用真实可达路径做负例（H4b）
+
+`schema_version=1.0` + `kind="number"` → `TaskRenderer.tsx:519` 走 `NumberRenderer`，
+它**不挂载 `WorkspaceProvider`**；而 `createEmptyTaskResponse()`（`:46-48`）不含
+`representation` 字段 → `representation_required && !response.representation` 恒真。
+实测：答案框 `disabled=true`、提交按钮 `disabled=true`、**零提交请求**。
+
+这条负例检验的正是 `AnswerComposer` 的 disabled 表达式本身，比伪造 state 有效。
+
+#### 12.3.4 补正过程抓到一个新缺陷（UI-TEXT）
+
+H4b 首跑失败，报「提交按钮不存在」。真因不是断言写错，而是
+`AnswerComposer.tsx:34`：
+
+```tsx
+{disabled ? "正在判断…" : "提交答案"}
+```
+
+**`disabled` 一个 prop 承担了两种语义**：①正在提交/判分（「正在判断…」恰当）
+②前置闸门未满足、表征缺失（此时「正在判断…」是**错的**——孩子的表征还没做，
+系统没有任何东西可判，却被告知正在判分）。
+
+实测确认：表征缺失时按钮文案确为「正在判断…」。已用断言把当前实现**留证**
+（而不是改成「通过」），并登记为 `UI-TEXT` 缺陷，不在本批修（改文案属产品决策）。
+
+#### 12.3.5 负对照：证明断言有区分力（不然「4/4 通过」不可信）
+
+| 变异 | 预期 | 实测 |
+|---|---|---|
+| M1 负例 `representation_required` 改 `false` | H4b 须 FAIL | **FAIL**，`Received: enabled`，精确点名 |
+| M2 删掉 `representation` 显式断言 | 结果不变（仅断言数减 1） | 4 passed，22→23→24 断言数差异 |
+| M3 拦截时 `delete body.response.representation` | 三题须 FAIL | **3 FAIL**，报「提交体必须携带 representation」 |
+
+M2 的结果说明了重要一点：**光删断言看不出区别**（因为当前实现确实带字段）。
+只有 M3 这种「让被观察量真的缺失」才能证明断言有区分力。这与项目铁律
+「变异无效 ≠ 检测器失效」同型——**修法永远是让变异改到被观察量，不是放宽判据**。
+
+实跑：`4 passed (18.4s)`，含 3 题 D2 + 1 条 H4b 负例。
+
+### 12.4 仍未做 / 不授权
+
+| 项 | 状态 |
+|---|---|
+| H1–H3 后端判分实测 | **未做**。`correct:true` 是拦截构造值，不是真实 Judge 结果 |
+| D2 三题真实 E2E 提交 | **阻塞**。需可写凭证；`iqc_readonly` 对 `learning_session` 仅 SELECT |
+| `8b41e648` 真实页面复现 | 静态证据已接受，**页面复现未做** |
+| `8b41e648` 修法 | **不授权**。改 `grid` 语义或改题目尺寸属产品决策 |
+| array/sorting 补 `process_constraint` | **不授权**。补字段不等于有校验器（后端无对应 mode） |
+| `UI-TEXT` 文案修正 | **不在本批**。已登记留证，改文案属产品决策 |
+| Q05 处置 | 仍 **0 题** |
+
+### 12.5 一个需要出题侧知道的死配置（本轮新发现）
+
+`kind="number"` + `representation_required=true` 会让答案框**永久禁用**，
+题目不可作答（无工作区可挂载，`representation` 永不存在）。
+
+现场 RDS 实测：`representation_required=true` 的题目共 **37 题，全部 `kind=manipulative`**，
+`kind=number` 为 **0 题** → **当前无活体受害**，但这是出题必须避开的一种配置组合。
+本文只登记，不改内容。
