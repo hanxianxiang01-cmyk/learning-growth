@@ -1,0 +1,193 @@
+{
+ "title": "FE-1472｜DEF-D2 三题定向契约核验（未知条角色与完成性）",
+ "generated_at": "2026-10-22T02:08:59.406108+00:00",
+ "targets": [
+  "421ede36",
+  "6e5395f0",
+  "8981fbcc"
+ ],
+ "summary": {
+  "n": 3,
+  "fails": 0,
+  "verdict": "每题的未知条都能表达「另一个人的数量」，但都表达不了「两人合计」；而判分只读数字框，因此**不构成『任务不可完成』**——只构成「该表征无法承载合计」这一表征层事实"
+ },
+ "items": [
+  {
+   "rvid": "421ede36-8f1b-4b10-9433-e92f039231bd",
+   "version_no": 1,
+   "review_status": "published",
+   "published_at": null,
+   "stem": "小青有11张贴纸，小雨比小青少4张。两个人一共有多少张贴纸？",
+   "answer": 18,
+   "f1_reachability": {
+    "unknown_bar_range": [
+     0,
+     15
+    ],
+    "max_value_is_scale_only": true,
+    "source": "BarModel.tsx:44-66（barMax=source.max；max_value 仅用于宽度比例）",
+    "note": "max_value 只参与条宽百分比计算，不限制滑条；滑条上限取该条自己的 max"
+   },
+   "f2_role_hypothesis": {
+    "base_value": 11,
+    "diff_parsed": -4,
+    "other_person": 7,
+    "other_within_range": true,
+    "total_answer": 18.0,
+    "total_within_range": false
+   },
+   "f3_submission": {
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "submitted_fields": [
+     "answer",
+     "interaction_events"
+    ],
+    "answer_is_scalar": true,
+    "bar_values_enter_answer": false,
+    "source": "TaskRenderer.tsx isTaskResponseReady(): 只校验 answer 非空 + (representation_required 时) representation 存在；answer 与 representation 是两个独立字段"
+   },
+   "f4_judging": {
+    "judge_reads": [
+     "content.answer",
+     "response.answer"
+    ],
+    "judge_ignores": [
+     "representation",
+     "visual.bars",
+     "interaction_events"
+    ],
+    "source": "learning.py:926-937（expected=content.answer；user_answer=response.answer；correct=_judge 两值比较）",
+    "evidence": "除 FE-1455 的 jump_constraint 对**数轴题**额外校验轨迹外，没有其他过程校验分支"
+   },
+   "facts": {
+    "unknown_bar_can_reach_other_person": true,
+    "unknown_bar_cannot_reach_total": true,
+    "answer_field_determines_score_alone": true,
+    "half_done_representation_still_fails": true
+   },
+   "not_concluded": "本条**不**主张任务不可完成：未知条能否表达合计不是完成性的必要条件——判分只看数字框。也不主张未知条的角色已被确证；「另一个人的数量」是当前证据下最相容的假设。"
+  },
+  {
+   "rvid": "6e5395f0-def7-4060-a501-044d8e9a3764",
+   "version_no": 1,
+   "review_status": "published",
+   "published_at": null,
+   "stem": "小明有9本故事书，小红比小明多3本。两个人一共有多少本故事书？",
+   "answer": 21,
+   "f1_reachability": {
+    "unknown_bar_range": [
+     0,
+     12
+    ],
+    "max_value_is_scale_only": true,
+    "source": "BarModel.tsx:44-66（barMax=source.max；max_value 仅用于宽度比例）",
+    "note": "max_value 只参与条宽百分比计算，不限制滑条；滑条上限取该条自己的 max"
+   },
+   "f2_role_hypothesis": {
+    "base_value": 9,
+    "diff_parsed": 3,
+    "other_person": 12,
+    "other_within_range": true,
+    "total_answer": 21.0,
+    "total_within_range": false
+   },
+   "f3_submission": {
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "submitted_fields": [
+     "answer",
+     "interaction_events"
+    ],
+    "answer_is_scalar": true,
+    "bar_values_enter_answer": false,
+    "source": "TaskRenderer.tsx isTaskResponseReady(): 只校验 answer 非空 + (representation_required 时) representation 存在；answer 与 representation 是两个独立字段"
+   },
+   "f4_judging": {
+    "judge_reads": [
+     "content.answer",
+     "response.answer"
+    ],
+    "judge_ignores": [
+     "representation",
+     "visual.bars",
+     "interaction_events"
+    ],
+    "source": "learning.py:926-937（expected=content.answer；user_answer=response.answer；correct=_judge 两值比较）",
+    "evidence": "除 FE-1455 的 jump_constraint 对**数轴题**额外校验轨迹外，没有其他过程校验分支"
+   },
+   "facts": {
+    "unknown_bar_can_reach_other_person": true,
+    "unknown_bar_cannot_reach_total": true,
+    "answer_field_determines_score_alone": true,
+    "half_done_representation_still_fails": true
+   },
+   "not_concluded": "本条**不**主张任务不可完成：未知条能否表达合计不是完成性的必要条件——判分只看数字框。也不主张未知条的角色已被确证；「另一个人的数量」是当前证据下最相容的假设。"
+  },
+  {
+   "rvid": "8981fbcc-5b92-44b6-ab89-6b8ef0e715fd",
+   "version_no": 1,
+   "review_status": "published",
+   "published_at": null,
+   "stem": "小兰有8颗糖，小杰比小兰多3颗。两个人一共有多少颗糖？",
+   "answer": 19,
+   "f1_reachability": {
+    "unknown_bar_range": [
+     0,
+     11
+    ],
+    "max_value_is_scale_only": true,
+    "source": "BarModel.tsx:44-66（barMax=source.max；max_value 仅用于宽度比例）",
+    "note": "max_value 只参与条宽百分比计算，不限制滑条；滑条上限取该条自己的 max"
+   },
+   "f2_role_hypothesis": {
+    "base_value": 8,
+    "diff_parsed": 3,
+    "other_person": 11,
+    "other_within_range": true,
+    "total_answer": 19.0,
+    "total_within_range": false
+   },
+   "f3_submission": {
+    "response_schema": {
+     "type": "structured",
+     "answer_type": "number",
+     "representation_required": true
+    },
+    "submitted_fields": [
+     "answer",
+     "interaction_events"
+    ],
+    "answer_is_scalar": true,
+    "bar_values_enter_answer": false,
+    "source": "TaskRenderer.tsx isTaskResponseReady(): 只校验 answer 非空 + (representation_required 时) representation 存在；answer 与 representation 是两个独立字段"
+   },
+   "f4_judging": {
+    "judge_reads": [
+     "content.answer",
+     "response.answer"
+    ],
+    "judge_ignores": [
+     "representation",
+     "visual.bars",
+     "interaction_events"
+    ],
+    "source": "learning.py:926-937（expected=content.answer；user_answer=response.answer；correct=_judge 两值比较）",
+    "evidence": "除 FE-1455 的 jump_constraint 对**数轴题**额外校验轨迹外，没有其他过程校验分支"
+   },
+   "facts": {
+    "unknown_bar_can_reach_other_person": true,
+    "unknown_bar_cannot_reach_total": true,
+    "answer_field_determines_score_alone": true,
+    "half_done_representation_still_fails": true
+   },
+   "not_concluded": "本条**不**主张任务不可完成：未知条能否表达合计不是完成性的必要条件——判分只看数字框。也不主张未知条的角色已被确证；「另一个人的数量」是当前证据下最相容的假设。"
+  }
+ ]
+}

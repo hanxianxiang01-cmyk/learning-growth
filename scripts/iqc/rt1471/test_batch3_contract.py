@@ -282,15 +282,96 @@ if _dup_pairs:
 # T7f 真正该管的是**同一题之内**：多个错误码若共用同一段观察事实，
 #   就必须声明「这些错法在现有字段下无法区分」。这与文案是否跨题重复无关，
 #   也不要求任何人改写措辞——只是不许在事实不可分时仍声称能分开。
+#
+#   ★ 2026-10-22 复审：原实现只认 `observable` 为 dict 的形式
+#     （`if not isinstance(_o, dict) or len(_o) < 2: continue`），
+#     但生成器**同样支持**把 observable 写成单个字符串，此时该字符串会被
+#     `evaluate()` 复用于本题**每一个**错误码——这正是"多码共用同一段事实"
+#     的另一种实际形态，比 dict 形式更隐蔽（压根没有"分码"的外观）。
+#     修法：先按冻结输入/CHECKS 里的实际错误码把两种形式**展开成同一结构**，
+#     再走同一套判据；不新增工具入口，也不改变"共享本身不算错"的边界。
+def _expand_observable(rid: str, ev: dict) -> list[tuple[str, str]]:
+    """把 observable 的两种实际形态展开成 [(错误码, 观察说明)]。
+
+    形态一（dict）：{"calc": "...", "strategy": "..."}  → 按码取值
+    形态二（str）： "..."（单串）                         → **该题每个错误码都用它**
+    形态三（缺省/空）：[]                                 → 交给 T7c 报缺
+    """
+    o = ev.get("observable")
+    if isinstance(o, dict):
+        return [(str(k), str(v)) for k, v in o.items()]
+    if isinstance(o, str) and o.strip():
+        # 该题"实际有哪些错误码"以 CHECKS/Q05 登记为准；本门禁里每题的错误码
+        # 集合存放在 q05_candidates（生成器的真实来源），退化为单个占位码。
+        codes = _codes_of(rid)
+        return [(c, o) for c in codes] if len(codes) > 1 else [("<any>", o)]
+    return []
+
+
+_codes_cache: dict[str, list[str]] = {}
+
+# T7f 需要知道「本题实际有哪些错误码」，才能把字符串形态的 observable 展开成
+# 与 dict 形态等价的「每码一段」。错误码来自冻结快照的 error_models。
+# 快照在前置段（T12）才正式加载并做唯一性校验；这里先取一份只读副本用于展开，
+# 缺失时由 T12 的 _must_exist 报 FAIL，T7f 退化为不展开（不静默放过见下）。
+_SNAP_PATH = os.path.join(HERE, "batch3_frozen_inputs.json")
+_SNAP_BY_ID: dict[str, dict] = {}
+if os.path.isfile(_SNAP_PATH):
+    try:
+        with open(_SNAP_PATH, encoding="utf-8") as _f:
+            _snap_pre = json.load(_f)
+        # 重复 RVID 的正式判定在 T12a0；这里只在重复时保留首条，避免静默覆盖
+        for _it in _snap_pre.get("items", []):
+            _SNAP_BY_ID.setdefault(_it["rvid"], _it)
+    except (json.JSONDecodeError, KeyError):
+        _SNAP_BY_ID = {}
+
+
+def _codes_of(rid: str) -> list[str]:
+    """取该题**实际**会被复用的错误码集合。
+
+    来源是冻结快照里该题的 `error_models`（`evaluate()` 正是拿它逐条生成
+    `q05_candidates`，并在字符串形态下对每条都返回同一段 observable）。
+    不能凭空假设错误码，也不能只数 Q05_EVIDENCE 的键——那正是本次漏检的成因。
+    """
+    if rid not in _codes_cache:
+        _c = next((x for x in B.CHECKS if x["rvid"][:8] == rid), None)
+        _ems = (_SNAP_BY_ID.get((_c or {}).get("rvid")) or {}).get("error_models") or []
+        _codes = sorted({str(e.get("code")) for e in _ems if isinstance(e, dict)})
+        if not _codes:
+            # 快照里没有该题（或没读成）时，退化为按 Q05 dict 的键数，
+            # 再不行就用单占位码——**但这属于输入缺失，T12 会报 FAIL**。
+            _o = (B.Q05_EVIDENCE.get(rid) or {}).get("observable")
+            _codes = sorted(_o) if isinstance(_o, dict) else ["<any>"]
+        _codes_cache[rid] = _codes or ["<any>"]
+    return _codes_cache[rid]
+
+
+_via_competing: list[str] = []
 for _rid, _ev in B.Q05_EVIDENCE.items():
-    _o = _ev.get("observable")
-    if not isinstance(_o, dict) or len(_o) < 2:
+    _pairs = _expand_observable(_rid, _ev)
+    if len(_pairs) < 2:
         continue
-    _vals = list(_o.values())
-    if len(set(_vals)) < len(_vals):      # 至少两个码共用同一段
-        check(bool(_ev.get("cannot_distinguish")),
-              f"T7f {_rid} 有多个错误码共用同一段 observable，"
-              "却没有登记 cannot_distinguish（哪些错法无法区分）")
+    _vals = [t for _, t in _pairs]
+    if len(set(_vals)) >= len(_vals):
+        continue                      # 每码一段不同的说明，无需登记不可分
+    # 共享发生在本题内部：必须**说明**这些错法无法区分。
+    # 允许两处声明，因为两处都是真实可核查的登记位置：
+    #   ① 专用字段 `cannot_distinguish`；
+    #   ② `competing` 里已写明"不可分/同形/无法区分"这类边界。
+    # 只认①会逼 25 条已有说明的登记再复制一遍字段——那是"为过门禁补字段"，
+    # 与"不能逼内容说错话"同源。**共享文本本身始终不是错误。**
+    _declared = bool(_ev.get("cannot_distinguish"))
+    if not _declared:
+        _c = str(_ev.get("competing") or "")
+        _declared = any(k in _c for k in
+                        ("不可分", "无法区分", "不能区分", "同形", "重合", "不可判定"))
+        if _declared:
+            _via_competing.append(_rid)
+    check(_declared,
+          f"T7f {_rid} 有 {len(_pairs)} 个错误码共用同一段 observable，"
+          "但既没有 `cannot_distinguish`，`competing` 里也没有说明"
+          "这些错法不可区分——共享本身没问题，缺的是区分力边界")
 
 
 def _evidence_self_consistent() -> list[str]:

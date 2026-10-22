@@ -189,5 +189,55 @@ else:
     note("Q03 第三批题意建模契约 test_batch3_contract",
          r12.returncode == 0 and "Q03-BATCH3-GATE: PASS" in r12.stdout, tail12)
 
+# 13 第四批进度账实核（FE-1472）
+#
+#    动机是真实事故：§5.8.5 上一版把 `Q05_only` 写成「38 + 29 = 67」，
+#    实际它是**固定集合归属**、一直是 12 且从未被消耗。这类"文档里按减法
+#    外推"的数字靠人算抓不住——必须逐条数出来并进 CI。
+#    因此本项核对：并集口径六个数字 + 各批产物是否存在且自洽 + 去重完成数。
+#    同样**缺失即失败**，不静默跳过。
+prog_check = os.path.join(HERE, "rt1472", "check_progress.py")
+if not os.path.exists(prog_check):
+    note("第四批进度账实核工件存在", False,
+         "缺 rt1472/check_progress.py——不允许静默跳过")
+else:
+    r13 = subprocess.run([sys.executable, prog_check],
+                         capture_output=True, text=True)
+    # 失败时不能只取 stdout 最后一行——那是统计输出，会把真正的原因盖掉。
+    # 优先取 stderr/stdout 里的 ✗ 行。
+    _boom = [ln.strip() for ln in (r13.stderr + r13.stdout).splitlines()
+             if "✗" in ln]
+    tail13 = (_boom[0] if _boom
+              else (r13.stdout.strip().splitlines() or [""])[-1])
+    note("第四批进度账实核 check_progress",
+         r13.returncode == 0 and "账实相符" in r13.stdout, tail13)
+
+# 14 第四批核验器区分力自证（FE-1472）
+#
+#    第四批 20 题全 MATCH——"全过"必须被证伪，否则等于没验。
+#    本项不是重跑核验，而是检查核验器**确实具备区分力**：
+#      · evaluate() 对篡改后的 answer 必须给 MISMATCH；
+#      · 逐题 Q05 不得跨题引用他人 RVID、不得并列同值错法。
+#    前者是本批实做过的变异（20/20 检出 + 7/7 配置篡改检出），
+#    这里固化为回归，防止后续改 derive() 时把区分力改没。
+b4_script = os.path.join(HERE, "rt1472", "q03_batch4.py")
+b4_quota = os.path.join(HERE, "rt1472", "batch4_quota_list.json")
+if not os.path.exists(b4_script):
+    note("第四批核验器工件存在", False,
+         "缺 rt1472/q03_batch4.py——不允许静默跳过")
+elif not os.path.exists(b4_quota):
+    note("第四批选题清单存在", False,
+         "缺 rt1472/batch4_quota_list.json——没有先冻结选题集合，"
+         "核验范围无法自证")
+else:
+    r14 = subprocess.run([sys.executable, b4_script, "--selftest"],
+                         capture_output=True, text=True)
+    _boom14 = [ln.strip() for ln in (r14.stderr + r14.stdout).splitlines()
+               if "✗" in ln]
+    tail14 = (_boom14[0] if _boom14
+              else (r14.stdout.strip().splitlines() or [""])[-1])
+    note("第四批核验器区分力自证 q03_batch4 --selftest",
+         r14.returncode == 0 and "Q03-BATCH4-SELFTEST: PASS" in r14.stdout, tail14)
+
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)

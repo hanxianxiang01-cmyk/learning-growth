@@ -1,0 +1,1506 @@
+{
+ "title": "FE-1472｜Q03 第四批选题集合（**先冻结再核验**）",
+ "generated_at": "2026-10-22T01:50:04.542692+00:00",
+ "why": "第三批的「29 实核 vs 约 20 计划」差额只能事后推断，根因是初始选样名单从未落盘。本批把选题集合**先**写进工件，核验只针对这份名单。",
+ "selection_rule": "从 numeric_judge ∩ both 剩余候选中取约 20 题，优先**本批之前从未覆盖的 renderer**（第三批 29 题里 27 是 legacy:*，V2 只覆盖 bar-model 2 题）。同一 renderer 最多取 3 题（够看同族一致性，又不把名额吃光）。四类曾被怀疑「不可核验」的 renderer（clock / direction-grid / estimation-canvas / shape-gallery）各取 2–3 题，用实际题面判断契约是否完整，不因类别名称先行排除。",
+ "quota_by_renderer": {
+  "clock": 3,
+  "direction-grid": 3,
+  "estimation-canvas": 3,
+  "shape-gallery": 3,
+  "grouping-board": 2,
+  "column-arithmetic": 2,
+  "number-line": 2,
+  "object-counter": 2
+ },
+ "not_selected_why": {
+  "legacy:direct": "纯数字输入、无表征；本批优先补 V2 renderer 覆盖，legacy:direct 已在第二批核过 5 题，样本足够",
+  "legacy:number-line": "同 legacy 族，第三批已核 4 题（含 DEF-D4 相关）；本批用 V2 number-line 替代，验证 V2 配置是否同样只记终点",
+  "legacy:objects": "第三批已核 4 题（DEF-D3），本批换 object-counter 看 V2 侧差异",
+  "legacy:bar-model": "第三批已核 14 题（DEF-D1/D2 全部来源），本批不必再加",
+  "bar-model": "第二批与第三批共核 4 题；本批名额让给未覆盖的 renderer，同族结论已有代表性样本",
+  "ruler": "第二批已核 4 题（两端刻度差），契约已确认可独立推导",
+  "ten-frame": "第二批已核 5 题（initial_count + 题面再放 N），结论稳定",
+  "money-board": "第二批已核 5 题",
+  "formula-board": "第二批已核 3 题",
+  "array-board": "第二批已核 5 题",
+  "sorting-board": "第二批已核（sequence_order 路径）",
+  "place-value": "第二批已核（digit_config 路径）",
+  "pattern-board": "第二批已核",
+  "shape-canvas": "第二批已核 10 题（含容差类）",
+  "number-input": "首批已核 6 题"
+ },
+ "pool_size": 95,
+ "quota_n": 20,
+ "quota": [
+  "00186559-7273-40cc-9732-9def81ce9693",
+  "020bd81e-02f9-425b-95ea-db208191cedf",
+  "031fb221-a20a-4e9d-aa29-0d23e8088f76",
+  "0865553f-71a4-4c78-9841-f5271834c3e5",
+  "09f916e8-7d78-44a5-a202-f5025ba352f1",
+  "0d7ae14e-26c3-4413-a610-2c036dc16a92",
+  "13c3b756-29fb-440d-8ebc-1ed1ca12975b",
+  "17599601-dac5-4fe1-b391-69b4e519136f",
+  "24a50da9-303b-41b0-9bb4-6c10797f7c70",
+  "302d9de3-c27a-49a4-bae6-007557957b1d",
+  "31554b60-52f5-4f51-86ee-04aea3d09c08",
+  "3354ec11-536c-4a13-b55b-0b94ea1395fc",
+  "3f97f749-deb5-4bf7-a14b-c2eb1b71c89f",
+  "41c2c254-2cd8-41eb-9eaa-cf1b62e472ac",
+  "449175a1-15e8-48d6-828f-f5d271897341",
+  "46b80862-2973-4737-a4bc-dbfdab4dae83",
+  "4821e8a3-dadd-4dcb-8660-f0d1fb9ad465",
+  "48817fba-ee0d-4101-8cb2-9ac5b4e66b91",
+  "5b5adf98-e92a-4e3c-b2ba-725c5465e682",
+  "77b35d05-f75d-48a6-a01a-fc681c69b455"
+ ],
+ "items": [
+  {
+   "rvid": "00186559-7273-40cc-9732-9def81ce9693",
+   "title": "[T155] V14-P0-069",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "有16颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "answer_raw": "4",
+   "goal": "把等量物品平均分给固定组数，求每组个数并验证等分。",
+   "ui_schema": {
+    "prompt": {
+     "text": "有16颗玻璃珠，要平均分给4个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。"
+    },
+    "workspaces": [
+     {
+      "mode": "equal_sharing",
+      "config": {
+       "items": 16,
+       "total": 16,
+       "group_size": 4,
+       "max_groups": 6,
+       "target_groups": 4
+      },
+      "renderer": "grouping-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "grouping",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "group_assignments",
+      "per_group_count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "unequal_share",
+     "pattern": "unequal_share"
+    }
+   ],
+   "stem_sha256": "66140ced893d187991099f8fc2443128e11112e0070548b073d84de96fd67a22",
+   "ui_schema_sha256": "3c2650f146a1ac28b8de52795f550070554a0b1e1243770c4490570ec9459111"
+  },
+  {
+   "rvid": "020bd81e-02f9-425b-95ea-db208191cedf",
+   "title": "[T155] V14-P0-022",
+   "renderer": "number-line",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "在数轴上从25出发，向左每次跳10，连续跳1次。请完成跳步并写出终点。",
+   "answer_raw": "15",
+   "goal": "用数轴上等长跳步表达加减变化并准确定位终点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在数轴上从25出发，向左每次跳10，连续跳1次。请完成跳步并写出终点。"
+    },
+    "workspaces": [
+     {
+      "mode": "jump_sequence",
+      "config": {
+       "scale": {
+        "max": 40,
+        "min": 0,
+        "tick_step": 1
+       },
+       "direction": "left",
+       "jump_size": 10,
+       "jump_count": 1,
+       "start_marker": {
+        "value": 25,
+        "marker_id": "start"
+       }
+      },
+      "renderer": "number-line",
+      "constraints": {},
+      "capabilities": [
+       "jump",
+       "place_marker",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "number_line",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "jumps",
+      "endpoint"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "stem_sha256": "f443a3bb06237a24067baa64a1ee45acb7ba3786ce9bb34a7531a8ffe91ce9d1",
+   "ui_schema_sha256": "e17c1ab39f372f5ef3b1ae94bb32c28aae69e02fba236ca1fd0aee827d42daec"
+  },
+  {
+   "rvid": "031fb221-a20a-4e9d-aa29-0d23e8088f76",
+   "title": "[T155] V14-P0-134",
+   "renderer": "clock",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "钟面现在是4点半。请把时针和分针调整到5点整，再提交。",
+   "answer_raw": "300",
+   "goal": "在整点或半点的钟面上准确配置时针与分针。",
+   "ui_schema": {
+    "prompt": {
+     "text": "钟面现在是4点半。请把时针和分针调整到5点整，再提交。"
+    },
+    "workspaces": [
+     {
+      "mode": "time_setting",
+      "config": {
+       "start": [
+        4,
+        30
+       ],
+       "target": [
+        5,
+        0
+       ]
+      },
+      "renderer": "clock",
+      "constraints": {},
+      "capabilities": [
+       "set_time",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "time",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "hour_hand",
+      "minute_hand",
+      "target_time"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "hand_swap",
+     "pattern": "hand_swap"
+    }
+   ],
+   "stem_sha256": "5347678a5ef1fb60e6e643b1903c755f63d3aa374d14225117a4409aa22a4dda",
+   "ui_schema_sha256": "2997bcdac868a67b344a7cf3cc13cba4a705b341192c8b2ee32e276cebf61d63"
+  },
+  {
+   "rvid": "0865553f-71a4-4c78-9841-f5271834c3e5",
+   "title": "[T155] V14-P0-017",
+   "renderer": "number-line",
+   "ability_id": "app_cond",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "在数轴上从8出发，向右每次跳3，连续跳1次。请完成跳步并写出终点。",
+   "answer_raw": "11",
+   "goal": "用数轴上等长跳步表达加减变化并准确定位终点。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在数轴上从8出发，向右每次跳3，连续跳1次。请完成跳步并写出终点。"
+    },
+    "workspaces": [
+     {
+      "mode": "jump_sequence",
+      "config": {
+       "scale": {
+        "max": 40,
+        "min": 0,
+        "tick_step": 1
+       },
+       "direction": "right",
+       "jump_size": 3,
+       "jump_count": 1,
+       "start_marker": {
+        "value": 8,
+        "marker_id": "start"
+       }
+      },
+      "renderer": "number-line",
+      "constraints": {},
+      "capabilities": [
+       "jump",
+       "place_marker",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "number_line",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "jumps",
+      "endpoint"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "stem_sha256": "110081d37a23f2e66b81633daf870a73a13ed604183cc3c45c23fc9796b5647b",
+   "ui_schema_sha256": "932f41911755e3eedc0d40ce0deaca5365a781ddfa760bac77217c875abfc6cd"
+  },
+  {
+   "rvid": "09f916e8-7d78-44a5-a202-f5025ba352f1",
+   "title": "[T155] V14-P0-131",
+   "renderer": "clock",
+   "ability_id": "app_cond",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "钟面现在是10点半。请把时针和分针调整到11点整，再提交。",
+   "answer_raw": "660",
+   "goal": "在整点或半点的钟面上准确配置时针与分针。",
+   "ui_schema": {
+    "prompt": {
+     "text": "钟面现在是10点半。请把时针和分针调整到11点整，再提交。"
+    },
+    "workspaces": [
+     {
+      "mode": "time_setting",
+      "config": {
+       "start": [
+        10,
+        30
+       ],
+       "target": [
+        11,
+        0
+       ]
+      },
+      "renderer": "clock",
+      "constraints": {},
+      "capabilities": [
+       "set_time",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "time",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "hour_hand",
+      "minute_hand",
+      "target_time"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "hand_swap",
+     "pattern": "hand_swap"
+    }
+   ],
+   "stem_sha256": "8420bc8686ce36ebd553383153b39a5cffff7640377400fe7510d5f8897e4bb6",
+   "ui_schema_sha256": "02c59ec71820cffd631e1844725c99dce2e5bbe88fd45955465fa5fffedd0db8"
+  },
+  {
+   "rvid": "0d7ae14e-26c3-4413-a610-2c036dc16a92",
+   "title": "[T155] V14-P0-066",
+   "renderer": "grouping-board",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "有15颗玻璃珠，要平均分给3个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。",
+   "answer_raw": "5",
+   "goal": "把等量物品平均分给固定组数，求每组个数并验证等分。",
+   "ui_schema": {
+    "prompt": {
+     "text": "有15颗玻璃珠，要平均分给3个小朋友，每人分得一样多。请动手分组，并求每人能分到几颗。"
+    },
+    "workspaces": [
+     {
+      "mode": "equal_sharing",
+      "config": {
+       "items": 15,
+       "total": 15,
+       "group_size": 5,
+       "max_groups": 6,
+       "target_groups": 3
+      },
+      "renderer": "grouping-board",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "grouping",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "group_assignments",
+      "per_group_count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "unequal_share",
+     "pattern": "unequal_share"
+    }
+   ],
+   "stem_sha256": "88359cb2bcfe664c1170f9546005654b8e307b122917f753701747384221b20b",
+   "ui_schema_sha256": "3e76b72705de18992782c7dba6d23106f3c1034d0fcb6b1496bc10d45505ede6"
+  },
+  {
+   "rvid": "13c3b756-29fb-440d-8ebc-1ed1ca12975b",
+   "title": "[T155] V14-P0-081",
+   "renderer": "estimation-canvas",
+   "ability_id": "app_model",
+   "solve_path": "numeric_tolerance",
+   "answer_shape": "multi_digit",
+   "stem": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。",
+   "answer_raw": "20",
+   "goal": "基于参照数进行连续滑条估计并判断数量是否合理。",
+   "ui_schema": {
+    "prompt": {
+     "text": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。"
+    },
+    "workspaces": [
+     {
+      "mode": "slider_estimation",
+      "config": {
+       "max": 60,
+       "min": 0,
+       "actual": 18,
+       "target": 20,
+       "expected": 20,
+       "reference": 10,
+       "tolerance": 6
+      },
+      "renderer": "estimation-canvas",
+      "constraints": {},
+      "capabilities": [
+       "estimate",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "estimation",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "slider_value",
+      "reference_choice"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "no_reference_use",
+     "pattern": "no_reference_use"
+    }
+   ],
+   "stem_sha256": "ff2eb46af704d1b802d042765f200d6fbf6b55a66efe9d4c09d8194fd0cb9b31",
+   "ui_schema_sha256": "55edf4bd66935dba8e0b55991d3e05418cf63055aa3f4a194e517e599d4dce50"
+  },
+  {
+   "rvid": "17599601-dac5-4fe1-b391-69b4e519136f",
+   "title": "[T155] V14-P0-133",
+   "renderer": "clock",
+   "ability_id": "app_cond",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "钟面现在是3点整。请把时针和分针调整到4点半，再提交。",
+   "answer_raw": "270",
+   "goal": "在整点或半点的钟面上准确配置时针与分针。",
+   "ui_schema": {
+    "prompt": {
+     "text": "钟面现在是3点整。请把时针和分针调整到4点半，再提交。"
+    },
+    "workspaces": [
+     {
+      "mode": "time_setting",
+      "config": {
+       "start": [
+        3,
+        0
+       ],
+       "target": [
+        4,
+        30
+       ]
+      },
+      "renderer": "clock",
+      "constraints": {},
+      "capabilities": [
+       "set_time",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "time",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "hour_hand",
+      "minute_hand",
+      "target_time"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "hand_swap",
+     "pattern": "hand_swap"
+    }
+   ],
+   "stem_sha256": "cd9f694a14d840220976691ca7f230aaa178d5cb6589116f8d6ca12e83de96f2",
+   "ui_schema_sha256": "589076932579c4233311bd757c5041aa81db2fddb9b6c51930e9f3960d0064ee"
+  },
+  {
+   "rvid": "24a50da9-303b-41b0-9bb4-6c10797f7c70",
+   "title": "[T155] V14-P0-002",
+   "renderer": "object-counter",
+   "ability_id": "app_rd",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "桌上左边摆着3块积木，右边又摆了4块。请把两组积木放到数数区，数出一共有多少块。",
+   "answer_raw": "7",
+   "goal": "用分组摆放和逐个计数核对总量，区分已有量与增加量。",
+   "ui_schema": {
+    "prompt": {
+     "text": "桌上左边摆着3块积木，右边又摆了4块。请把两组积木放到数数区，数出一共有多少块。"
+    },
+    "workspaces": [
+     {
+      "mode": "answer",
+      "config": {
+       "groups": [
+        {
+         "count": 3,
+         "label": "左侧积木",
+         "locked": true,
+         "symbol": "block",
+         "group_id": "g1"
+        },
+        {
+         "count": 4,
+         "label": "右侧积木",
+         "locked": false,
+         "symbol": "block",
+         "group_id": "g2"
+        }
+       ],
+       "expected": [
+        3,
+        4
+       ]
+      },
+      "renderer": "object-counter",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "object_count",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "placed_objects",
+      "count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "7945268adac61840b887ad251a085196e51a34c90d9d20ad71656e09ec9d7a5e",
+   "ui_schema_sha256": "adb1f1f52873280f46b33adf9a7a31b5d25e6b8f2359ae1039b73d8f1cfa65d5"
+  },
+  {
+   "rvid": "302d9de3-c27a-49a4-bae6-007557957b1d",
+   "title": "[T155] V14-P0-114",
+   "renderer": "direction-grid",
+   "ability_id": "app_cond",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "在5×5方格盘中，行和列都从0开始编号。棋子从(2,3)出发，要到(0,4)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。",
+   "answer_raw": "4",
+   "goal": "在零起点行列网格上规划转向路线，能区分正向终点与镜像反走靶并提交终点格编码。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在5×5方格盘中，行和列都从0开始编号。棋子从(2,3)出发，要到(0,4)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。"
+    },
+    "workspaces": [
+     {
+      "mode": "route_navigation",
+      "config": {
+       "cols": 5,
+       "grid": {
+        "cols": 5,
+        "rows": 5
+       },
+       "rows": 5,
+       "start": {
+        "c": 3,
+        "r": 2,
+        "col": 3,
+        "row": 2
+       },
+       "target": {
+        "c": 4,
+        "r": 0,
+        "col": 4,
+        "row": 0
+       }
+      },
+      "renderer": "direction-grid",
+      "constraints": {},
+      "capabilities": [
+       "move",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "path",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "path",
+      "endpoint"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "direction_reversed",
+     "pattern": "direction_reversed"
+    }
+   ],
+   "stem_sha256": "6dad1ae31292e64c21f274fa51d8cea4afcdf9552bf53c30ad30bf7fbe7791a3",
+   "ui_schema_sha256": "b5039511f3f7cfb5c0ba4e3a7acd29ff99478079f2ed58a074f528ddd3fdbda8"
+  },
+  {
+   "rvid": "31554b60-52f5-4f51-86ee-04aea3d09c08",
+   "title": "[T155] V14-P0-090",
+   "renderer": "shape-gallery",
+   "ability_id": "app_cond",
+   "solve_path": "count_by_attribute",
+   "answer_shape": "boolean",
+   "stem": "图形盘中有6张图形卡。请把所有“正方形”放进对应的家，再数数这一类一共有几张卡。",
+   "answer_raw": "1",
+   "goal": "辨认图形类别，把相同类型的图形归入同一组并计数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "图形盘中有6张图形卡。请把所有“正方形”放进对应的家，再数数这一类一共有几张卡。"
+    },
+    "workspaces": [
+     {
+      "mode": "shape_classification",
+      "config": {
+       "shapes": [
+        {
+         "id": "90-shape-1",
+         "kind": "circle",
+         "name": "卡1",
+         "color": "red"
+        },
+        {
+         "id": "90-shape-2",
+         "kind": "square",
+         "name": "卡2",
+         "color": "blue"
+        },
+        {
+         "id": "90-shape-3",
+         "kind": "rectangle",
+         "name": "卡3",
+         "color": "green"
+        },
+        {
+         "id": "90-shape-4",
+         "kind": "triangle",
+         "name": "卡4",
+         "color": "yellow"
+        },
+        {
+         "id": "90-shape-5",
+         "kind": "rectangle",
+         "name": "卡5",
+         "color": "purple"
+        },
+        {
+         "id": "90-shape-6",
+         "kind": "triangle",
+         "name": "卡6",
+         "color": "orange"
+        }
+       ],
+       "target_kind": "square"
+      },
+      "renderer": "shape-gallery",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2.1",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "shape_property",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "shape_group_assignments",
+      "target_kind_count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "attribute_confusion",
+     "pattern": "attribute_confusion"
+    }
+   ],
+   "stem_sha256": "42bff3fdf61b126c1f25d08eec3ee427dd35b23c960a3e458ff630ccc8ed3bad",
+   "ui_schema_sha256": "284c5fcf2a22cb62fa2731a60c2ecd5e2d188717210558bf20e86b9dd5a96ce8"
+  },
+  {
+   "rvid": "3354ec11-536c-4a13-b55b-0b94ea1395fc",
+   "title": "[T155] V14-P0-049",
+   "renderer": "column-arithmetic",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "请用竖式计算：47 + 28。把每一位数字和需要的进位/退位填写完整，最后提交答案。",
+   "answer_raw": "75",
+   "goal": "按个位、十位顺序完成竖式，并留存进位或退位过程。",
+   "ui_schema": {
+    "prompt": {
+     "text": "请用竖式计算：47 + 28。把每一位数字和需要的进位/退位填写完整，最后提交答案。"
+    },
+    "workspaces": [
+     {
+      "mode": "addition",
+      "config": {
+       "places": [
+        "ones",
+        "tens",
+        "hundreds"
+       ],
+       "operands": [
+        47,
+        28
+       ],
+       "operand_layout": "fixed"
+      },
+      "renderer": "column-arithmetic",
+      "constraints": {},
+      "capabilities": [
+       "input_digit",
+       "place_carry",
+       "edit_carry",
+       "step_submit",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "column_arithmetic",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "result_digits",
+      "carries"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "25beb859d87800a1ddc8ef2fbc0ad62c36cc1ee8e5a2c6296ef56cb67e0e7c52",
+   "ui_schema_sha256": "01e1afe06aed216a2feec9e9cae08fb88f424f55305fdabe4e3cd35eabf5c866"
+  },
+  {
+   "rvid": "3f97f749-deb5-4bf7-a14b-c2eb1b71c89f",
+   "title": "[T155] V14-P0-091",
+   "renderer": "shape-gallery",
+   "ability_id": "app_rd",
+   "solve_path": "count_by_attribute",
+   "answer_shape": "boolean",
+   "stem": "图形盘中有6张图形卡。请把所有“长方形”放进对应的家，再数数这一类一共有几张卡。",
+   "answer_raw": "1",
+   "goal": "辨认图形类别，把相同类型的图形归入同一组并计数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "图形盘中有6张图形卡。请把所有“长方形”放进对应的家，再数数这一类一共有几张卡。"
+    },
+    "workspaces": [
+     {
+      "mode": "shape_classification",
+      "config": {
+       "shapes": [
+        {
+         "id": "91-shape-1",
+         "kind": "square",
+         "name": "卡1",
+         "color": "red"
+        },
+        {
+         "id": "91-shape-2",
+         "kind": "rectangle",
+         "name": "卡2",
+         "color": "blue"
+        },
+        {
+         "id": "91-shape-3",
+         "kind": "triangle",
+         "name": "卡3",
+         "color": "green"
+        },
+        {
+         "id": "91-shape-4",
+         "kind": "square",
+         "name": "卡4",
+         "color": "yellow"
+        },
+        {
+         "id": "91-shape-5",
+         "kind": "triangle",
+         "name": "卡5",
+         "color": "purple"
+        },
+        {
+         "id": "91-shape-6",
+         "kind": "circle",
+         "name": "卡6",
+         "color": "orange"
+        }
+       ],
+       "target_kind": "rectangle"
+      },
+      "renderer": "shape-gallery",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2.1",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "shape_property",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "shape_group_assignments",
+      "target_kind_count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "attribute_confusion",
+     "pattern": "attribute_confusion"
+    }
+   ],
+   "stem_sha256": "91ef551c5705fcd33d078787422af333148b1131ca82b083605bc215f5b9643d",
+   "ui_schema_sha256": "9528d07fcdd0d7d6051f331065f1ffbd3f62753ba2e96e6ba8b894c11eadeed7"
+  },
+  {
+   "rvid": "41c2c254-2cd8-41eb-9eaa-cf1b62e472ac",
+   "title": "[T155] V14-P0-117",
+   "renderer": "direction-grid",
+   "ability_id": "app_model",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "在5×5方格盘中，行和列都从0开始编号。棋子从(3,3)出发，要到(4,2)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。",
+   "answer_raw": "22",
+   "goal": "在零起点行列网格上规划转向路线，能区分正向终点与镜像反走靶并提交终点格编码。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在5×5方格盘中，行和列都从0开始编号。棋子从(3,3)出发，要到(4,2)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。"
+    },
+    "workspaces": [
+     {
+      "mode": "route_navigation",
+      "config": {
+       "cols": 5,
+       "grid": {
+        "cols": 5,
+        "rows": 5
+       },
+       "rows": 5,
+       "start": {
+        "c": 3,
+        "r": 3,
+        "col": 3,
+        "row": 3
+       },
+       "target": {
+        "c": 2,
+        "r": 4,
+        "col": 2,
+        "row": 4
+       }
+      },
+      "renderer": "direction-grid",
+      "constraints": {},
+      "capabilities": [
+       "move",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "path",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "path",
+      "endpoint"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "direction_reversed",
+     "pattern": "direction_reversed"
+    }
+   ],
+   "stem_sha256": "50745c871068a709aa06760470a4f84f6bc5c08d9eb4e671fdaa817697b6697f",
+   "ui_schema_sha256": "9021b85b8dce8b8e75108b0fce1d3cf5b087193f8daa558bf5a04b3b27157262"
+  },
+  {
+   "rvid": "449175a1-15e8-48d6-828f-f5d271897341",
+   "title": "[T155] V14-P0-054",
+   "renderer": "column-arithmetic",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "请用竖式计算：81 - 29。把每一位数字和需要的进位/退位填写完整，最后提交答案。",
+   "answer_raw": "52",
+   "goal": "按个位、十位顺序完成竖式，并留存进位或退位过程。",
+   "ui_schema": {
+    "prompt": {
+     "text": "请用竖式计算：81 - 29。把每一位数字和需要的进位/退位填写完整，最后提交答案。"
+    },
+    "workspaces": [
+     {
+      "mode": "subtraction",
+      "config": {
+       "places": [
+        "ones",
+        "tens",
+        "hundreds"
+       ],
+       "operands": [
+        81,
+        29
+       ],
+       "operand_layout": "fixed"
+      },
+      "renderer": "column-arithmetic",
+      "constraints": {},
+      "capabilities": [
+       "input_digit",
+       "place_carry",
+       "edit_carry",
+       "step_submit",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "column_arithmetic",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "result_digits",
+      "carries"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "f082ed8a245adf1a206fedcfc552f036d81d9eebe9e7be9e1f160f147c543972",
+   "ui_schema_sha256": "9df36992a731dba2e45862f351c88074cdd28648dfeb3a33d1c9c6f5601db603"
+  },
+  {
+   "rvid": "46b80862-2973-4737-a4bc-dbfdab4dae83",
+   "title": "[T155] V14-P0-083",
+   "renderer": "estimation-canvas",
+   "ability_id": "app_strat",
+   "solve_path": "numeric_tolerance",
+   "answer_shape": "multi_digit",
+   "stem": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。",
+   "answer_raw": "50",
+   "goal": "基于参照数进行连续滑条估计并判断数量是否合理。",
+   "ui_schema": {
+    "prompt": {
+     "text": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。"
+    },
+    "workspaces": [
+     {
+      "mode": "slider_estimation",
+      "config": {
+       "max": 60,
+       "min": 0,
+       "actual": 47,
+       "target": 50,
+       "expected": 50,
+       "reference": 10,
+       "tolerance": 6
+      },
+      "renderer": "estimation-canvas",
+      "constraints": {},
+      "capabilities": [
+       "estimate",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "estimation",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "slider_value",
+      "reference_choice"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "no_reference_use",
+     "pattern": "no_reference_use"
+    }
+   ],
+   "stem_sha256": "ff2eb46af704d1b802d042765f200d6fbf6b55a66efe9d4c09d8194fd0cb9b31",
+   "ui_schema_sha256": "87fc2f09f13c487d9416bc2c8a3fd11746dc931a0f185b9ce55f44b80c2c2fcd"
+  },
+  {
+   "rvid": "4821e8a3-dadd-4dcb-8660-f0d1fb9ad465",
+   "title": "[T155] V14-P0-094",
+   "renderer": "shape-gallery",
+   "ability_id": "app_cond",
+   "solve_path": "count_by_attribute",
+   "answer_shape": "single",
+   "stem": "图形盘中有6张图形卡。请把所有“三角形”放进对应的家，再数数这一类一共有几张卡。",
+   "answer_raw": "2",
+   "goal": "辨认图形类别，把相同类型的图形归入同一组并计数。",
+   "ui_schema": {
+    "prompt": {
+     "text": "图形盘中有6张图形卡。请把所有“三角形”放进对应的家，再数数这一类一共有几张卡。"
+    },
+    "workspaces": [
+     {
+      "mode": "shape_classification",
+      "config": {
+       "shapes": [
+        {
+         "id": "94-shape-1",
+         "kind": "circle",
+         "name": "卡1",
+         "color": "red"
+        },
+        {
+         "id": "94-shape-2",
+         "kind": "square",
+         "name": "卡2",
+         "color": "blue"
+        },
+        {
+         "id": "94-shape-3",
+         "kind": "rectangle",
+         "name": "卡3",
+         "color": "green"
+        },
+        {
+         "id": "94-shape-4",
+         "kind": "triangle",
+         "name": "卡4",
+         "color": "yellow"
+        },
+        {
+         "id": "94-shape-5",
+         "kind": "square",
+         "name": "卡5",
+         "color": "purple"
+        },
+        {
+         "id": "94-shape-6",
+         "kind": "triangle",
+         "name": "卡6",
+         "color": "orange"
+        }
+       ],
+       "target_kind": "triangle"
+      },
+      "renderer": "shape-gallery",
+      "constraints": {},
+      "capabilities": [
+       "drag",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2.1",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "shape_property",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "shape_group_assignments",
+      "target_kind_count"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "attribute_confusion",
+     "pattern": "attribute_confusion"
+    }
+   ],
+   "stem_sha256": "7ee7d102e59f808152c055594f7a1d0f1c1806b98ed4ae997995aa784cf6a30b",
+   "ui_schema_sha256": "77cff181d94dad3e3ae018ed533d8a55f9fe7c4202b342afcab00931fdbe352e"
+  },
+  {
+   "rvid": "48817fba-ee0d-4101-8cb2-9ac5b4e66b91",
+   "title": "[T155] V14-P0-082",
+   "renderer": "estimation-canvas",
+   "ability_id": "app_check",
+   "solve_path": "numeric_tolerance",
+   "answer_shape": "multi_digit",
+   "stem": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。",
+   "answer_raw": "30",
+   "goal": "基于参照数进行连续滑条估计并判断数量是否合理。",
+   "ui_schema": {
+    "prompt": {
+     "text": "观察画布上的一组散点，不要先逐个计数。请以10个为一组估一估数量，把滑条移到最接近的整十数，并说明依据。"
+    },
+    "workspaces": [
+     {
+      "mode": "slider_estimation",
+      "config": {
+       "max": 60,
+       "min": 0,
+       "actual": 31,
+       "target": 30,
+       "expected": 30,
+       "reference": 10,
+       "tolerance": 6
+      },
+      "renderer": "estimation-canvas",
+      "constraints": {},
+      "capabilities": [
+       "estimate",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "estimation",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "slider_value",
+      "reference_choice"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "no_reference_use",
+     "pattern": "no_reference_use"
+    }
+   ],
+   "stem_sha256": "ff2eb46af704d1b802d042765f200d6fbf6b55a66efe9d4c09d8194fd0cb9b31",
+   "ui_schema_sha256": "7322f47255f4bf4bbbc4352325d393b91853b26f81fc2bee03acb87574ccae56"
+  },
+  {
+   "rvid": "5b5adf98-e92a-4e3c-b2ba-725c5465e682",
+   "title": "[T155] V14-P0-115",
+   "renderer": "direction-grid",
+   "ability_id": "app_model",
+   "solve_path": "numeric_exact",
+   "answer_shape": "multi_digit",
+   "stem": "在5×5方格盘中，行和列都从0开始编号。棋子从(3,2)出发，要到(4,0)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。",
+   "answer_raw": "20",
+   "goal": "在零起点行列网格上规划转向路线，能区分正向终点与镜像反走靶并提交终点格编码。",
+   "ui_schema": {
+    "prompt": {
+     "text": "在5×5方格盘中，行和列都从0开始编号。棋子从(3,2)出发，要到(4,0)。请规划包含行、列两个方向移动的路线，到达后提交终点格编码。"
+    },
+    "workspaces": [
+     {
+      "mode": "route_navigation",
+      "config": {
+       "cols": 5,
+       "grid": {
+        "cols": 5,
+        "rows": 5
+       },
+       "rows": 5,
+       "start": {
+        "c": 2,
+        "r": 3,
+        "col": 2,
+        "row": 3
+       },
+       "target": {
+        "c": 0,
+        "r": 4,
+        "col": 0,
+        "row": 4
+       }
+      },
+      "renderer": "direction-grid",
+      "constraints": {},
+      "capabilities": [
+       "move",
+       "answer_input",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {},
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "v1.4-trial155-remediation-v2",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "path",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "path",
+      "endpoint"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "direction_reversed",
+     "pattern": "direction_reversed"
+    }
+   ],
+   "stem_sha256": "92e075de78de9115725d00607223ed1b444833a964daad3aecff9dac899d0632",
+   "ui_schema_sha256": "e04d6ba2fc2505e2382a647c68edc94334edf47fd8414a68bde31357f6547e4d"
+  },
+  {
+   "rvid": "77b35d05-f75d-48a6-a01a-fc681c69b455",
+   "title": "气球合起来（V2 链 R01）",
+   "renderer": "object-counter",
+   "ability_id": "app_rel",
+   "solve_path": "numeric_exact",
+   "answer_shape": "single",
+   "stem": "小雨有4个红气球，又拿来了3个蓝气球。把两堆合起来数一数，一共有多少个气球？",
+   "answer_raw": "7",
+   "goal": "用物体组表征部分-整体合成（先摆后合，答案=总数）",
+   "ui_schema": {
+    "prompt": {
+     "text": "小雨有4个红气球，又拿来了3个蓝气球。把两堆合起来数一数，一共有多少个气球？"
+    },
+    "workspaces": [
+     {
+      "mode": "count_compose",
+      "config": {
+       "groups": [
+        {
+         "count": 0,
+         "label": "红气球",
+         "locked": false,
+         "symbol": "🎈",
+         "group_id": "g1"
+        },
+        {
+         "count": 0,
+         "label": "蓝气球",
+         "locked": false,
+         "symbol": "🎈",
+         "group_id": "g2"
+        }
+       ],
+       "expected": [
+        {
+         "group_id": "g1",
+         "min_count": 4
+        },
+        {
+         "group_id": "g2",
+         "min_count": 3
+        }
+       ],
+       "max_total_count": 12
+      },
+      "renderer": "object-counter",
+      "constraints": {
+       "max_total_count": 12
+      },
+      "capabilities": [
+       "add_object",
+       "remove_object",
+       "compose_groups",
+       "decompose_group",
+       "undo",
+       "reset"
+      ],
+      "workspace_id": "main",
+      "initial_state": {
+       "groups": [
+        {
+         "count": 0,
+         "label": "红气球",
+         "symbol": "🎈",
+         "group_id": "g1"
+        },
+        {
+         "count": 0,
+         "label": "蓝气球",
+         "symbol": "🎈",
+         "group_id": "g2"
+        }
+       ]
+      },
+      "renderer_version": "1.0"
+     }
+    ],
+    "ui_revision": "rev-1",
+    "schema_version": "2.0",
+    "response_contract": {
+     "response_type": "object_count",
+     "required_fields": [
+      "workspaces",
+      "answer"
+     ],
+     "evidence_targets": [
+      "groups",
+      "total"
+     ]
+    }
+   },
+   "error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "stem_sha256": "080cca8f6940e58fa0346ad12fb2610d7550d631aac9434a0d23acb41481212c",
+   "ui_schema_sha256": "d611ee1bfb673d26d826df9dc2b8e5d3fdc9f640c088efbfeaa8656386194b94"
+  }
+ ]
+}
