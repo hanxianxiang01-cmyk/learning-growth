@@ -30,6 +30,7 @@ BATCH_ARTIFACTS = [
     "FE1471_q03_batch3.json",
     "FE1472_q03_batch4.json",
     "FE1472_q03_batch5.json",
+    "FE1472_q03_batch6.json",
 ]
 
 # 文档中声明的数字（改文档时同步改这里，脚本会核对）
@@ -39,9 +40,19 @@ EXPECTED = {"union": 224, "in_q03": 212, "in_q05": 209,
 # 文档声明的「去重完成合计」与由此推出的两个待办数。
 # **这三项必须显式声明**——第五批态下若仍用 75 就说明文档没同步，
 # 而此前正是「靠人算减法」把 Q05_only 写成 67 的。
-EXPECTED_DONE = 95
-EXPECTED_TODO_Q03 = 117      # 212 − 95
-EXPECTED_TODO_BOTH = 102     # 197 − 95
+EXPECTED_DONE = 115
+EXPECTED_TODO_Q03 = 97       # 212 − 115
+EXPECTED_TODO_BOTH = 82      # 197 − 115
+
+# 语义族覆盖（本批新增）。动机：`check_independence.py` 实测前五批 95 题
+# **全部是 numeric_judge**，construct_constraint 54 题 0 完成——「95/212」
+# 这个数字会把「某族一题未核」这件事完全掩盖。故把族覆盖也纳入账实核对：
+# 每族的「已完成」数与文档声明不符即失败。
+EXPECTED_BY_FAMILY = {
+    "numeric_judge": 95,
+    "construct_constraint": 20,   # 第六批首次开族
+    "open_estimate": 0,
+}
 
 
 def main() -> int:
@@ -101,6 +112,25 @@ def main() -> int:
     if todo_both != EXPECTED_TODO_BOTH:
         fails.append(f"both 待核验: 实测 {todo_both}，文档声明 {EXPECTED_TODO_BOTH}")
 
+    # 语义族覆盖核对（缺族 / 多族 / 数量不符都算账实不符）
+    fam_total: dict[str, int] = {}
+    fam_done: dict[str, int] = {}
+    for it in items:
+        f = it.get("semantic_family")
+        fam_total[f] = fam_total.get(f, 0) + 1
+        if it["rvid"] in done:
+            fam_done[f] = fam_done.get(f, 0) + 1
+    for f in sorted(set(fam_total) | set(EXPECTED_BY_FAMILY)):
+        want = EXPECTED_BY_FAMILY.get(f)
+        got = fam_done.get(f, 0)
+        if want is None:
+            fails.append(f"语义族 {f} 未在 EXPECTED_BY_FAMILY 声明（实测完成 {got}）")
+        elif got != want:
+            fails.append(f"语义族 {f}: 实测完成 {got}，文档声明 {want}")
+    if sum(EXPECTED_BY_FAMILY.values()) != EXPECTED_DONE:
+        fails.append(f"EXPECTED_BY_FAMILY 合计 {sum(EXPECTED_BY_FAMILY.values())} "
+                     f"≠ 去重完成合计 {EXPECTED_DONE}")
+
     print("── 集合口径（实测）──")
     for k in ("union", "in_q03", "in_q05", "both", "q03_only", "q05_only"):
         print(f"  {k:10s} {actual[k]:>4}")
@@ -110,6 +140,11 @@ def main() -> int:
     print(f"\n  去重完成合计: {len(done)}")
     print(f"  Q03 待核验  : {todo_q03}   (in_Q03 {actual['in_q03']} − 已完成 {len(done)})")
     print(f"  both 待核验 : {todo_both}   (both {actual['both']} − 已完成 {len(done)})")
+    print("\n── 语义族覆盖（已完成 / 全量）──")
+    for f in sorted(fam_total):
+        d = fam_done.get(f, 0)
+        mark = "  <<< 0 题完成" if d == 0 else ""
+        print(f"  {f:24s} {d:>3} / {fam_total[f]:<3}{mark}")
 
     if fails:
         print("\n**账实不符**：", file=sys.stderr)

@@ -33,6 +33,20 @@
 16. 第五批语义观察项账实核：汇总 `observation_counts` 必须等于逐题重算；
     选题清单↔产物 RVID 集合、名额、过程校验声明、题干哈希逐项对账。
     针对「改总表 ≠ 改生成物」这一同型缺陷（D2 撤回时已踩过一次）（FE-1472）
+17. 第六批核验器区分力自证：**题干每个数字位逐个变异**（首版只改第一个数字，
+    四类题全报"未变"——是变异打偏了，不是判据失效）+ **可完成性变异**必须检出
+    （题面边长改成 9 格 → INFEASIBLE），且不可完成集合精确等于 `['8b41e648']`
+    （不能要求"全部 FEASIBLE"，那会逼检测器对真实缺陷说假话）（FE-1472）
+18. 第六批账实核：名额按 **solve_path** 核（该族内 renderer 与 solve_path 不一一
+    对应）；可完成性三个失败模式逐一核（汇总↔逐题、判 INFEASIBLE↔有观察项、
+    不可完成≠免除答案核验）；全族 process_constraint 覆盖逐 renderer 交叉
+    （针对「笔记写 54 题全带、现场实为 37/54」）（FE-1472）
+19. 独立性口径复核（check_independence）：表达式数字来源必须 ⊆ 题干 ∪ 已登记
+    编码常量；语义族覆盖必须现场重算。三类变异自证（注入题干外数字、清空分诊表、
+    跨批次搜索）必须全部检出（FE-1472）
+20. 第六批语义族覆盖登记：`115/212` 不能读作「各类型题都验过」——前五批 95 题
+    全在 numeric_judge 一族。产物必须显式记录族名/本批数/全族数，且与逐题
+    solve_path 自洽（FE-1472）
 
 边界（裁决 §四）：本门只判规则明确证据充分的问题；不访问生产 DB；失败输出含
 rule_id+证据，不得为空。
@@ -329,6 +343,133 @@ else:
     note("第五批账实核区分力自证 check_batch5_ledger --selftest",
          r16s.returncode == 0 and "BATCH5-LEDGER-SELFTEST: PASS" in r16s.stdout,
          tail16s)
+
+# 17 第六批核验器区分力自证（FE-1472）
+#
+#    第六批换维度：前五批核的 95 题**全部是 numeric_judge**，
+#    construct_constraint 54 题 0 完成。本批首次开族，因此核验器多出两类
+#    前五批不存在的东西，都必须能被证伪：
+#      · 题干数字变异 → computed 必须变。**注意变异构造**：首版盲目改题干
+#        第一个数字，四类题全报"未变"——复查确认是变异打偏了（place-value
+#        改的是卡片池而非位名指派、shape-canvas 改的是纸张尺寸而非边长、
+#        sorting-board 改的是卡数量而非卡片值），不是判据失效。
+#        修法是逐位试，只要有一处能让 computed 变即可。
+#      · 可完成性变异 → 题面边长改成 9 格必须判 INFEASIBLE。
+#        这一条如果空转，`feasibility` 整个维度就是装饰。
+#    同时**反向对照**：不可完成集合必须精确等于 ['8b41e648']。
+#    不能要求"全部 FEASIBLE"——那会逼检测器对真实缺陷说假话。
+b6_script = os.path.join(HERE, "rt1472", "q03_batch6.py")
+b6_quota = os.path.join(HERE, "rt1472", "batch6_quota_list.json")
+if not os.path.exists(b6_script):
+    note("第六批核验器工件存在", False,
+         "缺 rt1472/q03_batch6.py——不允许静默跳过")
+elif not os.path.exists(b6_quota):
+    note("第六批选题清单存在", False,
+         "缺 rt1472/batch6_quota_list.json——没有先冻结选题集合，"
+         "核验范围无法自证")
+else:
+    r17 = subprocess.run([sys.executable, b6_script, "--selftest"],
+                         capture_output=True, text=True)
+    _boom17 = [ln.strip() for ln in (r17.stderr + r17.stdout).splitlines()
+               if "✗" in ln]
+    tail17 = (_boom17[0] if _boom17
+              else (r17.stdout.strip().splitlines() or [""])[-1])
+    note("第六批核验器区分力自证 q03_batch6 --selftest",
+         r17.returncode == 0 and "Q03-BATCH6-SELFTEST: PASS" in r17.stdout, tail17)
+
+# 18 第六批账实核（FE-1472）
+#
+#    本项的对账维度与第 16 项不同，不是复制：
+#      · 名额按 **solve_path** 核（该族内 renderer 与 solve_path 不一一对应，
+#        按 renderer 核会让 pattern-board 被拆成两半而看不出覆盖）
+#      · **可完成性三个失败模式**逐一核：汇总说有→逐题必须有；判了 INFEASIBLE
+#        →必须有对应观察项（否则结论游离在观察项之外）；判了 INFEASIBLE
+#        →答案判定不得缺失（可完成性不能替代答案核验）
+#      · **全族 process_constraint 覆盖**逐 renderer 交叉：全族说某 renderer
+#        0 题带 pc，本批同类必须也是 0。这条针对"笔记与现场不符"——
+#        上一轮笔记写"54 题全部带 pc"，现场实为 37/54。
+b6_ledger = os.path.join(HERE, "rt1472", "check_batch6_ledger.py")
+b6_result = os.path.join(HERE, "runs", "FE1472_q03_batch6.json")
+if not os.path.exists(b6_ledger):
+    note("第六批账实核工件存在", False,
+         "缺 rt1472/check_batch6_ledger.py——不允许静默跳过")
+elif not os.path.exists(b6_result):
+    note("第六批核验产物存在", False,
+         "缺 runs/FE1472_q03_batch6.json——没有产物，"
+         "汇总数字无从对账，门禁会退化成只查脚本存在")
+else:
+    r18 = subprocess.run([sys.executable, b6_ledger], capture_output=True, text=True)
+    _boom18 = [ln.strip() for ln in (r18.stderr + r18.stdout).splitlines()
+               if "✗" in ln]
+    tail18 = (_boom18[0] if _boom18
+              else (r18.stdout.strip().splitlines() or [""])[-1])
+    note("第六批账实核 check_batch6_ledger",
+         r18.returncode == 0 and "账实相符" in r18.stdout, tail18)
+
+    r18s = subprocess.run([sys.executable, b6_ledger, "--selftest"],
+                          capture_output=True, text=True)
+    _boom18s = [ln.strip() for ln in (r18s.stderr + r18s.stdout).splitlines()
+                if "✗" in ln]
+    tail18s = (_boom18s[0] if _boom18s
+               else (r18s.stdout.strip().splitlines() or [""])[-1])
+    note("第六批账实核区分力自证 check_batch6_ledger --selftest",
+         r18s.returncode == 0 and "BATCH6-LEDGER-SELFTEST: PASS" in r18s.stdout,
+         tail18s)
+
+# 19 独立性口径复核（check_independence，FE-1472）
+#
+#    动机：文档里"95 题都做了独立推导"这句话，如果没有脚本可重现，
+#    就只是某次人工编辑的快照（项目铁律）。本项锁两条可机器判定的口径：
+#      A 表达式数字来源：derivation.expr 里的每个数字，要么在题干里，
+#        要么已显式登记为编码常量（位权）。**只有分诊表能判决**——
+#        "编码常量"与"抄 config"在数字层面无法区分，脚本只出线索。
+#      B 语义族覆盖：分族统计必须现场重算，不能沿用上一轮的结论。
+#    本项的三类变异：注入题干外数字必须被检出、清空分诊表必须报错、
+#    跨批次搜索必须能找到目标题（首版只在最后一批里找，误报"未被检出"
+#    ——那是变异构造错，不是判据失效）。
+indep = os.path.join(HERE, "rt1472", "check_independence.py")
+if not os.path.exists(indep):
+    note("独立性口径复核工件存在", False,
+         "缺 rt1472/check_independence.py——不允许静默跳过")
+else:
+    r19 = subprocess.run([sys.executable, indep, "--selftest"],
+                         capture_output=True, text=True)
+    _boom19 = [ln.strip() for ln in (r19.stderr + r19.stdout).splitlines()
+               if "✗" in ln]
+    tail19 = (_boom19[0] if _boom19
+              else (r19.stdout.strip().splitlines() or [""])[-1])
+    note("独立性口径复核自证 check_independence --selftest",
+         r19.returncode == 0 and "INDEPENDENCE-SELFTEST: PASS" in r19.stdout,
+         tail19)
+
+# 20 第六批语义族覆盖缺口登记（FE-1472）
+#
+#    **这一项防的是"数字掩盖事实"**：「115/212 完成」听起来过半，
+#    但前五批 95 题全在一个族里，第六批才刚开第二个族，第三个族仍是 0。
+#    若只看总数，会误判"各类型题都验过了"。因此本项要求产物里
+#    显式记录族覆盖，且覆盖数与逐题结论自洽（不是抄一个常量）。
+#    判据：construct_constraint 本批完成数 == 产物题数；family_total 有据；
+#    且 check_progress 的族覆盖与产物相互印证。
+if not os.path.exists(b6_result):
+    note("语义族覆盖登记工件存在", False,
+         "缺 runs/FE1472_q03_batch6.json")
+else:
+    _b6 = json.load(open(b6_result, encoding="utf-8"))
+    _fs = _b6.get("family_scope") or {}
+    _n = len(_b6.get("items") or [])
+    _ok20 = (
+        _fs.get("semantic_family") == "construct_constraint"
+        and _fs.get("verified_here") == _n
+        and isinstance(_fs.get("total_in_family"), int)
+        and _fs["total_in_family"] > _n
+        and sum(1 for it in _b6.get("items") or []
+                if (it.get("solve_path") or "") in
+                (("digit_config", "geometry_constraint",
+                  "numeric_exact", "sequence_order"))) == _n
+    )
+    note("第六批语义族覆盖登记", _ok20,
+         f"family={_fs.get('semantic_family')} 本批 {_fs.get('verified_here')}"
+         f"/全族 {_fs.get('total_in_family')}；题数 {_n}")
 
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)

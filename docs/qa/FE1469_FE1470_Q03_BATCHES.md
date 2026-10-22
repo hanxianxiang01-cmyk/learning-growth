@@ -1414,3 +1414,293 @@ permission denied for table learning_session
 
 **日志第一行（`InsufficientPrivilege`）才是结论，`500` 只是表象。**
 这与 §8.1 记过的「500 空响应先查进程存活」是同一条纪律的两个方向。
+
+## 十一、第六批（FE-1472）：首次开 construct_constraint 族（2026-10-22）
+
+### 11.1 为什么这批换维度，而不是继续加量
+
+第五批之后 `check_independence.py` 实测出一条**结构性事实**：
+
+```
+── B 已完成题按语义族 ──
+  numeric_judge            完成 95 / 全量 169
+  construct_constraint     完成  0 / 全量 54   ← **0 题完成**
+  open_estimate            完成  0 / 全量  1   ← **0 题完成**
+```
+
+前五批 95 题**全部落在 `numeric_judge` 一个族里**。这意味着「95 / 212 完成」
+这个数字最容易被误读的地方不是比例，而是**它掩盖了「有一整族一题未核」**。
+
+所以本批不在 `numeric_judge` 里继续加量（那里还剩 55 题），而是
+**首次开 `construct_constraint` 整族**。
+
+### 11.2 名额按 solve_path 分配，不按 renderer
+
+该族内 renderer 与 solve_path **不是一一对应**：
+
+| solve_path | renderer 构成 | 池内 |
+|---|---|---:|
+| `digit_config` | place-value 9 | 9 |
+| `geometry_constraint` | shape-canvas 9 | 9 |
+| `numeric_exact` | money-board 9 + array-board 8 + pattern-board 1 | 18 |
+| `sequence_order` | pattern-board 9 + sorting-board 9 | 18 |
+
+`pattern-board` 同时属于 `numeric_exact`（1 题）与 `sequence_order`（9 题）。
+若按 renderer 分名额，它会被切成两半，统计上看不出覆盖了什么。故四类各取 5 题。
+
+结果（`batch6_quota_list.json`，核验前冻结）：
+
+| solve_path | 实核 | renderer 分布 |
+|---|---:|---|
+| `digit_config` | 5 | place-value 5 |
+| `geometry_constraint` | 5 | shape-canvas 5 |
+| `numeric_exact` | 5 | money-board 3 + array-board 1 + pattern-board 1 |
+| `sequence_order` | 5 | pattern-board 3 + sorting-board 2 |
+| **合计** | **20** | 6 个 renderer |
+
+### 11.3 结果：20/20 MATCH，但两条新维度各暴露一件事
+
+```
+Q03-BATCH6: 20 MATCH / 0 MISMATCH / 20 题（construct_constraint 族）
+  config↔题面不一致：0 题
+  题面在组件上不可完成：1 题
+  process_constraint 已声明（本批）：17/20 题
+  process_constraint 已声明（全族 54）：37/54 题；缺口全在 array-board/sorting-board
+```
+
+`20/20 MATCH` 在这里的含义与前五批相同、且同样有限：**只表示「从题面独立
+推导/构造的结果与存储答案相等」**，不表示交互、可完成性或教学质量已验收。
+
+### 11.4 本批新增维度一：题面可完成性（**发现 1 道实质缺陷**）
+
+`construct_constraint` 含 `geometry_constraint`（shape-canvas），
+存在「答案算得出、但界面上画不出」的可能。故本批单列一条维度。
+
+判定依据是**组件源码事实，不是推断**：
+
+- `parseShapeCanvasConfig()` 只读 `grid` / `target_area` / `target_shape`，
+  **`base` 与 `height` 完全不被读取**；
+- `applyAddPoint()` 用 `0 <= x < grid` 约束钉位，故坐标系是 `grid` 个点；
+- `ShapeCanvasV2.tsx:140` `span = (grid - 1) * CELL`——**渲染跨度是 `grid-1` 格**；
+- 第 189 行 `Array.from({length: config.grid})` 渲染 `grid×grid` 个钉位。
+
+即 **`grid` 是钉位数，不是格数**。题面写「5×5 方格纸」时孩子看到的是 4×4 格。
+
+逐题判定后：
+
+| RVID | 题面要求 | `grid` | 组件跨度 | 面积可达 | 结论 |
+|---|---|---:|---:|---|---|
+| `1d5fab4e` | 底边2×高3 = 6 | 5 | 4 | 是 | FEASIBLE |
+| `73c7e8c0` | 底边3×高3 = 9 | 5 | 4 | 是 | FEASIBLE |
+| **`8b41e648`** | **长5×宽2 = 10** | **5** | **4** | **否** | **INFEASIBLE_ON_COMPONENT** |
+| `a1b71f95` | 底边3×高4 = 12 | 5 | 4 | 是 | FEASIBLE |
+| `b38f8898` | 长4×宽2 = 8 | 5 | 4 | 是 | FEASIBLE |
+
+`8b41e648`（V14-P0-102）有两个事实**同时成立**：
+
+1. **题面自洽**：5×5 方格纸画长 5 格的长方形，在真实方格纸上完全合理；
+2. **组件做不到**：板上只有 5 个钉位、跨度 4 格，长 5 格画不出来。
+
+穷举 5×5 全部钉位组合后，面积 10 只有 **2 组顶点集合**能通过
+`evaluateShapeCanvas`（4 顶点 + 4 直角 + 面积 10），且都是**倾斜正方形**：
+
+```
+((0,1),(1,4),(4,3),(3,0))   边长 √10、四个直角、面积 10
+((0,3),(1,0),(4,1),(3,4))   同上（镜像）
+```
+
+于是这道题同时存在「画不出正解」与「画错形状却能判对」两种情况。
+轴对齐的 5×2 需要横跨 5 格（6 个钉位），在 `grid=5` 上**不可能**。
+
+**范围核查（本批已做，防外推）**：全量 published 的 shape-canvas 共 **9 题**，
+逐题穷举后**仅此题不可达**，其余 8 题全部 `fits=True`。故这是**单题缺陷**，
+不是 renderer 系统性问题。这个结论已固化为自证断言：不可完成集合必须
+精确等于 `['8b41e648']`——**不能要求「全部 FEASIBLE」**，那等于逼检测器
+对真实缺陷说假话（项目硬规则：门禁不得逼内容说错话）。
+
+四禁仍然遵守：没有改 `grid`、没有改题目尺寸、没有改答案、没有改 Published。
+修法（改 `grid` 语义为格数、或把题目改成跨度内尺寸）属产品决策。
+
+### 11.5 本批新增维度二：过程约束的「已启用」与「抓不到」
+
+第五批 20 题 `process_constraint` **全为 null**（观察项
+`EVIDENCE_DECLARED_BUT_NOT_ENFORCED`）。本批首次遇到**已启用**的情形。
+
+**实核 17/20 题带 `process_constraint`**，与逐题 `evidence_enforcement` 对账一致。
+但「已启用」不等于「能判所有错法」，本批抓到一条明确的能力边界：
+
+| 观察项 | 题数 | 含义 |
+|---|---:|---|
+| `PROCESS_CONSTRAINT_ENABLED` | 17 | 该题 `mode` 在 `process_validate.RULES` 内，后端会真校验 |
+| `NO_PROCESS_VALIDATOR_FOR_RENDERER` | 3 | array-board / sorting-board **后端根本没有对应校验器** |
+| `PROCESS_CONSTRAINT_BLIND_TO_SHAPE` | 5 | shape-canvas 已启用，但 `_rule_shape` **不读 base/height** |
+
+`_rule_shape` 的实际逻辑（`process_validate.py:154-168`）只做三件事：
+顶点数为 4、`_shoelace_area(pts) == target_area`、`_right_angle_count(pts) == 4`。
+**`cfg["base"]` 与 `cfg["height"]` 在整个函数内未被引用。**
+
+后果：`8b41e648` 那道倾斜正方形，**过程校验也判 valid**。
+即「画错形状却判对」这件事，终值判分与过程校验**两道防线在同一处失效**。
+
+#### 11.5.1 更正一条上一轮的笔记（现场实测与笔记不符）
+
+上一轮的记录写的是「`construct_constraint` 54 题**全部**带 `process_constraint`」。
+本批实核 20 题只有 17 题带，两者矛盾。全族实地统计后：
+
+| renderer | 全族题数 | 带 pc | 缺口 |
+|---|---:|---:|---|
+| money-board | 9 | 9 | — |
+| place-value | 9 | 9 | — |
+| pattern-board | 10 | 10 | — |
+| shape-canvas | 9 | 9 | — |
+| **array-board** | **8** | **0** | **8** |
+| **sorting-board** | **9** | **0** | **9** |
+| **合计** | **54** | **37** | **17** |
+
+真值是 **37/54**，缺口**精确落在两个 renderer**，不是「题目普遍漏配」。
+
+而且这不是漏配，是**后端能力缺口**：`process_validate.py` 的 `RULES` 只有四个 mode
+（`pattern_extension` / `payment_change` / `shape_drawing` / `place_value_build`），
+**没有 array / sorting 的校验器**。即使人为给这两类题补上 `process_constraint`，
+也会落 `unknown_mode` → `unverifiable`，等于没校验。
+
+这条更正已固化为门禁第 18 项的**逐 renderer 交叉核对**：全族说某 renderer
+0 题带 pc，本批同类必须也是 0——否则 FAIL。
+
+### 11.6 独立性的第三种形态：编码常量 ≠ 抄 config
+
+`construct_constraint` 的答案不是「算出来的一个数」，而是
+**「构造结果被编码成的一个数」**：
+
+| renderer | 构造动作 | 编码方式 | 该题实例 |
+|---|---|---|---|
+| sorting-board | 按数值排序 | 排好序拼成多位数 | `[4,9,1,6]` 升序 → `1469` |
+| place-value | 按位名摆牌 | 按位权拼数 | 十位5/个位8 → `58` |
+| pattern-board | 补空格 | 空格 token 拼接 | 补 4、2 → `42` |
+| shape-canvas | 画矩形 | 边长之积 | 2×3 → `6` |
+
+这带来一个前五批不存在的问题：**位权 10 / 100 / 1000 不出现在题干里**。
+用第五批的判据（`expr` 数字必须 ⊆ 题干数字）会把它们全部判成「疑似抄 config」。
+
+本批的处理：**不据此判「不独立」，但必须逐条登记**。
+
+```
+20/20 题的 expr 数字或来自题干、或已显式登记为 encoding_constants
+未解释的题干外数字：无
+分布：进位权 17 条 / 个位位权=1（`d * 1` 句式产物）7 条
+```
+
+判据的两个自我修正（都记下来，因为都是我自己先写错了）：
+
+1. 首版把 `* 1` 里的 `1` 也报成 `UNCLASSIFIED`，7 道题各一条，
+   把真实待分诊项淹没。`1` 是「不乘位权」的句式产物，不是信息量。
+2. 首版对 `d * 1` 的处理放在分诊表之外，导致门禁若检查「无 UNCLASSIFIED」
+   会误报 7 条。修正后 `purpose` 字段区分三类：题干内 / 进位权 / 个位位权。
+
+### 11.7 本批的自证：两次「变异无效 ≠ 检测器失效」
+
+第六批核验器 `--selftest` 首轮未通过，两次都是**变异构造错了**：
+
+| 现象 | 真因 | 修法 |
+|---|---|---|
+| 四类题全报「题干数字变异后 `computed` 未变」 | 变异打偏了：place-value 改的是「位值卡片[5,8]」里的 5（卡片池），而推导用的是「十位是5」；shape-canvas 改的是「5×5方格纸」里的 5（纸张尺寸），不是边长；sorting-board 改的是「桌上有4张数字卡」里的 4（卡数量），不是卡片值 | 改为**逐位逐个数字试**，只要有一处能让 `computed` 变化即证明推导在读题面 |
+| `pattern-board` 抽不到空格数 | 判断题变体的题面写作「就把**后两格**写成"3、3"」，不是「补上接下来的两格」 | 三种写法都覆盖（「补上接下来的X格」/「后X格」/「X个空格」），且**不能抓「前四格」里的「四格」** |
+
+修法一律是**让变异真的改到被观察量**，不是放宽判据。
+这与项目已记的铁律一致：变异无效 ≠ 检测器失效。
+
+第三处是真实缺陷，不是变异问题：
+
+**sorting-board 的交叉核对在题干与 config 不一致时抛 `KeyError` 崩溃。**
+原来写 `target_ids = [by_val[v] for v in ordered]`，
+题干卡片值改了以后 `by_val` 里没有那个值 → 崩。
+后果是「config↔题面不一致」这条判据**只在两者一致时**才跑得动，
+等于把该判据做成空转。已改为登记 `INCONSISTENT` 并跳过该子检查。
+
+最终自证：
+
+```
+Q03-BATCH6-SELFTEST: PASS（答案篡改 20/20 检出；题干数字变异 4/4 检出；
+config 不一致 6/6 检出；可完成性变异 1 检出、合法 4/5 通过）
+```
+
+「合法 4/5 通过」是**正确结果**，不是噪声：5 题里恰有 1 题
+（`8b41e648`）是真不可完成。要求 5/5 就等于逼检测器说假话。
+
+### 11.8 进度（第六批后）
+
+| 指标 | 五批后 | **六批后** | 算法 |
+|---|---:|---:|---|
+| Q03 完成（去重 RVID） | 95 | **115** | 95 + 20（实测重叠 0） |
+| Q03 待核验（`in_Q03`=212） | 117 | **97** | 212 − 115 |
+| `both` 待核验（`both`=197） | 102 | **82** | 197 − 115 |
+| `Q03_only` | 15 | **15** | 本批未消耗 |
+| `Q05_only` | 12 | **12** | 固定集合归属，做 Q03 不会变 |
+| 并集 | 224 | **224** | 工作总量不变 |
+
+`check_progress.py` 现场实测（不减法外推）：
+
+```
+去重完成合计: 115 / Q03 待核验: 97 / both 待核验: 82 / 账实相符
+
+── 语义族覆盖（已完成 / 全量）──
+  construct_constraint      20 / 54
+  numeric_judge             95 / 169
+  open_estimate              0 / 1    <<< 0 题完成
+```
+
+本批把**语义族覆盖也纳入账实核对**（`EXPECTED_BY_FAMILY`），
+动机是「115/212」这个数字同样会掩盖「`open_estimate` 仍 0 题」这一事实。
+
+**Q05 侧仍为 0 题完成。** 本批 20 题各产出候选记录（逐题生成 + 三条机器校验），
+但**没有任何一条被验证为真实的错误诊断能力**。
+
+### 11.9 本批的缺口（诚实登记）
+
+| 缺口 | 说明 |
+|---|---|
+| 20 题全部未在真实界面提交 | 结论来自题面解析 + 组件源码事实 + 钉位穷举，**没有跑 Playwright 摆卡/点格/排序后提交** |
+| `8b41e648` 的不可完成是**静态证实**，未经页面复现 | 依据是 `applyAddPoint` 的坐标约束与穷举，未在该题页面上实际尝试画 5×2 |
+| `open_estimate` 全族 1 题仍未核 | 属估算类（答案非唯一），单列待定，不与构造类混批 |
+| `construct_constraint` 剩余 34 题未核 | 本批只取 20/54，按 solve_path 各 5 |
+| Q05 真实诊断能力 | 0 题，未启动 |
+| 结论不外推同族 | 每题独立推导，未按 renderer 复用结论 |
+
+### 11.10 门禁从 16 项扩到 20 项
+
+本批新增四项（第 17–20 项），每项都对应本批**自己差点漏掉**的一类失效：
+
+| 本批的失效风险 | 原门禁是否能抓 | 新增项 |
+|---|---|---|
+| 可完成性维度写成装饰（判据恒 FEASIBLE，或恒 INFEASIBLE） | **不能** | **17 `q03_batch6 --selftest`**：含可完成性变异 + 「不可完成集合必须精确等于 `['8b41e648']`」 |
+| 名额按 renderer 核而实际按 solve_path 选；可完成性结论游离在观察项之外 | **不能**。第 16 项是第五批专用口径 | **18 `check_batch6_ledger`**（+ `--selftest` 六种篡改）：名额按 solve_path、可完成性三个失败模式、全族 pc 覆盖逐 renderer 交叉 |
+| 文档写「95 题都做了独立推导」但无脚本可重现 | **不能** | **19 `check_independence --selftest`**：表达式数字来源 + 语义族覆盖，三类变异 |
+| 「115/212」掩盖某族 0 题完成 | **不能** | **20 语义族覆盖登记**：族名 / 本批数 / 全族数必须显式且与逐题 solve_path 自洽 |
+
+反向验证（都做到「改坏必失败」）：
+
+| 变异 | 结果 |
+|---|---|
+| 删 `q03_batch6.py` | **FAIL**：`缺 rt1472/q03_batch6.py——不允许静默跳过` |
+| 删 `batch6_quota_list.json` | **FAIL**：没有先冻结选题集合，核验范围无法自证 |
+| 删 `check_batch6_ledger.py` | **FAIL**：不允许静默跳过 |
+| 删 `runs/FE1472_q03_batch6.json` | **FAIL**：没有产物，门禁会退化成只查脚本存在 |
+| 删 `check_independence.py` | **FAIL**：不允许静默跳过 |
+| `family_scope.verified_here` 改成 999 | **FAIL**：`本批 999/全族 54；题数 20` |
+| 汇总某类观察项 +1 / 逐题删一条 / 名额 +1 / 题干改一字 | **FAIL**（M1–M4 检出） |
+| 可完成性汇总虚报 +1 | **FAIL**（M5 检出） |
+| 全族 pc 覆盖统计改错 | **FAIL**（M6 检出） |
+
+门禁现在 **20 项 / 24 个 PASS 行**，`PR-IQC-GATE: PASS`。
+
+#### 11.10.1 一次真实的判据错误（记账）
+
+第 18 项首跑报 **`全族覆盖 with_process_constraint=37 ≠ 本批逐题重算 17`**。
+这是**判据写错了，不是数据错**：37 是 54 题口径，17 是 20 题口径，
+两者本来就不该直接比。首版把两个不同分母的数强行相等。
+
+正确做法是**分维度交叉核对**：①全族内部 `with + without == total`；
+②族总量与本批口径一致；③**逐 renderer 交叉**（全族说某 renderer 0 题带 pc，
+本批同类必须也是 0）。第③项才是真正有区分力的对照。
+
+这与 §10.7.1 的 sha256 事件同型：**判据写错时先怀疑判据**。
