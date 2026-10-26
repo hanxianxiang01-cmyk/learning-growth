@@ -47,6 +47,21 @@
 20. 第六批语义族覆盖登记：`115/212` 不能读作「各类型题都验过」——前五批 95 题
     全在 numeric_judge 一族。产物必须显式记录族名/本批数/全族数，且与逐题
     solve_path 自洽（FE-1472）
+21. 第七批核验器区分力自证：**模板歧义必须 rc=2 而非 rc=1**（抽不到≠核验失败）、
+    题干数字变异 16/16 模板必须检出、可完成性变异 1 检出且合法 3/3 通过
+    （不能要求全部 FEASIBLE），且 `--crossbatch` 证明第六批 20 题在新规则下
+    仍 MATCH（改方法不得让旧结论漂移）（FE-1472）
+22. 第七批账实核 + **结构性判据**：verdict 必须与题面模板相容
+    （`VERDICT_TEMPLATE_WHITELIST`）。这一项防的是自洽检查拦不住的**强洗白**：
+    改 verdict + 同步汇总 + 补一条伪造观察项 + 改 verdict_note，所有自洽检查
+    全部通过、0 条报警。九类变异必须全部检出（FE-1472）
+23. 进度账实核**自证**：`check_progress --selftest`。本脚本此前从未自证过，
+    而第七批新增的「族级清零」恰是最容易被读成「已核完」的一句。
+    新增两道分母防线（改分母 54→34、清零行取声明表）都必须 FAIL（FE-1472）
+24. 文档数字可复现性：`check_doc_claims`。第十三章几十个数字（35/32/54-54/
+    150/62/42 条常量…）此前**全部手写、无脚本核过**，而本批已实测到一次真实
+    事故（§13.3.2 把 35 写成 33，同一句还错了两处）。本项要求文档数字与产物
+    逐条一致，且历史章节（十/十一/十二）不参与核对（那里的数字是当时实测值）（FE-1472）
 
 边界（裁决 §四）：本门只判规则明确证据充分的问题；不访问生产 DB；失败输出含
 rule_id+证据，不得为空。
@@ -470,6 +485,143 @@ else:
     note("第六批语义族覆盖登记", _ok20,
          f"family={_fs.get('semantic_family')} 本批 {_fs.get('verified_here')}"
          f"/全族 {_fs.get('total_in_family')}；题数 {_n}")
+
+# 21 第七批核验器区分力自证（FE-1472）
+#
+#    第七批的方法学又变了一层：第六批「边写边补正则」只覆盖那 20 题的写法，
+#    本批 35 题实测会让第六批规则**静默算错 1 题**（money-board 靠「另一件」
+#    三字判两件相加，缺这三个字就只取首个标价 10，真值 15——不报错、不崩溃，
+#    静默产出错值，然后被判成 MISMATCH，看起来像题库错了）。
+#    故本批改成**题面模板显式登记**，每题必须恰好命中一个模板。
+#    本项锁四件事：
+#      · 答案篡改 32/32 必须检出（比较器非永真）
+#      · 题干数字变异 16/16 模板必须检出（推导真读题面）
+#      · 可完成性变异 1 检出、**合法 3/3 通过**——不能要求「全部 FEASIBLE」，
+#        那会逼检测器对真实缺陷说假话（唯一不可完成的 8b41e648 在第六批）
+#      · `--crossbatch`：第六批 20 题在新规则下必须仍 MATCH。这一条防的是
+#        「为让新批好看，把旧批的判据也悄悄改松」——改方法不得让旧结论漂移
+b7_script = os.path.join(HERE, "rt1472", "q03_batch7.py")
+b7_quota = os.path.join(HERE, "rt1472", "batch7_quota_list.json")
+if not os.path.exists(b7_script):
+    note("第七批核验器工件存在", False,
+         "缺 rt1472/q03_batch7.py——不允许静默跳过")
+elif not os.path.exists(b7_quota):
+    note("第七批选题清单存在", False,
+         "缺 rt1472/batch7_quota_list.json——没有先冻结选题集合，"
+         "「两族清零」这句话就无法自证是 35 题全取而非抽样")
+else:
+    r21 = subprocess.run([sys.executable, b7_script, "--selftest"],
+                         capture_output=True, text=True)
+    _boom21 = [ln.strip() for ln in (r21.stderr + r21.stdout).splitlines()
+               if "✗" in ln]
+    tail21 = (_boom21[0] if _boom21
+              else (r21.stdout.strip().splitlines() or [""])[-1])
+    note("第七批核验器区分力自证 q03_batch7 --selftest",
+         r21.returncode == 0 and "Q03-BATCH7-SELFTEST: PASS" in r21.stdout, tail21)
+
+    # 21b 跨批回归：新规则跑旧批，结论不得漂移
+    r21b = subprocess.run([sys.executable, b7_script, "--crossbatch"],
+                          capture_output=True, text=True)
+    _boom21b = [ln.strip() for ln in (r21b.stderr + r21b.stdout).splitlines()
+                if "✗" in ln]
+    tail21b = (_boom21b[0] if _boom21b
+               else (r21b.stdout.strip().splitlines() or [""])[-1])
+    note("第七批跨批回归 q03_batch7 --crossbatch",
+         r21b.returncode == 0 and "CROSSBATCH: PASS" in r21b.stdout, tail21b)
+
+# 22 第七批账实核 + 结构性判据（FE-1472）
+#
+#    **本项防的是自洽检查拦不住的「强洗白」**（本批最重要的发现）：
+#    把一道已核题改 verdict + 同步汇总 + 补一条伪造观察项 + 改 verdict_note，
+#    于是「汇总=逐题」「观察项↔verdict 对应」「note 与 verdict 相符」全部通过，
+#    **0 条报警**——因为它保持了内部一致性，而自洽检查只查一致性。
+#    唯一有效解法是**结构性判据**：verdict 必须与题面模板相容
+#    （`VERDICT_TEMPLATE_WHITELIST`）。依据是语义而不是数据：
+#    `UNVERIFIABLE_FROM_STEM` 的含义决定了只有 estimation 模板可能适用。
+b7_ledger = os.path.join(HERE, "rt1472", "check_batch7_ledger.py")
+b7_result = os.path.join(HERE, "runs", "FE1472_q03_batch7.json")
+if not os.path.exists(b7_ledger):
+    note("第七批账实核工件存在", False,
+         "缺 rt1472/check_batch7_ledger.py——不允许静默跳过")
+elif not os.path.exists(b7_result):
+    note("第七批核验产物存在", False,
+         "缺 runs/FE1472_q03_batch7.json——没有产物，"
+         "「两族清零」无从对账，门禁会退化成只查脚本存在")
+else:
+    r22 = subprocess.run([sys.executable, b7_ledger], capture_output=True, text=True)
+    _boom22 = [ln.strip() for ln in (r22.stderr + r22.stdout).splitlines()
+               if "✗" in ln]
+    tail22 = (_boom22[0] if _boom22
+              else (r22.stdout.strip().splitlines() or [""])[-1])
+    note("第七批账实核 check_batch7_ledger",
+         r22.returncode == 0 and "账实相符" in r22.stdout, tail22)
+
+    r22s = subprocess.run([sys.executable, b7_ledger, "--selftest"],
+                          capture_output=True, text=True)
+    _boom22s = [ln.strip() for ln in (r22s.stderr + r22s.stdout).splitlines()
+                if "✗" in ln]
+    tail22s = (_boom22s[0] if _boom22s
+               else (r22s.stdout.strip().splitlines() or [""])[-1])
+    note("第七批账实核区分力自证 check_batch7_ledger --selftest",
+         r22s.returncode == 0 and "BATCH7-LEDGER-SELFTEST: PASS" in r22s.stdout,
+         tail22s)
+
+# 23 进度账实核自证（check_progress --selftest，FE-1472）
+#
+#    第 13 项只跑 audit（账实是否相符），**从不自证**。
+#    而第七批新增的「族级清零」是整份文档里最容易被读成「已核完」的一句话，
+#    若它恒真，读者无法分辨「54/54」与「34/34 被当成清零」。
+#    本项锁两道分母防线（都是本轮新增）：
+#      P4 把全族总量 54 改成 34 → 必须 FAIL（只核分子时改分母可洗成 100%）
+#      P6 清零行若取声明表 → 打印 n/n 恒真式，必须 FAIL
+#    P6 的判据第一版无效（未清零行也打印 54/54，能蒙过），
+#    现已改成「让分子分母故意不等」——取产物打印 53/54，取声明表打印 53/53。
+if not os.path.exists(prog_check):
+    note("进度账实核自证工件存在", False, "缺 rt1472/check_progress.py")
+else:
+    r23 = subprocess.run([sys.executable, prog_check, "--selftest"],
+                         capture_output=True, text=True)
+    _boom23 = [ln.strip() for ln in (r23.stderr + r23.stdout).splitlines()
+               if "✗" in ln]
+    tail23 = (_boom23[0] if _boom23
+              else (r23.stdout.strip().splitlines() or [""])[-1])
+    note("进度账实核自证 check_progress --selftest",
+         r23.returncode == 0 and "PROGRESS-SELFTEST: PASS" in r23.stdout, tail23)
+
+# 24 文档数字可复现性（check_doc_claims，FE-1472）
+#
+#    项目铁律：「产物里的分析结论若不能由脚本重现，就只是某次人工编辑的快照」。
+#    第十三章有几十个数字，此前**全部手写、没有任何脚本核过**，
+#    而本批已经实测到一次真实事故：§13.3.2 把「32+3」算成 33（应为 35），
+#    同一句还把容差说成对三题都适用——两处错，通读发现不了。
+#    本项要求文档数字与产物逐条一致。
+#    **历史章节（十/十一/十二）不参与核对**：那里的数字是当时实测值，
+#    改成今天的值反而是错的——本脚本按 `## 十三、` 起点截断。
+doc_check = os.path.join(HERE, "rt1472", "check_doc_claims.py")
+doc_path = os.path.join(REPO, "docs", "qa", "FE1469_FE1470_Q03_BATCHES.md")
+if not os.path.exists(doc_check):
+    note("文档数字核对工件存在", False,
+         "缺 rt1472/check_doc_claims.py——不允许静默跳过")
+elif not os.path.exists(doc_path):
+    note("第七批文档存在", False, f"缺 {doc_path}")
+else:
+    r24 = subprocess.run([sys.executable, doc_check], capture_output=True, text=True)
+    _boom24 = [ln.strip() for ln in (r24.stderr + r24.stdout).splitlines()
+               if "✗" in ln]
+    tail24 = (_boom24[0] if _boom24
+              else (r24.stdout.strip().splitlines() or [""])[-1])
+    note("文档数字可复现性 check_doc_claims",
+         r24.returncode == 0 and "文档数字与产物一致" in r24.stdout, tail24)
+
+    r24s = subprocess.run([sys.executable, doc_check, "--selftest"],
+                          capture_output=True, text=True)
+    _boom24s = [ln.strip() for ln in (r24s.stderr + r24s.stdout).splitlines()
+                if "✗" in ln]
+    tail24s = (_boom24s[0] if _boom24s
+               else (r24s.stdout.strip().splitlines() or [""])[-1])
+    note("文档数字核对区分力自证 check_doc_claims --selftest",
+         r24s.returncode == 0 and "DOC-CLAIMS-SELFTEST: PASS" in r24s.stdout,
+         tail24s)
 
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
 sys.exit(0 if not fails else 1)
