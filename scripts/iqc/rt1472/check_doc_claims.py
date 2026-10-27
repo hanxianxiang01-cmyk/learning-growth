@@ -435,7 +435,10 @@ def audit() -> int:
            ("check_doc_claims.py", "DOC-CLAIMS-SELFTEST", "DOC-CLAIMS",
             _SELF_DENOM),
            ("check_batch7_ledger.py", "BATCH7-LEDGER-SELFTEST", "BATCH7",
-            None)]
+            None),
+           # 新增脚本**必须同时进这里**，否则「四项自证」会悄悄变成五项
+           # 而文档仍写四项——正是本轮反复遇到的「数字没有实测来源」。
+           ("check_pr_chain.py", "PR-CHAIN-SELFTEST", "PR-CHAIN", None)]
     _d7_parts = []
     _d7_bad = []
     for _f, _tag, _label, _fixed in _d7:
@@ -466,7 +469,7 @@ def audit() -> int:
                      + "）——文档不得记成 N/N 全过")
     if _d7_parts:
         # 文档里那句必须是「四项自证：PROGRESS 11/11、INDEPENDENCE 6/6、…」
-        _want = "四项自证：" + "、".join(_d7_parts)
+        _want = "五项自证：" + "、".join(_d7_parts)
         must(_want in ch,
              f"D7 文档自证计数应为「{_want}」——"
              f"分母取各脚本 selftest 实跑结果，不取文档自述")

@@ -63,6 +63,13 @@
     事故（§13.3.2 把 35 写成 33，同一句还错了两处）。本项要求文档数字与产物
     逐条一致，且历史章节（十/十一/十二）不参与核对（那里的数字是当时实测值）（FE-1472）
 
+25. PR 堆叠整链覆盖：`check_pr_chain`。核四条不变量（整链数==唯一 SHA 数 /
+     逐段和==总数 / `#135` 区间==整链−`#136` 累计 / 每段是下家的祖先）。
+     上一轮「8 个提交全部覆盖」实为 9，错因是只核每段是否相等、没核合计；
+     而 `base == 上家 head` 本身有盲区——上家 head 到本家 base 之间若有
+     提交游离，所有 `base == head` 照样成立。**段长为负须单独报**：断裂图
+     上 `#136` 段算出 −1 而「逐段和==总数」仍成立（负数削平），只有它能抓（FE-1472）
+
 边界（裁决 §四）：本门只判规则明确证据充分的问题；不访问生产 DB；失败输出含
 rule_id+证据，不得为空。
 
@@ -653,6 +660,17 @@ else:
          r24s.returncode == 0 and "DOC-CLAIMS-SELFTEST: PASS" in r24s.stdout,
          tail24s)
 
+# 25 进度账实核自证（check_pr_chain，FE-1472 第三轮）
+#
+#    第 23 项证明「进度数字对不对」。本项证明**「链有没有覆盖全」**——
+#    上一轮汇报写「8 个提交全部覆盖」，实为 9，错因是只核了每段是否
+#    相等、没核合计。`base == 上家 head` 这类比对还有结构性盲区：
+#    上家 head 到本家 base 之间若有提交游离，所有 `base == head` 照样成立。
+#    故本项核四条不变量：整链数==唯一SHA数 / 逐段和==总数 /
+#    #135 区间==整链−#136累计 / 每段都是下一段的祖先。
+#    **段长为负**须单独报：那时「逐段和==总数」仍可能成立（负数削平），
+#    实测断裂图上 #136 段算出 −1 而总和仍等，只有这条能抓。
+
 # ── 门禁行数与文档对账（**自数自核**）──
 #
 # 「24 项」与「31 个 PASS 行」**不是一个量**：一项可能打多行（第 3 项拆成
@@ -684,6 +702,28 @@ _n_items = sum(1 for _ln in _doc.splitlines()
 if _n_items < 10:
     fails.append(f"门禁项数解析异常：只解析出 {_n_items} 项"
                  f"——头部编号清单格式被改动了？")
+_chain = os.path.join(HERE, "rt1472", "check_pr_chain.py")
+if not os.path.isfile(_chain):
+    note("PR 堆叠整链覆盖核对工件存在", False, "缺 rt1472/check_pr_chain.py")
+else:
+    _rc5 = subprocess.run([sys.executable, _chain], capture_output=True, text=True)
+    _boom5 = [ln.strip() for ln in (_rc5.stdout + _rc5.stderr).splitlines()
+              if "✗" in ln]
+    _tail5 = (_boom5[0] if _boom5
+              else (_rc5.stdout.strip().splitlines() or [""])[-1])
+    note("PR 堆叠整链覆盖核对 check_pr_chain",
+          _rc5.returncode == 0 and "整链覆盖成立" in _rc5.stdout, _tail5)
+
+    _rc5s = subprocess.run([sys.executable, _chain, "--selftest"],
+                           capture_output=True, text=True)
+    _boom5s = [ln.strip() for ln in (_rc5s.stdout + _rc5s.stderr).splitlines()
+               if "✗" in ln]
+    _tail5s = (_boom5s[0] if _boom5s
+               else (_rc5s.stdout.strip().splitlines() or [""])[-1])
+    note("PR 堆叠整链覆盖区分力自证 check_pr_chain --selftest",
+          _rc5s.returncode == 0 and "PR-CHAIN-SELFTEST: PASS" in _rc5s.stdout,
+          _tail5s)
+
 _n_pass = sum(1 for _n, _ok, _d in _notes if _ok)
 _n_fail = sum(1 for _n, _ok, _d in _notes if not _ok)
 _docp = os.path.join(REPO, "docs", "qa", "FE1469_FE1470_Q03_BATCHES.md")
