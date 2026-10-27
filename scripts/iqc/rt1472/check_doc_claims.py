@@ -71,6 +71,11 @@ UNION = "FE1468_worklist_union.json"
 # **不参与本脚本核对**——历史章节里的数字是当时的实测值，改成今天的值反而是错的。
 CH13_START = "## 十三、"
 
+# 变异总数：`selftest()` 与 D7 自证**共用同一个常量**。
+# 以前 `total_mut` 是 selftest() 内的局部变量（还残留过一个 5 的旧赋值），
+# D7 若另抄一个数字，两处会各自漂移——这正是「判据与文档同错」的温床。
+SELFTEST_TOTAL_MUT = 13
+
 
 def _nums(s: str) -> list[int]:
     return [int(x) for x in re.findall(r"\d+", s or "")]
@@ -385,6 +390,94 @@ def audit() -> int:
          f"D6 单批 {f['const7']} 与合计 {f['const_both']} 相同但题数不同——"
          f"文档必须分三行列出，不能只写一个总数")
 
+    # ── D7 自证检出数（**文档头承诺过、此前并未实现**）──
+    #
+    # 脚本头部「核对口径」里写着 `D7 自证检出数 selftest 的分子分母`，但代码
+    # 从未实现过这一条。后果是：自证从 9/9 扩到 10/10、再扩到 11/11 时，
+    # 文档里那句「PROGRESS N/N」**没有任何东西核它**，写错了不会响。
+    # 这与本项目已记的「文档声明了判据、代码没实现」是同一类失效——
+    # 读者会以为这些数被核过。
+    #
+    # 取值方式：**实跑各脚本的 selftest，解析它自己打印的分母**，
+    # 不与文档互抄（否则两边一起错，判据自我印证）。
+    #
+    # **本脚本自己不能出现在这张表里**：`--selftest` 会再调本脚本
+    # `--selftest`，无限递归（实测直接挂死）。故 DOC-CLAIMS 的分母由
+    # 变异总数 `total_mut` 提供——它就在同一个文件里，且是上面
+    # `selftest()` 真正循环的那个数。
+    import re as _re2
+    import subprocess as _sp
+
+    _SELF_DENOM = SELFTEST_TOTAL_MUT   # 与 selftest() 共用，不另抄
+
+    def _selftest_denom(script: str, tag: str) -> tuple[int, int] | None:
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), script)
+        if not os.path.isfile(p):
+            return None
+        r = _sp.run([sys.executable, p, "--selftest"],
+                    capture_output=True, text=True, timeout=600)
+        mm = _re2.search(rf"{tag}:\s*(PASS|FAIL)（(\d+)/(\d+) 检出）",
+                         r.stdout)
+        if not mm:
+            return None
+        return int(mm.group(2)), int(mm.group(3))
+
+    # **脚本必须一一对上台上的那一个**。第一版把 BATCH7 接到
+    # `q03_batch7.py`（题级核验器，输出是「答案篡改 32/32；题干数字变异
+    # 16/16 模板…」，**没有** `（N/N 检出）` 这个形态），于是 D7 取不到分母、
+    # 直接 FAIL——而文档里那个 `BATCH7 9/9` 真正来自
+    # `check_batch7_ledger.py`（账实核区分力自证）。
+    # 这两个脚本名字都带 batch7，接错了照样"看起来对"：**判据接错源，
+    # 与文档写错数字是同一种病**，只是错在判据这一侧。
+    _d7 = [("check_progress.py", "PROGRESS-SELFTEST", "PROGRESS", None),
+           ("check_independence.py", "INDEPENDENCE-SELFTEST", "INDEPENDENCE",
+            None),
+           ("check_doc_claims.py", "DOC-CLAIMS-SELFTEST", "DOC-CLAIMS",
+            _SELF_DENOM),
+           ("check_batch7_ledger.py", "BATCH7-LEDGER-SELFTEST", "BATCH7",
+            None)]
+    _d7_parts = []
+    _d7_bad = []
+    for _f, _tag, _label, _fixed in _d7:
+        if _fixed is not None:
+            # 本脚本**不能**实跑自己的 `--selftest`（再调本脚本 → 递归挂死），
+            # 故分子分母都取 `SELFTEST_TOTAL_MUT`。这一栏的证据不由本判据
+            # 提供，而由 `pr_gate.py` 第 24 项提供：它要求
+            # `check_doc_claims.py --selftest` 的 **rc==0 且** 输出
+            # `DOC-CLAIMS-SELFTEST: PASS`，而 PASS 只在
+            # `caught == total_mut` 时才打印——即「分子等于分母」已被
+            # 门禁独立证明。这里若假装自己能验，反而是自我印证。
+            _d7_parts.append(f"{_label} {_fixed}/{_fixed}")
+            continue
+        _r = _selftest_denom(_f, _tag)
+        if _r is None:
+            fails.append(f"D7 取不到 {_f} 的 selftest 分母——"
+                         f"文档里的自证计数没有实测来源")
+            continue
+        # **分子必须取实测检出数，不能把分母回填成分子**。
+        # 首版写成 `_r[1]/_r[1]`，等于断言「分母/分母」——自证真跑出
+        # 10/13 时，文档照写 13/13 仍然 PASS，判据对检出数完全不敏感，
+        # 是又一个恒真式（自己和自己比）。
+        _d7_parts.append(f"{_label} {_r[0]}/{_r[1]}")
+        if _r[0] != _r[1]:
+            _d7_bad.append(f"{_label} {_r[0]}/{_r[1]}")
+    if _d7_bad:
+        fails.append("D7 下列自证实跑未全过（" + "、".join(_d7_bad)
+                     + "）——文档不得记成 N/N 全过")
+    if _d7_parts:
+        # 文档里那句必须是「四项自证：PROGRESS 11/11、INDEPENDENCE 6/6、…」
+        _want = "四项自证：" + "、".join(_d7_parts)
+        must(_want in ch,
+             f"D7 文档自证计数应为「{_want}」——"
+             f"分母取各脚本 selftest 实跑结果，不取文档自述")
+        # D7 末两字必须是句号收尾的独立行（防「11/11」被追加成「11/110」）
+        must(_want + "。" in ch, f"D7 自证计数行应以句号收尾：{_want}。")
+
+    # **门禁行数不在这里核**（曾试过，`pr_gate → 本脚本 → pr_gate` 递归，
+    # 实测直接 SIGTERM 137）。它是「门禁自己打印了多少行」这个属性，
+    # 由**产出这些行的 pr_gate.py 在收尾时自数自核**（见该脚本末尾
+    # 「门禁行数与文档对账」一段）——计数主体自己数，才不循环。
+
     print("── 文档数字可复现性核对（第十三章）──")
     print(f"  实测事实：")
     for k in ("total", "match", "mismatch", "not_match", "given", "unverifiable",
@@ -414,7 +507,6 @@ def selftest() -> int:
 
     print("\n── 文档数字核对器自证 ──")
     caught = 0
-    total_mut = 5
 
     base = open(DOC, encoding="utf-8").read()
     b7 = json.load(open(os.path.join(RUNS, B7), encoding="utf-8"))
@@ -515,7 +607,7 @@ def selftest() -> int:
     finally:
         g["DOC"] = old_doc
 
-    total_mut = 13
+    total_mut = SELFTEST_TOTAL_MUT
     print(f"\nDOC-CLAIMS-SELFTEST: {'PASS' if caught == total_mut else 'FAIL'}"
           f"（{caught}/{total_mut} 检出）")
     return 0 if caught == total_mut else 1

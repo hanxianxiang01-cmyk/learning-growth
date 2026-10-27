@@ -75,6 +75,7 @@ rule_id+证据，不得为空。
   · 失败时 tail 优先取含 `✗` 的行，否则真因会被统计行盖掉
 """
 import json
+import re
 import subprocess
 import sys
 import os
@@ -82,11 +83,30 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 fails = []
+_notes = []          # (name, ok, detail)：收尾时用于自数行数，见文件末尾
+_sealed = [False]    # 行数审计是否已跑过；跑过后再 note() 即判失败
 
 def note(name, ok, detail=""):
     print(f"{'PASS' if ok else 'FAIL'}  {name}" + (f"  — {detail}" if detail else ""))
+    # **封口检查**：收尾那段「门禁行数」对账一旦跑过，就把 `_sealed` 置真。
+    # 此后再有 `note()` 就说明有人把新检查加在了审计**之后**——那些行不会
+    # 被计数，文档写的行数会静默偏少。实测过一次：把模拟项插在审计之后，
+    # 总行数由 31 变 32 而判据仍报「一致」、rc=0（反证 G 无效）。
+    # 这不是靠"记得把审计放最后"，而是**让忘了这件事立刻变红**。
+    if _sealed[0]:
+        fails.append(f"审计后新增了未计入行数的检查项「{name}」"
+                     f"——应移到审计之前，或同步更新文档行数")
+    _notes.append((name, ok, detail))
     if not ok:
         fails.append(name)
+
+def info(name, detail=""):
+    """打印但不计入「PASS 行数」——给「统计/对账」类输出用。
+
+    与 `note()` 的区别是它**不改变被统计的量**。收尾那项「门禁行数」若用
+    `note()` 打，自己占一行，行数由 31 变 32，判据立刻自相矛盾。
+    """
+    print(f"INFO  {name}" + (f"  — {detail}" if detail else ""))
 
 # 1 夹具回归
 r = subprocess.run([sys.executable, os.path.join(HERE, "test_checks.py")], capture_output=True, text=True)
@@ -633,5 +653,70 @@ else:
          r24s.returncode == 0 and "DOC-CLAIMS-SELFTEST: PASS" in r24s.stdout,
          tail24s)
 
+# ── 门禁行数与文档对账（**自数自核**）──
+#
+# 「24 项」与「31 个 PASS 行」**不是一个量**：一项可能打多行（第 3 项拆成
+# 3 行；第五/六/七批各是「账实核 + 自证」两行；第 24 项拆成 audit + 自证）。
+# 此前文档与交接记录都写「32 行 PASS」，实为 31——**写错了 1，且全靠手记**。
+# 现有判据全查不出：本门自己报 `24/24 PASS`（只说项数，不说行数），
+# `check_doc_claims` 核的是别的数字。**两个都写着 PASS 的不同量，最容易被
+# 当成同一个数**——「总数正确、分类错误」那个错型换了个壳。
+#
+# 两处必须小心，都是本轮实踩的：
+#
+#  ① 不能用 `note()`。第一版写成 `note(...)`，于是**检查自己占了一行**，
+#     行数由 31 变 32、判据立刻 FAIL。这就是「判据的存在改变了被测量」：
+#     一旦它算进自己，所谓"核对 31 行"就永远自相矛盾；若再顺手把文档
+#     改成 32，下次加任何一项又要改文档——**数字随判据漂移**。
+#     故这里用 `info()`：打印但不计入行数，失败仍走 `fails` 硬 FAIL。
+#  ② 不能由 `check_doc_claims` 反向调本脚本核：
+#     `pr_gate → check_doc_claims → pr_gate` 递归，实测 SIGTERM 137。
+#     **计数主体自己数自己，才不循环**。
+# 「24 项」也不能手写：它同样是会随加项漂移的量。项数取**头部编号清单
+# 的行数**（`NN.` 开头那几行），那是本文件对"一共有几项门禁"的唯一声明。
+_here = os.path.dirname(os.path.abspath(__file__))
+_src = open(os.path.join(_here, "pr_gate.py"), encoding="utf-8").read()
+_doc = _src.split('"""')[1] if _src.count('"""') >= 2 else ""
+_n_items = sum(1 for _ln in _doc.splitlines()
+               if re.match(r"^\s*\d+\.\s", _ln))
+# 防「解析失败被当成 0 项」：清单被改格式（如改成 `1)` 或去掉编号）时，
+# `_n_items` 会静默变 0，而文档里若也写 0 项就"一致"了——**解析失配冒充正确结论**。
+if _n_items < 10:
+    fails.append(f"门禁项数解析异常：只解析出 {_n_items} 项"
+                 f"——头部编号清单格式被改动了？")
+_n_pass = sum(1 for _n, _ok, _d in _notes if _ok)
+_n_fail = sum(1 for _n, _ok, _d in _notes if not _ok)
+_docp = os.path.join(REPO, "docs", "qa", "FE1469_FE1470_Q03_BATCHES.md")
+_want = f"门禁 **{_n_items} 项 / {_n_pass} 个 PASS 行**（0 FAIL）"
+_ok_row = False
+if not os.path.isfile(_docp):
+    fails.append(f"门禁行数对账：缺 {_docp}")
+else:
+    _txt = open(_docp, encoding="utf-8").read()
+    _ok_row = (_n_fail == 0 and _want in _txt)
+    if not _ok_row:
+        fails.append(
+            f"门禁行数与文档不一致：实测 {_n_pass} 个 PASS 行 / "
+            f"{_n_fail} 个 FAIL 行，文档应为「{_want}」")
+_sealed[0] = True   # 之后任何 note() 都会被抓（见 note() 内封口检查）
+info("门禁行数（不计入行数本身）",
+     f"{_n_pass} 个 PASS 行 / {_n_fail} 个 FAIL 行"
+     f" → 文档{'一致' if _ok_row else '不一致'}")
+
+# ── 失败明细必须打印出来（**否则 FAIL 只是一句骂人话**）──
+#
+# 实测踩到：收尾两项对账失败时只印 `PR-IQC-GATE: FAIL (2)`，
+# **两条原因一条都没输出**——因为 `fails` 里存的是名字/字符串，而收尾
+# 从来没有把内容打出来。`note()` 失败时会印一行，但**直接
+# `fails.append(...)` 的（收尾对账就是这种）不会**。
+# 读者拿到的信息量等于「有个东西错了」，与「无输出」没区别。
+# 这与本项目记的「报错吞掉判据 = 空转」是同一边的：**失败不可诊断，
+# 与不失败同效**——都会被下一个人当成噪音跳过。
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
+# 明细打在结论**之后**：stderr 与 stdout 交错时，明细若在前会被后面几十行
+# PASS 冲散，读 CI 日志的人照样看不见。结论+明细连在一起才有用。
+if fails:
+    print("\n**门禁失败明细**：")
+    for _i, _f in enumerate(fails, 1):
+        print(f"  {_i}. {_f}")
 sys.exit(0 if not fails else 1)

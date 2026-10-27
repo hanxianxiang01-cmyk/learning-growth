@@ -313,23 +313,57 @@ def main() -> int:
             fails.append(f"语义族 {f} 全量: 并集实测 {got}，声明 {want}"
                          f"（**分母被改动**会让覆盖率高估）")
 
-    # 族级清零：**分母必须取实测 fam_total，不能取人工声明**
-    # （EXPECTED_FAMILY_TOTAL）。
+    fam_q03_total = {f: sum(1 for i in items
+                            if i.get("semantic_family") == f and i["in_Q03"])
+                     for f in fam_total}
+
+    # 族级覆盖状态：**两侧都必须取实测，且必须取同一个口径的实测**。
     #
-    # 这一条曾用 `EXPECTED_FAMILY_TOTAL.items()` 做分母，是**真实的门禁漏洞**：
-    # 声明表被同步改小时（分子=分母=53），`fam_done == t` 成立 → 该族被塞进
-    # 「覆盖完成」列表，而实际全族仍有 54 题。声明表本来是被检查对象，
-    # 却同时充当了判据的分母，等于让被测方自己定义"什么算完成"。
+    # 沿革（同一个错型换了三次外衣，每次都是"分母来源不对"）：
+    #   ① 最初：两侧都用人工声明 `EXPECTED_FAMILY_TOTAL`
+    #      → 声明被同步改小时把未完成标成「覆盖完成」；
+    #   ② 上一步：两侧都改成实测 `fam_total`（并集全量 169）
+    #      → 当前 150 题时看不出问题（numeric_judge 95≠169，两侧结论一致），
+    #        但**终态会炸**：Q03 的 157 题全审完后，fam_done=157 == fam_total(169)
+    #        不成立 → 被判为「未覆盖完成」，于是印出
+    #        「未覆盖完成：numeric_judge 157/157（尚余 0 题）」，rc=1。
+    #        即在最该庆祝的那一天，门禁反而红。
+    #   ③ 现在：两侧都取 **Q03 范围实测**（`fam_q03_total`），与输出栏一致。
     #
-    # 声明与实测不一致时，上面的分母核对已经登记 fails；但**状态栏不能用
-    # 一个已被告知是错的数来判定**——那会让「未完成」被印成「覆盖完成」，
-    # 而 rc=1 的报错又只是「分母被改动」，读者容易只去改声明、不改状态。
-    cleared = sorted(f for f, t in fam_total.items()
-                     if t > 0 and fam_done.get(f, 0) == t)
-    # 反向同理：未完成的族必须从**实测全集**里取，否则会漏掉"声明表里没有
-    # 但并集里存在"的族；也会印出「未覆盖完成 54/54（尚余 0 题）」这种
-    # 自相矛盾的行（同一根因的另一面）。
+    # **"都是实测值"不等于"可以互换"**：并集实测 169 与 Q03 实测 157 是两个
+    # 不同母体的实测值。`cleared` 用 169、缺口栏用 157，就又是一次"两侧不同源"，
+    # 只是这次两边都写着"实测"，比第一次更难看出来。
+    #
+    # 这不是缺陷修补，是**终态可达性**问题：判据必须能在"全部做完"那天仍然为真。
+    # 一个永远不可能为真的判据，等于永远拦着不放行。
+    def _q03_denom(f: str) -> int:
+        """某族的 Q03 范围内实测题数（分母）。这是状态判定的唯一口径。"""
+        return fam_q03_total.get(f, 0)
+
+    cleared = sorted(f for f in fam_total
+                     if _q03_denom(f) > 0
+                     and fam_done.get(f, 0) == _q03_denom(f))
+    # 反向：从**实测全集**枚举，避免漏掉"声明表没有但并集里有"的族。
     not_cleared = sorted(f for f in fam_total if f not in cleared)
+
+    # 终态一致性：**两栏的判定结果必须与"尚余 N 题"互相对应**。
+    #
+    # 不能写成「比较 cleared 用的分母与缺口栏用的分母」——那两个值都来自
+    # `_q03_denom(f)`，自己比自己恒相等，是恒真式（本项目已踩过多次）。
+    # 唯一有区分力的写法是**拿两个栏的成员关系去对账剩余题数**：
+    #   在 not_cleared 的族，剩余必须 > 0；
+    #   在 cleared 的族，剩余必须 == 0。
+    # 任一侧不成立，就说明"状态"与"数字"不同源。
+    _state_bad = []
+    for f in fam_total:
+        rem = _q03_denom(f) - fam_done.get(f, 0)
+        if f in not_cleared and rem <= 0:
+            _state_bad.append(f"{f}: 在未覆盖栏但剩余 {rem}")
+        if f in cleared and rem != 0:
+            _state_bad.append(f"{f}: 在覆盖完成栏但剩余 {rem}")
+    if _state_bad:
+        fails.append("族状态与剩余题数不同源: " + "；".join(_state_bad)
+                     + "——两侧分母口径不一致（并集实测 vs Q03 实测）")
 
     print("── 集合口径（实测）──")
     for k in ("union", "in_q03", "in_q05", "both", "q03_only", "q05_only"):
@@ -382,9 +416,6 @@ def main() -> int:
                 f = by_rvid_fam.get(r["rvid"])
                 fam_match[f] = fam_match.get(f, 0) + 1
 
-    fam_q03_total = {f: sum(1 for i in items
-                            if i.get("semantic_family") == f and i["in_Q03"])
-                     for f in fam_total}
     print("\n── 语义族覆盖（已审查 / Q03应审 · 独立MATCH / 备注）──")
     for f in sorted(fam_total):
         d = fam_done.get(f, 0)
@@ -407,16 +438,20 @@ def main() -> int:
     # **措辞必须写「审查覆盖」不写「清零」**：这两族仍有 3 题非独立 MATCH，
     # 「清零」会被读成「结论全部通过」。
     if cleared:
+        # **展示分母也必须与判定同源（Q03 口径）**。终态时若这里用并集全量，
+        # 会印出 `numeric_judge 157/169`——判断已经正确（已进"覆盖完成"栏），
+        # 但数字读起来像"还差 12 题"，而那 12 道根本不属 Q03。
+        # 与缺口栏同理：分母换口径时，同一行会自我否证。
         print("\n  族级审查覆盖完成: " + ", ".join(
-            f"{f} {fam_done.get(f, 0)}/{fam_total.get(f, 0)}" for f in cleared))
-        ok = [f for f in cleared if fam_match.get(f, 0) == fam_total.get(f, 0)]
+            f"{f} {fam_done.get(f, 0)}/{_q03_denom(f)}" for f in cleared))
+        ok = [f for f in cleared if fam_match.get(f, 0) == _q03_denom(f)]
         notok = [f for f in cleared if f not in ok]
         if ok:
             print(f"    其中独立 MATCH 全通过: " + ", ".join(
-                f"{f} {fam_match.get(f, 0)}/{fam_total.get(f, 0)}" for f in ok))
+                f"{f} {fam_match.get(f, 0)}/{_q03_denom(f)}" for f in ok))
         if notok:
             print(f"    其中**未全部独立 MATCH**: " + ", ".join(
-                f"{f} {fam_match.get(f, 0)}/{fam_total.get(f, 0)}"
+                f"{f} {fam_match.get(f, 0)}/{_q03_denom(f)}"
                 for f in notok) + "（覆盖完成 ≠ 结论全部通过）")
     else:
         print("\n  族级审查覆盖完成: 无")
@@ -746,7 +781,85 @@ def selftest() -> int:
             print(f"  ✗ P8〔正向对照〕rc={rc} 尚余62={ok62} "
                   f"95/157={ok157} 无95/169={no169}——缺口会被读成 74 题")
 
-    total = 10
+    # P9：**终态回归（合成数据，不代表已核验）**。
+    #
+    # 判据必须能在「全部做完」那天仍然为真。前一步把两侧都改成"实测"后，
+    # `cleared` 取的是并集实测 169，而 Q03 应审只有 157：
+    # 等剩余 62 题真审完，fam_done=157 != 169 → 该族被判「未覆盖完成」，
+    # 于是印出「未覆盖完成：numeric_judge 157/157（尚余 0 题）」、rc=1。
+    # **在最该庆祝的那天，门禁反而变红**。
+    #
+    # 根因与 P6 完全同构：两侧"都取实测"不等于"取同一个口径的实测"。
+    # 并集实测 169 与 Q03 实测 157 是两个不同母体的实测值。
+    #
+    # 本条用**合成产物**把 62 道待审题临时标成 MATCH，其余真实工件不动，
+    # 验证终态下 rc=0 且该族进入「覆盖完成」栏。
+    # **合成终态只测"未来状态能否通过"，不表示这 62 题已完成核验**。
+    with tempfile.TemporaryDirectory() as td:
+        runs = os.path.join(td, "runs")
+        shutil.copytree(RUNS, runs)
+        u9 = json.load(open(UNION, encoding="utf-8"))
+        uitems = u9["items"] if isinstance(u9, dict) else u9
+        q3ids = {i["rvid"] for i in uitems if i.get("in_Q03")}
+        done_now = set()
+        for fn in BATCH_ARTIFACTS:
+            p9 = os.path.join(runs, fn)
+            if os.path.isfile(p9):
+                for r in json.load(open(p9, encoding="utf-8"))["items"]:
+                    done_now.add(r["rvid"])
+        todo9 = [i for i in uitems
+                 if i["rvid"] in q3ids and i["rvid"] not in done_now]
+        synth9 = {"items": [
+            {"rvid": i["rvid"], "renderer": i.get("renderer"),
+             "semantic_family": i.get("semantic_family"),
+             "verdict": "MATCH"} for i in todo9]}
+        json.dump(synth9, open(os.path.join(runs, "SYNTH_final.json"),
+                               "w", encoding="utf-8"), ensure_ascii=False)
+        # 声明同步到终态（合成产物 + 终态声明，其余不动）
+        saved_bat = list(globals()["BATCH_ARTIFACTS"])
+        saved = {k: globals()[k] for k in
+                 ("EXPECTED_DONE", "EXPECTED_INDEPENDENT_MATCH",
+                  "EXPECTED_TODO_Q03", "EXPECTED_TODO_BOTH",
+                  "EXPECTED_TODO_Q03_ONLY", "EXPECTED_DONE_BOTH",
+                  "EXPECTED_DONE_Q03_ONLY")}
+        saved_map = dict(globals()["EXPECTED_BY_FAMILY"])
+        try:
+            globals()["BATCH_ARTIFACTS"] = saved_bat + ["SYNTH_final.json"]
+            globals()["EXPECTED_DONE"] = 212
+            globals()["EXPECTED_INDEPENDENT_MATCH"] = 209
+            globals()["EXPECTED_TODO_Q03"] = 0
+            globals()["EXPECTED_TODO_BOTH"] = 0
+            globals()["EXPECTED_TODO_Q03_ONLY"] = 0
+            globals()["EXPECTED_DONE_BOTH"] = 197
+            globals()["EXPECTED_DONE_Q03_ONLY"] = 15
+            globals()["EXPECTED_BY_FAMILY"] = dict(saved_map,
+                                                   numeric_judge=157)
+            rc9, out9 = _run(runs, UNION)
+        finally:
+            globals()["BATCH_ARTIFACTS"] = saved_bat
+            for k, v in saved.items():
+                globals()[k] = v
+            globals()["EXPECTED_BY_FAMILY"] = saved_map
+
+        line_ok9 = next((ln for ln in out9.splitlines()
+                         if "族级审查覆盖完成" in ln), "")
+        line_gap9 = next((ln for ln in out9.splitlines()
+                          if "未覆盖完成" in ln), "")
+        nj_in_ok = "numeric_judge" in line_ok9
+        nj_in_gap = "numeric_judge" in line_gap9
+        no_zero = "尚余 0 题" not in out9
+        no169ok = "157/169" not in line_ok9
+        if rc9 == 0 and nj_in_ok and not nj_in_gap and no_zero and no169ok:
+            caught += 1
+            print(f"  ✓ P9〔合成终态〕62 题全审完后 rc=0，numeric_judge 进入"
+                  f"「覆盖完成」栏且显示 157/157（分母取 Q03 实测量）")
+        else:
+            print(f"  ✗ P9〔合成终态〕rc={rc9} 进完成栏={nj_in_ok} "
+                  f"仍在缺口栏={nj_in_gap} 无尚余0={no_zero} "
+                  f"无157/169={no169ok}——终态反而拦着不放行"
+                  f"（完成栏={line_ok9[:110]!r}）")
+
+    total = 11
     print(f"\nPROGRESS-SELFTEST: {'PASS' if caught == total else 'FAIL'}"
           f"（{caught}/{total} 检出）")
     return 0 if caught == total else 1
