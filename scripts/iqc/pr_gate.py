@@ -706,13 +706,28 @@ _chain = os.path.join(HERE, "rt1472", "check_pr_chain.py")
 if not os.path.isfile(_chain):
     note("PR 堆叠整链覆盖核对工件存在", False, "缺 rt1472/check_pr_chain.py")
 else:
+    # **rc=2 是环境问题（无 .git），不是判据失败**。
+    #
+    # 实测：把提交导出成 tar（`git archive`）后跑门禁，本项 rc=2、
+    # 而门禁把它当普通 FAIL → 整个门禁红。但那份副本**本来就没有提交图**
+    # ——不是「链覆盖不成立」，是「这项工作在这里做不了」。
+    # 项目已记的「2=环境·工件·布局」正是为此：**混淆二者会让真正的失败
+    # 淹没在假失败里**，而下一个人会因此学会忽略这项红。
+    # 故 rc=2 一律判**失败**（不能静默算 PASS，那又是空转），但明细里
+    # **写明是环境问题**，并指出在有 .git 的目录跑才有效。
     _rc5 = subprocess.run([sys.executable, _chain], capture_output=True, text=True)
     _boom5 = [ln.strip() for ln in (_rc5.stdout + _rc5.stderr).splitlines()
               if "✗" in ln]
     _tail5 = (_boom5[0] if _boom5
               else (_rc5.stdout.strip().splitlines() or [""])[-1])
-    note("PR 堆叠整链覆盖核对 check_pr_chain",
-          _rc5.returncode == 0 and "整链覆盖成立" in _rc5.stdout, _tail5)
+    if _rc5.returncode == 2:
+        _tail5 = (f"环境问题（无 git 仓库）：本项只校验提交图，"
+                  f"须在含 .git 的目录运行——不是判据失败")
+        note("PR 堆叠整链覆盖核对 check_pr_chain（环境不足=失败，不谎称通过）",
+              False, _tail5)
+    else:
+        note("PR 堆叠整链覆盖核对 check_pr_chain",
+              _rc5.returncode == 0 and "整链覆盖成立" in _rc5.stdout, _tail5)
 
     _rc5s = subprocess.run([sys.executable, _chain, "--selftest"],
                            capture_output=True, text=True)
@@ -722,14 +737,24 @@ else:
                else (_rc5s.stdout.strip().splitlines() or [""])[-1])
     note("PR 堆叠整链覆盖区分力自证 check_pr_chain --selftest",
           _rc5s.returncode == 0 and "PR-CHAIN-SELFTEST: PASS" in _rc5s.stdout,
-          _tail5s)
+          _tail5s)   # 自证不依赖 git，无 .git 也应通过
 
 _n_pass = sum(1 for _n, _ok, _d in _notes if _ok)
 _n_fail = sum(1 for _n, _ok, _d in _notes if not _ok)
 _docp = os.path.join(REPO, "docs", "qa", "FE1469_FE1470_Q03_BATCHES.md")
 _want = f"门禁 **{_n_items} 项 / {_n_pass} 个 PASS 行**（0 FAIL）"
 _ok_row = False
-if not os.path.isfile(_docp):
+# **行数对账只在「所有项都能跑」时才有意义**。若已有项因环境不足失败
+# （如归档目录无 .git → check_pr_chain rc=2），行数必然比文档少 1，
+# 这时再报一条「行数不一致」就是**假失败盖住真失败**：
+# 下一个读到两条 FAIL 的人会去改文档行数，而真正要处理的是环境。
+# 故只在没有其它失败时核对行数；有其它失败就明说"跳过"。
+_misc = [f for f in fails if "门禁行数" not in str(f)]
+if _misc:
+    info("门禁行数（不计入行数本身）",
+         f"跳过核对——已有 {len(_misc)} 项失败，行数必然偏少，"
+         f"再报一条会掩盖真因")
+elif not os.path.isfile(_docp):
     fails.append(f"门禁行数对账：缺 {_docp}")
 else:
     _txt = open(_docp, encoding="utf-8").read()
@@ -739,9 +764,12 @@ else:
             f"门禁行数与文档不一致：实测 {_n_pass} 个 PASS 行 / "
             f"{_n_fail} 个 FAIL 行，文档应为「{_want}」")
 _sealed[0] = True   # 之后任何 note() 都会被抓（见 note() 内封口检查）
-info("门禁行数（不计入行数本身）",
-     f"{_n_pass} 个 PASS 行 / {_n_fail} 个 FAIL 行"
-     f" → 文档{'一致' if _ok_row else '不一致'}")
+# 行数只在"确实核过"时打印第二行；跳过分支已经印过原因，不必再印一遍
+# 实测的「不一致」——那会和上面的「跳过核对」自相矛盾。
+if not _misc:
+    info("门禁行数（不计入行数本身）",
+         f"{_n_pass} 个 PASS 行 / {_n_fail} 个 FAIL 行"
+         f" → 文档{'一致' if _ok_row else '不一致'}")
 
 # ── 失败明细必须打印出来（**否则 FAIL 只是一句骂人话**）──
 #
