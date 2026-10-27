@@ -313,13 +313,23 @@ def main() -> int:
             fails.append(f"语义族 {f} 全量: 并集实测 {got}，声明 {want}"
                          f"（**分母被改动**会让覆盖率高估）")
 
-    # 族级清零：声明为「全量」的族，其完成数必须等于全量。
-    # 这一条是第七批的终态判据——34 构造族 + 1 估算族若真的清零，
-    # 则 `construct_constraint 54/54`、`open_estimate 1/1` 必须同时成立；
-    # 反过来，只要有一条不成立，就不能说「这两族已核完」。
-    cleared = sorted(f for f, t in EXPECTED_FAMILY_TOTAL.items()
+    # 族级清零：**分母必须取实测 fam_total，不能取人工声明**
+    # （EXPECTED_FAMILY_TOTAL）。
+    #
+    # 这一条曾用 `EXPECTED_FAMILY_TOTAL.items()` 做分母，是**真实的门禁漏洞**：
+    # 声明表被同步改小时（分子=分母=53），`fam_done == t` 成立 → 该族被塞进
+    # 「覆盖完成」列表，而实际全族仍有 54 题。声明表本来是被检查对象，
+    # 却同时充当了判据的分母，等于让被测方自己定义"什么算完成"。
+    #
+    # 声明与实测不一致时，上面的分母核对已经登记 fails；但**状态栏不能用
+    # 一个已被告知是错的数来判定**——那会让「未完成」被印成「覆盖完成」，
+    # 而 rc=1 的报错又只是「分母被改动」，读者容易只去改声明、不改状态。
+    cleared = sorted(f for f, t in fam_total.items()
                      if t > 0 and fam_done.get(f, 0) == t)
-    not_cleared = sorted(f for f in EXPECTED_FAMILY_TOTAL if f not in cleared)
+    # 反向同理：未完成的族必须从**实测全集**里取，否则会漏掉"声明表里没有
+    # 但并集里存在"的族；也会印出「未覆盖完成 54/54（尚余 0 题）」这种
+    # 自相矛盾的行（同一根因的另一面）。
+    not_cleared = sorted(f for f in fam_total if f not in cleared)
 
     print("── 集合口径（实测）──")
     for k in ("union", "in_q03", "in_q05", "both", "q03_only", "q05_only"):
@@ -421,6 +431,18 @@ def main() -> int:
             f"（尚余 {fam_q03_total.get(f, 0) - fam_done.get(f, 0)} 题）"
             for f in not_cleared)
         print(f"  未覆盖完成（Q03 口径）: {parts}")
+        # 自相矛盾的自检：同一族不得同时出现在「覆盖完成」与「未覆盖完成」，
+        # 也不得在未覆盖栏里显示「尚余 0 题」。这只可能来自两侧分母不同源
+        # （历史上正是 `cleared` 取声明分母、`not_cleared` 取实测全集的组合）。
+        both_sides = sorted(set(cleared) & set(not_cleared))
+        if both_sides:
+            fails.append(f"族同时被标为「覆盖完成」与「未覆盖完成」: "
+                         f"{both_sides}——两侧分母不同源")
+        zero_left = sorted(f for f in not_cleared
+                           if fam_q03_total.get(f, 0) - fam_done.get(f, 0) == 0)
+        if zero_left:
+            fails.append(f"族在「未覆盖完成」栏却显示尚余 0 题: {zero_left}"
+                         f"——状态判定与数字自相矛盾")
         _u = [f"{f} 并集全量 {fam_total.get(f, 0)}" for f in not_cleared
               if fam_total.get(f, 0) != fam_q03_total.get(f, 0)]
         if _u:
@@ -556,15 +578,22 @@ def selftest() -> int:
         else:
             print("  ✗ P5 并集里找不到 Q05_only 的题——样本缺失，无法验证")
 
-    # P6：清零行必须同源。判据不能是「声明表清零后不再打印 54/54」——
-    # 那样太宽：`未清零` 那一行同样会打印 `54/54`，即使清零行本身是恒真式
-    # 也能蒙过去（第一版正是这么写的，6/6 里这一条其实没区分力）。
+    # P6：清零行必须同源，且**必须落到正确的状态栏**。
     #
-    # 能真正区分「取产物」与「取声明表」的唯一构造是**让分子分母故意不等**：
-    # 删掉 1 道构造族题（fam_done=53，fam_total 实测仍 54），同时把声明表的
-    # 分子分母都写成 53。于是：
-    #   取产物   → 打印 "construct_constraint 53/54"（暴露真实分母）
-    #   取声明表 → 打印 "construct_constraint 53/53"（恒真式，看不出缺口）
+    # 首版的失败有两层：
+    #   ① 判据只问「输出里有没有 `53/54`」。可 `未覆盖完成` 那一行也会印
+    #      `53/54`——于是即使该族被错误塞进「覆盖完成」栏，判据照样命中、
+    #      记 PASS。**这是「判据问错了问题」**，不是文档或实现的问题。
+    #   ② 配套的实现漏洞：`cleared` 取 `EXPECTED_FAMILY_TOTAL`（人工声明）
+    #      当分母。声明被同步改小时 `fam_done == t` 成立，该族就进了
+    #      「覆盖完成」栏；而 `not_cleared` 取实测全集，于是同一族**同时
+    #      出现在两栏**，还印出「未覆盖完成 … 尚余 0 题」。
+    #
+    # 故判据必须是**双向 + 定向**：
+    #   - `53/54` 必须出现在「未覆盖完成」行（暴露真实缺口）
+    #   - `53/54` 不得出现在「族级审查覆盖完成」行（不得错标完成）
+    #   - `53/53` 不得出现（取声明表会退化成恒真式 n/n）
+    # 三个条件缺一，都能被"改对了分母但标错状态"或"标对了状态但分母造假"绕开。
     with tempfile.TemporaryDirectory() as td:
         runs = os.path.join(td, "runs")
         shutil.copytree(RUNS, runs)
@@ -586,15 +615,72 @@ def selftest() -> int:
             globals()["EXPECTED_BY_FAMILY"] = saved_map
             globals()["EXPECTED_FAMILY_TOTAL"] = saved_tot
 
-        if "construct_constraint 53/54" in out:
+        cc = "construct_constraint"
+        tgt = f"{cc} 53/54"
+        # 按行切出两栏，**只在栏内找**，不做全文搜索
+        line_cleared = next((ln for ln in out.splitlines()
+                             if "族级审查覆盖完成" in ln), "")
+        line_gap = next((ln for ln in out.splitlines()
+                         if "未覆盖完成" in ln), "")
+        in_gap = tgt in line_gap
+        in_cleared = tgt in line_cleared
+        degenerate = f"{cc} 53/53" in out
+        if degenerate:
+            print(f"  ✗ P6 出现 `{cc} 53/53`——状态栏取的是声明表，"
+                  f"退化成恒真式 n/n，看不出实际只做了 "
+                  f"53/{saved_tot[cc]}")
+        elif in_cleared:
+            print(f"  ✗ P6 `{tgt}` 出现在「族级审查覆盖完成」栏——"
+                  f"**未完成被标成覆盖完成**（分母对了但状态错了）")
+        elif in_gap and line_gap:
             caught += 1
-            print("  ✓ P6 清零行取自产物（分子 53 / 分母 54 真实暴露）")
-        elif "construct_constraint 53/53" in out:
-            print("  ✗ P6 清零行取的是声明表——打印 n/n 恒真式，"
-                  f"看不出实际只做了 53/{saved_tot['construct_constraint']}")
+            print(f"  ✓ P6 清零行取自产物且状态栏正确"
+                  f"（`{tgt}` 落在「未覆盖完成」、未落入「覆盖完成」；"
+                  f"删的是 {dropped.get('rvid', '')[:8]}）")
         else:
-            print("  ✗ P6 找不到清零行输出，判据无法验证（输出片段："
-                  f"{out[-200:]!r}）")
+            print(f"  ✗ P6 找不到 `{tgt}` 于「未覆盖完成」栏，判据无法验证"
+                  f"（该栏={line_gap[:120]!r}；输出片段：{out[-200:]!r}）")
+
+    # P6b：**「未覆盖完成」栏也必须从实测全集枚举**。
+    #
+    # 这是 P6 的另一半，单独构造才能验证：若 `not_cleared` 退回声明表
+    # （`EXPECTED_FAMILY_TOTAL`），那么一个**只存在于并集里、未在声明表登记**
+    # 的族会从缺口栏整个消失——数字全对、rc 仍 0，但少报一族未完成。
+    # 反过来 `cleared` 退回声明表时，该族会被错标完成（P6 已覆盖）。
+    #
+    # 构造：往并集工件里新增一道 `<未登记族>` 的题（不登记进声明表），
+    # 则该族应出现在「未覆盖完成」栏。取声明表 → 它根本不出现 → FAIL。
+    with tempfile.TemporaryDirectory() as td:
+        runs = os.path.join(td, "runs")
+        shutil.copytree(RUNS, runs)
+        u = json.load(open(UNION, encoding="utf-8"))
+        uitems = u["items"] if isinstance(u, dict) else u
+        # 克隆一条 Q03 题，改 RVID + 族名，且**不完成**（不在任何批次产物里）
+        src = next(i for i in uitems if i.get("in_Q03"))
+        ghost = dict(src)
+        ghost["rvid"] = "deadbeef-0000-4000-8000-00000000beef"
+        ghost["semantic_family"] = "unregistered_family_zzz"
+        uitems2 = list(uitems) + [ghost]
+        if isinstance(u, dict):
+            u = dict(u, items=uitems2)
+        else:
+            u = uitems2
+        up = os.path.join(td, "union.json")
+        json.dump(u, open(up, "w", encoding="utf-8"), ensure_ascii=False)
+        try:
+            _rcb, outb = _run(runs, up)
+        except Exception:                        # noqa: BLE001
+            outb = ""
+        line_gapb = next((ln for ln in outb.splitlines()
+                          if "未覆盖完成" in ln), "")
+        if "unregistered_family_zzz" in line_gapb:
+            caught += 1
+            print("  ✓ P6b 未在声明表登记的族仍出现在「未覆盖完成」栏"
+                  "（缺口枚举起于实测全集，不是声明表）")
+        else:
+            print("  ✗ P6b 未登记族未进入「未覆盖完成」栏"
+                  f"——缺口枚举取的是声明表，会少报未完成族"
+                  f"（该栏={line_gapb[:120]!r}）")
 
     # P7：**归属分解判据**（本轮整改新增，对应第七批真实发生的错）
     #
@@ -660,7 +746,7 @@ def selftest() -> int:
             print(f"  ✗ P8〔正向对照〕rc={rc} 尚余62={ok62} "
                   f"95/157={ok157} 无95/169={no169}——缺口会被读成 74 题")
 
-    total = 9
+    total = 10
     print(f"\nPROGRESS-SELFTEST: {'PASS' if caught == total else 'FAIL'}"
           f"（{caught}/{total} 检出）")
     return 0 if caught == total else 1
