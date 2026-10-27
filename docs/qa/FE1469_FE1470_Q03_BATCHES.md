@@ -1704,3 +1704,217 @@ config 不一致 6/6 检出；可完成性变异 1 检出、合法 4/5 通过）
 本批同类必须也是 0）。第③项才是真正有区分力的对照。
 
 这与 §10.7.1 的 sha256 事件同型：**判据写错时先怀疑判据**。
+
+## 十二、验收方意见处置：H4 补正 + 两点状态纠正（2026-10-22 晚）
+
+本轮为**非 GitHub 验收方**意见的处置记录。未处理 PR、未改生产题目 / `Published` /
+历史 Evidence。四禁遵守：未改 `grid`、未改题目尺寸、未改答案、未改 `Published`。
+
+### 12.1 验收方对的部分，逐条认账
+
+| 验收方指出 | 实核结果 | 处置 |
+|---|---|---|
+| H4 只 `console.log(isDisabled())` 未断言 | **成立**。原 `:205` 仅记录 | 改 `toBeEnabled()` |
+| 提交体 `bars ?? null` + `if (repBars)` 会静默跳过 | **成立**。缺字段反而不 FAIL | 改无条件断言 |
+| 第六批原始工件未收到，无法独立复跑 | **成立**（分发问题，非漏提交，见 12.2） | 补分发清单 |
+| `process_constraint` 存在 ≠ 能验全部约束 | 成立，与 §11.5 一致 | 维持 |
+| 37/54 缺口在 array-board/sorting-board | 成立，与 §11.5.1 一致 | 维持 |
+| Q05 仍 0 题 | 成立 | 维持 |
+
+### 12.2 状态纠正：工件在仓库里，是分发面漏了
+
+验收方称缺 `FE1472_q03_batch6.json` / `batch6_quota_list.json` / 核验脚本。
+实核 **五个工件全部已提交在 `c05acf5`**：
+
+| 工件 | 大小 |
+|---|---|
+| `scripts/iqc/rt1472/q03_batch6.py` | 74,327 B |
+| `scripts/iqc/rt1472/batch6_quota_list.json` | 41,856 B |
+| `scripts/iqc/runs/FE1472_q03_batch6.json` | 106,262 B |
+| `scripts/iqc/rt1472/check_batch6_ledger.py` | 23,821 B |
+| `scripts/iqc/rt1472/check_independence.py` | 11,462 B |
+
+**结论：不是没提交，是验收方只拿到了报告 md。** 故「独立复跑待补」这一状态
+应表述为「工件已可获取，待验收方取回后复跑」，而不是「我方未提供原始工件」。
+
+验收方那条纪律本身是对的，本轮继续遵守：**不把「报告写 20/20」当「本轮已独立复验 20/20」**。
+我方本地重跑的证据（24 PASS 行、`20 MATCH / 0 MISMATCH`）与 CI 一致，
+但那是**我方执行**，不能替代**验收方执行**。
+
+### 12.3 H4 补正：改了什么，以及为什么负例必须换路径
+
+#### 12.3.1 两处空转已修
+
+- `:205` `console.log(... isDisabled())` → `await expect(input).toBeEnabled()`
+- `:214` `body?.response?.representation?.bars ?? null` + `if (repBars)`
+  → 无条件 `expect(body.response.representation).toBeTruthy()` + 逐字段断言
+  （`type=bar-model`、`bars` 是数组、长度 2、含 `id=unknown`）
+
+改后断言数 22 → 24。
+
+#### 12.3.2 关键发现：bar-model 上「表征缺失」不可达
+
+验收方建议「单独构造表征缺失的状态」。实核源码后**这条在 D2 三题上做不到**：
+
+- `createInitialRepresentation()`（`math-workspace/model.ts:18-66`）对
+  `objects` / `bar-model` / `number-line` 三种 visual **都无条件返回非空对象**；
+- `WorkspaceProvider.tsx:51-58` 挂载即 `REINITIALIZE` 并经 `onWorkspaceChange` 回填 `present`；
+- `RESET` 复位到 `state.initial`（同样非空）；`UNDO` 无历史时直接 `return state`。
+
+**所以 bar-model 上不存在「表征为 null」的合法 UI 状态。** 若硬在三题上
+"构造"，只能改写组件内部 state 伪造——那是假证据，不是浏览器实测。
+这点必须写清，否则后人会以为「补一个负例」很简单。
+
+#### 12.3.3 改用真实可达路径做负例（H4b）
+
+`schema_version=1.0` + `kind="number"` → `TaskRenderer.tsx:519` 走 `NumberRenderer`，
+它**不挂载 `WorkspaceProvider`**；而 `createEmptyTaskResponse()`（`:46-48`）不含
+`representation` 字段 → `representation_required && !response.representation` 恒真。
+实测：答案框 `disabled=true`、提交按钮 `disabled=true`、**零提交请求**。
+
+这条负例检验的正是 `AnswerComposer` 的 disabled 表达式本身，比伪造 state 有效。
+
+#### 12.3.4 补正过程抓到一个新缺陷（UI-TEXT）
+
+H4b 首跑失败，报「提交按钮不存在」。真因不是断言写错，而是
+`AnswerComposer.tsx:34`：
+
+```tsx
+{disabled ? "正在判断…" : "提交答案"}
+```
+
+**`disabled` 一个 prop 承担了两种语义**：①正在提交/判分（「正在判断…」恰当）
+②前置闸门未满足、表征缺失（此时「正在判断…」是**错的**——孩子的表征还没做，
+系统没有任何东西可判，却被告知正在判分）。
+
+实测确认：表征缺失时按钮文案确为「正在判断…」。
+
+> **⚠️ 本节初版的处置已被推翻（见 §12.6）**：初版把「正在判断…」写成
+> `expect(submitText).toBe("正在判断…")`，即把已知错误文案**锁定为预期值**——
+> 将来有人正确修复文案时测试反而 FAIL。已撤销该断言，改为台账登记。
+
+#### 12.3.5 负对照：证明断言有区分力（不然「4/4 通过」不可信）
+
+| 变异 | 预期 | 实测 |
+|---|---|---|
+| M1 负例 `representation_required` 改 `false` | H4b 须 FAIL | **FAIL**，`Received: enabled`，精确点名 |
+| M2 删掉 `representation` 显式断言 | 结果不变（仅断言数减 1） | 4 passed，22→23→24 断言数差异 |
+| M3 拦截时 `delete body.response.representation` | 三题须 FAIL | **3 FAIL**，报「提交体必须携带 representation」 |
+
+M2 的结果说明了重要一点：**光删断言看不出区别**（因为当前实现确实带字段）。
+只有 M3 这种「让被观察量真的缺失」才能证明断言有区分力。这与项目铁律
+「变异无效 ≠ 检测器失效」同型——**修法永远是让变异改到被观察量，不是放宽判据**。
+
+实跑：`4 passed (18.4s)`，含 3 题 D2 + 1 条 H4b 负例。
+
+### 12.4 仍未做 / 不授权
+
+| 项 | 状态 |
+|---|---|
+| H1–H3 后端判分实测 | **未做**。`correct:true` 是拦截构造值，不是真实 Judge 结果 |
+| D2 三题真实 E2E 提交 | **阻塞**。需可写凭证；`iqc_readonly` 对 `learning_session` 仅 SELECT |
+| `8b41e648` 真实页面复现 | 静态证据已接受，**页面复现未做** |
+| `8b41e648` 修法 | **不授权**。改 `grid` 语义或改题目尺寸属产品决策 |
+| array/sorting 补 `process_constraint` | **不授权**。补字段不等于有校验器（后端无对应 mode） |
+| `UI-TEXT` 文案修正 | **不在本批**。见 §12.6 台账 `DEF-D2-UI-TEXT`；测试已不断言该文案 |
+| Q05 处置 | 仍 **0 题** |
+
+### 12.5 一个需要出题侧知道的死配置（本轮新发现）
+
+`kind="number"` + `representation_required=true` 会让答案框**永久禁用**，
+题目不可作答（无工作区可挂载，`representation` 永不存在）。
+
+现场 RDS 实测：`representation_required=true` 的题目共 **37 题，全部 `kind=manipulative`**，
+`kind=number` 为 **0 题** → **当前无活体受害**，但这是出题必须避开的一种配置组合。
+本文只登记，不改内容。
+
+### 12.6 缺陷台账（本轮新增，测试**不再**用断言锁定这些行为）
+
+缺陷记录进台账，而不是写成「必须保持」的断言。区别很重要：
+断言锁定会让**将来正确修复反而 FAIL**，等于把 bug 冻进验收标准。
+
+| 编号 | 位置 | 现象 | 判据 | 处置 |
+|---|---|---|---|---|
+| `DEF-D2-UI-TEXT` | `apps/child-web/src/components/learning/AnswerComposer.tsx:34` | `{disabled ? "正在判断…" : "提交答案"}`——`disabled` 一个 prop 同时承担①正在判分 ②前置闸门未满足。表征缺失时也显示「正在判断…」，把「还差表征」误告成「正在判分」 | 归因到**语义**而非文案：应为两种状态给两种提示 | **不修**。改文案属产品决策；测试只断言「有可见文案」`length > 0`，不断言具体字 |
+| `DEF-D2-NUM-DEADCFG` | 出题配置 | `kind="number"` + `representation_required=true` → 答案框永久禁用、题目不可作答（无工作区可挂载） | 现场实测 `representation_required=true` 共 37 题**全为 `manipulative`**，`kind=number` **0 题** → 无活体受害 | **不改内容**。出题侧须避开该组合 |
+
+### 12.7 第二轮复核：H3 的语义错误（验收方指出，**最实质的一条**）
+
+#### 12.7.1 我错在哪
+
+初版 H3 断言：
+
+```js
+expect(String(body.response.answer))
+  .not.toBe(String(unknownBar.value));   // ← 把「合计 ≠ 单条」当作半成品证据
+```
+
+**这是把正确的数学关系误判成异常。** 两根条分别表示两个人的数量，
+合计**本来就不等于任一加数**——该断言恒真、零信息量，不可能检出任何缺陷。
+
+更糟的是：初版在 H3 之后**直接提交**，没有恢复正确未知量。
+第一题（11/7，合计 18，上限 15）实际提交的未知条是 **15**——
+既不是正确的 7，也不是合计 18，是个无意义值。而测试却 PASS。
+
+#### 12.7.2 一个极易踩的巧合
+
+| 题 | 已知 | 正确未知量 | 合计 | 未知条上限 |
+|---|---|---|---|---|
+| d2-1 | 11 | 7 | 18 | 15 |
+| d2-2 | 9 | **12** | 21 | **12** |
+| d2-3 | 8 | **11** | 19 | **11** |
+
+**d2-2 的 12、d2-3 的 11 既是正确未知量、又恰好等于滑条上限。**
+所以「设为合计 → 被夹到上限」停下来的值，在第二、三题上**正好就是正确答案**。
+单看这两题会得出「半成品也停在正确值」的荒谬结论。**只有 d2-1 暴露了真实差异**
+（停在 15，正确是 7）。这解释了为什么这个问题容易被漏掉。
+
+#### 12.7.3 修正后的断言结构
+
+| 用例 | 断言内容 | 性质 |
+|---|---|---|
+| H1 | 上限 = 该条自己的 `max`（15/12/11），且 ≠ `visual.max_value` | 保留 |
+| H2 | 正确未知量可达（7/12/11） | 保留 |
+| H3 | 合计被夹到上限，**标注「预期行为，非缺陷」** | 语义改为非缺陷 |
+| **H2b（新增）** | 提交前**显式恢复**正确未知量，并断言恢复成功 | 补上缺失的步骤 |
+| **H4a 加强** | 上报表征 `base == 已知量` 且 `unknown == 另一人数量`，且 `base+unknown == 合计` | **改为验证"正确表征"的定义** |
+| **H3b（新增用例）** | 显式构造错误状态（unknown=15、answer=18），验证前端**照原样**发送 | 明确是"前端不拦截"，不涉后端 |
+
+关键差别：旧断言是 `answer != unknownBar.value`（恒真）；
+新断言是 `baseBar.value === known && unknownBar.value === other && base+unknown === answer`
+（**这三条只在表征正确时成立**）。
+
+#### 12.7.4 H4b 的性质表述已纠正
+
+H4b 现明确标注为 **「前端防御逻辑的合成负例」**：
+- 它验证 `AnswerComposer` 的 disabled 表达式在表征缺失时确会禁用；
+- **不代表生产题库存在该配置**（实测 0 题），不能表述为"已复现生产题目不可作答"；
+- 不需要据此改生产题目。
+
+#### 12.7.5 第二轮负对照（证明新断言真有区分力）
+
+| 变异 | 预期 | 实测 |
+|---|---|---|
+| M4 提交前不停在正确值而是停在 `unknownMax` | H2b 须 FAIL | **FAIL**，`Expected: 7 / Received: 15` |
+| M5 已知条期望改成 `known+1` | 三题须 FAIL | **3 FAIL**，`Expected 12/10/9 / Received 11/9/8` |
+| M6 H3b 误用正确值（`other` 当作"错误值"） | 前置断言须 FAIL | **FAIL**，`Expected: not 7` |
+| M7 拦截时 `delete body.response.representation` | H4a 须 FAIL | **4 FAIL**，报「提交体必须携带 representation」 |
+
+实跑：`5 passed (11.6s)`（3 题 D2 + H3b + H4b），断言数 24 → 35。
+
+**M4 特别值得记**：它证明「提交前恢复正确未知量」这一步不是多余的礼貌动作——
+不恢复时第一题会提交 15，新断言立刻抓住。旧断言对这个变异**无反应**（因为 18 ≠ 15 依然成立）。
+
+### 12.8 第二轮后的验收状态
+
+| 项 | 状态 |
+|---|---|
+| 语法检查 | 通过（`node --check`） |
+| H1 / H2 | 有明确断言，实测通过 |
+| H3 | **语义已修正**：标注为预期行为，不再称缺陷 |
+| H2b | 新增，提交前恢复正确值 |
+| H4a | 有正向断言，且验证"正确表征"定义 |
+| H3b | 新增，显式错误状态，仅证前端不拦截 |
+| H4b | 合成负例，逻辑成立，**不代表生产故障** |
+| UI-TEXT | 已移入台账，测试不再锁定文案 |
+| 后端判分 | **未验证**（拦截 `correct:true` 是构造值） |

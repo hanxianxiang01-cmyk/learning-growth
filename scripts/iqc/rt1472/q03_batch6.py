@@ -22,12 +22,19 @@
    是 4×4 格。若题面要求「长 5 格」，该矩形在板上根本画不出来。
    本批对每题穷举钉位、判定「题面所要求的形状是否真的画得出」。
 
-3. **过程约束从「声明了但没启用」变成「已启用」**
+3. **过程约束从「声明了但没启用」变成「部分启用」**
    第五批 20 题 `process_constraint` 全为 null（观察项 EVIDENCE_DECLARED_
-   BUT_NOT_ENFORCED）。本批 54 题**全部带 process_constraint**，后端
-   `process_validate.py` 会真校验。但这不等于「过程正确就能被发现」——
-   `_rule_shape` 只重算面积与直角，**不读 base/height**，所以画一个同样面积
-   的斜正方形仍判 valid。此边界本批显式登记。
+   BUT_NOT_ENFORCED）。本批实测 **17/20 带 process_constraint**——不带 pc 的
+   3 题是 array-board 1 题 + sorting-board 2 题，这 17 题后端
+   `process_validate.py` 会真校验。
+   **全族口径是 37/54，不是「54 题全部带」**（上一轮笔记曾如此误记，本批实地
+   统计更正，见 `_family_process_coverage()`）；缺口 17 题全部落在
+   array-board（8/8 全无）与 sorting-board（9/9 全无），而后端 RULES 只有
+   pattern_extension / payment_change / shape_drawing / place_value_build 四个
+   mode，没有这两类的校验器——属**过程校验能力缺口**，不是题目漏配。
+   且「已启用」不等于「过程正确就能被发现」：`_rule_shape` 只重算面积与直角，
+   **不读 base/height**，所以画一个同样面积的斜正方形仍判 valid。此边界本批
+   显式登记。
 
 核验链（每步可单独复核）：
   题干 → 抽取题面事实 → 明确所求对象 → 独立推导/构造（纯算术）
@@ -50,7 +57,27 @@ from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
-assert os.path.isdir(os.path.join(REPO, "scripts", "iqc")), f"REPO 层级算错：{REPO}"
+
+
+def _check_layout() -> int:
+    """确认脚本位于仓库内，否则以 2 退出（0=正常继续）。
+
+    与 `check_independence.py` 同款修法：`assert` 触发时进程以 **1** 结束，
+    与「1 = 核验失败」撞码。直接解压交付件（扁平目录）跑会得到 rc=1，
+    看起来像结论不成立，其实只是布局不对。
+    """
+    if not os.path.isdir(os.path.join(REPO, "scripts", "iqc")):
+        print(f"REPO 层级算错：{REPO}（其下没有 scripts/iqc/）", file=sys.stderr)
+        print(f"  本脚本预期位于 <repo>/scripts/iqc/rt1472/，当前实际在：{HERE}",
+              file=sys.stderr)
+        print("  退出码 2 = 环境/布局问题，**不是核验失败**。", file=sys.stderr)
+        return 2
+    return 0
+
+
+_L = _check_layout()
+if _L:
+    sys.exit(_L)
 
 QUOTA = os.path.join(HERE, "batch6_quota_list.json")
 OUT = os.path.join(REPO, "scripts/iqc/runs/FE1472_q03_batch6.json")

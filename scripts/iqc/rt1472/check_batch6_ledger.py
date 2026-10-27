@@ -56,8 +56,27 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
-# REPO 退级要被 assert 拦住——`scripts/scripts/` 已经踩过两次
-assert os.path.isdir(os.path.join(REPO, "apps")), f"REPO 推导错误：{REPO}"
+
+
+def _check_layout() -> int:
+    """REPO 退级要被拦住（`scripts/scripts/` 已经踩过两次）。
+
+    但**不能只写 `assert`**：assert 触发时进程以 1 结束，与「1 = 对账失败」
+    撞码。直接解压交付件（扁平目录）跑就会 rc=1，被误读成账目不平。
+    2026-10-23 统一改为：布局不对 → 2（环境问题），对账不平 → 1。
+    """
+    if not os.path.isdir(os.path.join(REPO, "apps")):
+        print(f"REPO 推导错误：{REPO}（其下没有 apps/）", file=sys.stderr)
+        print(f"  本脚本预期位于 <repo>/scripts/iqc/rt1472/，当前实际在：{HERE}",
+              file=sys.stderr)
+        print("  退出码 2 = 环境/布局问题，**不是对账失败**。", file=sys.stderr)
+        return 2
+    return 0
+
+
+_L = _check_layout()
+if _L:
+    sys.exit(_L)
 
 QUOTA_PATH = os.path.join(HERE, "batch6_quota_list.json")
 RESULT_PATH = os.path.join(REPO, "scripts", "iqc", "runs", "FE1472_q03_batch6.json")
