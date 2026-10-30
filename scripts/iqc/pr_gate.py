@@ -47,6 +47,28 @@
 20. 第六批语义族覆盖登记：`115/212` 不能读作「各类型题都验过」——前五批 95 题
     全在 numeric_judge 一族。产物必须显式记录族名/本批数/全族数，且与逐题
     solve_path 自洽（FE-1472）
+21. 第七批核验器区分力自证：**模板歧义必须 rc=2 而非 rc=1**（抽不到≠核验失败）、
+    题干数字变异 16/16 模板必须检出、可完成性变异 1 检出且合法 3/3 通过
+    （不能要求全部 FEASIBLE），且 `--crossbatch` 证明第六批 20 题在新规则下
+    仍 MATCH（改方法不得让旧结论漂移）（FE-1472）
+22. 第七批账实核 + **结构性判据**：verdict 必须与题面模板相容
+    （`VERDICT_TEMPLATE_WHITELIST`）。这一项防的是自洽检查拦不住的**强洗白**：
+    改 verdict + 同步汇总 + 补一条伪造观察项 + 改 verdict_note，所有自洽检查
+    全部通过、0 条报警。九类变异必须全部检出（FE-1472）
+23. 进度账实核**自证**：`check_progress --selftest`。本脚本此前从未自证过，
+    而第七批新增的「族级清零」恰是最容易被读成「已核完」的一句。
+    新增两道分母防线（改分母 54→34、清零行取声明表）都必须 FAIL（FE-1472）
+24. 文档数字可复现性：`check_doc_claims`。第十三章几十个数字（35/32/54-54/
+    150/62/42 条常量…）此前**全部手写、无脚本核过**，而本批已实测到一次真实
+    事故（§13.3.2 把 35 写成 33，同一句还错了两处）。本项要求文档数字与产物
+    逐条一致，且历史章节（十/十一/十二）不参与核对（那里的数字是当时实测值）（FE-1472）
+
+25. PR 堆叠整链覆盖：`check_pr_chain`。核四条不变量（整链数==唯一 SHA 数 /
+     逐段和==总数 / `#135` 区间==整链−`#136` 累计 / 每段是下家的祖先）。
+     上一轮「8 个提交全部覆盖」实为 9，错因是只核每段是否相等、没核合计；
+     而 `base == 上家 head` 本身有盲区——上家 head 到本家 base 之间若有
+     提交游离，所有 `base == head` 照样成立。**段长为负须单独报**：断裂图
+     上 `#136` 段算出 −1 而「逐段和==总数」仍成立（负数削平），只有它能抓（FE-1472）
 
 边界（裁决 §四）：本门只判规则明确证据充分的问题；不访问生产 DB；失败输出含
 rule_id+证据，不得为空。
@@ -60,6 +82,7 @@ rule_id+证据，不得为空。
   · 失败时 tail 优先取含 `✗` 的行，否则真因会被统计行盖掉
 """
 import json
+import re
 import subprocess
 import sys
 import os
@@ -67,11 +90,30 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 fails = []
+_notes = []          # (name, ok, detail)：收尾时用于自数行数，见文件末尾
+_sealed = [False]    # 行数审计是否已跑过；跑过后再 note() 即判失败
 
 def note(name, ok, detail=""):
     print(f"{'PASS' if ok else 'FAIL'}  {name}" + (f"  — {detail}" if detail else ""))
+    # **封口检查**：收尾那段「门禁行数」对账一旦跑过，就把 `_sealed` 置真。
+    # 此后再有 `note()` 就说明有人把新检查加在了审计**之后**——那些行不会
+    # 被计数，文档写的行数会静默偏少。实测过一次：把模拟项插在审计之后，
+    # 总行数由 31 变 32 而判据仍报「一致」、rc=0（反证 G 无效）。
+    # 这不是靠"记得把审计放最后"，而是**让忘了这件事立刻变红**。
+    if _sealed[0]:
+        fails.append(f"审计后新增了未计入行数的检查项「{name}」"
+                     f"——应移到审计之前，或同步更新文档行数")
+    _notes.append((name, ok, detail))
     if not ok:
         fails.append(name)
+
+def info(name, detail=""):
+    """打印但不计入「PASS 行数」——给「统计/对账」类输出用。
+
+    与 `note()` 的区别是它**不改变被统计的量**。收尾那项「门禁行数」若用
+    `note()` 打，自己占一行，行数由 31 变 32，判据立刻自相矛盾。
+    """
+    print(f"INFO  {name}" + (f"  — {detail}" if detail else ""))
 
 # 1 夹具回归
 r = subprocess.run([sys.executable, os.path.join(HERE, "test_checks.py")], capture_output=True, text=True)
@@ -471,5 +513,278 @@ else:
          f"family={_fs.get('semantic_family')} 本批 {_fs.get('verified_here')}"
          f"/全族 {_fs.get('total_in_family')}；题数 {_n}")
 
+# 21 第七批核验器区分力自证（FE-1472）
+#
+#    第七批的方法学又变了一层：第六批「边写边补正则」只覆盖那 20 题的写法，
+#    本批 35 题实测会让第六批规则**静默算错 1 题**（money-board 靠「另一件」
+#    三字判两件相加，缺这三个字就只取首个标价 10，真值 15——不报错、不崩溃，
+#    静默产出错值，然后被判成 MISMATCH，看起来像题库错了）。
+#    故本批改成**题面模板显式登记**，每题必须恰好命中一个模板。
+#    本项锁四件事：
+#      · 答案篡改 32/32 必须检出（比较器非永真）
+#      · 题干数字变异 16/16 模板必须检出（推导真读题面）
+#      · 可完成性变异 1 检出、**合法 3/3 通过**——不能要求「全部 FEASIBLE」，
+#        那会逼检测器对真实缺陷说假话（唯一不可完成的 8b41e648 在第六批）
+#      · `--crossbatch`：第六批 20 题在新规则下必须仍 MATCH。这一条防的是
+#        「为让新批好看，把旧批的判据也悄悄改松」——改方法不得让旧结论漂移
+b7_script = os.path.join(HERE, "rt1472", "q03_batch7.py")
+b7_quota = os.path.join(HERE, "rt1472", "batch7_quota_list.json")
+if not os.path.exists(b7_script):
+    note("第七批核验器工件存在", False,
+         "缺 rt1472/q03_batch7.py——不允许静默跳过")
+elif not os.path.exists(b7_quota):
+    note("第七批选题清单存在", False,
+         "缺 rt1472/batch7_quota_list.json——没有先冻结选题集合，"
+         "「两族清零」这句话就无法自证是 35 题全取而非抽样")
+else:
+    r21 = subprocess.run([sys.executable, b7_script, "--selftest"],
+                         capture_output=True, text=True)
+    _boom21 = [ln.strip() for ln in (r21.stderr + r21.stdout).splitlines()
+               if "✗" in ln]
+    tail21 = (_boom21[0] if _boom21
+              else (r21.stdout.strip().splitlines() or [""])[-1])
+    note("第七批核验器区分力自证 q03_batch7 --selftest",
+         r21.returncode == 0 and "Q03-BATCH7-SELFTEST: PASS" in r21.stdout, tail21)
+
+    # 21b 跨批回归：新规则跑旧批，结论不得漂移
+    r21b = subprocess.run([sys.executable, b7_script, "--crossbatch"],
+                          capture_output=True, text=True)
+    _boom21b = [ln.strip() for ln in (r21b.stderr + r21b.stdout).splitlines()
+                if "✗" in ln]
+    tail21b = (_boom21b[0] if _boom21b
+               else (r21b.stdout.strip().splitlines() or [""])[-1])
+    note("第七批跨批回归 q03_batch7 --crossbatch",
+         r21b.returncode == 0 and "CROSSBATCH: PASS" in r21b.stdout, tail21b)
+
+# 22 第七批账实核 + 结构性判据（FE-1472）
+#
+#    **本项防的是自洽检查拦不住的「强洗白」**（本批最重要的发现）：
+#    把一道已核题改 verdict + 同步汇总 + 补一条伪造观察项 + 改 verdict_note，
+#    于是「汇总=逐题」「观察项↔verdict 对应」「note 与 verdict 相符」全部通过，
+#    **0 条报警**——因为它保持了内部一致性，而自洽检查只查一致性。
+#    唯一有效解法是**结构性判据**：verdict 必须与题面模板相容
+#    （`VERDICT_TEMPLATE_WHITELIST`）。依据是语义而不是数据：
+#    `UNVERIFIABLE_FROM_STEM` 的含义决定了只有 estimation 模板可能适用。
+b7_ledger = os.path.join(HERE, "rt1472", "check_batch7_ledger.py")
+b7_result = os.path.join(HERE, "runs", "FE1472_q03_batch7.json")
+if not os.path.exists(b7_ledger):
+    note("第七批账实核工件存在", False,
+         "缺 rt1472/check_batch7_ledger.py——不允许静默跳过")
+elif not os.path.exists(b7_result):
+    note("第七批核验产物存在", False,
+         "缺 runs/FE1472_q03_batch7.json——没有产物，"
+         "「两族清零」无从对账，门禁会退化成只查脚本存在")
+else:
+    r22 = subprocess.run([sys.executable, b7_ledger], capture_output=True, text=True)
+    _boom22 = [ln.strip() for ln in (r22.stderr + r22.stdout).splitlines()
+               if "✗" in ln]
+    tail22 = (_boom22[0] if _boom22
+              else (r22.stdout.strip().splitlines() or [""])[-1])
+    note("第七批账实核 check_batch7_ledger",
+         r22.returncode == 0 and "账实相符" in r22.stdout, tail22)
+
+    r22s = subprocess.run([sys.executable, b7_ledger, "--selftest"],
+                          capture_output=True, text=True)
+    _boom22s = [ln.strip() for ln in (r22s.stderr + r22s.stdout).splitlines()
+                if "✗" in ln]
+    tail22s = (_boom22s[0] if _boom22s
+               else (r22s.stdout.strip().splitlines() or [""])[-1])
+    note("第七批账实核区分力自证 check_batch7_ledger --selftest",
+         r22s.returncode == 0 and "BATCH7-LEDGER-SELFTEST: PASS" in r22s.stdout,
+         tail22s)
+
+# 23 进度账实核自证（check_progress --selftest，FE-1472）
+#
+#    第 13 项只跑 audit（账实是否相符），**从不自证**。
+#    而第七批新增的「族级清零」是整份文档里最容易被读成「已核完」的一句话，
+#    若它恒真，读者无法分辨「54/54」与「34/34 被当成清零」。
+#    本项锁两道分母防线（都是本轮新增）：
+#      P4 把全族总量 54 改成 34 → 必须 FAIL（只核分子时改分母可洗成 100%）
+#      P6 清零行若取声明表 → 打印 n/n 恒真式，必须 FAIL
+#    P6 的判据第一版无效（未清零行也打印 54/54，能蒙过），
+#    现已改成「让分子分母故意不等」——取产物打印 53/54，取声明表打印 53/53。
+#
+#    **P6 又出过一次真实漏洞（#135 独立复核发现）**：
+#    实现里 `cleared` 用 `EXPECTED_FAMILY_TOTAL`（人工声明）当分母，
+#    声明被同步改小时该族被判为「覆盖完成」；而判据只问「有没有 53/54」，
+#    没问它落在哪一栏，于是错误实现照样 PASS。
+#    现修法有三条，缺一可绕：
+#      · `cleared` / `not_cleared` 一律取实测 `fam_total`；
+#      · P6 定向断言 `53/54` **在**「未覆盖完成」栏、**不在**「覆盖完成」栏；
+#      · P6b 未在声明表登记的族仍须出现在缺口栏（防缺口枚举退回声明表）。
+#    反向对照：注入「声明分母」→ 8/9 FAIL；注入「缺口枚举取声明表」→ 9/10 FAIL。
+if not os.path.exists(prog_check):
+    note("进度账实核自证工件存在", False, "缺 rt1472/check_progress.py")
+else:
+    r23 = subprocess.run([sys.executable, prog_check, "--selftest"],
+                         capture_output=True, text=True)
+    _boom23 = [ln.strip() for ln in (r23.stderr + r23.stdout).splitlines()
+               if "✗" in ln]
+    tail23 = (_boom23[0] if _boom23
+              else (r23.stdout.strip().splitlines() or [""])[-1])
+    note("进度账实核自证 check_progress --selftest",
+         r23.returncode == 0 and "PROGRESS-SELFTEST: PASS" in r23.stdout, tail23)
+
+# 24 文档数字可复现性（check_doc_claims，FE-1472）
+#
+#    项目铁律：「产物里的分析结论若不能由脚本重现，就只是某次人工编辑的快照」。
+#    第十三章有几十个数字，此前**全部手写、没有任何脚本核过**，
+#    而本批已经实测到一次真实事故：§13.3.2 把「32+3」算成 33（应为 35），
+#    同一句还把容差说成对三题都适用——两处错，通读发现不了。
+#    本项要求文档数字与产物逐条一致。
+#    **历史章节（十/十一/十二）不参与核对**：那里的数字是当时实测值，
+#    改成今天的值反而是错的——本脚本按 `## 十三、` 起点截断。
+doc_check = os.path.join(HERE, "rt1472", "check_doc_claims.py")
+doc_path = os.path.join(REPO, "docs", "qa", "FE1469_FE1470_Q03_BATCHES.md")
+if not os.path.exists(doc_check):
+    note("文档数字核对工件存在", False,
+         "缺 rt1472/check_doc_claims.py——不允许静默跳过")
+elif not os.path.exists(doc_path):
+    note("第七批文档存在", False, f"缺 {doc_path}")
+else:
+    r24 = subprocess.run([sys.executable, doc_check], capture_output=True, text=True)
+    _boom24 = [ln.strip() for ln in (r24.stderr + r24.stdout).splitlines()
+               if "✗" in ln]
+    tail24 = (_boom24[0] if _boom24
+              else (r24.stdout.strip().splitlines() or [""])[-1])
+    note("文档数字可复现性 check_doc_claims",
+         r24.returncode == 0 and "文档数字与产物一致" in r24.stdout, tail24)
+
+    r24s = subprocess.run([sys.executable, doc_check, "--selftest"],
+                          capture_output=True, text=True)
+    _boom24s = [ln.strip() for ln in (r24s.stderr + r24s.stdout).splitlines()
+                if "✗" in ln]
+    tail24s = (_boom24s[0] if _boom24s
+               else (r24s.stdout.strip().splitlines() or [""])[-1])
+    note("文档数字核对区分力自证 check_doc_claims --selftest",
+         r24s.returncode == 0 and "DOC-CLAIMS-SELFTEST: PASS" in r24s.stdout,
+         tail24s)
+
+# 25 进度账实核自证（check_pr_chain，FE-1472 第三轮）
+#
+#    第 23 项证明「进度数字对不对」。本项证明**「链有没有覆盖全」**——
+#    上一轮汇报写「8 个提交全部覆盖」，实为 9，错因是只核了每段是否
+#    相等、没核合计。`base == 上家 head` 这类比对还有结构性盲区：
+#    上家 head 到本家 base 之间若有提交游离，所有 `base == head` 照样成立。
+#    故本项核四条不变量：整链数==唯一SHA数 / 逐段和==总数 /
+#    #135 区间==整链−#136累计 / 每段都是下一段的祖先。
+#    **段长为负**须单独报：那时「逐段和==总数」仍可能成立（负数削平），
+#    实测断裂图上 #136 段算出 −1 而总和仍等，只有这条能抓。
+
+# ── 门禁行数与文档对账（**自数自核**）──
+#
+# 「24 项」与「31 个 PASS 行」**不是一个量**：一项可能打多行（第 3 项拆成
+# 3 行；第五/六/七批各是「账实核 + 自证」两行；第 24 项拆成 audit + 自证）。
+# 此前文档与交接记录都写「32 行 PASS」，实为 31——**写错了 1，且全靠手记**。
+# 现有判据全查不出：本门自己报 `24/24 PASS`（只说项数，不说行数），
+# `check_doc_claims` 核的是别的数字。**两个都写着 PASS 的不同量，最容易被
+# 当成同一个数**——「总数正确、分类错误」那个错型换了个壳。
+#
+# 两处必须小心，都是本轮实踩的：
+#
+#  ① 不能用 `note()`。第一版写成 `note(...)`，于是**检查自己占了一行**，
+#     行数由 31 变 32、判据立刻 FAIL。这就是「判据的存在改变了被测量」：
+#     一旦它算进自己，所谓"核对 31 行"就永远自相矛盾；若再顺手把文档
+#     改成 32，下次加任何一项又要改文档——**数字随判据漂移**。
+#     故这里用 `info()`：打印但不计入行数，失败仍走 `fails` 硬 FAIL。
+#  ② 不能由 `check_doc_claims` 反向调本脚本核：
+#     `pr_gate → check_doc_claims → pr_gate` 递归，实测 SIGTERM 137。
+#     **计数主体自己数自己，才不循环**。
+# 「24 项」也不能手写：它同样是会随加项漂移的量。项数取**头部编号清单
+# 的行数**（`NN.` 开头那几行），那是本文件对"一共有几项门禁"的唯一声明。
+_here = os.path.dirname(os.path.abspath(__file__))
+_src = open(os.path.join(_here, "pr_gate.py"), encoding="utf-8").read()
+_doc = _src.split('"""')[1] if _src.count('"""') >= 2 else ""
+_n_items = sum(1 for _ln in _doc.splitlines()
+               if re.match(r"^\s*\d+\.\s", _ln))
+# 防「解析失败被当成 0 项」：清单被改格式（如改成 `1)` 或去掉编号）时，
+# `_n_items` 会静默变 0，而文档里若也写 0 项就"一致"了——**解析失配冒充正确结论**。
+if _n_items < 10:
+    fails.append(f"门禁项数解析异常：只解析出 {_n_items} 项"
+                 f"——头部编号清单格式被改动了？")
+_chain = os.path.join(HERE, "rt1472", "check_pr_chain.py")
+if not os.path.isfile(_chain):
+    note("PR 堆叠整链覆盖核对工件存在", False, "缺 rt1472/check_pr_chain.py")
+else:
+    # **rc=2 是环境问题（无 .git），不是判据失败**。
+    #
+    # 实测：把提交导出成 tar（`git archive`）后跑门禁，本项 rc=2、
+    # 而门禁把它当普通 FAIL → 整个门禁红。但那份副本**本来就没有提交图**
+    # ——不是「链覆盖不成立」，是「这项工作在这里做不了」。
+    # 项目已记的「2=环境·工件·布局」正是为此：**混淆二者会让真正的失败
+    # 淹没在假失败里**，而下一个人会因此学会忽略这项红。
+    # 故 rc=2 一律判**失败**（不能静默算 PASS，那又是空转），但明细里
+    # **写明是环境问题**，并指出在有 .git 的目录跑才有效。
+    _rc5 = subprocess.run([sys.executable, _chain], capture_output=True, text=True)
+    _boom5 = [ln.strip() for ln in (_rc5.stdout + _rc5.stderr).splitlines()
+              if "✗" in ln]
+    _tail5 = (_boom5[0] if _boom5
+              else (_rc5.stdout.strip().splitlines() or [""])[-1])
+    if _rc5.returncode == 2:
+        _tail5 = (f"环境问题（无 git 仓库）：本项只校验提交图，"
+                  f"须在含 .git 的目录运行——不是判据失败")
+        note("PR 堆叠整链覆盖核对 check_pr_chain（环境不足=失败，不谎称通过）",
+              False, _tail5)
+    else:
+        note("PR 堆叠整链覆盖核对 check_pr_chain",
+              _rc5.returncode == 0 and "整链覆盖成立" in _rc5.stdout, _tail5)
+
+    _rc5s = subprocess.run([sys.executable, _chain, "--selftest"],
+                           capture_output=True, text=True)
+    _boom5s = [ln.strip() for ln in (_rc5s.stdout + _rc5s.stderr).splitlines()
+               if "✗" in ln]
+    _tail5s = (_boom5s[0] if _boom5s
+               else (_rc5s.stdout.strip().splitlines() or [""])[-1])
+    note("PR 堆叠整链覆盖区分力自证 check_pr_chain --selftest",
+          _rc5s.returncode == 0 and "PR-CHAIN-SELFTEST: PASS" in _rc5s.stdout,
+          _tail5s)   # 自证不依赖 git，无 .git 也应通过
+
+_n_pass = sum(1 for _n, _ok, _d in _notes if _ok)
+_n_fail = sum(1 for _n, _ok, _d in _notes if not _ok)
+_docp = os.path.join(REPO, "docs", "qa", "FE1469_FE1470_Q03_BATCHES.md")
+_want = f"门禁 **{_n_items} 项 / {_n_pass} 个 PASS 行**（0 FAIL）"
+_ok_row = False
+# **行数对账只在「所有项都能跑」时才有意义**。若已有项因环境不足失败
+# （如归档目录无 .git → check_pr_chain rc=2），行数必然比文档少 1，
+# 这时再报一条「行数不一致」就是**假失败盖住真失败**：
+# 下一个读到两条 FAIL 的人会去改文档行数，而真正要处理的是环境。
+# 故只在没有其它失败时核对行数；有其它失败就明说"跳过"。
+_misc = [f for f in fails if "门禁行数" not in str(f)]
+if _misc:
+    info("门禁行数（不计入行数本身）",
+         f"跳过核对——已有 {len(_misc)} 项失败，行数必然偏少，"
+         f"再报一条会掩盖真因")
+elif not os.path.isfile(_docp):
+    fails.append(f"门禁行数对账：缺 {_docp}")
+else:
+    _txt = open(_docp, encoding="utf-8").read()
+    _ok_row = (_n_fail == 0 and _want in _txt)
+    if not _ok_row:
+        fails.append(
+            f"门禁行数与文档不一致：实测 {_n_pass} 个 PASS 行 / "
+            f"{_n_fail} 个 FAIL 行，文档应为「{_want}」")
+_sealed[0] = True   # 之后任何 note() 都会被抓（见 note() 内封口检查）
+# 行数只在"确实核过"时打印第二行；跳过分支已经印过原因，不必再印一遍
+# 实测的「不一致」——那会和上面的「跳过核对」自相矛盾。
+if not _misc:
+    info("门禁行数（不计入行数本身）",
+         f"{_n_pass} 个 PASS 行 / {_n_fail} 个 FAIL 行"
+         f" → 文档{'一致' if _ok_row else '不一致'}")
+
+# ── 失败明细必须打印出来（**否则 FAIL 只是一句骂人话**）──
+#
+# 实测踩到：收尾两项对账失败时只印 `PR-IQC-GATE: FAIL (2)`，
+# **两条原因一条都没输出**——因为 `fails` 里存的是名字/字符串，而收尾
+# 从来没有把内容打出来。`note()` 失败时会印一行，但**直接
+# `fails.append(...)` 的（收尾对账就是这种）不会**。
+# 读者拿到的信息量等于「有个东西错了」，与「无输出」没区别。
+# 这与本项目记的「报错吞掉判据 = 空转」是同一边的：**失败不可诊断，
+# 与不失败同效**——都会被下一个人当成噪音跳过。
 print("\nPR-IQC-GATE:", "PASS" if not fails else f"FAIL ({len(fails)})")
+# 明细打在结论**之后**：stderr 与 stdout 交错时，明细若在前会被后面几十行
+# PASS 冲散，读 CI 日志的人照样看不见。结论+明细连在一起才有用。
+if fails:
+    print("\n**门禁失败明细**：")
+    for _i, _f in enumerate(fails, 1):
+        print(f"  {_i}. {_f}")
 sys.exit(0 if not fails else 1)
