@@ -17,6 +17,8 @@
  *   C09 提交后 /guest/me 的当日配额已计入（解包/计数正确）
  *   C10 反馈区进入 correct 态（前端正确消费判分结果）
  *   C11 全流程无 4xx/5xx（401/403/404/429 都不允许出现在正常路径上）
+ *   C17 首页**显示**每日剩余题数，且数字 = 后端 quota.remaining（DOM × API 双源互核）
+ *       —— 只看 API 有 quota 查不出「拿到了却没渲染」，此条专治该缺口
  *
  * 用法：
  *   export DATABASE_URL="postgresql://..."     # 给 db_answer.py 取真值用
@@ -101,6 +103,15 @@ try {
   const guestId = boot?.body?.child_id;
   run.guestId = guestId;
   run.bootstrapQuota = boot?.body?.quota;
+
+  // C17：配额必须**在页面上可见**，且数字与后端返回的真实值一致。
+  // 这一条专治「拿到了 g.quota 却没渲染」——只看 API body 有 quota 查不出这个缺口。
+  // 两个事实源互核：DOM 文本 vs bootstrap body 的 quota.remaining（形态 42）。
+  const quotaText = await page.locator('[data-testid="v6-home-quota"]').first().textContent().catch(() => null);
+  const quotaRemaining = boot?.body?.quota?.remaining;
+  check("C17", "首页显示每日剩余题数且与后端 quota.remaining 一致",
+        !!quotaText && Number.isFinite(quotaRemaining) && quotaText.includes(String(quotaRemaining)),
+        `页面="${(quotaText ?? "").trim()}" 后端 remaining=${quotaRemaining}`);
 
   const cookies = await ctx.cookies();
   const ck = cookies.find(c => c.name === "guest_session");
