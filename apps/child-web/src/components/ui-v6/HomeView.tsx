@@ -1,13 +1,14 @@
 "use client";
 
-import type { AbilityState, LearnerProfile } from "@/src/lib/api/contracts";
+import type { AbilityState, GuestQuota, LearnerProfile } from "@/src/lib/api/contracts";
 import { CHALLENGE_CARDS, resolveAbilityId, type ChallengeKind } from "@/src/lib/challengeMapping";
 import { ABILITY_NODES, findAbility, presentAbility } from "@/src/features/ui-v6/abilityPresentation";
 import { ChildIcon } from "./ChildIcon";
 import { HeroArt, PageFrame, PageState } from "./PageFrame";
 
-export function HomeView({ childId, profile, abilities, loading, starting, error, onStart, onReload }: {
+export function HomeView({ childId, profile, abilities, quota, loading, starting, error, onStart, onReload }: {
   childId: string; profile: LearnerProfile | null; abilities: AbilityState[];
+  quota: GuestQuota | null;
   loading: boolean; starting: boolean; error: string | null;
   onStart: (kind: ChallengeKind) => void; onReload: () => void;
 }) {
@@ -24,6 +25,12 @@ export function HomeView({ childId, profile, abilities, loading, starting, error
         <button type="button" className="primary-button" disabled={disabled} onClick={() => onStart(primary.kind)} data-testid="v6-home-start">{starting ? "正在准备任务…" : "开始今天的学习"}<ChildIcon name="arrow" /></button>
       </div><HeroArt /></section>
       {error && <div className="v6-inline-error" role="alert">这次没有进入学习任务，请再试一次。</div>}
+      {/* 每日 30 题是游客模式的明确产品规则，孩子需要看见剩余额度。文案与主分支一致。 */}
+      {quota && <p className={quota.exhausted ? "v6-home-quota is-exhausted" : "v6-home-quota"} data-testid="v6-home-quota">
+        {quota.exhausted
+          ? `今天的 ${quota.limit} 道题已经完成啦，明天再来吧`
+          : `今天还可以练 ${quota.remaining} 道题`}
+      </p>}
       <div className="v6-home-columns">
         <section className="surface-card v6-home-records"><span className="v6-eyebrow"><ChildIcon name="document" />我的学习状态</span><h2>一点一点，积累好方法</h2>
           <div className="v6-record-count"><strong>{recorded}</strong><span>项能力已有学习记录</span></div>
