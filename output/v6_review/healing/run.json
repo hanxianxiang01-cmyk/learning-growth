@@ -1,0 +1,189 @@
+{
+  "base": "http://127.0.0.1:3102",
+  "startedAt": "2026-10-30T06:51:53.755Z",
+  "skin": "healing",
+  "guestId": "a9729704-ce71-4b99-bd94-d7b126ef89e2",
+  "bootstrapQuota": {
+    "date": "2026-10-30",
+    "timezone": "Asia/Shanghai",
+    "limit": 30,
+    "used": 0,
+    "remaining": 30,
+    "exhausted": false
+  },
+  "sessionId": "613927e9-0741-4565-ac1a-280d541032dc",
+  "sessionRequestChildId": "a9729704-ce71-4b99-bd94-d7b126ef89e2",
+  "taskInstanceId": "4ee28f72-d724-43e1-bf2d-44c4b9b3e8af",
+  "resourceVersionId": "eaa828b3-a633-4ab6-9cf5-8025a3687899",
+  "renderer": "object-counter",
+  "schemaVersion": "1.0",
+  "truth": {
+    "resource_version_id": "eaa828b3-a633-4ab6-9cf5-8025a3687899",
+    "review_status": "published",
+    "answer": 3,
+    "stem": "小东有8支彩笔，小西有5支彩笔。小东比小西多几支彩笔？"
+  },
+  "attempt": {
+    "correct": true
+  },
+  "quotaBefore": {
+    "date": "2026-10-30",
+    "timezone": "Asia/Shanghai",
+    "limit": 30,
+    "used": 0,
+    "remaining": 30,
+    "exhausted": false
+  },
+  "quotaAfter": {
+    "date": "2026-10-30",
+    "timezone": "Asia/Shanghai",
+    "limit": 30,
+    "used": 1,
+    "remaining": 29,
+    "exhausted": false
+  },
+  "resultStatus": 200,
+  "resultText": "数学探索 今日学习 我的成长地图 本次学习小结 看看这次留下的记录 不只看对错，也看你怎样观察、尝试和检查。 学习时长 1分钟 完成任务 1题 作答尝试 1次 提示记录 未使用 学习的方法 值得留意的小行动 完成了本次数学任务 本次已记录 遇到困难后继续尝试 本次暂未记录，不代表你不会 合理使用提示 本次已记录 完成了最后一道任务 本次已记录 能力记录 成长，藏在方法里 数量关系 当前 L1 本次证据变化：+1 条 查看完整成长地图 接下来 继续练习数量关系 系统会根据当前学习状态继续安排合适任务。 继续探索",
+  "growthCalls": [
+    200,
+    200
+  ],
+  "growthText": "数学探索 今日学习 我的成长地图 我的成长记录 数学成长地图 看看自己会了什么，也看看下一步可以怎么探索。 七项能力，各有成长节奏 点选查看详情 数量关系 L1 看清数量怎样联系 有进步 1条证据 检查验算 待了解 换个办法，再确认一次 尚待了解 暂无数据 读题理解 待了解 读清楚题目在问什么 尚待了解 暂无数据 迁移变式 待了解 把方法用到新问题里 尚待了解 暂无数据 建模表征 待了解 用图或工具表达关系 尚待了解 暂无数据 条件识别 待了解 找到真正有用的信息 尚待了解 暂无数据 策略选择 待了解 选择适合自己的方法 尚待了解 暂无数据 数量关系 看清数量怎样联系 L1 把题目中的数量放在一起比较，看看它们是合起来、相差，还是一组一组。 当前等级 L1 学习证据 1条 有进步 最近的学习表现正在变得更稳定。 查看相关记录 回到今天的任务，继续积累自己的数学方法。 去今天的任务 每一项都可以查看。连接线不表示先后顺序；等级不是完成百分比，也不按练习次数升级。",
+  "finishedAt": "2026-10-30T06:52:12.033Z",
+  "apiCalls": [
+    "POST /v1/guest/bootstrap 200",
+    "GET /v1/children/a9729704-ce71-4b99-bd94-d7b126ef89e2/abilities 200",
+    "GET /v1/children/a9729704-ce71-4b99-bd94-d7b126ef89e2/profile 200",
+    "POST /v1/learning/sessions 201",
+    "GET /v1/guest/me 200",
+    "GET /v1/guest/me 200",
+    "GET /v1/guest/me 200",
+    "GET /v1/guest/me 200",
+    "POST /v1/learning/tasks/next 200",
+    "POST /v1/learning/attempts 200",
+    "GET /v1/guest/me 200",
+    "GET /v1/guest/me 200",
+    "GET /v1/guest/me 200",
+    "GET /v1/learning/sessions/613927e9-0741-4565-ac1a-280d541032dc/result 200",
+    "GET /v1/guest/me 200",
+    "GET /v1/guest/me 200",
+    "GET /v1/children/a9729704-ce71-4b99-bd94-d7b126ef89e2/abilities 200"
+  ],
+  "checks": [
+    {
+      "id": "C16",
+      "label": "皮肤为 healing",
+      "ok": true,
+      "detail": "页面实际=healing"
+    },
+    {
+      "id": "C01",
+      "label": "首页只发 1 次 bootstrap",
+      "ok": true,
+      "detail": "实际 1 次"
+    },
+    {
+      "id": "C01b",
+      "label": "bootstrap 返回 200 且 is_new=true",
+      "ok": true,
+      "detail": "status=200 is_new=true"
+    },
+    {
+      "id": "C02",
+      "label": "guest_session 为 HttpOnly 且 token≠child_id",
+      "ok": true,
+      "detail": "httpOnly=true token==id? false"
+    },
+    {
+      "id": "C03",
+      "label": "未出现默认身份 …0001 / QA 池 …0099",
+      "ok": true,
+      "detail": "0 处"
+    },
+    {
+      "id": "C04",
+      "label": "profile/abilities 使用刚签发的游客 id",
+      "ok": true,
+      "detail": "path=a9729704-ce71-4b99-bd94-d7b126ef89e2 guest=a9729704-ce71-4b99-bd94-d7b126ef89e2"
+    },
+    {
+      "id": "C05",
+      "label": "创建 session 返回 201 且 body 的 child_id = 游客 id",
+      "ok": true,
+      "detail": "status=201 body.child_id=a9729704-ce71-4b99-bd94-d7b126ef89e2"
+    },
+    {
+      "id": "C06",
+      "label": "取到任务且来自真实题库",
+      "ok": true,
+      "detail": "status=200 renderer=object-counter rvid=eaa828b3-a633-4ab6-9cf5-8025a3687899"
+    },
+    {
+      "id": "C06b",
+      "label": "题目在库中为 published 且有标准答案",
+      "ok": true,
+      "detail": "status=published answer=3"
+    },
+    {
+      "id": "C07a",
+      "label": "填答后提交按钮可用",
+      "ok": true,
+      "detail": "enabled=true"
+    },
+    {
+      "id": "C07",
+      "label": "提交返回 200 且判分与真值一致（correct=true）",
+      "ok": true,
+      "detail": "status=200 correct=true"
+    },
+    {
+      "id": "C08",
+      "label": "只提交了 1 次 /attempts",
+      "ok": true,
+      "detail": "本次新增 1 次"
+    },
+    {
+      "id": "C09",
+      "label": "提交后当日配额已计入（used 由 0 变 1）",
+      "ok": true,
+      "detail": "before.used=0 after.used=1 limit=30 remaining=29"
+    },
+    {
+      "id": "C10",
+      "label": "反馈区进入 correct 态",
+      "ok": true,
+      "detail": "data-feedback-state=correct"
+    },
+    {
+      "id": "C12",
+      "label": "小结页拿到 session result（200）",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "id": "C13",
+      "label": "小结页无错误态",
+      "ok": true,
+      "detail": "257 字"
+    },
+    {
+      "id": "C14",
+      "label": "成长页数据 200 且与库一致（数量关系 L1 / 1 条证据）",
+      "ok": true,
+      "detail": "status=200,200 L1&1条证据=true"
+    },
+    {
+      "id": "C15",
+      "label": "成长页无错误态",
+      "ok": true,
+      "detail": "436 字"
+    },
+    {
+      "id": "C11",
+      "label": "全流程 API 无 4xx/5xx",
+      "ok": true,
+      "detail": "0 个异常响应"
+    }
+  ],
+  "result": "PASS"
+}
