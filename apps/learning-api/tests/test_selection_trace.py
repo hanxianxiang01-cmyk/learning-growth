@@ -32,6 +32,17 @@ def enabled(monkeypatch):
     monkeypatch.setattr(learning_api, "get_settings", lambda: _S())
 
 
+def _guest(child_id):
+    """V1.4：身份改由会话提供（GuestContext），不再读 query 的 child_id。
+
+    本测试关心的红线（非 QA child → 403）不变，只是注入点从 query 参数
+    换成了会话上下文。
+    """
+    from app.api.deps import GuestContext
+
+    return GuestContext(child_id=child_id)
+
+
 def test_disabled_by_default_404():
     """生产默认（无 monkeypatch）：端点关闭 → 404，不暴露存在性。"""
     # 防御：显式把 settings 换成 enabled=False 的对象（get_settings lru_cache 不受环境污染）
@@ -42,7 +53,8 @@ def test_disabled_by_default_404():
     try:
         with pytest.raises(HTTPException) as e:
             asyncio.run(selection_trace(child_id=str(QA_CHILD_ID),
-                                        session_id=str(uuid.uuid4()), db=None))
+                                        session_id=str(uuid.uuid4()),
+                                        guest=_guest(QA_CHILD_ID), db=None))
         assert e.value.status_code == 404
     finally:
         learning_api.get_settings = original
@@ -50,19 +62,35 @@ def test_disabled_by_default_404():
 
 def test_trace_by_real_child_rejected_403(enabled):
     with pytest.raises(HTTPException) as e:
-        asyncio.run(selection_trace(child_id=str(REAL_CHILD), session_id=str(uuid.uuid4()), db=None))
+        asyncio.run(selection_trace(child_id=str(REAL_CHILD), session_id=str(uuid.uuid4()),
+                                    guest=_guest(REAL_CHILD), db=None))
     assert e.value.status_code == 403
 
 
 def test_trace_by_qa_child_passes_guard(enabled):
     with pytest.raises(AttributeError):
-        asyncio.run(selection_trace(child_id=str(QA_CHILD_ID), session_id=str(uuid.uuid4()), db=None))
+        asyncio.run(selection_trace(child_id=str(QA_CHILD_ID), session_id=str(uuid.uuid4()),
+                                    guest=_guest(QA_CHILD_ID), db=None))
 
 
 def test_trace_dirty_params_422_after_guard(enabled):
     with pytest.raises(HTTPException) as e:
-        asyncio.run(selection_trace(child_id=str(QA_CHILD_ID), session_id="not-a-uuid", db=None))
+        asyncio.run(selection_trace(child_id=str(QA_CHILD_ID), session_id="not-a-uuid",
+                                    guest=_guest(QA_CHILD_ID), db=None))
     assert e.value.status_code == 422
+
+
+def test_trace_rejects_other_guests_qa_child(enabled):
+    """V1.4 新增：即使目标真是 QA child，请求者自己不是它 → 404。
+
+    原实现里「query 说查谁就查谁」，QA child 的能力画像对任何调用者开放。
+    游客模式下这条必须关上（方案 3.2），否则整条隔离改造在这留下一个洞。
+    """
+    other = uuid.UUID("11111111-1111-1111-1111-111111111111")
+    with pytest.raises(HTTPException) as e:
+        asyncio.run(selection_trace(child_id=str(QA_CHILD_ID), session_id=str(uuid.uuid4()),
+                                    guest=_guest(other), db=None))
+    assert e.value.status_code == 404
 
 
 def test_trace_function_is_read_only_by_contract():
