@@ -1,0 +1,313 @@
+{
+ "title": "FE-1469｜Q03 独立核验首批（number-input 6 题）",
+ "chain": "题干 → 独立求解 → 与已存答案比较 → 留存推导与适用边界",
+ "discipline": [
+  "预期答案只由 expression 算出，不读 DB answer",
+  "DB answer 仅作比较对象，不参与生成预期",
+  "只读运行：不写库、不调会写学习记录的接口",
+  "q05_note 仅标候选信号，不判定错因是否有区分力——只写『同质占位候选，区分力尚待验证』，不写『无法区分具体错法』，因为后者是结论，而本轮材料只到候选"
+ ],
+ "provenance": {
+  "frozen_source": "scripts/iqc/runs/inventory_manifest_r2.json",
+  "manifest": {
+   "snapshot_sha256": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+   "inventory_version": "iqc-inventory/1",
+   "discovered_total": 264
+  },
+  "same_snapshot_as": "scripts/iqc/runs/findings_fe1460_225.jsonl（run_id FE1460-eb662b5c，snapshot cee1afda…）",
+  "solver_version": {
+   "script": "scripts/iqc/rt1469/q03_number_input.py",
+   "expression_engine": "Python eval + 空 builtins（常量算式，无外部依赖）",
+   "hash_recipe": "scripts/iqc/common.py::audit_input_sha（九域规范化，与 scan.py 同一口径）",
+   "note": "求解器本身不锁版本号——算式是手工登记的常量表达式，改动即改动本文件，diff 可见。这比自报版本号更可查。"
+  },
+  "drift_rule": "引用哈希 ≠ 重算哈希 → 该题在快照后被修改，本轮结论作废，脚本以退出码 1 失败（不静默沿用旧结论）",
+  "per_item": {
+   "066c5362-762c-4a52-995b-db7d55747a12": {
+    "sha": "e9a553181ac193f9ce32a04bcc959a6b70313428f44e7f5a8da773b962c1b233",
+    "recomputed": "e9a553181ac193f9ce32a04bcc959a6b70313428f44e7f5a8da773b962c1b233",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "103b0e3f-4287-469c-96ec-6a173e84a4f5": {
+    "sha": "f421fb69c69700d0d9278fd6d9dee5c91767d16a7cf6b12d802444f3d2cfe770",
+    "recomputed": "f421fb69c69700d0d9278fd6d9dee5c91767d16a7cf6b12d802444f3d2cfe770",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "19081b90-e789-4275-a60a-79815a80bc73": {
+    "sha": "bb552a4466a57a19ef98bce8efb2ce033c76e05aae03bde28dedb7f640f513fe",
+    "recomputed": "bb552a4466a57a19ef98bce8efb2ce033c76e05aae03bde28dedb7f640f513fe",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "b7261e66-12fa-4c09-a070-5708b1d8da9d": {
+    "sha": "14dbef685eae04a419faabb539f4732ff0bf7d3df04c73dfd73f2244e834d2b4",
+    "recomputed": "14dbef685eae04a419faabb539f4732ff0bf7d3df04c73dfd73f2244e834d2b4",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "e0d22830-7ce7-4581-b1cd-db9ba2f3a8c5": {
+    "sha": "5f935092ba2b33730d4f516225c891686df009b399d842d6bccf8da237ba57e2",
+    "recomputed": "5f935092ba2b33730d4f516225c891686df009b399d842d6bccf8da237ba57e2",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "ffa54e00-0701-470e-9624-3d62a80a8832": {
+    "sha": "6009133ad3f3b8d4bd7229d1578ae711f57ab6d5e8b729241ba995246ecb3adf",
+    "recomputed": "6009133ad3f3b8d4bd7229d1578ae711f57ab6d5e8b729241ba995246ecb3adf",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   }
+  }
+ },
+ "summary": {
+  "total": 6,
+  "match": 6,
+  "mismatch": 0,
+  "not_found": 0,
+  "drift": 0
+ },
+ "items": [
+  {
+   "rvid": "066c5362-762c-4a52-995b-db7d55747a12",
+   "stem": "教室里摆了4排椅子，每排6把。一共有多少把椅子？请先用乘法思考，再在数字输入框中填写总数。",
+   "read": "4排椅子，每排6把 → 行×列",
+   "expression": "4 * 6",
+   "computed": 24,
+   "stated_answer": "24",
+   "verdict": "MATCH",
+   "boundary": "每排数量相同（题面无缺排），故为规则阵列；若排数不等需逐排累加",
+   "input_binding": {
+    "audit_input_sha256": "e9a553181ac193f9ce32a04bcc959a6b70313428f44e7f5a8da773b962c1b233",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false,
+    "ui_config_used": {
+     "max": 200,
+     "min": 0,
+     "integer_only": true
+    }
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "同质占位候选，区分力尚待验证",
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "stated_pattern": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把「4排×6把」当作「4+6」直接相加 → 10",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ]
+  },
+  {
+   "rvid": "103b0e3f-4287-469c-96ec-6a173e84a4f5",
+   "stem": "47写成“4个十和几个一”？",
+   "read": "47 = 4个十 + ?个一 → 个位数字即所问",
+   "expression": "47 - 4 * 10",
+   "computed": 7,
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "boundary": "问的是『几个一』即个位数，不是剩余数值 7 之外的任何除法结果",
+   "input_binding": {
+    "audit_input_sha256": "f421fb69c69700d0d9278fd6d9dee5c91767d16a7cf6b12d802444f3d2cfe770",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false,
+    "ui_config_used": {
+     "max": 200,
+     "min": 0,
+     "integer_only": true
+    }
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "同质占位候选，区分力尚待验证",
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "stated_pattern": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把「4个十和几个一」的十位/个位互换，交 4",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ]
+  },
+  {
+   "rvid": "19081b90-e789-4275-a60a-79815a80bc73",
+   "stem": "65里面有几个十？",
+   "read": "65里有几个十 → 十位数字（向下取整）",
+   "expression": "(65 - 65 % 10) // 10",
+   "computed": 6,
+   "stated_answer": "6",
+   "verdict": "MATCH",
+   "boundary": "问『几个整十』而非『能凑成几组十还有余』；余数 5 不计入",
+   "input_binding": {
+    "audit_input_sha256": "bb552a4466a57a19ef98bce8efb2ce033c76e05aae03bde28dedb7f640f513fe",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false,
+    "ui_config_used": {
+     "max": 200,
+     "min": 0,
+     "integer_only": true
+    }
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "同质占位候选，区分力尚待验证",
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "stated_pattern": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把「几个十」读成「取走整十后剩几」，交 5（个位数字）",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ]
+  },
+  {
+   "rvid": "b7261e66-12fa-4c09-a070-5708b1d8da9d",
+   "stem": "有24张卡片，每6张分成一组，正好分完。可以分成几组？请在数字输入框中填写组数，并尝试用乘法检验。",
+   "read": "24张，每6张一组，正好分完 → 等分组数",
+   "expression": "24 // 6",
+   "computed": 4,
+   "stated_answer": "4",
+   "verdict": "MATCH",
+   "boundary": "题面声明『正好分完』，故无需处理余数；若有余数应问『几组余几张』",
+   "input_binding": {
+    "audit_input_sha256": "14dbef685eae04a419faabb539f4732ff0bf7d3df04c73dfd73f2244e834d2b4",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false,
+    "ui_config_used": {
+     "max": 200,
+     "min": 0,
+     "integer_only": true
+    }
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "同质占位候选，区分力尚待验证",
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "stated_pattern": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "除法方向反（6÷24）或把每组的张数当组数，交 6",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ]
+  },
+  {
+   "rvid": "e0d22830-7ce7-4581-b1cd-db9ba2f3a8c5",
+   "stem": "树枝上停着7只小鸟，扑棱棱飞走了2只。还剩几只？把答案写在框里。",
+   "read": "原有7只，飞走2只 → 求剩余（减法而非加法）",
+   "expression": "7 - 2",
+   "computed": 5,
+   "stated_answer": "5",
+   "verdict": "MATCH",
+   "boundary": "『飞走』= 减少；若题面为『又飞来』则为加法。strategy 错因对应此反向",
+   "input_binding": {
+    "audit_input_sha256": "5f935092ba2b33730d4f516225c891686df009b399d842d6bccf8da237ba57e2",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false,
+    "ui_config_used": {
+     "max": 20,
+     "min": 0,
+     "integer_only": true
+    }
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "同质占位候选，区分力尚待验证",
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "stated_pattern": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "「飞走」误作「飞来」，用加法 7+2 → 9",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    },
+    {
+     "code": "calc",
+     "stated_pattern": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "「飞走」误作「飞来」，用加法 7+2 → 9",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ]
+  },
+  {
+   "rvid": "ffa54e00-0701-470e-9624-3d62a80a8832",
+   "stem": "38比42少几？",
+   "read": "38比42少几 → 大数减小数",
+   "expression": "42 - 38",
+   "computed": 4,
+   "stated_answer": "4",
+   "verdict": "MATCH",
+   "boundary": "『A比B少几』= B − A；若误作 A − B 得负数，是 reversed 类错误",
+   "input_binding": {
+    "audit_input_sha256": "6009133ad3f3b8d4bd7229d1578ae711f57ab6d5e8b729241ba995246ecb3adf",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false,
+    "ui_config_used": {
+     "max": 200,
+     "min": 0,
+     "integer_only": true
+    }
+   },
+   "q05_error_models": [
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_note": "同质占位候选，区分力尚待验证",
+   "q05_candidates": [
+    {
+     "code": "calc",
+     "stated_pattern": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "比较方向反（38−42，得 −4）或用加法 38+42 → 80",
+     "requirement": "需补充可观测证据：该错法在作答轨迹/中间量上留下什么可区分痕迹、与同题其它错法的判定边界在哪。仅有 code==pattern 不足以证明区分力。",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷"
+    }
+   ]
+  }
+ ]
+}

@@ -415,7 +415,13 @@ export type NextAction = {
 
 export type AttemptResult = {
   attempt_id: string;
-  correct: boolean;
+  // FE-1466：三态——true/false=判分；null=任务未完成或不可验证
+  //（process_status 携带 missing | contradiction | unverifiable 等原因码；
+  // 消费方一律 truthy 判断，不得把 null 当答错）。
+  correct: boolean | null;
+  process_status?: string;
+  // FE-1466 Q07：任务已失效（守卫拒绝），前端必须停止旧任务提交并重新取题
+  expired?: boolean;
   diagnosis?: DiagnosisResult | null;
   next_action: NextAction;
 };

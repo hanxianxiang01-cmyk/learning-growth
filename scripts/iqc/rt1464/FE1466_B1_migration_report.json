@@ -1,0 +1,218 @@
+{
+ "batch": "B1",
+ "generated": "2026-10-20T03:20:04.538286+00:00",
+ "note": "qa_staged 新约束版（未发布）；旧版 published 全程不动；三态复验每批独立跑（验证与建版解耦，幂等复用已建行）",
+ "results": [
+  {
+   "src": "24e3c3f4-51bd-4411-a3c3-f4e7f5538d43",
+   "new": "421427f3-8f7a-47b0-9c61-cf7724701d10",
+   "created": false,
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 2,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "7b3e9e83-84e7-432f-9997-cc9be2484182",
+     "task": "8cbc8567-7f6b-475f-9218-be0f6b083961"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 0,
+     "na": "HINT",
+     "attempt": "935db718-9bda-4d54-9737-54c959e1c424",
+     "task": "7609b874-8e0f-4342-8ca1-7b314ee89ad2"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "349e3e72-706c-46aa-a7e3-718ce29d4906",
+     "task": "d4d0388c-262b-476f-acdf-30eca6601ed5"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "4e850544-94db-4701-964e-3b939fb3cf42",
+   "new": "82ff6618-4fea-4b4b-80a3-2741cf014571",
+   "created": false,
+   "renderer": "pattern-board",
+   "ability": "app_check",
+   "difficulty": 1,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "b892f9c0-f1b6-495d-bb42-42af00b4badf",
+     "task": "c22b8356-f9f0-4e5f-83b3-b6589dbf22fc"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 1,
+     "na": "HINT",
+     "attempt": "9f6456c0-677c-4e2c-a5fb-e4243a746dec",
+     "task": "82a44911-ae12-4395-8d51-7013befd354e"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "47e5e972-8090-41d8-85df-da90f3da5f0a",
+     "task": "629334be-ed86-4064-bf97-2c2fc0a6165f"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "new": "bd711387-6da6-4669-ac3f-fdbd59ffd265",
+   "created": false,
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 1,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "8f96b737-5a84-4205-ae86-86514417aea2",
+     "task": "88258ddf-a797-4bcb-aaa5-240caeb057d1"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 0,
+     "na": "HINT",
+     "attempt": "91c7314e-5f5a-4b31-9ff4-e08b03aab098",
+     "task": "9048e58a-a17c-4814-9dc7-a7340ac7234e"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "17d58d08-be74-47f6-818d-5e29f6705283",
+     "task": "287e30db-aab7-4117-b91d-123937eac3d4"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "75cae864-1d63-44d3-8bc4-3d300e81f550",
+   "new": "66938277-896a-424c-ae85-3b8cf710d7a3",
+   "created": false,
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 1,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "c950c1a8-f2f9-4d88-94a2-a904cbf27d57",
+     "task": "b7684048-5929-478e-89cf-8c420fbcaa32"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 1,
+     "na": "HINT",
+     "attempt": "f709ceb9-617c-4bc7-b4e3-2b9ebfed7fe4",
+     "task": "5dfecb8f-1a07-4207-ba38-bcdaa04f6508"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "255452ef-ea9c-491f-a518-3c0d6a6254a5",
+     "task": "7753de49-8349-4b66-8a5e-e55810555512"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "95b16f9f-c5a4-4791-8f8a-00c25d744a61",
+   "new": "e6bc5139-0be9-4981-92d0-094cfe133ca1",
+   "created": false,
+   "renderer": "pattern-board",
+   "ability": "app_check",
+   "difficulty": 2,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "0bdf57b3-80af-4525-99d1-f83d0c4c320b",
+     "task": "3b2283cf-51f9-4d6d-8b10-bfa0404f0944"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 1,
+     "na": "HINT",
+     "attempt": "45fe5d31-4549-4012-9d15-afd2c44964e9",
+     "task": "e56f4a92-16f0-4550-99b5-609c56394711"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "e7f268a1-288c-446b-b00a-888a7f5e521f",
+     "task": "ece3fffa-11dd-4c3e-991f-207350f2ec31"
+    }
+   },
+   "pass": true
+  },
+  {
+   "src": "ec982464-72c9-40e1-9db0-20435c60b798",
+   "new": "a6eebe9a-97e6-4bc0-a58f-727ede2cceed",
+   "created": false,
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 2,
+   "checks": {
+    "empty": {
+     "correct": null,
+     "ps": "missing",
+     "ev": 0,
+     "na": "RETRY",
+     "attempt": "d65bed02-d976-44cf-953a-7ff6830e9e72",
+     "task": "8efa0009-d779-4f33-b40c-17b502cd0e70"
+    },
+    "contra": {
+     "correct": false,
+     "ps": "contradiction",
+     "ev": 1,
+     "na": "HINT",
+     "attempt": "d2092abf-b667-493e-9d85-b0dcfe4cc84d",
+     "task": "5997afbc-109e-4b74-a12f-75c62e25581d"
+    },
+    "legal": {
+     "correct": true,
+     "ps": "valid",
+     "ev": 1,
+     "na": "NEXT_TASK",
+     "attempt": "53beec65-e1c9-4963-b0cb-9c814903a038",
+     "task": "f30c9ef6-46ae-4ed0-b1bb-29d37ad67d6b"
+    }
+   },
+   "pass": true
+  }
+ ],
+ "all_pass": true
+}

@@ -97,6 +97,24 @@ export function learningReducer(
     case "ATTEMPT_RESULT": {
       const code = getNextActionCode(action.result);
 
+      // FE-1466 Q07（裁决 21:26 §三）：后端 task_expired → 不得对同一失效
+      // 任务反复提交——清 task 引用并回 idle，由既有 loadTask 入口重新取
+      // 有效任务；不消耗 Hint 阶梯、不产生"答错"态。
+      if (action.result.expired === true ||
+          (code === "RETRY" && action.result.next_action.policy_id === "task_expired")) {
+        return {
+          ...state,
+          status: "idle",
+          task: null,
+          response: createEmptyTaskResponse(),
+          attemptNo: 1,
+          lastAttempt: action.result,
+          hint: null,
+          usedHintLevels: state.usedHintLevels,
+          error: null
+        };
+      }
+
       // 每次「提交」都消耗一个 attempt_no，提交完成后递增，
       // 保证孩子改答案后直接再提交时得到新的 attempt_no，
       // 否则后端幂等会一直返回第一次的结果。

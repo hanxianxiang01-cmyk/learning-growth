@@ -1,0 +1,240 @@
+{
+ "generated": "2026-10-19",
+ "method": "只读动态扫描 review_status=published 全量（非7题代表）",
+ "v2_total": 175,
+ "declared_new_constraint": 0,
+ "exposed_total": 37,
+ "exposed_by_renderer": {
+  "place-value": 9,
+  "shape-canvas": 9,
+  "money-board": 9,
+  "pattern-board": 10
+ },
+ "risk_note": "暴露=契约声明 evidence_targets 且 renderer∈四类但无 process_constraint——空/矛盾过程仍产正向证据（阶段B旧版对照行实证）",
+ "history_evidence_audit": "另建只读审计见 history_evidence_probe.json（本项仅列评估方法，不改历史）",
+ "interim": "暂停推荐须产品方确认替代覆盖——扫描器不擅自执行（§三红线）",
+ "items": [
+  {
+   "rvid": "11aca9c8-067a-48e6-945e-959a20ce83f5",
+   "ability": "app_rd",
+   "renderer": "place-value",
+   "mode": "place_value_arrangement"
+  },
+  {
+   "rvid": "12f89452-ad38-4c24-af5d-d734f5b4c43b",
+   "ability": "app_cond",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "1716d898-506d-4428-a9de-664bc60b528e",
+   "ability": "app_strat",
+   "renderer": "money-board",
+   "mode": "make_amount"
+  },
+  {
+   "rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "ability": "app_rel",
+   "renderer": "pattern-board",
+   "mode": "pattern_extension"
+  },
+  {
+   "rvid": "24e3c3f4-51bd-4411-a3c3-f4e7f5538d43",
+   "ability": "app_cond",
+   "renderer": "money-board",
+   "mode": "make_amount"
+  },
+  {
+   "rvid": "291106d7-45a5-4e79-8263-1b2e2e84dd11",
+   "ability": "app_cond",
+   "renderer": "place-value",
+   "mode": "place_value_arrangement"
+  },
+  {
+   "rvid": "2c46c271-1a2f-4f45-ad3c-b5719ad58ded",
+   "ability": "app_strat",
+   "renderer": "place-value",
+   "mode": "place_value_arrangement"
+  },
+  {
+   "rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "ability": "app_strat",
+   "renderer": "money-board",
+   "mode": "change"
+  },
+  {
+   "rvid": "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+   "ability": "app_cond",
+   "renderer": "money-board",
+   "mode": "change"
+  },
+  {
+   "rvid": "3527282b-7c3a-490b-805c-295294f25c35",
+   "ability": "app_model",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "3d60a583-d90d-442d-9e2d-d78ab970b414",
+   "ability": "app_transfer",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "4936b35f-a5dc-44d4-9b2e-e58c6f3b7c0e",
+   "ability": "app_rd",
+   "renderer": "place-value",
+   "mode": "place_value_arrangement"
+  },
+  {
+   "rvid": "4e850544-94db-4701-964e-3b939fb3cf42",
+   "ability": "app_check",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "ability": "app_cond",
+   "renderer": "money-board",
+   "mode": "change"
+  },
+  {
+   "rvid": "57c34c52-7fc2-4ba8-9f66-2a60c622d6f4",
+   "ability": "app_transfer",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "60039509-f8e6-47f5-a86a-04d9b84e05ef",
+   "ability": "app_model",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "6b87f039-372a-4146-80d2-6873e38001f9",
+   "ability": "app_strat",
+   "renderer": "money-board",
+   "mode": "make_amount"
+  },
+  {
+   "rvid": "75cae864-1d63-44d3-8bc4-3d300e81f550",
+   "ability": "app_cond",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "831832e5-a14c-4902-8249-60eaa0b451a9",
+   "ability": "app_cond",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "845c6fea-418f-4365-a25e-b50e5b5040f8",
+   "ability": "app_transfer",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "8d8c71fb-9c9d-45d6-9c8a-d395f202f9fa",
+   "ability": "app_strat",
+   "renderer": "place-value",
+   "mode": "place_value_arrangement"
+  },
+  {
+   "rvid": "95b16f9f-c5a4-4791-8f8a-00c25d744a61",
+   "ability": "app_check",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "ability": "app_model",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "99b86483-6fe7-46bb-962d-ef298d779cce",
+   "ability": "app_cond",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "ability": "app_strat",
+   "renderer": "money-board",
+   "mode": "change"
+  },
+  {
+   "rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "ability": "app_rd",
+   "renderer": "place-value",
+   "mode": "place_value_build"
+  },
+  {
+   "rvid": "a21d4278-9780-453c-a510-08ce184f764e",
+   "ability": "app_rd",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "b7d09e76-58f2-40af-a8ea-7d31a1bc3f6e",
+   "ability": "app_model",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "b978d294-7ea5-4670-8538-3c04c2113536",
+   "ability": "app_strat",
+   "renderer": "money-board",
+   "mode": "payment"
+  },
+  {
+   "rvid": "be433fc9-af29-41dc-88c2-7d0a5d110459",
+   "ability": "app_rd",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "cbcf5a5d-a88c-4463-b5ec-1aed74e17cce",
+   "ability": "app_rd",
+   "renderer": "place-value",
+   "mode": "place_value_arrangement"
+  },
+  {
+   "rvid": "d606f5a4-649e-4f4b-be4f-4ce63923263b",
+   "ability": "app_model",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "da0d938c-90f9-4e06-9b16-aa6af9e568df",
+   "ability": "app_cond",
+   "renderer": "money-board",
+   "mode": "make_amount"
+  },
+  {
+   "rvid": "e1393f3d-2a02-4eba-b02e-5be1ee9b6a54",
+   "ability": "app_rd",
+   "renderer": "place-value",
+   "mode": "place_value_arrangement"
+  },
+  {
+   "rvid": "e946491c-ced3-4160-aa25-a2ccb0a10a7c",
+   "ability": "app_cond",
+   "renderer": "shape-canvas",
+   "mode": "shape_drawing"
+  },
+  {
+   "rvid": "ec982464-72c9-40e1-9db0-20435c60b798",
+   "ability": "app_cond",
+   "renderer": "pattern-board",
+   "mode": "repeat_pattern"
+  },
+  {
+   "rvid": "f281ec32-4680-4c0e-b875-5ee76e23205f",
+   "ability": "app_cond",
+   "renderer": "place-value",
+   "mode": "place_value_arrangement"
+  }
+ ]
+}

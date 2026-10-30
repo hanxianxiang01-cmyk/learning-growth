@@ -1,0 +1,115 @@
+{
+ "batch": "B2",
+ "applied": true,
+ "items": [
+  {
+   "old_rvid": "12f89452-ad38-4c24-af5d-d734f5b4c43b",
+   "new_rvid": "73c7e8c0-8b24-4ab3-b3f9-cddabf534d97",
+   "resource_id": "571812bc-4f0b-4f95-a72c-5758ef73646a",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "8f875ee6acbcc67aed4f94b39fb509effe751dfb09024d943e2cd3fdc0535914",
+   "content_sha_new": "8f875ee6acbcc67aed4f94b39fb509effe751dfb09024d943e2cd3fdc0535914",
+   "ui_sha_old": "088a5713e701ce37c82045910433614243899cfb20e38e459fc5d5c72ae82f4e",
+   "ui_sha_new_minus_pc": "088a5713e701ce37c82045910433614243899cfb20e38e459fc5d5c72ae82f4e"
+  },
+  {
+   "old_rvid": "291106d7-45a5-4e79-8263-1b2e2e84dd11",
+   "new_rvid": "11129745-f159-4458-ba28-2b85503a1071",
+   "resource_id": "d6c31439-3f76-4036-9711-64acfa7550d2",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "place-value",
+   "content_sha_old": "e3897599279aa3acb56369a2464f6551d71974d0950c30fd3e6b3904b884d308",
+   "content_sha_new": "e3897599279aa3acb56369a2464f6551d71974d0950c30fd3e6b3904b884d308",
+   "ui_sha_old": "914864b2553f4102d770c4e0896a22e3251cef831c52ef11abb78ead49372122",
+   "ui_sha_new_minus_pc": "914864b2553f4102d770c4e0896a22e3251cef831c52ef11abb78ead49372122"
+  },
+  {
+   "old_rvid": "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+   "new_rvid": "c8aea8db-7a24-405f-beaa-f1e6b057ebaa",
+   "resource_id": "4edf735f-267d-4962-8c6f-596fbd046417",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "money-board",
+   "content_sha_old": "c4b6980449df4d9d950c190590c26697c4a3ada4ca521448dfefb1cb8f69c15e",
+   "content_sha_new": "c4b6980449df4d9d950c190590c26697c4a3ada4ca521448dfefb1cb8f69c15e",
+   "ui_sha_old": "ca63fb1d52f359196eaa62140bea7e7d55e4eb7ac4a795c0da981c921711bcf2",
+   "ui_sha_new_minus_pc": "ca63fb1d52f359196eaa62140bea7e7d55e4eb7ac4a795c0da981c921711bcf2"
+  },
+  {
+   "old_rvid": "3527282b-7c3a-490b-805c-295294f25c35",
+   "new_rvid": "e6fd4a86-5211-4732-9962-cd619d35dd09",
+   "resource_id": "9b9a9f15-d655-4e96-9c3f-c4cc521710d3",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "50a3af2d37f9b88fb0b7b23030ac75491bcb9017f1ef345a25e01b041036f1ca",
+   "content_sha_new": "50a3af2d37f9b88fb0b7b23030ac75491bcb9017f1ef345a25e01b041036f1ca",
+   "ui_sha_old": "59d501e6a481430d2aa061ebb628287bf836d5ccd8c2733aa92671733347c5c4",
+   "ui_sha_new_minus_pc": "59d501e6a481430d2aa061ebb628287bf836d5ccd8c2733aa92671733347c5c4"
+  },
+  {
+   "old_rvid": "831832e5-a14c-4902-8249-60eaa0b451a9",
+   "new_rvid": "3a80cfb1-d6a8-4cb2-b430-122a17f3a4ee",
+   "resource_id": "be76a2f7-e87f-4ac5-afe7-ce3ea403588e",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "pattern-board",
+   "content_sha_old": "840b351042bafcc9df6648f883a4e99aef825fe4fbc4ec38eeb2292d4e49dcc1",
+   "content_sha_new": "840b351042bafcc9df6648f883a4e99aef825fe4fbc4ec38eeb2292d4e49dcc1",
+   "ui_sha_old": "cb5a068b100b490adc974da6b6b7de89ba5f73e7b00040ea0314de00deb01444",
+   "ui_sha_new_minus_pc": "cb5a068b100b490adc974da6b6b7de89ba5f73e7b00040ea0314de00deb01444"
+  },
+  {
+   "old_rvid": "99b86483-6fe7-46bb-962d-ef298d779cce",
+   "new_rvid": "4e7aac4d-9fb1-49db-8d23-d777aad68e89",
+   "resource_id": "ee3ee3a6-8ef5-4f6e-a453-90f80bd44fc9",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "pattern-board",
+   "content_sha_old": "c83b1dea4f40d20a3991f1a0a3cd24a6ed443e39145ecc85401c44e174f0dad3",
+   "content_sha_new": "c83b1dea4f40d20a3991f1a0a3cd24a6ed443e39145ecc85401c44e174f0dad3",
+   "ui_sha_old": "61337516c55a93e8dc108619166a104a7ddd9a5d865da428687fc3a37d84e0ba",
+   "ui_sha_new_minus_pc": "61337516c55a93e8dc108619166a104a7ddd9a5d865da428687fc3a37d84e0ba"
+  },
+  {
+   "old_rvid": "da0d938c-90f9-4e06-9b16-aa6af9e568df",
+   "new_rvid": "52578333-c17a-4786-bfa1-2f84b6bba858",
+   "resource_id": "3ad44bbd-9f8e-4dc1-b208-2aff84dcb1fc",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "money-board",
+   "content_sha_old": "b55f7deb3b9e3c0309436d222a80d52dc7b1bd80d20fea3b5a630200a85c6c41",
+   "content_sha_new": "b55f7deb3b9e3c0309436d222a80d52dc7b1bd80d20fea3b5a630200a85c6c41",
+   "ui_sha_old": "8761bbfd836a555474afb8522a123ee3e12db8327084e280cc533ea6e93b3d0d",
+   "ui_sha_new_minus_pc": "8761bbfd836a555474afb8522a123ee3e12db8327084e280cc533ea6e93b3d0d"
+  },
+  {
+   "old_rvid": "e946491c-ced3-4160-aa25-a2ccb0a10a7c",
+   "new_rvid": "a1b71f95-f8a8-4ea2-8942-8c93b532b46b",
+   "resource_id": "f7e7bf8d-26f6-48a9-a4b0-c542a51b0f99",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "shape-canvas",
+   "content_sha_old": "e647571d79f08e8f21b4343093294afde6c1f7418f9f68edfa6e310b52c6c390",
+   "content_sha_new": "e647571d79f08e8f21b4343093294afde6c1f7418f9f68edfa6e310b52c6c390",
+   "ui_sha_old": "7b6f7f0da1b91cd5399edb0b0e86d96e07d4075a550c247e69b081d4ab0e4822",
+   "ui_sha_new_minus_pc": "7b6f7f0da1b91cd5399edb0b0e86d96e07d4075a550c247e69b081d4ab0e4822"
+  },
+  {
+   "old_rvid": "f281ec32-4680-4c0e-b875-5ee76e23205f",
+   "new_rvid": "aaf57012-1abc-48f5-822d-bfb0bf69a390",
+   "resource_id": "f8260e04-80c3-4804-9175-de1dc347d48c",
+   "old_version": 1,
+   "new_version": 2,
+   "renderer": "place-value",
+   "content_sha_old": "18c064cd1cd61a3811e7ec410064f238f9ce6f212da6cb55423885ce70bd985b",
+   "content_sha_new": "18c064cd1cd61a3811e7ec410064f238f9ce6f212da6cb55423885ce70bd985b",
+   "ui_sha_old": "8fde75188e13ed9754f8b61382c2bee1e531462eeb4eadef6ab17758dd5a3908",
+   "ui_sha_new_minus_pc": "8fde75188e13ed9754f8b61382c2bee1e531462eeb4eadef6ab17758dd5a3908"
+  }
+ ],
+ "note": "new→published old→superseded 单事务；反向 update 即回滚"
+}

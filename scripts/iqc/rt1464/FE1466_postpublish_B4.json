@@ -1,0 +1,37 @@
+{
+ "batch": "B4",
+ "post": {
+  "catalog_missing": [],
+  "catalog_ghost": [],
+  "smoke": [
+   {
+    "new": "7c1b3466",
+    "smoke_pass": true
+   },
+   {
+    "new": "088d0469",
+    "smoke_pass": true
+   },
+   {
+    "new": "b2d0c748",
+    "smoke_pass": true
+   },
+   {
+    "new": "b38f8898",
+    "smoke_pass": true
+   },
+   {
+    "new": "5ee230c4",
+    "smoke_pass": true
+   },
+   {
+    "new": "e8fd711d",
+    "smoke_pass": true
+   },
+   {
+    "new": "0b95c86f",
+    "smoke_pass": true
+   }
+  ]
+ }
+}

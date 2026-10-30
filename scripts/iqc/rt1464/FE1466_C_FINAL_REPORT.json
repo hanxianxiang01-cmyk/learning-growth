@@ -1,0 +1,38 @@
+{
+ "title": "FE-1466 阶段C｜Q07 过程证据完整性 端到端验收报告",
+ "date": "2026-10-20",
+ "scope": "四类 Renderer（pattern/money/shape-canvas/place-value）×双皮肤×全链关联；QA child …0099；生产题零变更；4 道声明版测试题保持 qa_staged",
+ "core_question_answered": "孩子真实完成学习任务→Judge 正确→证据合格入账→Mastery 未被污染——四者端到端一致性已按 §四 标准证明",
+ "test_totals": {
+  "lab_e2e": "20 passed（17 C 用例+3 FE-1455 哨兵）",
+  "healing_e2e": "17 passed",
+  "backend_unit": "192 passed",
+  "tsc": "clean"
+ },
+ "adjudication_matrix_results": {
+  "缺失过程": "UI 真实手势下 EMPTY 拦提交（UI_PREVENTED×4，不发请求=前端防线）；API 独立负例（不冒充手势，分账口径§二.1）：correct=null、process_status=missing、next_action=RETRY、**新增正向 Evidence=0**（DB 直核 4/4：attempt.correct IS NULL 且 task 零证据）",
+  "矛盾过程": "后端独立识别：money 谎报 total=35/实放50→contradiction（counts 重算）；shape 谎报 area+right_angles 的平行四边形→重算识破；pattern 相位反→contradiction。归因策略逐格：pattern/shape 产负向(0.0)=允许；**money/place-value 零新增**=冻结门控生效；UI 真实手势下'money/pv 终值对+矛盾'不可达（answer 自动随操作生成）——记 UI_PREVENTED 分账，后端防线由 API 负例证明",
+  "合法过程": "真实 React 操作（点token落槽/放币/点钉/放卡）→判对→**恰好一次**正向 Evidence（DB 4/4：evidence_per_task=1、correctness=1.0）；多组合等价 {10:3,5:1}=={5:7}→35 均 valid 不误伤",
+  "Retry闭环": "空(null/RETRY/零证据)→同 task attempt_no=2 补齐合法→true+恰一次证据；同 submission 重放=原 attempt（不重复记分、不重复证据）；null 不消耗 Hint 阶梯（无 HINT 错因下发）",
+  "unverifiable": "结构不认识（beads:'不是数组'）→null+零证据+diagnosis=null+RETRY(process_unverifiable)——不判孩子错",
+  "历史兼容": "无声明旧题（现行225 published 全部）不进新链路（process_status 不下发、判分逐比特）；FE-1455 数轴哨兵 3/3：违规翻转/合规判对/无约束旧题一步终点原样",
+  "session_mastery一致性": "8 链 DB 全断言 8/8（FE1466_session_mastery_consistency.json）；前端 null→'这一步还没做完'分态文案已实现（CoachPanel processStatus）"
+ },
+ "exposure_37_matrix": {
+  "file": "FE1466_risk_matrix_37.json",
+  "gate字段确认": "37/37 均含操作真源+目标值字段（beads/counts/vertices/slots）——过程确为任务要求的客观证据",
+  "替代分析": "35/37 有同 ability·difficulty 替代；**2 题停用即空池**（2c46c271/845c6fea）——迁移期间保留现行",
+  "语义分级边界": "37 题=机制风险候选；'是否全部同一教学缺陷'需教研分级（裁决§二.3 边界遵守：gate 字段存在≠缺陷同构）",
+  "interim": "暂不批量停用（裁决§二.5）；推荐路径=逐题 clone+process_constraint+阶段C 验证→qa_staged→发布迁移"
+ },
+ "chain_records": "apps/child-web/e2e/out/fe1466C_chain_{lab,healing}.jsonl：每例 case_id→rvid→task→submission→attempt→evidence→session 全关联可独立复算",
+ "raw_failures_kept": "开发期两处原始失败如实保留未覆盖：①pattern UI-VALID 首跑超时（误把 disabled 空格当可点，真实模型=token 自动落槽——修正即 §二.1 '真实手势只能真点出来'注脚）②FE1455-03 首跑红=哨兵钉题过期（8eb5de92 已 superseded；干净 main worktree 同证非本轮回归），已更新为现行无约束题",
+ "not_doing_per_ruling": "未改 37 题任何状态/未发布测试版/未回写历史证据/Q07 维持 OPEN（关闭条件=37 题迁移完成后由产品判定）",
+ "next_for_product": [
+  "1. 验收后决定测试版→发布流程",
+  "2. 37 题迁移排批（建议按难度带+能力覆盖顺序）",
+  "3. money/pv 能力标签疑点专项（矛盾暂不负向的前置）",
+  "4. 211/212 治理线何时重启"
+ ],
+ "acceptance_boundary_per_product_review_20261020": "产品复审边界声明（与 output 交付副本同步）：本报告证明=指定测试用例下的端到端行为；不据此宣称所有 Renderer/所有资源版本/所有真实儿童学习场景均已验证。批迁移每批仍需本 spec 同口径复验。"
+}

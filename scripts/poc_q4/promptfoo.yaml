@@ -1,0 +1,21 @@
+# PoC T1｜Promptfoo 盲评配置（方案 §5.2 / §8.1）
+# 用法（需 LLM provider）: npx promptfoo eval -c promptfoo.yaml
+#   eval_dataset.jsonl 不含 DB answer（盲评）；断言=输出 schema 校验，不比对 gold
+#   truth_reference.jsonl 仅 G3 compare_report.py 使用，绝不进入 provider 上下文
+# provider 占位 openai:chatgpt 示例——实际按授权环境 key 调整；temperature 0
+# 两次运行=稳定性对照（--repeat 2 或跑两轮落账）
+prompts:
+  - file://rubric_prompt_r1.txt
+providers:
+  - id: openai:gpt-4o-mini          # 示例：按授权上游替换
+    config:
+      temperature: 0
+tests:
+  - description: "盲评轮1：独立答案+风险（不见 DB answer）"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: fs.readFileSync('./assert_rubric_shape.js', 'utf8')  # 结构断言见脚本
+      - type: contains
+        value: "risk_code"          # 输出含字段名（软校验；硬校验在脚本）
+  # 第二轮（开放 DB answer 一致性比对）由 compare 脚本承担，不在 provider 侧泄漏 gold

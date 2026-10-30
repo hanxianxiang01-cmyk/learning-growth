@@ -1,0 +1,157 @@
+{
+ "title": "Q07 Process Evidence Integrity｜P0 关闭验收记录",
+ "date": "2026-10-20（合并后定向复验完成，状态 CLOSED）",
+ "decision_requested": "Q07 P0 关闭（裁决 19:21 §五 四问作答；PR#121 已合并于 5a60a69，目标后端以该提交代码复验通过）",
+ "code_baseline": "已合并 main@5a60a693afeda15984fe3a933c11a5478d5d23e7（含 submit_attempt 失效入口守卫 + FOR UPDATE 行锁 + 前端 expired 恢复）",
+ "q1_disposition_37": {
+  "35_version_replacement": "B1–B5 35 对：新 RVID（带 process_constraint）published、旧 RVID superseded；逐批单事务+唯一性+目录+pin 冒烟（FE1466_publish_manifest_B1..B5 + postpublish_B1..B5）",
+  "2_cross_resource_replacement": "B6-A 82aabb99（替 2c46c271·app_strat·d1）、B6-B 2f2e8491（替 845c6fea·app_transfer·d4）=新逻辑资源替代，关系记录于 FE1466_B6_publish_report.json，未伪造版本链；旧风险 superseded 退出下发（pin 403 实证于发布后检）",
+  "no_old_channel": "专核（只读）复算于合并后 main@5a60a69，FE1466_exposure_recheck_merged.json：published=225、含 config.process_constraint=37、**正确口径暴露=0**（口径=FE1466_published_exposure.risk_note 原文：契约声明 evidence_targets 且 renderer∈{place-value, shape-canvas, money-board, pattern-board} 且无 process_constraint）；37 旧风险行 review_status 全为 superseded（published=0）",
+  "no_old_channel_evidence_correction": "**证据缺陷自纠**：本轮复核发现原'专核=0'用的查询是 content ? 'evidence_targets'，而 content 只有 answer/goal/stem 三键——该查询恒为空集，结论虽同为零但证据链不成立（空集上的假通过）。已改用真实路径重算：process_constraint 在 ui_schema.workspaces[].config.process_constraint（与 process_validate.get_process_constraint 同口径），evidence_targets 在 ui_schema.response_contract.evidence_targets。复算同时验证口径必带 renderer∈四类——仅用 evidence_targets 会得 138 条，其中包含 estimation-canvas 等表单维度（其 evidence_targets 为 estimate/reason/adjust_history/structure，非过程操作证据），属口径过宽。以本复算为准。"
+ },
+ "q2_open_old_tasks": {
+  "reconciliation": "FE1466_open_tasks_full_reconciliation.json：556 唯一 task_id 全枚举（distinct；首轮'37 差额'系 limit40 展示截断非未解释）。**12 个 QA child 完整 UUID**，分布由 FE1466_invalidation_run.json 明细直接 Counter 生成（非口算）：…0099×519、…0096×13、…0097×6、…0087×4、…0094×4、…0084×3、…0093×2、…0088/0089/0090/0091/0092 各×1；合计 519+37=556，账号数 12（主账号 0099 占 519，其余 **11 个**账号共 37 条）。未分类=0，真实儿童 …0001=0",
+  "invalidation": "FE1466_invalidation_run.json：556 条 task→cancelled（task 级——77 会话含 905 条范围外任务，会话级作废=扩大，已放弃）；attempt/evidence/session 零删改；审计前后状态在案",
+  "scope_analysis": "FE1466_invalidate_scope_analysis.json",
+  "entry_closure": "submit_attempt 增失效守卫（§三）。**幂等判定与实现一致，只有两条轨**：①带 submission_id（V2 权威轨）→ 按 submission_id 全局查历史；命中且内容相同=重放原 Attempt（不判分/不新增/不恢复任务）、命中且内容不同=409；未命中=受控失效。②不带 submission_id（V1 兼容旧轨）→ 按 (task_instance_id, attempt_no) 查；命中=重放、未命中=受控失效。**不存在'同 task 同 attempt_no 一律算历史重放'的规则**——V2 不给 submission_id 时才会落到 attempt_no 轨。FE1466_expiry_entry_reverify.json 五场景实测；FE1466_bypass_negative_case.json 补绕过负例（N1/N2/N3）；残余可提交旧风险任务=0（复核 SQL）",
+  "concurrency_proof": "§二末段'不能只靠顺序执行推断并发边界'：submit_attempt 读任务改为 SELECT ... FOR UPDATE（与 attempt/证据写入同事务），失效批处理 UPDATE 与之经 PostgreSQL 行锁互斥串行。FE1466_expiry_lock_concurrency.json / _v2 用两连接真实争抢实测：T2 观测到 pg_stat_activity wait_event_type=Lock（提交在等锁、此刻零写入）→ T3 失效 UPDATE+COMMIT → T4 放行后返回 expired/attempt_id=null 且三表仍零新增，阻塞 0.32~1.08s 严格跨越失效提交；T6 全局三表计数前后一致（无测试污染）。**结论范围（收紧）**：本实测证明的是『失效事务先取得行锁』这一条竞争路径符合预期（提交方必然阻塞到失效提交之后，再读到 cancelled）。它不构成对所有并发路径的完备证明——未覆盖的包括：失效事务与提交事务在同一毫秒交错到达、失效侧改用非行锁路径（如批量 UPDATE 不走 FOR UPDATE）、连接池耗尽导致请求排队、以及多任务并发失效时的锁序死锁。这些属机制性观察，不作为'不存在任何并发漏洞'的声明",
+  "concurrency_sample_attribution": "**复核补正（用户 2026-10-21 §二）**：上一轮锁测收尾把样本任务从 cancelled 复位为 assigned，却未记录其 RVID，无法判断复位是否重开旧风险通道。已补：脚本改为①优先选取非高风险口径样本 ②收尾显式落盘样本归属（RVID / review_status / renderers / evidence_targets / session）与 status_before_reset→status_final ③若样本属四类高风险口径则拒绝复位并保持 cancelled。实测两例样本归属：00066de9…（RVID eaa828b3…，review_status=published，renderer=[]，无 evidence_targets）与 00055d5d…（RVID f311e9ec…，published，renderer=[]，无 evidence_targets）——**均不属 37 旧风险 RVID、均不在 556 失效目标、均不构成当前 Q07 暴露口径**，故复位为 assigned 属恢复原状。另：三表计数不变只证明无新增作答/证据/事件，**不覆盖 task_instance 状态**；终态已单独记录，不再混入'零变化'结论",
+  "invalidation_still_intact": "复核时点全量核对：37 旧风险 RVID 关联 task 共 556 条，当前状态全部 cancelled（非 cancelled=0，assigned=0）——锁测复位未影响任何失效目标；556 条失效目标全部仍为 cancelled（非 cancelled=0）",
+  "bypass_negative_case": "**复核补正（用户 2026-10-21 §三）**：A 场景提交前 attempt=0、B/C/D 各覆盖别的分支，四者均未直接呈现绕过路径。已补两层证据：①单测 test_fe1466_expired_guard.py 新增 3 条（resuing_old_attempt_no_not_bypassed / no_attempt_no_still_rejected / replay_is_not_attempt_no_based），并修正原 FakeDB——旧版按顺序队列返回，无法区分'按 submission_id 查'与'按 (task,attempt_no) 查'，构造出的负例实为空查询的 A 场景（假覆盖）；新版按 WHERE 子句分流（注意不能按整条 SQL 判断：select(Attempt) 的列清单本身含 submission_id，会永远命中同一分支——本次实测踩到）。②真实 DB 定向负例 verify_bypass_negative_case.py：样本 007a65e7…（旧风险 money-board 题，review_status=superseded，已有历史 Attempt，attempt_no=1）——N1 新 submission_id + 旧 attempt_no=1 → expired=true / attempt_id=null / correct=null / evidence_id=null / 三表计数不变 / 历史 Attempt 行逐字段不变；N3 新 submission + 新 attempt_no → 同样受控拒绝；N2 正对照：同 submission_id + attempt_no 故意给 2（不匹配历史）仍重放原 attempt_id，证明命中依据是 submission_id 而非 attempt_no 巧合。③变异测试：把守卫回退为旧逻辑（先 (task,attempt_no) 命中即重放）后，新增 3 条负例与 C 场景冲突用例共 4 条全部 FAIL——证明这些用例确实锁住该绕过路径，非空跑",
+  "review_snapshot_correction": "此前对失效任务守卫的幂等描述有两处偏差，本轮修正并锁测：①原实现以 (task,attempt_no) 命中即重放，导致'任务已有任一条历史 Attempt'即可被新请求借用旧 attempt_no 绕过守卫——现改为**带 submission_id 时一律按 submission_id 全局权威轨判定**（不带 submission_id 才回落 V1 的 (task,attempt_no) 轨）；②原实现忽略 submission_id 内容差异，现同 ID 异内容一律 409（不被 expired 掩盖）。修正后单测由 6 条扩至 9 条（新增绕过负例 3 条，含变异测试验证有效），全量 201 单测、五场景实测、真实 DB 绕过负例 N1-N4 全过",
+  "valid_pool_correction": "§二 纠正：此前'valid 池外'表述过强——qa07 实测确有 correctness=1.0/valid=true 历史证据（QA 身份≠证据未被消费）。本轮只对未来入口收口，历史 QA 证据零改写；真实儿童 …0001 未受影响（by_child=0）",
+  "note": "关闭记录按裁决 §五：入口收口已完成，非'待完成'",
+  "real_child_scope_note": "真实儿童口径：检查对象=37 旧风险 rvid 关联的 task_instance 与本轮失效目标集合；结论 …0001 命中 0 条、被 cancelled 0 条。口径边界：这证明本批次操作未触及该账号，不构成对其全部历史数据（新风险题作答等）的全面安全证明——后者由 B1-B5 发布后检与既有 QA 隔离机制覆盖，不在本记录声明范围。"
+ },
+ "q3_new_version_rules_hold": {
+  "rescan": "发布后全库复扫（Mac 手动，无定时器）：inventory 304 条（published 225 等量/qa_staged 1/qa_retired 27/superseded 51）snapshot 79f90852…，BLOCKED_SCHEMA=0",
+  "tristate_on_published_new": "发布后检逐题实证（publish_b6/publish_batch post-publish）：空过程→null/missing/零证据/RETRY；不可核验→null/unverifiable/零证据/无错因诊断；合法→true+恰一次；重放同 attempt 不重复留证；矛盾按冻结策略（pattern/shape 负向允许、money/pv 零新增）",
+  "note": "publish_b6 的 --only 分跑致 manifest 覆盖（B 覆 A）为**工具报告缺陷，非数据缺陷**。已修复（提交 b10748b）：改为 alt 分文件工件（FE1466_B6_publish_report_A.json / _B.json）+ 总报告聚合，避免再被覆写；A 条目按 dry 期 content_sha=42a10dfa86c6d94c + DB 终核状态（82aabb99 published）重建合并回，条目内 preserved、reconstruction 字段注明'由 dry 哈希+DB 终核重建合并回'。**保留性质**：这是重建记录而非首次直写记录，及其证据链（dry 哈希 + 终核查询）一并保留，不伪装为首次直写。回归形式：分文件工件已入仓，单独跑任一 --only 不再覆盖另一侧。无需重新发布 A 或 B"
+ },
+ "q4_scope_boundary": "Q07 关闭范围=过程证据完整性缺陷本身。以下不归 Q07：211 条同质错因（Q05，另批治理）、212 条 UNVERIFIED（Q03 计算器扩展）、教学效度/能力标签问题（app_transfer 保持观察项定位、money/pv 标签专项未启动）、B6 两题的教学验收（本次为技术发布非教学认证——裁决 §四.3 明示）",
+ "history_untouched": "全程零 DELETE/零历史 UPDATE；已引用退役版 a2732868/939d81b5 保持 qa_retired 不可下发不可复用",
+ "close_criteria_check": {
+  "新下发范围": "✓ 专核正确口径暴露=0（合并后 main 复算，见 no_old_channel / no_old_channel_evidence_correction）",
+  "旧任务范围": "✓ 556 条归属全解释+全部 cancelled（复核时点非 cancelled=0）+锁测复位未触及任何失效目标+入口收口残余=0",
+  "新版行为": "✓ 复扫+发布后检+B1-B5/B6-A/B6-B 双侧实证",
+  "审计完整性": "✓（含 bypass_negative_case 与锁测样本归属两项复核补正）",
+  "历史保护": "✓ 零删改"
+ },
+ "status": "CLOSED",
+ "status_basis_note": "**本轮（2026-10-21）复核补正后的状态**：关闭结论未变，但依据已从'文件标记 PASS'改为'两个单点核清 + 证据分账'——(1) 锁测复位样本经归属核对为非高风险（两例 RVID 均不在 37 旧风险集、不在 556 失效目标），且复核时点 556 条失效目标全部仍为 cancelled；(2) '新 submission 借旧 attempt_no' 绕过负例已由真实 DB N1-N3 + 3 条单测 + 变异测试补齐。原文中四项概括性旧表述（entry_closure 幂等措辞、q3 防覆盖 TODO、五场景零新增、并发'窗口不存在'）已按实际实现与本轮证据改写。",
+ "closed_scope": "Q07 = V2 judge 不校验过程证据（evidence_targets 声明存在而无 process_constraint 时，空/矛盾操作 + 正确终值仍判 correct=true 并写入有效正向 Mastery Evidence）这一缺陷本身。关闭范围=该缺陷的新下发通道已断、旧任务已受控失效、提交入口已实际拒绝、历史证据零改写。",
+ "closed_excluded_scope": "不在 Q07 关闭范围（防过度声明）：211 条同质错因（Q05 另批）、212 条 UNVERIFIED（Q03 计算器扩展）、app_transfer 教学效度观察项、money/place-value 能力标签专项、B6 两替代题的教学验收（本次仅技术发布）——以上均未声明已完成。另：**不启动新的真实儿童历史全量审计**，也不将其作为关闭前置（见 real_child_scope_note）。",
+ "closed_basis": "PR#121 已合并（5a60a693afeda15984fe3a933c11a5478d5d23e7）；目标后端以该提交代码重启后定向复验，逐项证据见 postmerge_evidence_scope_ledger：①旧任务新提交被拒（A：expired/attempt_id=null/三表零新增）②精确历史重放不新增（B、D：attempt_id 一致、计数不变）③异内容冲突仍 409（C）④绕过负例（N1-N3：新 submission 借旧 attempt_no 被受控拒绝，历史行逐字段不变；N2 证明命中只认 submission_id）⑤正常任务不被误拦（E，仅此范围）⑥替代题合法完成（B6-A/B 各自发布后检 + 历史作答分布）⑦旧页面失效可恢复（E2E C-EXPIRE-RECOVERY）。并发仅证『失效先持锁』单路径，范围见 concurrency_proof。",
+ "postmerge_verification_artifacts": [
+  "FE1466_expiry_entry_reverify_merged.json（五场景 A-E）",
+  "FE1466_bypass_negative_case.json（N1 借旧 attempt_no 绕过负例 / N2 submission_id 权威轨正对照 / N3 新 attempt_no 拒绝 / N4 样本终态归属）",
+  "FE1466_expiry_lock_concurrency_v2.json（T0-T6，含样本归属与复位决策记录）",
+  "FE1466_exposure_recheck_merged.json（正确口径暴露=0）"
+ ],
+ "postmerge_evidence_scope_ledger": {
+  "note": "**证据分账（复核补正，用户 2026-10-21 §四.2）**：此前'五场景每例前后三表零新增'的概括超出文件实际内容，此处按各件真实覆盖拆分，不让 E 承担它没有验证的结论。",
+  "A_to_D_counts": "A/B/C/D 四例均记录前后 attempt/evidence/event 计数并比对相等——支持『失效／重放／冲突路径的计数稳定性』",
+  "E_scope": "E 仅为对照：证明**正常 assigned 任务不被失效守卫误拦**（未进 expired 分支）。该次 correct=false 且**未记录前后计数**，故不用于任何'正确完成'或'零新增'结论",
+  "B6_legal_completion": "B6-A/B 的合法完成与会话证据由**各自既有发布后检**支持（FE1466_postpublish_B1..B5 与 FE1466_B6_publish_report）；另有只读核对：B6-A 实测 correct=true 10 次、correct=false 2 次、null 4 次；B6-B correct=true 7 次、false 1 次、null 5 次（历史作答分布，非本轮新增）",
+  "expired_page_recovery": "旧页面失效恢复由 E2E 用例 C-EXPIRE-RECOVERY 支持（apps/child-web/e2e/fe1466-b6-smoke.spec.mjs，lab 皮肤 3 passed）：expired 响应后 hits=1，不对旧任务二次提交，回 idle 重取新题",
+  "concurrency": "并发由 T0-T6 锁测支持，范围见 concurrency_proof 末段（仅证『失效先持锁』一条路径）",
+  "bypass": "绕过负例由 verify_bypass_negative_case.py（真实 DB）+ 3 条单测 + 变异测试支持"
+ },
+ "remaining_before_close": [],
+ "entry_guard_note": "本 PR 除文档/工件外，含一处生产代码变更：submit_attempt 的失效任务守卫 + FOR UPDATE 行锁（§三 要求'提交入口实际拒绝'，既有代码无此校验=真实缺口，非仅测试数据）。198 单测 + 五场景实链 + 两会话锁争抢实测为据。另含前端三处契约透传（contracts.ts expired?/attemptResultNormalizer 透传/machine.ts expired→idle 重取 + CoachPanel 分态文案），E2E C-EXPIRE-RECOVERY 通过。",
+ "final_decision": {
+  "accepted_at": "2026-10-21（用户终审，第三条消息）",
+  "decision": "接受 Q07 的限定范围关闭。",
+  "user_note": "保留本轮负例、变异测试、样本归属和证据分账作为回归资产；E对照的显式写入控制进入常规维护，工作主线回到题目本身。",
+  "no_further_action": "无需再改生产代码、重跑 37 题迁移，或启动新的真实儿童历史审计；不再因上一轮两个疑点重开 Q07，也不再要求重复发布、重复迁移或清理历史 Evidence。"
+ },
+ "official_closure_statement": {
+  "source": "用户终审 §三『正式接受的 Q07 关闭口径』，逐字引用",
+  "verbatim": "Q07 CLOSED：本次四类 Renderer、原37项风险资源及已盘点遗留任务所涉及的过程证据完整性缺陷，已完成资源替换／替代、旧任务受控失效和提交入口防护。关闭依据限定于已执行测试、已核对的数据快照及明确声明的并发路径。",
+  "scope_reading": "三个要件缺一不可：①四类 Renderer + 原 37 项风险资源 + 已盘点遗留任务（对象范围）②资源替换／替代 + 旧任务受控失效 + 提交入口防护（处置范围）③已执行测试 + 已核对数据快照 + 明确声明的并发路径（依据范围）。第③项是本口径的限缩阀门——未执行、未核对、未声明的不进关闭依据。"
+ },
+ "explicitly_not_approved": {
+  "source": "用户终审 §三『以下事项没有被此次关闭顺带批准或完成』",
+  "items": [
+   "Q05 同质错因治理",
+   "Q03 独立核验缺口",
+   "能力标签与教学效度",
+   "B6 两题的教学验收",
+   "真实儿童全部历史数据安全"
+  ],
+  "note": "以上五项在 closed_excluded_scope 中已有对应表述；此处按用户列举顺序单列，避免读者从 CLOSED 状态反推这些工作已完成。"
+ },
+ "concurrency_accepted_range": {
+  "source": "用户终审 §二",
+  "accepted_statement": "在本次『失效事务先持有行锁』的竞争路径中，提交请求等待失效提交后读取到取消状态，没有新增作答或掌握证据。",
+  "measured_elapsed_s": 0.95,
+  "explicit_limit": "维持『不构成所有并发路径的完备证明』的表述；不再把其他并发路径作为本次关闭的新前置。"
+ },
+ "execution_mode_convention": {
+  "source": "用户终审 §四（本轮落地）",
+  "requirement": "在现有脚本中采用两类显式模式，参数名称沿用现有 CLI，不另建工具。",
+  "modes": {
+   "default_read_only": {
+    "cli": "--no-write（默认，可不加参数）",
+    "allowed": "查询现有记录、核对状态与证据、比对已有工件",
+    "forbidden": "不发起正常作答、不执行状态更新",
+    "report": "未执行的写入场景标记 SKIPPED_NOT_RUN；verdict=NOT_RUN_READ_ONLY（不得为 PASS）"
+   },
+   "explicit_qa_write": {
+    "cli": "--allow-write",
+    "allowed": "E 对照、真实 UI 提交、锁测中的任务状态变更等",
+    "constraint": "限定 QA 身份（child …0099）与样本，记录预期／实际写入及最终状态",
+    "report": "每次写动作登记进产物 mode.write_actions（kind/target/detail）"
+   }
+  },
+  "two_hard_constraints": {
+   "http_not_only_sql": "「--no-write 不能只控制直接 SQL。正常提交接口，以及可能触发结算写入的接口，同样应受该模式约束。」→ 落地为 exec_mode.guarded_post() 作为唯一 HTTP 写入口；只读模式不发任何字节。",
+   "lock_test_is_not_read_only": "「锁测也不是只读测试。即使最终三表计数相同，它仍执行过任务状态变更与恢复。」→ 只读模式对 T0–T6 全部 SKIP（FOR UPDATE 持锁与 UPDATE status 都是写动作）；写入模式把 row_lock / sql_dml / state_restore 三类动作逐项登记。"
+  },
+  "implementation": {
+   "module": "scripts/iqc/rt1464/exec_mode.py",
+   "selftest": "scripts/iqc/rt1464/test_exec_mode_gate.py（G1–G8，含变异对照 G7：短路 allows_write 后必须不再抛 WriteBlocked，证明拦截非空跑）",
+   "ci_gate": "scripts/iqc/pr_gate.py 第 4 项，PR-IQC-GATE 硬阻断",
+   "applied_to": [
+    "scripts/iqc/rt1464/verify_expiry_entry_guard.py",
+    "scripts/iqc/rt1464/verify_expiry_lock_concurrency.py"
+   ],
+   "evidence_outputs": "只读跑默认落 *_readonly.json，不覆盖既有写验证证据；写入跑落原名。"
+  },
+  "e_control_scope_restated": "E 在调用正常作答链路，可能生成 Attempt／Evidence／Event。改成只读后它就不能继续承担『真实提交路径已验证』的结论——当前证据分账已正确限定：E 只证明正常任务未被失效守卫误拦，不证明零新增，也不证明答对完成。"
+ },
+ "qa_write_ledger": {
+  "source": "用户终审 §四『保留其 run_id、样本、请求和用途说明即可，不为追求“零污染”而删除历史记录』",
+  "artifact": "scripts/iqc/rt1464/FE1466_qa_write_ledger.json",
+  "entries": 1,
+  "primary_entry_run_id": "RT1464-E-CONTROL-20261020T215912+0800",
+  "primary_entry_sample": "task 00055d5d-3a0e-49b6-9993-35edc4096de9 / RVID f311e9ec-8049-4946-ae01-baa0ac6a618b / QA child …0099",
+  "disposition": "保留，不删除、不改写。台账登记 attempt_id / evidence_id / event_id / task 终态 / ability_state 影响。"
+ },
+ "baseline_downgrade_211_212": {
+  "source": "用户终审 §五",
+  "rule": "211／212 是此前基线中的待办数量，不应未经复扫就继续作为当前精确数量；历史报告保持不变，新基线另行归档。",
+  "status_of_211": "HISTORICAL_BASELINE_ONLY（Q05 同质错因待办数）——非当前精确数量，需基于当前 Published RVID（225）复扫重建",
+  "status_of_212": "HISTORICAL_BASELINE_ONLY（Q03 UNVERIFIED 数）——非当前精确数量，需基于当前 Published RVID（225）复扫重建",
+  "history_reports_kept": "历史报告原样保留、不改数值、不回填新数；新基线另行归档为独立工件。",
+  "next": "FE-1467：以当前 Published RVID 重建 Q05/Q03 工作清单（见 FE1467_q05_q03_baseline.json）",
+  "downgrade_applies_to": [
+   "closed_excluded_scope 中『211 条同质错因（Q05 另批）』",
+   "closed_excluded_scope 中『212 条 UNVERIFIED（Q03 计算器扩展）』"
+  ],
+  "rescanned_2026_10_21": {
+   "artifact": "scripts/iqc/runs/FE1467_q05_q03_baseline.json",
+   "doc": "docs/qa/FE1467_Q05_Q03_BASELINE.md",
+   "object_scope": "published=225（当前）",
+   "Q05_HOMOGENEOUS_now": 209,
+   "Q03_UNVERIFIED_now": 212,
+   "Q03_OK_now": 13,
+   "Q03_ANSWER_MISMATCH_now": 0,
+   "Q06_STEM_LEAK_now": 6,
+   "union_workload": 224,
+   "identity_check": "212 + 13 = 225 = published",
+   "coincidence_warning": "Q03 现值 212 与历史 212 数值相同但集合不同（交集仅 175，旧集合含 50 条已 superseded）——不可据此认为缺口未变。",
+   "also_fixed": "重建时发现并修复 scan.py 的 published 口径范围扩大缺陷（mapping 侧载的 14 条 superseded 混入逐题规则）；已加 test_scan_scope.py 进 pr_gate 第 5 项。历史报告未改动。"
+  }
+ }
+}

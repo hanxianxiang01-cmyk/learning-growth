@@ -1,0 +1,64 @@
+{
+ "audit": "FE-1466 §二.2 误提交只读对账（Dry with-块缺陷实际提交涉及行）",
+ "incident": "builder 首版 Dry 用 psycopg with 块（不自动回滚）导致 2026-10-20 13:5x 试插入实际提交",
+ "rows": [
+  {
+   "rvid": "82aabb99-d2a8-4885-9236-7e44395238d7",
+   "title": "B6-ALT-A 位值卡策略摆放",
+   "status": "qa_staged",
+   "version_no": 1,
+   "created": "2026-10-20 13:50:00",
+   "ability": "app_strat",
+   "difficulty": 1,
+   "tasks": 10,
+   "attempts": 10,
+   "evidences": 6,
+   "published_or_catalog_visible": false
+  },
+  {
+   "rvid": "a2732868-f699-4ead-99ee-d9ac59503e97",
+   "title": "B6-ALT-B 信号灯ABBA周期迁移",
+   "status": "qa_retired",
+   "version_no": 1,
+   "created": "2026-10-20 13:50:00",
+   "ability": "app_transfer",
+   "difficulty": 4,
+   "tasks": 4,
+   "attempts": 3,
+   "evidences": 2,
+   "published_or_catalog_visible": false
+  },
+  {
+   "rvid": "939d81b5-5475-40fa-a8d5-599a781a412c",
+   "title": "B6-ALT-B 信号灯ABB周期迁移",
+   "status": "qa_retired",
+   "version_no": 1,
+   "created": "2026-10-20 16:48:40",
+   "ability": "app_transfer",
+   "difficulty": 4,
+   "tasks": 2,
+   "attempts": 2,
+   "evidences": 2,
+   "published_or_catalog_visible": false
+  },
+  {
+   "rvid": "2f2e8491-151c-4959-94be-c7789d553895",
+   "title": "B6-ALT-B2 信号灯ABB周期迁移",
+   "status": "qa_staged",
+   "version_no": 1,
+   "created": "2026-10-20 16:51:17",
+   "ability": "app_transfer",
+   "difficulty": 4,
+   "tasks": 5,
+   "attempts": 5,
+   "evidences": 4,
+   "published_or_catalog_visible": false
+  }
+ ],
+ "disposition": {
+  "82aabb99": "保留 qa_staged——A 题设计经复验正确，其行即最终候选（误提交事实不改其内容正确性；已在 qa_staged 受控池）",
+  "a2732868/939d81b5": "qa_retired 留审计链，不复用不覆盖（裁决§三）；引用它们的 task/attempt/evidence 仅 QA …0099 冒烟与验收数据，保留不动",
+  "published 泄漏": "无——4 行均从未进入 published；qa_staged/qa_retired 不在 v2-catalog 生产选题池（B1-B5 发布核对时目录 175 项无 B6 行可证）"
+ },
+ "version_governance": "已引用版本零删除零就地覆盖；后续发布走 publish_batch 通道（新 RVID→published，本对账文件随 PR#119 入仓）"
+}

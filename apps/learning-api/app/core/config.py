@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     app_name: str = "Learning Engine"
     debug: bool = False
 
+    # QA-ITEM-01 R2 §二：selection-trace 调试入口**生产默认不启用**。
+    # 仅 QA 环境显式设 SELECTION_TRACE_ENABLED=true 开放（403 QA-child 守卫
+    # 之外再加一道部署面开关——trace 暴露孩子能力画像，属调试面而非业务面）。
+    selection_trace_enabled: bool = False
+
     # 数据库连接（postgresql+psycopg://），由环境变量 DATABASE_URL 注入
     database_url: str = "postgresql+psycopg://user:CHANGE_ME@localhost:5432/db"
 

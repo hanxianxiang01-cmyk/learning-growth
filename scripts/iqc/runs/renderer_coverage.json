@@ -1,0 +1,265 @@
+{
+ "inventory_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+ "rules_via": "FE-1459 manifest",
+ "registry_protocol_ids": 39,
+ "release_scope": 19,
+ "renderers_in_inventory": 23,
+ "unknown_renderers": [],
+ "covered": [
+  "shape-gallery",
+  "number-line"
+ ],
+ "partial": [
+  "array-board",
+  "formula-board"
+ ],
+ "uncovered_v2": [
+  "number-input",
+  "pattern-board",
+  "estimation-canvas",
+  "ruler",
+  "bar-model",
+  "ten-frame",
+  "place-value",
+  "shape-canvas",
+  "object-counter",
+  "sorting-board",
+  "money-board",
+  "grouping-board",
+  "clock",
+  "column-arithmetic",
+  "direction-grid"
+ ],
+ "blocked": [],
+ "summary": {
+  "v2_covered": 2,
+  "v2_partial": 2,
+  "v2_total": 19,
+  "note": "uncovered≠题目有缺陷=验证体系尚未覆盖该 renderer 契约用例（显式在册，裁决 §三.3）"
+ },
+ "matrix": [
+  {
+   "renderer": "shape-gallery",
+   "count": 19,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "covered",
+   "contract_evidence": [
+    "q4-reva-contract.spec.mjs（卡名中性化零泄露·9 题）",
+    "a11y BLOCKED：aria-label 全 null→QA-ACCESS-01 进行中"
+   ],
+   "faces": {
+    "a11y": "BLOCKED→QA-ACCESS-01（aria-label 全 null 实测）",
+    "leak": "中性化零泄露 ✓"
+   }
+  },
+  {
+   "renderer": "legacy:direct",
+   "count": 17,
+   "class": "V1 Legacy",
+   "runtime": "V1 工作台常驻回归（197/197 历史线）",
+   "faces": {}
+  },
+  {
+   "renderer": "legacy:bar-model",
+   "count": 16,
+   "class": "V1 Legacy",
+   "runtime": "V1 工作台常驻回归（197/197 历史线）",
+   "faces": {}
+  },
+  {
+   "renderer": "legacy:number-line",
+   "count": 15,
+   "class": "V1 Legacy",
+   "runtime": "V1 工作台常驻回归（197/197 历史线）",
+   "faces": {
+    "process": "FE-1455 三态双皮肤 ✓",
+    "start_reach": "起点修复 2/2 ✓"
+   }
+  },
+  {
+   "renderer": "number-input",
+   "count": 13,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "pattern-board",
+   "count": 13,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "estimation-canvas",
+   "count": 12,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "ruler",
+   "count": 12,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "bar-model",
+   "count": 11,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "number-line",
+   "count": 11,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "covered",
+   "contract_evidence": [
+    "fe1455-jump-sentinel.spec.mjs（跳步约束三态·双皮肤）",
+    "revb-startfix-1ab893bf.spec.mjs（起点修复 0→7→14→21 无反向修正）",
+    "q4-reva-contract.spec.mjs（数轴中间态原序可操作 before/after）"
+   ],
+   "faces": {
+    "process": "FE-1455 三态双皮肤 ✓",
+    "start_reach": "起点修复 2/2 ✓"
+   }
+  },
+  {
+   "renderer": "ten-frame",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "array-board",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "partial",
+   "contract_evidence": [
+    "R08 阵列 Gate 历史验证（B5 流水线）",
+    "缺：常驻 e2e 结构证据(rows/cols≠仅总数)契约用例（待补）"
+   ],
+   "faces": {}
+  },
+  {
+   "renderer": "place-value",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "shape-canvas",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "object-counter",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "sorting-board",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "money-board",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "grouping-board",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "clock",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "column-arithmetic",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "direction-grid",
+   "count": 10,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "uncovered",
+   "contract_evidence": [],
+   "faces": {}
+  },
+  {
+   "renderer": "formula-board",
+   "count": 9,
+   "class": "V2",
+   "in_release_scope": true,
+   "runtime": "partial",
+   "contract_evidence": [
+    "减号 ASCII 等价 _judge 后端锁测（PoC #2 口径）",
+    "缺：符号点击→提交→判分 端到端 Playwright 契约用例（待补）"
+   ],
+   "faces": {
+    "ascii": "减号 ASCII 等价 _judge 锁测 ✓（PoC #2）"
+   }
+  },
+  {
+   "renderer": "legacy:objects",
+   "count": 6,
+   "class": "V1 Legacy",
+   "runtime": "V1 工作台常驻回归（197/197 历史线）",
+   "faces": {}
+  }
+ ]
+}

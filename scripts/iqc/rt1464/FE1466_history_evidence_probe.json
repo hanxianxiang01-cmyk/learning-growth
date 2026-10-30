@@ -1,0 +1,168 @@
+{
+ "method": "只读 SELECT——暴露37题 correctness=1.0 证据×attempt response 过程字段核验（与阶段C同规则的空判定）",
+ "no_write": true,
+ "positive_evidence_total": 242,
+ "real_child": 28,
+ "qa": 214,
+ "suspect_real_child_empty_process": 28,
+ "suspects": [
+  {
+   "evidence_id": "0e449858-b05f-45e1-9a72-b0a9391437bf",
+   "child": "00000000-0000-0000-0000-000000000097",
+   "ability": "app_cond"
+  },
+  {
+   "evidence_id": "616db607-4807-4272-8d58-3e929a9eda60",
+   "child": "00000000-0000-0000-0000-000000000097",
+   "ability": "app_cond"
+  },
+  {
+   "evidence_id": "326f754a-de1d-4a91-b1b2-f98db191d540",
+   "child": "00000000-0000-0000-0000-000000000097",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "d15a2eaf-f287-40bd-ad52-0b4fd628de8f",
+   "child": "00000000-0000-0000-0000-000000000097",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "58104df6-b777-41d7-bd68-e5bb581f9f4a",
+   "child": "00000000-0000-0000-0000-000000000097",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "73cc3025-83b7-4212-b708-72d9ec9ea3a4",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_model"
+  },
+  {
+   "evidence_id": "94e926c2-c5ac-434f-b13e-c882471d3554",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_cond"
+  },
+  {
+   "evidence_id": "e1b31933-edca-4733-bbfa-53f913c940c1",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "4bbee1e8-4462-4982-be2e-89b681e47a28",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "a5ea6844-c5ef-43ce-92eb-fa17157e959d",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_rd"
+  },
+  {
+   "evidence_id": "01230a5f-5776-4f3b-a1ea-b9dc465bdb3b",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_cond"
+  },
+  {
+   "evidence_id": "9b43b2d7-f1a2-4131-8628-013d76e1149c",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_cond"
+  },
+  {
+   "evidence_id": "c7e0e245-fa9a-4e32-a631-117dc4176eb3",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "d54ce603-e170-424c-8a0d-30c25e47097e",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "e6903197-6634-4736-a590-a44ba60e93ba",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "87b722c8-2339-45b7-8dcf-df1d535ec0e0",
+   "child": "00000000-0000-0000-0000-000000000096",
+   "ability": "app_rd"
+  },
+  {
+   "evidence_id": "1709e4c7-816b-4bee-b2b1-81d7680faf68",
+   "child": "00000000-0000-0000-0000-000000000084",
+   "ability": "app_model"
+  },
+  {
+   "evidence_id": "c97b5f77-8d54-405b-bb82-67b97fcbbe24",
+   "child": "00000000-0000-0000-0000-000000000084",
+   "ability": "app_model"
+  },
+  {
+   "evidence_id": "8783ae81-6555-46a7-8aee-c457e920d405",
+   "child": "00000000-0000-0000-0000-000000000084",
+   "ability": "app_model"
+  },
+  {
+   "evidence_id": "12fa7e29-621c-4c64-bd26-25b1d459950a",
+   "child": "00000000-0000-0000-0000-000000000087",
+   "ability": "app_model"
+  },
+  {
+   "evidence_id": "3193f0c1-ebbe-43d4-a40d-c5ba8869a1fe",
+   "child": "00000000-0000-0000-0000-000000000088",
+   "ability": "app_check"
+  },
+  {
+   "evidence_id": "39721abb-dc6d-4f57-99b0-e26dbb1cc42a",
+   "child": "00000000-0000-0000-0000-000000000089",
+   "ability": "app_check"
+  },
+  {
+   "evidence_id": "67327986-ed57-418c-a806-23dc1b8d8bab",
+   "child": "00000000-0000-0000-0000-000000000090",
+   "ability": "app_check"
+  },
+  {
+   "evidence_id": "b66f12ea-c0a3-4035-8867-ae924a8ce200",
+   "child": "00000000-0000-0000-0000-000000000091",
+   "ability": "app_check"
+  },
+  {
+   "evidence_id": "5e726862-5023-4f25-96dd-452337664314",
+   "child": "00000000-0000-0000-0000-000000000092",
+   "ability": "app_check"
+  },
+  {
+   "evidence_id": "0da1e4c8-d159-486a-b6ac-17336dd8349f",
+   "child": "00000000-0000-0000-0000-000000000093",
+   "ability": "app_check"
+  },
+  {
+   "evidence_id": "80a4881a-f1fc-4830-939e-038a6485bed2",
+   "child": "00000000-0000-0000-0000-000000000093",
+   "ability": "app_strat"
+  },
+  {
+   "evidence_id": "b00cb544-d18f-4eca-af41-527d597234d3",
+   "child": "00000000-0000-0000-0000-000000000094",
+   "ability": "app_model"
+  }
+ ],
+ "caveat": "response 缺字段=API 直提形态或 V1 信封兼容——逐条需人工复核后定性；本审计不修改任何历史行（裁决§五）",
+ "product_note": "暂停推荐评估仍适用 37 题（防未来新增无效证据），但无历史数据清理需求。",
+ "correction_v2": "初版把 child_id 前缀 00000000 粗判为真实儿童——精确枚举证伪：20 个 child 中 19 个是 QA/ITEM 模拟账号，唯一真实儿童=…0001 小明。",
+ "real_child_xiaoming_suspects": 0,
+ "suspects_by_child": {
+  "0096": 11,
+  "0097": 5,
+  "0084": 3,
+  "0093": 2,
+  "0087": 1,
+  "0088": 1,
+  "0089": 1,
+  "0090": 1,
+  "0091": 1,
+  "0092": 1,
+  "0094": 1
+ },
+ "verdict_revised": "历史正向证据的空过程疑似 28 条**全部落在 QA 模拟池**（QA-Simulator-Growth-Final 11 / Growth 5 / 高提示依赖 3 等）——与 QA_DATA_HYGIENE 分池纪律一致；真实儿童（…0001）零记录零污染。生产暴露面=§三 37 题机制风险仍真实（未来真实答题会走无门槛判分），但历史账本未被污染，无需回写/处置存量。"
+}

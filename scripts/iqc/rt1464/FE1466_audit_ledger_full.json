@@ -1,0 +1,1288 @@
+{
+ "generated": "2026-10-20 11:20",
+ "purpose": "PR#117 迁移映射与证据链审计工作文件（产品逐条审查用）",
+ "db_verified": {
+  "source_published": 35,
+  "new_qa_staged": 35,
+  "rows": 35
+ },
+ "tristate_convention": "empty→correct=null/missing/零证据/RETRY；contra→false+负向按 renderer 策略（pattern/shape ev=1，money/pv ev=0）；legal→true/恰一次 ev=1",
+ "audit_failures": "无——35 题逐题三态与策略全一致",
+ "rows": [
+  {
+   "batch": "B1",
+   "source_rvid": "24e3c3f4-51bd-4411-a3c3-f4e7f5538d43",
+   "new_rvid": "421427f3-8f7a-47b0-9c61-cf7724701d10",
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "7b3e9e83-84e7-432f-9997-cc9be2484182",
+    "task": "8cbc8567-7f6b-475f-9218-be0f6b083961"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "935db718-9bda-4d54-9737-54c959e1c424",
+    "task": "7609b874-8e0f-4342-8ca1-7b314ee89ad2"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "349e3e72-706c-46aa-a7e3-718ce29d4906",
+    "task": "d4d0388c-262b-476f-acdf-30eca6601ed5"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B1",
+   "source_rvid": "4e850544-94db-4701-964e-3b939fb3cf42",
+   "new_rvid": "82ff6618-4fea-4b4b-80a3-2741cf014571",
+   "renderer": "pattern-board",
+   "ability": "app_check",
+   "difficulty": 1,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "b892f9c0-f1b6-495d-bb42-42af00b4badf",
+    "task": "c22b8356-f9f0-4e5f-83b3-b6589dbf22fc"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "9f6456c0-677c-4e2c-a5fb-e4243a746dec",
+    "task": "82a44911-ae12-4395-8d51-7013befd354e"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "47e5e972-8090-41d8-85df-da90f3da5f0a",
+    "task": "629334be-ed86-4064-bf97-2c2fc0a6165f"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B1",
+   "source_rvid": "579786c0-0dd8-442a-ac41-4a26b9fb4f48",
+   "new_rvid": "bd711387-6da6-4669-ac3f-fdbd59ffd265",
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 1,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "8f96b737-5a84-4205-ae86-86514417aea2",
+    "task": "88258ddf-a797-4bcb-aaa5-240caeb057d1"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "91c7314e-5f5a-4b31-9ff4-e08b03aab098",
+    "task": "9048e58a-a17c-4814-9dc7-a7340ac7234e"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "17d58d08-be74-47f6-818d-5e29f6705283",
+    "task": "287e30db-aab7-4117-b91d-123937eac3d4"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B1",
+   "source_rvid": "75cae864-1d63-44d3-8bc4-3d300e81f550",
+   "new_rvid": "66938277-896a-424c-ae85-3b8cf710d7a3",
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 1,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "c950c1a8-f2f9-4d88-94a2-a904cbf27d57",
+    "task": "b7684048-5929-478e-89cf-8c420fbcaa32"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "f709ceb9-617c-4bc7-b4e3-2b9ebfed7fe4",
+    "task": "5dfecb8f-1a07-4207-ba38-bcdaa04f6508"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "255452ef-ea9c-491f-a518-3c0d6a6254a5",
+    "task": "7753de49-8349-4b66-8a5e-e55810555512"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B1",
+   "source_rvid": "95b16f9f-c5a4-4791-8f8a-00c25d744a61",
+   "new_rvid": "e6bc5139-0be9-4981-92d0-094cfe133ca1",
+   "renderer": "pattern-board",
+   "ability": "app_check",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "0bdf57b3-80af-4525-99d1-f83d0c4c320b",
+    "task": "3b2283cf-51f9-4d6d-8b10-bfa0404f0944"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "45fe5d31-4549-4012-9d15-afd2c44964e9",
+    "task": "e56f4a92-16f0-4550-99b5-609c56394711"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "e7f268a1-288c-446b-b00a-888a7f5e521f",
+    "task": "ece3fffa-11dd-4c3e-991f-207350f2ec31"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B1",
+   "source_rvid": "ec982464-72c9-40e1-9db0-20435c60b798",
+   "new_rvid": "a6eebe9a-97e6-4bc0-a58f-727ede2cceed",
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "d65bed02-d976-44cf-953a-7ff6830e9e72",
+    "task": "8efa0009-d779-4f33-b40c-17b502cd0e70"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "d2092abf-b667-493e-9d85-b0dcfe4cc84d",
+    "task": "5997afbc-109e-4b74-a12f-75c62e25581d"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "53beec65-e1c9-4963-b0cb-9c814903a038",
+    "task": "f30c9ef6-46ae-4ed0-b1bb-29d37ad67d6b"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "12f89452-ad38-4c24-af5d-d734f5b4c43b",
+   "new_rvid": "73c7e8c0-8b24-4ab3-b3f9-cddabf534d97",
+   "renderer": "shape-canvas",
+   "ability": "app_cond",
+   "difficulty": 3,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "958791bd-f891-4812-8093-eccb8556094e",
+    "task": "088aae7e-f321-4f87-bb0b-f6e3ba0bb9bd"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "4b4a8c84-fc49-43cf-9a1b-71da8ef86d40",
+    "task": "b41b1180-c525-446a-9f2f-59f1c9cc8a3c"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "07da7993-990f-4e89-85ff-c092ce24bb94",
+    "task": "594d657a-d65f-4500-a210-57ec5bf8c447"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "291106d7-45a5-4e79-8263-1b2e2e84dd11",
+   "new_rvid": "11129745-f159-4458-ba28-2b85503a1071",
+   "renderer": "place-value",
+   "ability": "app_cond",
+   "difficulty": 3,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "a70409d6-f036-4053-a4b5-4aee8cf836eb",
+    "task": "cde86433-cf4c-423c-a584-99a271b84dec"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "7d58e269-163e-4c6a-bf57-9d93809f800f",
+    "task": "4bef982a-c211-4594-bcfc-1e3ea2ba3ee7"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "6a14eb33-4df3-4b7a-946e-429e2771bae1",
+    "task": "c718f6eb-6717-45b8-84fc-57a4406d048c"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "334962af-db9c-432e-9aa9-2d1cf5d5509d",
+   "new_rvid": "c8aea8db-7a24-405f-beaa-f1e6b057ebaa",
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 4,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "9bd4ba51-f268-491d-8434-09bb99f185e4",
+    "task": "8645af62-48b5-43fa-9d5b-8a281caf56ea"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "00c01a55-f757-49b0-b1a2-1b1e1d4f4138",
+    "task": "c3b9c8b8-ab68-4bd7-a814-4004caa55ec3"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "dec84bf7-07e7-4c54-8571-67940b3c4151",
+    "task": "f26f7bfa-4068-40de-a9bc-17b25d850b04"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "3527282b-7c3a-490b-805c-295294f25c35",
+   "new_rvid": "e6fd4a86-5211-4732-9962-cd619d35dd09",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 1,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "edb1f9bb-7923-449f-b4d4-ef7befa6a496",
+    "task": "f240d6c1-993a-4d68-a590-144c0bcfa737"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "215232c2-9751-47ad-b26d-80e9ca87f680",
+    "task": "7690183d-e269-4cec-af33-db6e472cca36"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "c9c957d0-4792-436f-b898-2cb821093453",
+    "task": "dd86c1ed-bf64-415d-80fa-3db305659b2c"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "831832e5-a14c-4902-8249-60eaa0b451a9",
+   "new_rvid": "3a80cfb1-d6a8-4cb2-b430-122a17f3a4ee",
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 3,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "39967629-08f3-49dc-a0c6-a7682bf819ae",
+    "task": "dc0c07a1-a3a4-4d89-b328-07c18abacae5"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "7cb3ee3a-6edb-4fd8-806c-98991e567e5e",
+    "task": "6cc95ce3-dc00-4eb8-8bc0-5b5558ff84dd"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "dfdaba61-efbd-4989-96ec-4a898970de98",
+    "task": "82a75a2f-0296-42b7-a600-235363597698"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "99b86483-6fe7-46bb-962d-ef298d779cce",
+   "new_rvid": "4e7aac4d-9fb1-49db-8d23-d777aad68e89",
+   "renderer": "pattern-board",
+   "ability": "app_cond",
+   "difficulty": 5,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "af009a92-e302-41fd-a358-b0b2aed62082",
+    "task": "58447dd4-6017-4552-a3f4-354da5f88ada"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "8714d3c6-e854-4f71-b16f-9a240ef43f67",
+    "task": "a996d4a2-90cd-4921-a903-7329ca6bf87c"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "aab49d45-ba80-481e-99a7-28773bac432b",
+    "task": "64e9f1a3-03a0-4f57-94fa-3a76b78c6d6a"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "da0d938c-90f9-4e06-9b16-aa6af9e568df",
+   "new_rvid": "52578333-c17a-4786-bfa1-2f84b6bba858",
+   "renderer": "money-board",
+   "ability": "app_cond",
+   "difficulty": 5,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "83e27588-ca48-4d09-a499-a74712965dff",
+    "task": "99715508-06d5-4304-93d3-51abaf0c1e2a"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "9d676368-13ba-4c25-a7c6-54b5fa81c3d7",
+    "task": "c77ebbad-80df-475b-8eef-9d5a3848eb4b"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "ff270d36-5ac4-4b01-817a-2ce76725418f",
+    "task": "7842e0d4-946e-44fc-b925-29787887b3ce"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "e946491c-ced3-4160-aa25-a2ccb0a10a7c",
+   "new_rvid": "a1b71f95-f8a8-4ea2-8942-8c93b532b46b",
+   "renderer": "shape-canvas",
+   "ability": "app_cond",
+   "difficulty": 4,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "d4ab3788-21ee-42a6-ad92-29fed76ea9cd",
+    "task": "7d2e907f-488e-445c-b3bd-e51e0fe6c698"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "55b1e4bf-9f57-49f4-b539-978540448697",
+    "task": "47aa72d9-1537-40fc-bd9b-86b410452095"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "1d35b930-702f-43e3-bfce-14be791da046",
+    "task": "e78bc008-ee1c-4c7d-80ac-3f1f419e86ef"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B2",
+   "source_rvid": "f281ec32-4680-4c0e-b875-5ee76e23205f",
+   "new_rvid": "aaf57012-1abc-48f5-822d-bfb0bf69a390",
+   "renderer": "place-value",
+   "ability": "app_cond",
+   "difficulty": 4,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "05e9ea81-d864-47fc-9e78-6e1cf2a063b4",
+    "task": "c0346d62-ec3e-495f-bc83-7c4de7f9a0f7"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "c9519bcd-0169-44e8-8b71-2f6359e6ca40",
+    "task": "7dbbb20b-6f07-41ee-b6a0-3a95163eeccf"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "a880f57b-42f1-4e5c-91fb-e00a8426d038",
+    "task": "7f5d0352-8e12-426b-ae13-6cb490e806e5"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B3",
+   "source_rvid": "4936b35f-a5dc-44d4-9b2e-e58c6f3b7c0e",
+   "new_rvid": "0bfad10f-1e49-4625-ba5b-038de233f571",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "1a544ab3-cc63-414e-b2a8-196a89fe51db",
+    "task": "57eb8aa9-f4e4-4d02-b605-c88eabb40b1c"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "31aa1e9d-c811-403a-8fc4-5f2a8a7f898e",
+    "task": "a7b32800-ceda-4a8f-8d64-88da368aec9d"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "c62e54dc-000a-4db8-b394-5c1e9658e3be",
+    "task": "3312a1ec-026d-4a77-8c95-3b41c315671e"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B3",
+   "source_rvid": "60039509-f8e6-47f5-a86a-04d9b84e05ef",
+   "new_rvid": "8b41e648-23dc-4a84-bc3c-d86293c358f9",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "6ab5a8ca-b156-47ba-8441-5a7c132a7bf1",
+    "task": "0c7e141e-eae4-4b49-b408-1d155230668b"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "05ba4a83-664c-42f7-8f0e-14588c45b368",
+    "task": "92a28545-077e-4486-a20c-ef3d6b880782"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "37a78c51-6249-44fe-a3dc-34461b16a64f",
+    "task": "c1ceab79-c598-4af7-8c12-787863c30230"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B3",
+   "source_rvid": "971b1f5e-6c4c-4fd2-ba92-e64c99ce9d3c",
+   "new_rvid": "853ef450-101e-4b65-94f7-5ef4fba81717",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "2f586451-05ce-4767-9a78-75887303a55f",
+    "task": "bf04838f-5dc2-4508-8699-beefd76e8ff7"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "906f8594-cb2a-43c2-a07e-d942f8225ef5",
+    "task": "655a7948-cb5b-47ec-8d81-37f8e6bc99d4"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "f95ee01e-3e5d-460b-8c24-005f195de9de",
+    "task": "e884354c-267b-4b31-893e-9efbded47f19"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B3",
+   "source_rvid": "9d0d3a7e-57f6-4602-ab4d-1ead6affb26e",
+   "new_rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "ccce6b7f-91c1-465b-97c2-cf9663f21a77",
+    "task": "af6ddfd1-4f5d-44e4-b915-d07910e4b054"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "b0b1d33a-94d6-4f8e-aec3-11a4d55da01e",
+    "task": "0ede29e1-1564-4880-9009-d52cc5f5f0bf"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "0ad809e7-c5ce-47aa-91fa-22a808655b5f",
+    "task": "4e67dc2c-df1b-4bf9-b36c-91fadeac40b2"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B3",
+   "source_rvid": "b7d09e76-58f2-40af-a8ea-7d31a1bc3f6e",
+   "new_rvid": "c9347ee4-5d75-4f2b-a9cc-b2a193c4961f",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 3,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "3b9c955c-b93a-4122-89a8-e432f51a80c8",
+    "task": "becaccba-ce68-4c61-a19b-0775fd098d0d"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "3833c90a-38ae-428c-b0aa-161abfe7cf7a",
+    "task": "6a70d095-e8ba-4b34-b93e-484223a958e6"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "a348e1f6-27e0-44fd-ae09-9c1fb126db0e",
+    "task": "143c0d52-823d-4304-87e0-e1dc14105860"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B3",
+   "source_rvid": "cbcf5a5d-a88c-4463-b5ec-1aed74e17cce",
+   "new_rvid": "ae778338-3a06-417f-b889-f42ce4647f47",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 3,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "e03afe0b-e736-4fd9-8a08-ad9b8425d02f",
+    "task": "b91ae7ad-0d52-4f9e-815e-e27fa2a6e0d9"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "480a8c09-9409-4428-89bf-d09123105cbd",
+    "task": "069b3ff5-fb05-4748-9d52-7f2c4c7d006d"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "fc0a1f5a-c545-4a3c-b0ce-7ba85f84fe4c",
+    "task": "f50593ad-e355-4eb5-86a7-8c71f45dd212"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B3",
+   "source_rvid": "d606f5a4-649e-4f4b-be4f-4ce63923263b",
+   "new_rvid": "1d5fab4e-f752-4b7b-892b-82a0932d8cde",
+   "renderer": "shape-canvas",
+   "ability": "app_model",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "eabe5f4c-80e3-4f7f-80d6-3142fba4dec3",
+    "task": "4c6c9115-79e9-42af-9e46-8cc214291458"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "015ba4ed-6452-47b8-adaf-136d163712ea",
+    "task": "50c2f631-b5cf-4785-834b-fbe28613dbc7"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "23b9458b-bfd0-48ce-99f9-187cc7436da2",
+    "task": "e3d9ce8e-e6f1-4075-ba9e-7fcf35775905"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B4",
+   "source_rvid": "11aca9c8-067a-48e6-945e-959a20ce83f5",
+   "new_rvid": "7c1b3466-dc9b-4630-b549-22432dca9418",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 5,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "71c3ac53-cd48-4d6b-b105-4e54bd2fce28",
+    "task": "d5ee19cb-c910-4901-8c63-3e5a222300d8"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "59aa60d2-c2ab-444e-a392-00270c87af46",
+    "task": "722ad377-7b55-40e0-b898-c069cb75e648"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "de930591-d0be-4d1d-a5e2-553174dd5fa2",
+    "task": "0d8f0806-d8a1-4af7-b188-8ca438144299"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B4",
+   "source_rvid": "1723d78a-44c9-419d-82d4-7a9f6a48520a",
+   "new_rvid": "088d0469-b111-4dfd-9541-2df7154b206e",
+   "renderer": "pattern-board",
+   "ability": "app_rel",
+   "difficulty": 1,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 3,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "7cd45c79-5486-4486-8f54-12b70ba2db2c",
+    "task": "c85becce-5cf7-4d27-a61b-e8a6a68c2f62"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "6f825e7f-88f3-4a98-b206-70958bff65cc",
+    "task": "6be10f0e-4eed-408b-aa9e-0cf21a15b5a2"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "f0d9e7eb-146c-495f-8b26-023152848c35",
+    "task": "c44177a8-6bfe-4693-af0c-fcc46657f0be"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B4",
+   "source_rvid": "9ab5d643-bd5b-4a77-8f22-f963d2b2ad84",
+   "new_rvid": "b2d0c748-518c-4000-a8b6-4dbd56bd2bdb",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "7269b976-02a1-46cb-845c-35e488925319",
+    "task": "73d8d4f3-8f7d-49cf-afa5-36bc88732c5e"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "82f16ab0-c3b8-4ebf-a748-6744808a52f1",
+    "task": "d498bafb-1a65-46b9-aa7c-a067c7a56ca0"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "7f57b091-514b-4bbb-ab2e-0218f96bb666",
+    "task": "c5cf769a-a5eb-46e1-964d-69ba3cc112bf"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B4",
+   "source_rvid": "a21d4278-9780-453c-a510-08ce184f764e",
+   "new_rvid": "b38f8898-aed4-4238-b7d9-dda33092aae4",
+   "renderer": "shape-canvas",
+   "ability": "app_rd",
+   "difficulty": 5,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "52ef9dd6-2756-446a-8682-9c7db556805d",
+    "task": "9e4af684-5f20-4386-adc2-10bfe020bf5e"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "42d48473-9161-4f28-887a-e2a1edd866c0",
+    "task": "8ec233c5-b77f-43d2-b888-298b052b0d73"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "941a2a67-9890-426a-b73f-d9283ff1a4fa",
+    "task": "cb5a98c2-5d49-4f1a-a9fe-8eda9b7b404c"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B4",
+   "source_rvid": "b978d294-7ea5-4670-8538-3c04c2113536",
+   "new_rvid": "5ee230c4-a9e3-4b24-8bb6-657571cced5f",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 2,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "81b76335-f0da-4076-8c77-7ad77a21e1e2",
+    "task": "3b1d5495-0917-4d4a-a88e-483127b652af"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "8b8bb3c5-8a91-4778-978c-81b6da72615e",
+    "task": "4cd7aed1-5e9c-4018-9b83-9cea2caca108"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "02e50e4d-742f-4d7c-93ac-4a3c4f3d81c5",
+    "task": "4764dc5f-d868-4978-a6ca-84aae16f5632"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B4",
+   "source_rvid": "be433fc9-af29-41dc-88c2-7d0a5d110459",
+   "new_rvid": "e8fd711d-223a-4f4a-b79e-0cd46536bac1",
+   "renderer": "shape-canvas",
+   "ability": "app_rd",
+   "difficulty": 4,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "c42a04aa-0df7-45b7-99ec-0653ae8ccbae",
+    "task": "af44efed-4f27-4978-a0a5-58ef8c38b6c6"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "f86e5992-6204-4592-ac47-ceea9163ed9c",
+    "task": "769bbc2e-5a1b-40bf-9a2d-be65e250011f"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "7d64b837-ea64-4855-a563-6bc3efda4799",
+    "task": "7b9b7ed2-d52b-4ae3-8726-517dbfdd97c4"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B4",
+   "source_rvid": "e1393f3d-2a02-4eba-b02e-5be1ee9b6a54",
+   "new_rvid": "0b95c86f-99b3-421a-8a04-d328b4eb7eb7",
+   "renderer": "place-value",
+   "ability": "app_rd",
+   "difficulty": 4,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "6611f9f9-e2ee-4195-85fe-83ff71106b0a",
+    "task": "c5fe7938-fa1b-4c50-8dd8-4bfce9d4f1e6"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "dab49ac4-aef3-4b7a-9217-2229133d07e5",
+    "task": "f3c0e707-12b3-4814-9334-1d7b1c730d1c"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "f8329300-f367-4f80-bc16-6ed91cc28d5e",
+    "task": "abed466a-d4bb-4ebc-84a6-444b6211c44f"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B5",
+   "source_rvid": "1716d898-506d-4428-a9de-664bc60b528e",
+   "new_rvid": "8a658f5e-f2ff-49c5-8e39-598e32a9681d",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 3,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "f76edfc3-2656-4173-800e-9f0ccfdd0e37",
+    "task": "a3787442-e49d-400c-b66b-129f69f5aaec"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "9c08bf36-406b-4ad9-a60c-a0a6020f0fc8",
+    "task": "c7c6fb74-4c24-40bf-8e0b-cd08c3827bcf"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "c60ba5e2-4924-47e6-ac86-25d6f5a58e32",
+    "task": "3080eb5e-a276-4355-9ce1-649549632b72"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B5",
+   "source_rvid": "2ff4a288-9db7-4945-9ff8-db00eccaacdb",
+   "new_rvid": "438696d1-2dfc-443a-9732-c34b3fe3a524",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 3,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "39a75827-04ea-4a50-ac5d-9a191beb58ee",
+    "task": "2f2c3fa6-7c92-4ba3-a248-73ea0482c28b"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "58772599-5f7f-4552-9b05-a8078b0ddcc7",
+    "task": "9b58fadc-6f6d-4093-b812-7c07162a5ef3"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "367634de-1c5e-4cc9-8983-2e13e3010cfb",
+    "task": "a461b47c-00ef-4761-b4ec-36c77809b91d"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B5",
+   "source_rvid": "3d60a583-d90d-442d-9e2d-d78ab970b414",
+   "new_rvid": "da7655e3-bd20-4fa2-b112-788d4e86edc8",
+   "renderer": "pattern-board",
+   "ability": "app_transfer",
+   "difficulty": 5,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "ee46a336-4329-4ef4-b374-ab3a02a14148",
+    "task": "6ae7ee9b-f70e-40d2-80bc-cc33316e1a73"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "837b7979-c1f4-495e-9903-0efbb3ec8a37",
+    "task": "d9e66be8-9aa3-49b0-a9f8-b47340301499"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "d92d3c26-3802-416f-892d-001d41f8cd67",
+    "task": "1b43e95a-9d91-42b8-a97b-8b1cd0278b6e"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B5",
+   "source_rvid": "57c34c52-7fc2-4ba8-9f66-2a60c622d6f4",
+   "new_rvid": "fe2e4fbb-0a49-4479-9c14-564ffa994724",
+   "renderer": "pattern-board",
+   "ability": "app_transfer",
+   "difficulty": 5,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "464ca31a-2607-4a9e-a47b-41703543358e",
+    "task": "f4b268f4-8608-46c2-ac2a-0329dfb02a3a"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 1,
+    "na": "HINT",
+    "attempt": "543c93a6-8ed2-4415-a1d2-8bc77ae359aa",
+    "task": "28239f25-2fe6-43d6-8f44-3d1dfd7fbfaf"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "19657793-7cf5-4d1a-bda7-3d6f46d00a60",
+    "task": "f7daafc4-b1ff-45ce-953f-f8224017568c"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B5",
+   "source_rvid": "6b87f039-372a-4146-80d2-6873e38001f9",
+   "new_rvid": "007b00b2-03bd-47d6-a58e-368ee1d00192",
+   "renderer": "money-board",
+   "ability": "app_strat",
+   "difficulty": 4,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "876e7752-4f76-4e93-af80-5cb0e5024aab",
+    "task": "5d5b6a24-3f3a-476a-9b95-b5963535703f"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "d35a306d-b903-4390-bcef-e575e2d790bd",
+    "task": "531541e8-4b5c-4673-84eb-18a2a1af41ed"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "ed9594b2-f524-46c9-afd5-a6e72227b465",
+    "task": "dfe42a07-9a9b-4ed0-8953-67c84e8fe49f"
+   },
+   "all_pass": true
+  },
+  {
+   "batch": "B5",
+   "source_rvid": "8d8c71fb-9c9d-45d6-9c8a-d395f202f9fa",
+   "new_rvid": "6285f244-9d78-4df3-b700-462801281d27",
+   "renderer": "place-value",
+   "ability": "app_strat",
+   "difficulty": 5,
+   "source_status_now": "published",
+   "new_status_now": "qa_staged",
+   "new_version_no": 2,
+   "empty": {
+    "correct": null,
+    "ps": "missing",
+    "ev": 0,
+    "na": "RETRY",
+    "attempt": "21a16500-3eee-4ab5-bca4-87c9fa091087",
+    "task": "603e645b-dfc4-4467-8111-3ef059213577"
+   },
+   "contra": {
+    "correct": false,
+    "ps": "contradiction",
+    "ev": 0,
+    "na": "HINT",
+    "attempt": "35f6c2fc-9250-4e8a-adfa-5257a2d59fcc",
+    "task": "f7a3a29c-f266-49f8-a033-27c737990063"
+   },
+   "legal": {
+    "correct": true,
+    "ps": "valid",
+    "ev": 1,
+    "na": "NEXT_TASK",
+    "attempt": "89d46fa2-9e8e-4e87-84dc-9abae223f248",
+    "task": "27572caf-faf7-488e-9176-5ae1b4f0d050"
+   },
+   "all_pass": true
+  }
+ ],
+ "b6_pending": [
+  {
+   "source_rvid_hint": "2c46c271",
+   "ability": "app_strat",
+   "difficulty": 1,
+   "note": "该带唯一题，停用即空池；迁移前置=过程契约确认+替代方案（裁决§三3）"
+  },
+  {
+   "source_rvid_hint": "845c6fea",
+   "ability": "app_transfer",
+   "difficulty": 4,
+   "note": "同上"
+  }
+ ],
+ "publish_state": "全部未发布：新 RVID qa_staged（不进生产选题池）；旧版 published 在线——无效正向通道在生产端仍存在，发布切换是收口动作（等产品映射审查通过+发布决定）"
+}

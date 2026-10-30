@@ -1,0 +1,98 @@
+{
+ "title": "FE-1466 Q07 验证过程对 QA 通道的写入台账",
+ "date": "2026-10-21",
+ "purpose": "用户 2026-10-21 终审 §四 明确：'对已产生的 QA Attempt：保留其 run_id、样本、请求和用途说明即可，不为追求零污染而删除历史记录。' 本台账登记验证脚本在 QA child（…0099）上真实产生的每一次落库写入，含样本、请求、用途、可核验证据链。**只登记，不删除。**",
+ "policy": {
+  "not_deleted": "这些写入是真实执行后的历史事实。删除它们会让『验证确实跑过』失去证据，也会制造『零污染』的假象——记录本身才是可核验性。",
+  "no_implicit_write": "自本台账建立后，验证脚本默认 --no-write（只读）：不发起作答提交、不改任务状态；需 --allow-write 显式授权，且写动作逐项登记在产物 mode.write_actions 中。",
+  "evidence_validity_authorization": "本轮不删改历史 Evidence。未来如需调整有效性（例如改为 valid=false），应单独评估其对消费规则、历史回算和审计结果的影响，获得对应授权后执行。本台账不构成此类授权——登记历史事实不等于预先批准后续处置方式。",
+  "no_delete_this_round": "本轮已获授权且已执行的处置仅为『保留记录、不删除、不改历史 Evidence』；不得据此推断已允许任何形式的改写或软删。",
+  "superseded_statement": {
+   "removed_field": "soft_delete_only",
+   "removed_text": "若未来需要声明某条证据无效，只允许 valid=false 软删（与 QA_DATA_HYGIENE.md 同纪律），不得 DELETE。",
+   "why": "用户 2026-10-21 复审 §二.4 指出：『未来若要声明证据无效，只允许 valid=false 软删除』超出了此前授权范围。原表述把它写成既定规则，等于预授权。"
+  }
+ },
+ "entries": [
+  {
+   "run_id": "RT1464-E-CONTROL-20261020T215912+0800",
+   "case": "E-CONTROL-NORMAL",
+   "artifact": "scripts/iqc/rt1464/FE1466_expiry_entry_reverify_merged.json",
+   "artifact_generated_at": "2026-10-20T13:59:11.313389+00:00",
+   "artifact_generated_at_local": "2026-10-20 21:59:11 +08",
+   "purpose": "对照项：证明正常 assigned 任务不被失效守卫误拦（未进入 expired 分支）。仅此范围，**不承担**『替代题正确完成』结论——该次 correct=false。",
+   "sample": {
+    "child_id": "00000000-0000-0000-0000-000000000099",
+    "child_kind": "QA child（测试专用号，非真实儿童）",
+    "task_instance_id": "00055d5d-3a0e-49b6-9993-35edc4096de9",
+    "session_id": "95d0eb68-8e41-4c5f-813f-22a3a701ef26",
+    "ability_id": "app_rel",
+    "resource_version_id": "f311e9ec-8049-4946-ae01-baa0ac6a618b",
+    "resource_version_review_status": "published",
+    "renderers": [],
+    "evidence_targets": null,
+    "is_high_risk_channel": false,
+    "high_risk_note": "该 RVID renderer=[]、无 evidence_targets、无 process_constraint → 不属 Q07 四类暴露口径，也不在 37 旧风险集 / 556 失效目标内"
+   },
+   "request": {
+    "endpoint": "POST /v1/learning/attempts",
+    "payload": {
+     "task_instance_id": "00055d5d-3a0e-49b6-9993-35edc4096de9",
+     "attempt_no": 1,
+     "submission_id": "67b2373e-d9e1-4084-b7fe-728c55f35c39",
+     "response": {
+      "answer": "0"
+     }
+    }
+   },
+   "writes": {
+    "attempt": {
+     "attempt_id": "0dbe0349-f98f-497c-9bc1-f7ea34117731",
+     "attempt_no": 1,
+     "correct": false,
+     "submitted_at": "2026-10-20 21:59:12.75761+08"
+    },
+    "mastery_evidence": {
+     "evidence_id": "ebed75d4-00b7-415d-b393-39d324034a58",
+     "evidence_type": "retention_check",
+     "valid": true,
+     "correctness": 0,
+     "occurred_at": "2026-10-20 21:59:12.75761+08",
+     "note": "correct=false 时按现行判分写入的负向证据（valid=true 表示证据本身有效，不代表答对）"
+    },
+    "learning_event": {
+     "event_id": "10640c7b-986e-4e2c-b55b-2e5f626dc2e9",
+     "event_type": "attempt_submitted",
+     "seq_no": 1,
+     "occurred_at": "2026-10-20 21:59:12.75761+08"
+    },
+    "task_status": {
+     "value": "assigned",
+     "note": "正常作答路径不改任务终态，仍为 assigned；与失效路径（cancelled）不同"
+    },
+    "ability_state_effect": {
+     "ability_id": "app_rel",
+     "last_evidence_at": "2026-10-20 21:59:11.291051+08",
+     "valid_evidence_count_after": 945,
+     "note": "该次写入使 app_rel 的 last_evidence_at 前移；level/confidence 未变（confidence=0、level=3 自 2026-10-07 起未动）。属 QA 号内部计数，不涉及真实儿童。"
+    }
+   },
+   "verification": "时间戳闭环：产物 generated_at 13:59:11.313Z 与 attempt.submitted_at 21:59:12.757+08（=13:59:12.757Z）相差 1.4s，且该任务在此前无任何 attempt（attempt_no 从 1 起），可确认该 Attempt 由本场景写入。",
+   "disposition": "保留。不删除、不改写。如需在本机复跑同场景，脚本会自动选其他 assigned/零 attempt 的 QA 任务，不会覆盖本条。"
+  }
+ ],
+ "related_artifacts": {
+  "e_control_earlier_run": {
+   "artifact": "scripts/iqc/rt1464/FE1466_expiry_entry_reverify.json",
+   "generated_at": "2026-10-20T13:52:08.574810+00:00",
+   "sample_task": "00027045-ebf4-4b08-ba97-d8c6d882c035",
+   "note": "更早一次的 E 对照（同一脚本注册前版本）。该次同样产生一条 QA Attempt；样本不同，未在本轮复核中被单独引用。"
+  },
+  "mode_gate": {
+   "module": "scripts/iqc/rt1464/exec_mode.py",
+   "selftest": "scripts/iqc/rt1464/test_exec_mode_gate.py",
+   "ci_hook": "scripts/iqc/pr_gate.py 第 4 项（PR-IQC-GATE）",
+   "note": "自本模块起，两个复验脚本默认只读；--allow-write 才允许写，且每次写动作进产物 mode.write_actions。"
+  }
+ }
+}

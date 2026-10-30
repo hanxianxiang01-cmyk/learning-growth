@@ -1,0 +1,37 @@
+{
+ "batch": "B3",
+ "post": {
+  "catalog_missing": [],
+  "catalog_ghost": [],
+  "smoke": [
+   {
+    "new": "0bfad10f",
+    "smoke_pass": true
+   },
+   {
+    "new": "8b41e648",
+    "smoke_pass": true
+   },
+   {
+    "new": "853ef450",
+    "smoke_pass": true
+   },
+   {
+    "new": "46701fae",
+    "smoke_pass": true
+   },
+   {
+    "new": "c9347ee4",
+    "smoke_pass": true
+   },
+   {
+    "new": "ae778338",
+    "smoke_pass": true
+   },
+   {
+    "new": "1d5fab4e",
+    "smoke_pass": true
+   }
+  ]
+ }
+}

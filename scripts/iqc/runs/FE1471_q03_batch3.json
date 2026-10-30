@@ -1,0 +1,3594 @@
+{
+ "title": "FE-1471｜Q03 独立核验第三批（计划约 20，实核 29；legacy + bar-model）",
+ "batch": {
+  "scope": "numeric_judge ∩ both 剩余中的 legacy:* + bar-model；计划约 20 题",
+  "selection_rule": "优先 legacy:* 与 bar-model；覆盖五类题意关系",
+  "relation_rules": {
+   "part_whole": "题面出现「一共有 / 一共多少 / 其余是 / 还剩」等部分—整体措辞，且所问量由两个（或多个）部分合成或从整体中分出",
+   "difference": "题面出现「比…多 / 比…少 / 相差 / 多几」且**所问就是差量本身**",
+   "larger_smaller": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "continuous": "同一对象经历**两次以上先后变化**（又来/又走、上来/下去、放进/吃掉），所求是变化后的状态",
+   "conditional": "题面给了**用不上的信息**（别的物品、别的数量、别的类别），或要求**从多个条件里选**出与问题相关的那几个"
+  },
+  "ledger": {
+   "quota": 20,
+   "quota_wording": "约 20（复审原文「约20题」）",
+   "verified": 29,
+   "traced_extra": 7,
+   "traced_extra_breakdown": {
+    "DEF-D1": [
+     "8b121389",
+     "c88410f2",
+     "e5c13ef5",
+     "04f97cb8"
+    ],
+    "DEF-D2": [
+     "421ede36",
+     "6e5395f0",
+     "8981fbcc"
+    ]
+   },
+   "traced_extra_reason": "KNOWN_DEFECTS.affected 若引用批外 RVID，等于「缺陷已登记但登记时没核对过现场」。本批选择扩批以完成现场核对；但这条不是唯一解法——缺陷调查也可以引用批外题目，只要独立保留身份、输入与核查证据。",
+   "identity_complete": true,
+   "identity_basis": "29/29 有完整 RVID、题干、独立推导与存储答案比对；与前两批重叠 0；全部位于 numeric_judge ∩ both 队列内。",
+   "selection_record": {
+    "frozen_initial_list": null,
+    "missing_reason": "最初的选样集合没有在开批时写入工件，事后无法从仓库反查「计划的那约 20 题具体是哪 20 个 RVID」。",
+    "what_this_is_not": "**不是**「结果集里有 2 条身份不明的记录」，也**不是**「29 − 7 − 20 = 2 那两条来路不明」。",
+    "remedy": "下次开批先把选题集合写入工件 quota_list 字段，扩样时追加新增 RVID 及原因，使计划与实际可从工件对账；不追溯补造本批的历史名单。"
+   },
+   "consistent": true,
+   "problems": []
+  },
+  "out_of_batch_refs": {
+   "rule": "缺陷/调查可以引用批外题目，但必须独立保留其 RVID、输入与核查证据；批外发现不计入本批完成数量。",
+   "count": 0,
+   "items": [],
+   "note": "本批实际做法是扩批（7 条补入并现场核对），所以当前没有批外引用；此字段为后续批次预留口径。"
+  },
+  "not_selected_why": "clock(8) 的存储答案是 h*60+m 编码，独立推导会退化成反推编码规则；estimation-canvas / shape-gallery / direction-grid 的同质题已在 FE-1468 逐题核完，重复不增证据"
+ },
+ "chain": [
+  "input_basis",
+  "known_role",
+  "target_object",
+  "derivation",
+  "config_role",
+  "applicable_conditions",
+  "原值比较",
+  "verdict"
+ ],
+ "known_role_distribution": {
+  "已知部分": 8,
+  "已知整体": 16,
+  "答案副本": 5
+ },
+ "provenance": {
+  "frozen_source": "scripts/iqc/runs/inventory_manifest_r2.json",
+  "manifest": {
+   "snapshot_sha256": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+   "inventory_version": "iqc-inventory/1",
+   "discovered_total": 264
+  },
+  "same_snapshot_as": "scripts/iqc/runs/findings_fe1460_225.jsonl（run_id FE1460-eb662b5c，snapshot cee1afda…）",
+  "solver_version": {
+   "entry_script": "scripts/iqc/rt1471/q03_batch3.py",
+   "entry_sha256": "d74c3603d5250dd109f7876451f668439f3e2f728de7723a31f28b595ce1c0d4",
+   "shared_modules": [
+    {
+     "path": "scripts/iqc/rt1469/q03_number_input.py",
+     "sha256": "70f9ce5b743a788e11157fd84ffaf7720314546fef3c3174e2e1c7d2f226c3fa",
+     "role": "bind_inputs / judge_binding（输入绑定与漂移判定）"
+    },
+    {
+     "path": "scripts/iqc/common.py",
+     "sha256": "b1d814a589b118c93393cbacb00676712e7413105040d5bdc84d40d4c5622835",
+     "role": "audit_input_sha（九域规范化哈希，与 scan.py 同一口径）"
+    }
+   ],
+   "git_commit": "77892f7bc74c1d54385b75e0afe897adab86c7a0",
+   "expression_engine": "Python eval + 空 builtins（仅算术与 int()）",
+   "note": "入口与共享模块分别列出；git_commit 是本次生成时所在提交，工作区有未提交改动时以 entry_sha256 为准。"
+  },
+  "drift_rule": "引用哈希 ≠ 重算哈希 → 该题在快照后被修改，本轮结论作废，脚本以退出码 1 失败（不静默沿用旧结论）",
+  "per_item": {
+   "73dd367b-3883-4621-bdef-3951aee84881": {
+    "sha": "64bb9318745b6347c8d0f4c4ee33a58d41d659891ea13b8121097576a7933697",
+    "recomputed": "64bb9318745b6347c8d0f4c4ee33a58d41d659891ea13b8121097576a7933697",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "a76ac388-4c00-4888-82f1-6d49e852dfbc": {
+    "sha": "3e2d4418546e079e0d74d408a6b002a1a10d2d20cd51a9ad51d67076c06a7bfe",
+    "recomputed": "3e2d4418546e079e0d74d408a6b002a1a10d2d20cd51a9ad51d67076c06a7bfe",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "5bceb172-2b67-4421-99b2-175ec05b94e9": {
+    "sha": "74ed45ddccbe63401582faf7b466aa396cddd800291ad76349f5d0b354a78cad",
+    "recomputed": "74ed45ddccbe63401582faf7b466aa396cddd800291ad76349f5d0b354a78cad",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 2
+   },
+   "240ff07b-3f7d-4420-97d3-e6ab89fd24dd": {
+    "sha": "75892c682c6c2584cbc607166f45b54fc95d00866f8d72e014507272a2bf6392",
+    "recomputed": "75892c682c6c2584cbc607166f45b54fc95d00866f8d72e014507272a2bf6392",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "f5fb6594-862e-4dfe-9f19-723b1eed7ea6": {
+    "sha": "39dea1b5e5f742a65f38c33021488f1ce2cdd4c265a8da5cf9cfe20b5eae9be3",
+    "recomputed": "39dea1b5e5f742a65f38c33021488f1ce2cdd4c265a8da5cf9cfe20b5eae9be3",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "eaa828b3-a633-4ab6-9cf5-8025a3687899": {
+    "sha": "305ca610f1d212d5c1b23e789b017c65f394d8ffca21cbf66360d279837570e6",
+    "recomputed": "305ca610f1d212d5c1b23e789b017c65f394d8ffca21cbf66360d279837570e6",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "7acb4a38-e51a-4c48-aa0b-4d0bce402f2e": {
+    "sha": "087a73f78a48d054541903f626b518e334eeab2ba7f335e9ef542eecfdbe0656",
+    "recomputed": "087a73f78a48d054541903f626b518e334eeab2ba7f335e9ef542eecfdbe0656",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "cfc971b4-002f-42c3-8b00-993784a4f9ff": {
+    "sha": "dac7f339328d60aa963a70dafe23a6ad525dd42f087a641a52f690beb3c93749",
+    "recomputed": "dac7f339328d60aa963a70dafe23a6ad525dd42f087a641a52f690beb3c93749",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "8f603745-fc26-4402-9cd2-0fc20cfd401a": {
+    "sha": "90af3f9373f343e2d981aa149d565007d41ca4e75e47b34d92bad3c9054670e9",
+    "recomputed": "90af3f9373f343e2d981aa149d565007d41ca4e75e47b34d92bad3c9054670e9",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "421ede36-8f1b-4b10-9433-e92f039231bd": {
+    "sha": "ee4adce7c3a9c86b2b6d16869b1ee3604dddeb3433fce437b9e12b2aba734df0",
+    "recomputed": "ee4adce7c3a9c86b2b6d16869b1ee3604dddeb3433fce437b9e12b2aba734df0",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "6e5395f0-def7-4060-a501-044d8e9a3764": {
+    "sha": "39a6e42679e692aa2641ab380657b8122c5693c2da13d9f19474a9b94522bfb7",
+    "recomputed": "39a6e42679e692aa2641ab380657b8122c5693c2da13d9f19474a9b94522bfb7",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "8981fbcc-5b92-44b6-ab89-6b8ef0e715fd": {
+    "sha": "5605e4c1117138ff419cb269fb28135bf20e43f30647fe89096d3457b646d43e",
+    "recomputed": "5605e4c1117138ff419cb269fb28135bf20e43f30647fe89096d3457b646d43e",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "2dd5be20-77ea-400c-aa68-4702ecae705b": {
+    "sha": "f191d4c41949be9bf704e975a33865c84917df6faac0005b52b92893ab993551",
+    "recomputed": "f191d4c41949be9bf704e975a33865c84917df6faac0005b52b92893ab993551",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "3ea61fc9-850f-4b59-987d-1a58fe00087f": {
+    "sha": "521e49f06bc5e9f2183e291e343d96f5cd9e889dcbf3eda2309eb466b0c7578b",
+    "recomputed": "521e49f06bc5e9f2183e291e343d96f5cd9e889dcbf3eda2309eb466b0c7578b",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "7f22076d-e47d-46e4-a822-0528a90a451a": {
+    "sha": "6df0ddcf1d05905f2683c0cb8d165ba312605a3a1f770c17732b55e863852d42",
+    "recomputed": "6df0ddcf1d05905f2683c0cb8d165ba312605a3a1f770c17732b55e863852d42",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "8612589b-80dd-4ac7-8658-c241b8d45153": {
+    "sha": "5094099c4ffad7cce75c32b14536ca1eaf6062b997fac3c1a0a1b4bbf35fbb80",
+    "recomputed": "5094099c4ffad7cce75c32b14536ca1eaf6062b997fac3c1a0a1b4bbf35fbb80",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "ed97b114-6599-4cd3-ad0e-ca1c3509ed57": {
+    "sha": "1fa8cfd6cb90452085b997e6f478599e9f16e1cde7161a6775985cf1431cd3c1",
+    "recomputed": "1fa8cfd6cb90452085b997e6f478599e9f16e1cde7161a6775985cf1431cd3c1",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "c07482bb-8a60-4b18-b3c1-25532a77a339": {
+    "sha": "a80b043546621d46b0d2572e1aa4b7632e01e5f95e3ebd70785620745260e2e5",
+    "recomputed": "a80b043546621d46b0d2572e1aa4b7632e01e5f95e3ebd70785620745260e2e5",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "8b121389-2d87-4ea2-aef1-0a626e5464de": {
+    "sha": "cd60f2161a83bd936a9b48c0498bb00ab7a23bd66681d8edadda3ad4b35c0dc4",
+    "recomputed": "cd60f2161a83bd936a9b48c0498bb00ab7a23bd66681d8edadda3ad4b35c0dc4",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "c88410f2-f810-47b4-8ae4-cc218b140a88": {
+    "sha": "7f235947b79a3e990579b322c5e0bf25dd9ccd0eea96975119d3588772cbac9b",
+    "recomputed": "7f235947b79a3e990579b322c5e0bf25dd9ccd0eea96975119d3588772cbac9b",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "e5c13ef5-daa1-46c4-a545-a40f38ba1e79": {
+    "sha": "6c3f4971b807590a3029b42897c4a387cc627e3a588fff5040d22914bbcc312e",
+    "recomputed": "6c3f4971b807590a3029b42897c4a387cc627e3a588fff5040d22914bbcc312e",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "04f97cb8-b918-4836-bf06-c39d8613fe0e": {
+    "sha": "96bc9a29279ea4d02f6255373d66f74b9b82c27c6f04a9ecd234957a42e60d2a",
+    "recomputed": "96bc9a29279ea4d02f6255373d66f74b9b82c27c6f04a9ecd234957a42e60d2a",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "76d49907-c092-4822-b0ea-344850970da0": {
+    "sha": "87d921a57383db0ad9f38bdbd0e8024061244d6d5c25ef3112b2f8ff071ed41f",
+    "recomputed": "87d921a57383db0ad9f38bdbd0e8024061244d6d5c25ef3112b2f8ff071ed41f",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 2
+   },
+   "bb376fbd-06c8-4604-91c9-4cc195567a49": {
+    "sha": "09b7b855191859a9591f5a9a09a4de3b685ee3257b3a652732da16e36634ebf0",
+    "recomputed": "09b7b855191859a9591f5a9a09a4de3b685ee3257b3a652732da16e36634ebf0",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 2
+   },
+   "552b39e3-7127-4c2d-a506-628259bb08c7": {
+    "sha": "33a1dae104c5a35b020c352007cd04e78f461055e464c6bd9d45125ab97fe8b7",
+    "recomputed": "33a1dae104c5a35b020c352007cd04e78f461055e464c6bd9d45125ab97fe8b7",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 2
+   },
+   "3706473c-8f57-45a5-b01a-d6470d826321": {
+    "sha": "3fb4231064a5e45033b046074b77fbd7552a771711c0a8d1cd3fc6eba3fc02c7",
+    "recomputed": "3fb4231064a5e45033b046074b77fbd7552a771711c0a8d1cd3fc6eba3fc02c7",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "6857ba8d-9130-4da3-97ad-267e06e87e97": {
+    "sha": "8eee0166e0c637d8f4dfe781fe7db923789a737cb12c0537875fd807163319a7",
+    "recomputed": "8eee0166e0c637d8f4dfe781fe7db923789a737cb12c0537875fd807163319a7",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "76ce803c-cdf8-46c1-85f7-d5207bdca060": {
+    "sha": "3f887bd05fc44c1eb29f7b411714846fdaf262f3d5e44d20bf4722c4446b3db0",
+    "recomputed": "3f887bd05fc44c1eb29f7b411714846fdaf262f3d5e44d20bf4722c4446b3db0",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   },
+   "623b7f19-47ba-467f-bad7-2b87bc4a5401": {
+    "sha": "254dd5bdf163a2e2ef4b5cf8f573e110337e8e4be02ef70275685fce89d019b2",
+    "recomputed": "254dd5bdf163a2e2ef4b5cf8f573e110337e8e4be02ef70275685fce89d019b2",
+    "drift": false,
+    "manifest_status": "published",
+    "manifest_version_no": 1
+   }
+  },
+  "result_chain": "当前工作清单中的 RVID → 冻结输入 scripts/iqc/runs/inventory_manifest_r2.json（snapshot_sha256）→ 逐题 audit_input_sha256（引用值 == 现场重算值）→ verdict"
+ },
+ "contrast_pairs": [
+  {
+   "kind": "same_stem_two_representations",
+   "a": "3ea61fc9",
+   "b": "2dd5be20",
+   "why": "同一题面（姐姐13、比弟弟多5），一个求数值（8）、一个求断言对错（0）。**本批唯一合格的「同关系不同表征」对照**"
+  },
+  {
+   "kind": "same_operation_different_word_order",
+   "a": "3ea61fc9",
+   "b": "7f22076d",
+   "why": "3ea61fc9「[已知者]比[未知者]多」、7f22076d「[未知者]比[已知者]少」。同运算（减法）、不同语序。**检验语言解析而非计算**"
+  },
+  {
+   "kind": "same_value_different_context",
+   "a": "76d49907",
+   "b": "552b39e3",
+   "why": "数值与 visual 逐字段相同（8、+5、−4），只换场景名词。**本批唯一合格的「换情境」弱对照**；措辞未变，故只能算弱证据"
+  },
+  {
+   "kind": "same_error_different_value",
+   "a": "8612589b",
+   "b": "ed97b114",
+   "why": "两者主要错法都是「base+差量」（17 与 19），用于确认方向错是稳定模式；两条错法值不同"
+  },
+  {
+   "kind": "MISSING",
+   "a": "8f603745",
+   "b": null,
+   "why": "标 app_transfer 但**找不到同值的非迁移配对**（9−6 只出现一次），迁移结论无对照，本批不作确认也不作否认"
+  },
+  {
+   "kind": "MISSING",
+   "a": null,
+   "b": null,
+   "why": "**本批没有任何一题是「同类别但用不上」的条件筛选**（4 条 conditional 的干扰项都是不同类别的物品）。扩样时必须补这一类"
+  },
+  {
+   "kind": "MISSING",
+   "a": null,
+   "b": null,
+   "why": "**本批连续变化 3 题的措辞结构完全相同**（都是「原来有…，又…，后来…」），所以「换措辞后仍能识别出两次变化」未获检验"
+  }
+ ],
+ "known_defects": {
+  "DEF-D1": {
+   "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
+   "kind": "ui_answer_leak",
+   "evidence_tier": "static_fact → inference",
+   "confirmed": false,
+   "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+   "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+   "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+   "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+   "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+   "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
+   "affected": [
+    "c07482bb",
+    "8b121389",
+    "c88410f2",
+    "e5c13ef5",
+    "04f97cb8"
+   ],
+   "added_after_gate": [
+    "8b121389",
+    "c88410f2",
+    "e5c13ef5",
+    "04f97cb8"
+   ],
+   "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
+  },
+  "DEF-D2": {
+   "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+   "kind": "unreachable_signal",
+   "evidence_tier": "needs_runtime",
+   "confirmed": false,
+   "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+   "static_fact": "三题的最终合计（18 / 21 / 19）都大于任一单条上限；三题的**个人数量**却都在范围内（见下表）。",
+   "inference": "**没有**。当前检测器 `detect_unreachable()` 只比较「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，也不知道题目是否要求单独展示合计。所以它给出的是线索，不是可完成性结论。",
+   "detector_limits": "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非「答案条的上限」，因此会漏报——反例：答案条上限 5、另一无关条上限 100、答案 10，该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。",
+   "not_claimed": "**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励半成品」**。上一版这两句与同一份报告里「只能靠数字输入框答对」互相矛盾——两者不能作为同一已证结论并存。而且判分读 `response.answer`，与滑杆能否摆出无关。",
+   "role_hypothesis": [
+    {
+     "rvid": "421ede36",
+     "person_a": 11,
+     "person_b": 7,
+     "answer": 18,
+     "bar_caps": [
+      15,
+      15
+     ],
+     "max_value": 17,
+     "bars_can_show": "11 与 7（两人各自的数量）",
+     "both_within_range": true
+    },
+    {
+     "rvid": "6e5395f0",
+     "person_a": 9,
+     "person_b": 12,
+     "answer": 21,
+     "bar_caps": [
+      12,
+      12
+     ],
+     "max_value": 14,
+     "bars_can_show": "9 与 12（两人各自的数量）",
+     "both_within_range": true
+    },
+    {
+     "rvid": "8981fbcc",
+     "person_a": 8,
+     "person_b": 11,
+     "answer": 19,
+     "bar_caps": [
+      11,
+      11
+     ],
+     "max_value": 13,
+     "bars_can_show": "8 与 11（两人各自的数量）",
+     "both_within_range": true
+    }
+   ],
+   "verification_plan": [
+    "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+    "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+    "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+    "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里各承担什么，是否要求一致"
+   ],
+   "impact": "在①②未完成前，**只能说「单条上限不足以表示最终合计」这一静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。",
+   "if_confirmed": "若契约确实要求未知条为合计、或提交被真实阻断，再走内容侧新版本整改；且**不能只把 `max` 改成比答案大就算修好**——那会同时制造新的答案泄露。",
+   "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
+   "affected": [
+    "421ede36",
+    "6e5395f0",
+    "8981fbcc"
+   ],
+   "added_after_gate": [
+    "421ede36",
+    "6e5395f0",
+    "8981fbcc"
+   ],
+   "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置"
+  },
+  "DEF-D3": {
+   "title": "legacy:objects 未提供增减操作（静态事实）",
+   "kind": "interaction_gap",
+   "evidence_tier": "static_fact → inference",
+   "confirmed": false,
+   "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+   "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+   "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+   "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+   "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+   "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+   "affected": [
+    "eaa828b3",
+    "7acb4a38",
+    "cfc971b4",
+    "8f603745"
+   ],
+   "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
+  },
+  "DEF-D4": {
+   "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
+   "kind": "interaction_gap",
+   "evidence_tier": "static_fact",
+   "confirmed": false,
+   "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+   "static_fact": "`jumps` 字段真实存在且会被序列化；`visual` 里没有「期望怎么跳」的声明。",
+   "not_claimed": "**不主张「不记录跳步」**——上一版这个标题是错的，因为 `jumps` 字段明确存在。准确的表述是「**没有声明期望跳步序列**」，属于「有字段无口径」。",
+   "four_things_separated": {
+    "能否操作": "可以（数轴上可连续跳步）",
+    "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+    "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+    "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）"
+   },
+   "inference": "因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；但这**不等于**过程信息不存在——它存在但未被使用。",
+   "impact": "连续变化类的**过程证据未被判分使用**；若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，而不是改记录结构。",
+   "affected": [
+    "76d49907",
+    "bb376fbd",
+    "552b39e3"
+   ],
+   "status": "已登记风险；`jumps` 字段存在但未被判分使用，与上一批 ruler 的 `structure.error`（有精确靶）不同"
+  }
+ },
+ "summary": {
+  "total": 29,
+  "match": 29,
+  "mismatch": 0,
+  "not_found": 0,
+  "drift": 0,
+  "overlap_with_batch2": [],
+  "by_relation": {
+   "part_whole": 5,
+   "difference": 5,
+   "larger_smaller": 12,
+   "continuous": 3,
+   "conditional": 4
+  },
+  "by_renderer": {
+   "bar-model": 2,
+   "legacy:number-line": 4,
+   "legacy:bar-model": 14,
+   "legacy:objects": 4,
+   "legacy:direct": 5
+  },
+  "visual_leak_items": [
+   "04f97cb8",
+   "8b121389",
+   "c07482bb",
+   "c88410f2",
+   "e5c13ef5"
+  ],
+  "unreachable_signal_items": [
+   "421ede36",
+   "6e5395f0",
+   "8981fbcc"
+  ],
+  "defect_hit_items": [
+   "04f97cb8",
+   "421ede36",
+   "552b39e3",
+   "6e5395f0",
+   "76d49907",
+   "7acb4a38",
+   "8981fbcc",
+   "8b121389",
+   "8f603745",
+   "bb376fbd",
+   "c07482bb",
+   "c88410f2",
+   "cfc971b4",
+   "e5c13ef5",
+   "eaa828b3"
+  ],
+  "q05_candidates_total": 82,
+  "q05_candidate_records": 82,
+  "q05_candidate_wording": "`q05_candidates_total` / `q05_candidate_records` 是**候选记录数**（每道题的错误码各算一条），**不是**有区分依据的错法种数。同一道题的多码复用同一组三字段，因此记录数天然大于独立证据组数。",
+  "q05_distinct_evidence_groups": 29,
+  "q05_dedup_note": "去重后只有 29 组三字段（题），却产生 82 条候选记录——差额来自同一组三字段被各错误码复用。这不等于「错法有 82 种」，也不要求把每条记录改写成不同句子；同一观察事实可以被多个假设共享，关键是明确「当前不能区分什么」。",
+  "q05_completed": 0,
+  "q05_completed_note": "Q05 继续 **0 题完成**。本批只做到「已观察到什么 → 与哪些解释相容 → 现有字段不能区分什么 → 可以给什么不越权的反馈」这四步的登记，不构成「错误诊断已可用」的结论。",
+  "match_definition": "MATCH 只表示「按题面独立推导的结果与存储答案相等」。它**不**表示该题的交互/配置无问题——上列 visual_leak / unreachable_signal / known_defects 是与之独立的另一笔账，必须分开读",
+  "risk_tier_note": "`known_defects` 里的 15 条是「已登记的交互／配置风险条目」，不是 15 条已确证产品故障。每条带 `evidence_tier`（static_fact / inference / needs_runtime）与 `confirmed` 标志；`confirmed=false` 的条目不得被引用为「已发生的评分故障」。"
+ },
+ "items": [
+  {
+   "rvid": "73dd367b-3883-4621-bdef-3951aee84881",
+   "renderer": "bar-model",
+   "relation": "part_whole",
+   "relation_rule": "题面出现「一共有 / 一共多少 / 其余是 / 还剩」等部分—整体措辞，且所问量由两个（或多个）部分合成或从整体中分出",
+   "source_kind": "stem_plus_v2config",
+   "known_role": "已知部分",
+   "known_role_note": "题面给出的是整体的一个组成部分，所求是整体或另一部分",
+   "input_basis": "题面「两层书架分别放着5本和7本书」→ 两个已知部分；所求「书架上一共有多少本」= 两部分合成",
+   "target_object": "整体条（answer_bar=c）的长度，= 5 + 7",
+   "derivation": {
+    "read": "5 本与 7 本是**同一整体的两个部分**（两层书架 = 一个书架），不是两组独立物品；所求是整体",
+    "expr": "5 + 7"
+   },
+   "config_role": "`workspaces[0].config.known={a:5,b:7}`、`answer_bar=c`、`mode=part_whole`。config 与题面**逐值一致**，所以这里 config 可以当**旁证**——但它仍然不是推导依据：推导用的是题面里的 5 和 7",
+   "computed": 12,
+   "applicable_conditions": "**初始态已实测核对**：DB 里 `workspaces[0].initial_state = {}`（空对象，不是 `bars:{a:0,b:0,c:0}`），而组件侧 `BarModelV2.tsx` 用 `initialBarModelV2State()` → `{bars:{a:0,b:0,c:0}, answerTouched:false}`，即**组件不读 initial_state，自己给空态**。两条路殊途同归：孩子进页面时三根条都是 0，必须自己把 a、b 摆到 5 和 7。这与上一批 object-counter 「进入即 PASS」的缺陷**恰相反**：bar-model 不会白送分。另一处：`max_blocks=14` ≥ 12+1，通过 `parseBarModelConfig` 的`maxBlocks >= solved + 1` 守卫，不构成答案副本",
+   "stated_answer": "12",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": null,
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "**错误码有优先级，必须先说清顺序**（`evaluateBarModel` 的执行顺序决定错法归类）：① 已知条摆错（a≠5 或 b≠7）→ 立即 `modeling`，**不管 c 对不对**；② 已知条对了但 c ≤ a 或 c ≤ b → `relation`；③ 已知条对、结构成立、c≠12 → `calc`。所以「只摆 c=12、a 与 b 留 0」实际落到 **modeling**（因为 a=0≠5），**不是 calc**——要拿到 calc，必须先把 a、b 精确摆对",
+     "observable_evidence": "`bars.a` 或 `bars.b` ≠ config.known 的 5/7，且 `answerTouched=true`。`structure={status:FAIL, error:'modeling', relation:'part_whole'}`。**痕迹在 a/b 两根已知条上**，不在答案条",
+     "competing_explanations": "`calc` 只说明**终态**里 `bars.c ≠ 12` 且已知条摆对。它与下列解释**全都相容**，而现有字段**不能区分**它们：①把 5+7 算成别的数；②算对了但拖动时停在别处；③先摆了别的值再改到 12 的一半。序列化只保留终态、不保留轨迹，所以本题的错误码只能定位到「结构对、结果错」，**不能定位到具体算法错在哪里**。上一版用「中途移动过又移回」解释 `calc` 是越权的——那个动作没有记录。",
+     "cannot_distinguish": "终态同值时，以下解释均相容且不可分：算错 / 停错位置 / 改过又改回。",
+     "neutral_feedback": "说「整体条要盖住两根部分条，看看现在盖住了吗」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "图书角两层书架分别放着5本和7本书。请用线段图表示两个部分，再求书架上一共有多少本书。",
+   "input_binding": {
+    "audit_input_sha256": "64bb9318745b6347c8d0f4c4ee33a58d41d659891ea13b8121097576a7933697",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "a76ac388-4c00-4888-82f1-6d49e852dfbc",
+   "renderer": "bar-model",
+   "relation": "part_whole",
+   "relation_rule": "题面出现「一共有 / 一共多少 / 其余是 / 还剩」等部分—整体措辞，且所问量由两个（或多个）部分合成或从整体中分出",
+   "source_kind": "stem_plus_v2config",
+   "known_role": "已知部分",
+   "known_role_note": "题面给出的是整体的一个组成部分，所求是整体或另一部分",
+   "input_basis": "题面「先拿来3张彩纸，又拿来4张彩纸」→ 两次拿来的量都是已知部分",
+   "target_object": "整体条 c = 3 + 4",
+   "derivation": {
+    "read": "两次「拿来」是**同一堆纸的两个部分**（最后合成一堆），所求是总数；不是「原来有几张、现在有几张」的状态变化",
+    "expr": "3 + 4"
+   },
+   "config_role": "`workspaces[0].config.known={a:3,b:4}`、`answer_bar=c`、`mode=part_whole`、`max_blocks=12`；与题面一致，可作旁证不作依据",
+   "computed": 7,
+   "applicable_conditions": "与 39b09e38（9+4）、e1e2c896（6+1）、d7fbd744（11+3）**同一模板不同加数**。四条放在一起只能说明「模板换数不出错」，**说明不了**孩子理解了「又是一次拿来」——后者要 Q05 侧的证据。`max_blocks=12` ≥ 8，不泄露答案",
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": null,
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "**已按 `evaluateBarModel` 的执行顺序重算，上一版写错了**：若把「又拿来4张」当最终总数，孩子会把 c 摆成 4、而 a、b 仍按题面摆 3 与 4 → 已知条摆对、结构判定 `c > a && c > b` 即 4>3 且 4>4 → 4>4 为假 → **`relation`**（不是 modeling，因为 a=3、b=4 都对）。另一路径：a 或 b 也摆错 → 先命中 `modeling`，**modeling 优先于 relation**",
+     "observable_evidence": "`bars.a`≠3 或 `bars.b`≠4，`answerTouched=true` → `structure.error='modeling'`",
+     "competing_explanations": "`calc` 也可能是「把 c 摆成 4（只记第二次拿来的量）」——这与「算错」在终态上同值，需结合 c 的具体值区分：c=4 更可能是漏了第一次，c=别的数更像误算",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「两次拿来的纸都倒进同一个筐，筐里现在有几张」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "手工课上先拿来3张彩纸，又拿来4张彩纸。请用线段图表示两次拿来的数量，再求总共有多少张。",
+   "input_binding": {
+    "audit_input_sha256": "3e2d4418546e079e0d74d408a6b002a1a10d2d20cd51a9ad51d67076c06a7bfe",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "5bceb172-2b67-4421-99b2-175ec05b94e9",
+   "renderer": "legacy:number-line",
+   "relation": "part_whole",
+   "relation_rule": "题面出现「一共有 / 一共多少 / 其余是 / 还剩」等部分—整体措辞，且所问量由两个（或多个）部分合成或从整体中分出",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知部分",
+   "known_role_note": "题面给出的是整体的一个组成部分，所求是整体或另一部分",
+   "input_basis": "题面「3个相同的小袋子，每个袋子里有7颗玻璃珠」→ 三个相等部分",
+   "target_object": "玻璃珠总数 = 3 × 7",
+   "derivation": {
+    "read": "3 与 7 是「份数」与「每份量」，所求是总量；这是**等量组的合并**（乘法结构），不是两个不同部分的合并",
+    "expr": "3 * 7"
+   },
+   "config_role": "`visual={type:number-line, min:0, max:23, start:0, step:1}`。**数轴只是摆设**：本题是「3 个袋子」的乘法，一条数轴表达不了「3 份各 7」。`max=23` 与答案 21 差 2，**不等于答案**，不构成答案副本；但 `23 = 21 + 2` 这个关系也说明它不承载题意——23 既不是题面里的数，也不是任何中间量",
+   "computed": 21,
+   "applicable_conditions": "**这是本批一个明确的例外**：题面是乘法的等量组，而 renderer 是单条数轴。孩子可以用数轴连跳 3 次 7 格（0→7→14→21）表达，但**数轴不记录「3 个袋子」这个结构**，所以即便答案对，也无法从 representation 判断「孩子是按 3 份 7 个做的，还是直接跳到 21」的。题面数学关系本身清楚（3×7=21），判为 MATCH；但 renderer 与题意的匹配度不足，记为例外 EX-R1",
+   "stated_answer": "21",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": {
+    "max": 23,
+    "min": 0,
+    "step": 1,
+    "type": "number-line",
+    "start": 0
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把 3 和 7 相加得 10（份数当量），或只跳到 7（单袋量）",
+     "observable_evidence": "`NumberLineRepresentation.jumps` 记录跳步数组，`current` 记录终点。**只有 `current=21` 能对上答案**；`jumps` 若为 `[7,7,7]` 则说明是连跳三次（正确过程），若为 `[21]` 则是一次跳到（结果对、过程不可判定）",
+     "competing_explanations": "`jumps=[21]` 也可能是孩子心算 3×7 后一次跳到位——这在数学上是**正确**的，与「乱跳蒙对」不可分。所以 `jumps` 长度本身不能当过程质量的证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「每个袋子 7 颗，三个袋子一起数，你打算怎么跳」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把 3 和 7 相加得 10（份数当量），或只跳到 7（单袋量）",
+     "observable_evidence": "`NumberLineRepresentation.jumps` 记录跳步数组，`current` 记录终点。**只有 `current=21` 能对上答案**；`jumps` 若为 `[7,7,7]` 则说明是连跳三次（正确过程），若为 `[21]` 则是一次跳到（结果对、过程不可判定）",
+     "competing_explanations": "`jumps=[21]` 也可能是孩子心算 3×7 后一次跳到位——这在数学上是**正确**的，与「乱跳蒙对」不可分。所以 `jumps` 长度本身不能当过程质量的证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「每个袋子 7 颗，三个袋子一起数，你打算怎么跳」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把 3 和 7 相加得 10（份数当量），或只跳到 7（单袋量）",
+     "observable_evidence": "`NumberLineRepresentation.jumps` 记录跳步数组，`current` 记录终点。**只有 `current=21` 能对上答案**；`jumps` 若为 `[7,7,7]` 则说明是连跳三次（正确过程），若为 `[21]` 则是一次跳到（结果对、过程不可判定）",
+     "competing_explanations": "`jumps=[21]` 也可能是孩子心算 3×7 后一次跳到位——这在数学上是**正确**的，与「乱跳蒙对」不可分。所以 `jumps` 长度本身不能当过程质量的证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「每个袋子 7 颗，三个袋子一起数，你打算怎么跳」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "有3个相同的小袋子，每个袋子里有7颗玻璃珠。3个袋子一共有多少颗玻璃珠？",
+   "input_binding": {
+    "audit_input_sha256": "74ed45ddccbe63401582faf7b466aa396cddd800291ad76349f5d0b354a78cad",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "240ff07b-3f7d-4420-97d3-e6ab89fd24dd",
+   "renderer": "legacy:bar-model",
+   "relation": "part_whole",
+   "relation_rule": "题面出现「一共有 / 一共多少 / 其余是 / 还剩」等部分—整体措辞，且所问量由两个（或多个）部分合成或从整体中分出",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「一盒彩纸有13张，其中红色5张，其余是黄色」→ 13 是整体，5 是已知部分",
+   "target_object": "黄色部分 = 整体 − 已知部分 = 13 − 5",
+   "derivation": {
+    "read": "「其余是黄色」把整体切成两块：已知 5、未知「其余」；所求是**未知部分**（不是整体）",
+    "expr": "13 - 5"
+   },
+   "config_role": "`visual.bars=[total(max=13,value=13), known(max=13,value=5), unknown(max=13,unknown=true)]`、`max_value=15`。**两根已知条的 `value` 与题面一致**（13 与 5），`max=13` 是滑杆上限不等于答案 8，不构成答案副本",
+   "computed": 8,
+   "applicable_conditions": "本题 `known_role` 是**已知整体**（13），与上一批 ten-frame 「已知部分」不同——整体与部分的角色不能混用。注意 `total.max=13` 恰好等于整体 13：这在本题是**正确的**（整体就是 13，滑杆要能摆到 13），不构成问题；但如果某题把 `unknown.max` 设成答案，就是滑杆泄露——本批已单独检出 5 条此类缺陷（见 KNOWN_DEFECTS.DEF-D1）。**V1 legacy 的判分口径必须写明**：`legacy:bar-model` 走 `ManipulativeRenderer` → `AnswerComposer`，提交的是 `TaskResponse.answer`（数字框）**加上** `representation`；但后端 `_judge` 只比 `content.answer`，**不核 representation 结构**。所以本题的真错法与假错法不能靠 structure 字段区分——只能靠 `bars[].value` 这个表征快照，而它又不参与判分",
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "total",
+      "max": 13,
+      "min": 0,
+      "label": "一共",
+      "value": 13
+     },
+     {
+      "id": "known",
+      "max": 13,
+      "min": 0,
+      "label": "已知部分",
+      "value": 5
+     },
+     {
+      "id": "unknown",
+      "max": 13,
+      "min": 0,
+      "label": "未知部分",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 15,
+    "relationship": "part-whole"
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "**按 V1 legacy 的实际判分口径重算**：V1 判分只比 `TaskResponse.answer`（数字框），**不比 bars 结构**，所以「13+5=18」不会被界面挡住（18 只是摆不上条，但答案框可以填 18），会以 `MISMATCH` 呈现为错答。真正的可观察痕迹只有 `bars[].value`（表征）与 `answer`（判分）两处，**两者不联动**——这是 V1 legacy 与 V2 的关键差别：V2 的 `evaluateBarModel` 会把结构错分到 modeling/relation/calc，V1 **没有结构判分**",
+     "observable_evidence": "`bars=[{id:total,value:13},{id:known,value:5},{id:unknown,value:8}]` 为正解。`unknown.max=13`，拖到底得 13 ≠ 8",
+     "competing_explanations": "`unknown.value=13` → 抄整体（把未知部分当整体）；`unknown.value=5` → 抄已知部分（把两块当一样大）。两种错法值不同，可分开——**本题的 bars 结构（三根条：整体/已知部分/未知部分）比 compare 族的两根条更能暴露「整体与部分混淆」**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「整条是 13，红的占了 5 格，剩下那截是黄的」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "**按 V1 legacy 的实际判分口径重算**：V1 判分只比 `TaskResponse.answer`（数字框），**不比 bars 结构**，所以「13+5=18」不会被界面挡住（18 只是摆不上条，但答案框可以填 18），会以 `MISMATCH` 呈现为错答。真正的可观察痕迹只有 `bars[].value`（表征）与 `answer`（判分）两处，**两者不联动**——这是 V1 legacy 与 V2 的关键差别：V2 的 `evaluateBarModel` 会把结构错分到 modeling/relation/calc，V1 **没有结构判分**",
+     "observable_evidence": "`bars=[{id:total,value:13},{id:known,value:5},{id:unknown,value:8}]` 为正解。`unknown.max=13`，拖到底得 13 ≠ 8",
+     "competing_explanations": "`unknown.value=13` → 抄整体（把未知部分当整体）；`unknown.value=5` → 抄已知部分（把两块当一样大）。两种错法值不同，可分开——**本题的 bars 结构（三根条：整体/已知部分/未知部分）比 compare 族的两根条更能暴露「整体与部分混淆」**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「整条是 13，红的占了 5 格，剩下那截是黄的」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "**按 V1 legacy 的实际判分口径重算**：V1 判分只比 `TaskResponse.answer`（数字框），**不比 bars 结构**，所以「13+5=18」不会被界面挡住（18 只是摆不上条，但答案框可以填 18），会以 `MISMATCH` 呈现为错答。真正的可观察痕迹只有 `bars[].value`（表征）与 `answer`（判分）两处，**两者不联动**——这是 V1 legacy 与 V2 的关键差别：V2 的 `evaluateBarModel` 会把结构错分到 modeling/relation/calc，V1 **没有结构判分**",
+     "observable_evidence": "`bars=[{id:total,value:13},{id:known,value:5},{id:unknown,value:8}]` 为正解。`unknown.max=13`，拖到底得 13 ≠ 8",
+     "competing_explanations": "`unknown.value=13` → 抄整体（把未知部分当整体）；`unknown.value=5` → 抄已知部分（把两块当一样大）。两种错法值不同，可分开——**本题的 bars 结构（三根条：整体/已知部分/未知部分）比 compare 族的两根条更能暴露「整体与部分混淆」**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「整条是 13，红的占了 5 格，剩下那截是黄的」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "一盒彩纸有13张，其中红色5张，其余是黄色。黄色彩纸有多少张？",
+   "input_binding": {
+    "audit_input_sha256": "75892c682c6c2584cbc607166f45b54fc95d00866f8d72e014507272a2bf6392",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "f5fb6594-862e-4dfe-9f19-723b1eed7ea6",
+   "renderer": "legacy:bar-model",
+   "relation": "part_whole",
+   "relation_rule": "题面出现「一共有 / 一共多少 / 其余是 / 还剩」等部分—整体措辞，且所问量由两个（或多个）部分合成或从整体中分出",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「共有15本书，其中6本是故事书，其余是科普书」",
+   "target_object": "科普书 = 15 − 6",
+   "derivation": {
+    "read": "与 240ff07b 同构（整体已知、求另一部分），只是场景与数值不同；所求是**科普书**这一部分",
+    "expr": "15 - 6"
+   },
+   "config_role": "`visual.bars=[total(value=15), known(value=6), unknown]、visual.max_value=17`；`unknown.max=15` ≠ 答案 9，**上限不构成泄露**；但 `bars` 只有三格（整体/已知/未知），**无法承载「其余」这个措辞的语义**——题意靠题面文字，不靠 visual",
+   "computed": 9,
+   "applicable_conditions": "与 240ff07b、b1a30690、e6f17364 同模板（整体−部分）。四条的差别只在数值与场景名词，**结构完全一样**——所以这四条不能互相充当「换情境仍能做对」的证据，那是 transfer 能力的问题，得由 app_transfer 的题来验。本条 `ability_id=app_strat`，目标是「知道整体求另一部分」的策略选择",
+   "stated_answer": "9",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "total",
+      "max": 15,
+      "min": 0,
+      "label": "一共",
+      "value": 15
+     },
+     {
+      "id": "known",
+      "max": 15,
+      "min": 0,
+      "label": "已知部分",
+      "value": 6
+     },
+     {
+      "id": "unknown",
+      "max": 15,
+      "min": 0,
+      "label": "未知部分",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 17,
+    "relationship": "part-whole"
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把 15+6=21 当答案（方向反了）；或直接抄 6",
+     "observable_evidence": "`bars=[{id:total,value:15},{id:known,value:6},{id:unknown,value:9}]` 为正解。`unknown.max=15`，不泄露",
+     "competing_explanations": "`unknown.value=15` → 抄整体；`unknown.value=6` → 抄已知部分；`unknown.value=21` 物理不可达（max=15）——**「15+6 方向反」这条错法在本题被上限挡住了**，所以本题看不到方向错的证据。这是与 240ff07b（unknown.max=13=整体，21 也不可达）相同的限制，须与「孩子不会犯方向错」区分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「书架共 15 本，故事书占 6 本，剩下的是科普书」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把 15+6=21 当答案（方向反了）；或直接抄 6",
+     "observable_evidence": "`bars=[{id:total,value:15},{id:known,value:6},{id:unknown,value:9}]` 为正解。`unknown.max=15`，不泄露",
+     "competing_explanations": "`unknown.value=15` → 抄整体；`unknown.value=6` → 抄已知部分；`unknown.value=21` 物理不可达（max=15）——**「15+6 方向反」这条错法在本题被上限挡住了**，所以本题看不到方向错的证据。这是与 240ff07b（unknown.max=13=整体，21 也不可达）相同的限制，须与「孩子不会犯方向错」区分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「书架共 15 本，故事书占 6 本，剩下的是科普书」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "把 15+6=21 当答案（方向反了）；或直接抄 6",
+     "observable_evidence": "`bars=[{id:total,value:15},{id:known,value:6},{id:unknown,value:9}]` 为正解。`unknown.max=15`，不泄露",
+     "competing_explanations": "`unknown.value=15` → 抄整体；`unknown.value=6` → 抄已知部分；`unknown.value=21` 物理不可达（max=15）——**「15+6 方向反」这条错法在本题被上限挡住了**，所以本题看不到方向错的证据。这是与 240ff07b（unknown.max=13=整体，21 也不可达）相同的限制，须与「孩子不会犯方向错」区分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「书架共 15 本，故事书占 6 本，剩下的是科普书」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "书桌上共有15本书，其中6本是故事书，其余是科普书。科普书有多少本？",
+   "input_binding": {
+    "audit_input_sha256": "39dea1b5e5f742a65f38c33021488f1ce2cdd4c265a8da5cf9cfe20b5eae9be3",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "eaa828b3-a633-4ab6-9cf5-8025a3687899",
+   "renderer": "legacy:objects",
+   "relation": "difference",
+   "relation_rule": "题面出现「比…多 / 比…少 / 相差 / 多几」且**所问就是差量本身**",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知部分",
+   "known_role_note": "题面给出的是整体的一个组成部分，所求是整体或另一部分",
+   "input_basis": "题面「小东有8支彩笔，小西有5支彩笔」→ 两个量都已知",
+   "target_object": "两组之差 = 8 − 5",
+   "derivation": {
+    "read": "所求是「多几支」= **差量本身**，不是任一方；8 与 5 都在题面里，差要自己算",
+    "expr": "8 - 5"
+   },
+   "config_role": "`visual={type:objects, groups:[{count:8},{count:5}]}`。**两组的 count 与题面完全一致**，是「题面已知量」的忠实镜像——这恰好是上一批 object-counter 缺陷的反面：这里是 V1 legacy，物件**直接就摆好了**，孩子只能拖对齐、不能减数，所以不存在「进入即满分」——但这带来另一个限制，见 boundary",
+   "computed": 3,
+   "applicable_conditions": "**这是本批第二个明确例外（EX-R2）**：`legacy:objects` 的两组 count 由 config 写死（8 和 5），`tools=[drag,align,count,undo,reset]` **没有 add/remove**，孩子只能「拖动/一一对齐」，**无法增减**，所以 `ObjectCounterRepresentation.groups[].count` 永远是 8 与 5，唯一会变的是 `items[].x` 与 `aligned`。「多出来的是哪 3 个」这个关键动作**没有留下痕迹**。答案仍可从题面独立算出（8−5=3），题面数学清楚，判 MATCH；但 Q05 侧「孩子是否用一一对应求差」不可观测，已登记为 DEF-D3",
+   "stated_answer": "3",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D3",
+     "title": "legacy:objects 未提供增减操作（静态事实）",
+     "kind": "interaction_gap",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+     "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+     "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+     "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+     "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+     "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+     "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
+    }
+   ],
+   "ui_visual_seen": {
+    "type": "objects",
+    "groups": [
+     {
+      "id": "g1",
+      "count": 8,
+      "label": "第1组",
+      "symbol": "🖍"
+     },
+     {
+      "id": "g2",
+      "count": 5,
+      "label": "第2组",
+      "symbol": "🖍"
+     }
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13（误把「多几」当「一共」）；或答 8（只报较大数）",
+     "observable_evidence": "`groups=[{id:g1,count:8,items[…]},{id:g2,count:5,items[…]}]`、`aligned:boolean`。**`count` 永远是 8 和 5**（config 写死、界面无增减能力），所以 representation 里唯一会变的只有 `items[].x` 与 `aligned`",
+     "competing_explanations": "`aligned=true` 只说明点过「一一对齐」按钮，**不说明孩子看懂了多出 3 个**——对齐是单键操作，一键完成，无过程可分。`aligned=false` 也不能推出「没理解」（可能孩子不用对齐也能算）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「把两支队伍一排一排对齐，看哪一列多出来了」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13（误把「多几」当「一共」）；或答 8（只报较大数）",
+     "observable_evidence": "`groups=[{id:g1,count:8,items[…]},{id:g2,count:5,items[…]}]`、`aligned:boolean`。**`count` 永远是 8 和 5**（config 写死、界面无增减能力），所以 representation 里唯一会变的只有 `items[].x` 与 `aligned`",
+     "competing_explanations": "`aligned=true` 只说明点过「一一对齐」按钮，**不说明孩子看懂了多出 3 个**——对齐是单键操作，一键完成，无过程可分。`aligned=false` 也不能推出「没理解」（可能孩子不用对齐也能算）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「把两支队伍一排一排对齐，看哪一列多出来了」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13（误把「多几」当「一共」）；或答 8（只报较大数）",
+     "observable_evidence": "`groups=[{id:g1,count:8,items[…]},{id:g2,count:5,items[…]}]`、`aligned:boolean`。**`count` 永远是 8 和 5**（config 写死、界面无增减能力），所以 representation 里唯一会变的只有 `items[].x` 与 `aligned`",
+     "competing_explanations": "`aligned=true` 只说明点过「一一对齐」按钮，**不说明孩子看懂了多出 3 个**——对齐是单键操作，一键完成，无过程可分。`aligned=false` 也不能推出「没理解」（可能孩子不用对齐也能算）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「把两支队伍一排一排对齐，看哪一列多出来了」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小东有8支彩笔，小西有5支彩笔。小东比小西多几支彩笔？",
+   "input_binding": {
+    "audit_input_sha256": "305ca610f1d212d5c1b23e789b017c65f394d8ffca21cbf66360d279837570e6",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "7acb4a38-e51a-4c48-aa0b-4d0bce402f2e",
+   "renderer": "legacy:objects",
+   "relation": "difference",
+   "relation_rule": "题面出现「比…多 / 比…少 / 相差 / 多几」且**所问就是差量本身**",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知部分",
+   "known_role_note": "题面给出的是整体的一个组成部分，所求是整体或另一部分",
+   "input_basis": "题面「左边有6块积木，右边有4块积木」",
+   "target_object": "两列之差 = 6 − 4",
+   "derivation": {
+    "read": "布局提示了「左/右」两列，所求是「多几块」= 差量",
+    "expr": "6 - 4"
+   },
+   "config_role": "`groups:[{count:6},{count:4}]` 与题面一致；同 eaa828b3 的「只能对齐不能增减」限制",
+   "computed": 2,
+   "applicable_conditions": "与 eaa828b3 同构（两组已知求差），数值不同、`ability_id` 不同（本条 app_model，上条 app_rel）——**能力标签不同不等于题意不同**，两条的数学结构一样。这一点必须写明：同一批里 `ability_id` 分布不能反过来当作「覆盖了不同能力」的证据。与上一批 7acb4a38 无重号（上一批同号条目为 ruler/column 族，本批按 RVID 全量比对已确认无交集，见 main() 的 overlap 检查）",
+   "stated_answer": "2",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D3",
+     "title": "legacy:objects 未提供增减操作（静态事实）",
+     "kind": "interaction_gap",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+     "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+     "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+     "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+     "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+     "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+     "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
+    }
+   ],
+   "ui_visual_seen": {
+    "type": "objects",
+    "groups": [
+     {
+      "id": "g1",
+      "count": 6,
+      "label": "第1组",
+      "symbol": "🧱"
+     },
+     {
+      "id": "g2",
+      "count": 4,
+      "label": "第2组",
+      "symbol": "🧱"
+     }
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "6+4=10（当合并）；或答 6",
+     "observable_evidence": "`groups=[{count:6},{count:4}]`、`aligned`；同 eaa828b3，`count` 固定，只有 `items[].x`/`aligned` 可变",
+     "competing_explanations": "同 eaa828b3；另注意本题 `ability_id=app_model`（建模）而 eaa828b3 是 app_rel（关系），但 representation 形态**完全相同**，所以「建模能力」在本题没有独立的可观察证据——这是标签与证据不匹配",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「左边的积木比右边多，多出来的那几块在哪」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "6+4=10（当合并）；或答 6",
+     "observable_evidence": "`groups=[{count:6},{count:4}]`、`aligned`；同 eaa828b3，`count` 固定，只有 `items[].x`/`aligned` 可变",
+     "competing_explanations": "同 eaa828b3；另注意本题 `ability_id=app_model`（建模）而 eaa828b3 是 app_rel（关系），但 representation 形态**完全相同**，所以「建模能力」在本题没有独立的可观察证据——这是标签与证据不匹配",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「左边的积木比右边多，多出来的那几块在哪」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "左边有6块积木，右边有4块积木。左边比右边多几块？",
+   "input_binding": {
+    "audit_input_sha256": "087a73f78a48d054541903f626b518e334eeab2ba7f335e9ef542eecfdbe0656",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "cfc971b4-002f-42c3-8b00-993784a4f9ff",
+   "renderer": "legacy:objects",
+   "relation": "difference",
+   "relation_rule": "题面出现「比…多 / 比…少 / 相差 / 多几」且**所问就是差量本身**",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知部分",
+   "known_role_note": "题面给出的是整体的一个组成部分，所求是整体或另一部分",
+   "input_basis": "题面「小红有8朵花，小蓝有5朵花」",
+   "target_object": "差 = 8 − 5",
+   "derivation": {
+    "read": "两人各自的量已知，所求「多几朵」= 差量；本条 `ability_id=app_strat`，考点是**方法选择**（该用减法）",
+    "expr": "8 - 5"
+   },
+   "config_role": "`groups:[{count:8},{count:5}]`；只能对齐不可增减",
+   "computed": 3,
+   "applicable_conditions": "**与 eaa828b3 的数值完全相同（8 与 5），只换了人和物品**。这不是「换情境迁移」的合格证据——迁移要求结构与情境同时变，这里结构没变。两条都做对只说明「8−5 会算」，**不说明**孩子把「多几朵」和「多几支笔」识别为同一关系。本条与 eaa828b3 的 `ability_id` 也不同（app_strat vs app_rel），进一步说明能力标签不能替代题意判定",
+   "stated_answer": "3",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D3",
+     "title": "legacy:objects 未提供增减操作（静态事实）",
+     "kind": "interaction_gap",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+     "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+     "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+     "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+     "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+     "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+     "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
+    }
+   ],
+   "ui_visual_seen": {
+    "type": "objects",
+    "groups": [
+     {
+      "id": "g1",
+      "count": 8,
+      "label": "第1组",
+      "symbol": "🌸"
+     },
+     {
+      "id": "g2",
+      "count": 5,
+      "label": "第2组",
+      "symbol": "🌸"
+     }
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13；或答 5（报较小数，把「多」读成「是」）",
+     "observable_evidence": "`groups=[{count:8},{count:5}]`、`aligned`；同族限制：`count` 固定",
+     "competing_explanations": "**与 eaa828b3 的 groups 逐字段相同（8 和 5）**，所以两条的 representation **必然一致**——若孩子都用对齐，两条的痕迹一模一样。这意味着：本题的 Q05 证据与 eaa828b3 的不可区分，不能当成两份独立证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「两行花排齐后，多出来的那一行有几朵」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13；或答 5（报较小数，把「多」读成「是」）",
+     "observable_evidence": "`groups=[{count:8},{count:5}]`、`aligned`；同族限制：`count` 固定",
+     "competing_explanations": "**与 eaa828b3 的 groups 逐字段相同（8 和 5）**，所以两条的 representation **必然一致**——若孩子都用对齐，两条的痕迹一模一样。这意味着：本题的 Q05 证据与 eaa828b3 的不可区分，不能当成两份独立证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「两行花排齐后，多出来的那一行有几朵」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13；或答 5（报较小数，把「多」读成「是」）",
+     "observable_evidence": "`groups=[{count:8},{count:5}]`、`aligned`；同族限制：`count` 固定",
+     "competing_explanations": "**与 eaa828b3 的 groups 逐字段相同（8 和 5）**，所以两条的 representation **必然一致**——若孩子都用对齐，两条的痕迹一模一样。这意味着：本题的 Q05 证据与 eaa828b3 的不可区分，不能当成两份独立证据",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「两行花排齐后，多出来的那一行有几朵」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小红有8朵花，小蓝有5朵花。小红比小蓝多几朵？",
+   "input_binding": {
+    "audit_input_sha256": "dac7f339328d60aa963a70dafe23a6ad525dd42f087a641a52f690beb3c93749",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "8f603745-fc26-4402-9cd2-0fc20cfd401a",
+   "renderer": "legacy:objects",
+   "relation": "difference",
+   "relation_rule": "题面出现「比…多 / 比…少 / 相差 / 多几」且**所问就是差量本身**",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知部分",
+   "known_role_note": "题面给出的是整体的一个组成部分，所求是整体或另一部分",
+   "input_basis": "题面「小海跑了9圈，小森跑了6圈」",
+   "target_object": "差 = 9 − 6",
+   "derivation": {
+    "read": "两人圈数已知，所求「多跑几圈」= 差量；本条 `ability_id=app_transfer`，声称考「换到跑步情境仍能比较」",
+    "expr": "9 - 6"
+   },
+   "config_role": "`groups:[{count:9},{count:6}]`；只能对齐不可增减",
+   "computed": 3,
+   "applicable_conditions": "**这是一条必须先说明的限制**：本条自称 transfer（迁移），但它是 batch 内**第一次**出现「9 与 6 求差」的数值组合，与 eaa828b3（8−5）、cfc971b4（8−5 同值不同人）、7acb4a38（6−4）之间**没有同值配对**。所以「换情境后仍能做对」这个迁移结论，本批**给不出对照**——要证实迁移，必须找到「同一数值结构、不同情境」的一对，本批凑不出来。登记为：transfer 标签未获本批证据支持，不作否认也不作确认",
+   "stated_answer": "3",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D3",
+     "title": "legacy:objects 未提供增减操作（静态事实）",
+     "kind": "interaction_gap",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`visual.groups[].count` 由 config 写死；`tools` 无 `remove_object`/`add_object`",
+     "static_fact": "4 题的 `groups[].count` 来自配置，界面上没有增删物件的工具项。",
+     "inference": "「先摆到一样多、再看多出几个」这个动作**不能通过增删完成**。",
+     "not_claimed": "**不主张「求差动作完全不可观测」**，也**不主张「不能一一对应」**。仍需查三件事：① 物件位置是否记录（`items[].x/y`）；② 对齐动作是否记录（`aligned` 字段）；③ 序列化是否保留了两组的相对排布。「没有增删」只否掉了其中一条路径，不等于否掉全部过程信息。",
+     "impact": "一一对应与「多出几个」的过程证据，**不能来自物件数量的变化**；是否可从对齐/位置/其它工具动作中读出，本批**未逐项核验**。",
+     "needs_runtime": "以 `[对齐]` 操作驱动一次真实提交，检查序列化里`aligned` 与 `items[].x` 是否变化；本批**未做**。",
+     "status": "已登记风险；与上一批 object-counter「进入即 PASS」不是同类问题，不宜并列成「两个相反的缺陷」"
+    }
+   ],
+   "ui_visual_seen": {
+    "type": "objects",
+    "groups": [
+     {
+      "id": "g1",
+      "count": 9,
+      "label": "第1组",
+      "symbol": "●"
+     },
+     {
+      "id": "g2",
+      "count": 6,
+      "label": "第2组",
+      "symbol": "●"
+     }
+    ]
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9+6=15；或答 9（只报较大数）",
+     "observable_evidence": "`groups=[{count:9},{count:6}]`、`aligned`；同族限制",
+     "competing_explanations": "`count` 固定 → 同 eaa828b3。另：本条标 app_transfer（迁移），但**本批找不到同值的非迁移配对**（9−6 只出现这一次），所以迁移结论没有对照，`competing` 里也没有可比的错法模式",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「两个人跑的圈数排成两行，哪一行长出来了」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9+6=15；或答 9（只报较大数）",
+     "observable_evidence": "`groups=[{count:9},{count:6}]`、`aligned`；同族限制",
+     "competing_explanations": "`count` 固定 → 同 eaa828b3。另：本条标 app_transfer（迁移），但**本批找不到同值的非迁移配对**（9−6 只出现这一次），所以迁移结论没有对照，`competing` 里也没有可比的错法模式",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「两个人跑的圈数排成两行，哪一行长出来了」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9+6=15；或答 9（只报较大数）",
+     "observable_evidence": "`groups=[{count:9},{count:6}]`、`aligned`；同族限制",
+     "competing_explanations": "`count` 固定 → 同 eaa828b3。另：本条标 app_transfer（迁移），但**本批找不到同值的非迁移配对**（9−6 只出现这一次），所以迁移结论没有对照，`competing` 里也没有可比的错法模式",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「两个人跑的圈数排成两行，哪一行长出来了」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "晨练时，小海跑了9圈，小森跑了6圈。小海比小森多跑几圈？",
+   "input_binding": {
+    "audit_input_sha256": "90af3f9373f343e2d981aa149d565007d41ca4e75e47b34d92bad3c9054670e9",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "421ede36-8f1b-4b10-9433-e92f039231bd",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「小青有11张贴纸，小雨比小青少4张。两个人一共有多少张贴纸」→ 两步：先求小雨 = 11 − 4，再求两人合计",
+   "target_object": "两人合计 = 11 + (11 − 4) = 18",
+   "derivation": {
+    "read": "**两步题**：第一步求较小方（11−4=7），第二步把两人合起来（11+7=18）。所求是第二步的量，不是第一步的 7",
+    "expr": "11 + (11 - 4)"
+   },
+   "config_role": "`bars=[base(max=15,value=11), unknown(max=15,unknown)]`、`max_value=17`、`relationship=compare`。**静态事实**：三处上限都小于最终合计 18（bars.max=15、max_value=17）；但**两根比较条可表达的候选状态是 11 与 7**（两人各自的数量），两者都在上限之内。未知条究竟表示「另一个人的数量」还是「两人合计」，**尚未核验**",
+   "computed": 18,
+   "applicable_conditions": "**命中 DEF-D2，登记为线索（待定向核验）**：最终合计 18 大于任一单条上限，这是一个**线索**，不是任务不可完成的结论。本条的真实角色假设是：两根条分别表示两人各自的数量（11 与 7，均在范围内），合计由数字框提交——若成立，则本题的数学与表征都能成立，只剩「条形角色标签是否清楚」的可用性问题。若核验证明未知条必须表示合计、或提交被真实阻断，再按内容侧整改处理。**在此之前不据最终合计超过单条上限判定任务不可完成**，也不把表征侧证据说成失效；数学结论成立（18），判 MATCH",
+   "stated_answer": "18",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": "线索：最终答案 18 > 单条可摆放上限 17（不代表任务不可完成，需核验未知条应表示哪个量）",
+   "known_defects": [
+    {
+     "id": "DEF-D2",
+     "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+     "kind": "unreachable_signal",
+     "evidence_tier": "needs_runtime",
+     "confirmed": false,
+     "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+     "static_fact": "三题的最终合计（18 / 21 / 19）都大于任一单条上限；三题的**个人数量**却都在范围内（见下表）。",
+     "inference": "**没有**。当前检测器 `detect_unreachable()` 只比较「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，也不知道题目是否要求单独展示合计。所以它给出的是线索，不是可完成性结论。",
+     "detector_limits": "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非「答案条的上限」，因此会漏报——反例：答案条上限 5、另一无关条上限 100、答案 10，该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。",
+     "not_claimed": "**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励半成品」**。上一版这两句与同一份报告里「只能靠数字输入框答对」互相矛盾——两者不能作为同一已证结论并存。而且判分读 `response.answer`，与滑杆能否摆出无关。",
+     "role_hypothesis": [
+      {
+       "rvid": "421ede36",
+       "person_a": 11,
+       "person_b": 7,
+       "answer": 18,
+       "bar_caps": [
+        15,
+        15
+       ],
+       "max_value": 17,
+       "bars_can_show": "11 与 7（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "6e5395f0",
+       "person_a": 9,
+       "person_b": 12,
+       "answer": 21,
+       "bar_caps": [
+        12,
+        12
+       ],
+       "max_value": 14,
+       "bars_can_show": "9 与 12（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "8981fbcc",
+       "person_a": 8,
+       "person_b": 11,
+       "answer": 19,
+       "bar_caps": [
+        11,
+        11
+       ],
+       "max_value": 13,
+       "bars_can_show": "8 与 11（两人各自的数量）",
+       "both_within_range": true
+      }
+     ],
+     "verification_plan": [
+      "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+      "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+      "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+      "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里各承担什么，是否要求一致"
+     ],
+     "impact": "在①②未完成前，**只能说「单条上限不足以表示最终合计」这一静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。",
+     "if_confirmed": "若契约确实要求未知条为合计、或提交被真实阻断，再走内容侧新版本整改；且**不能只把 `max` 改成比答案大就算修好**——那会同时制造新的答案泄露。",
+     "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
+     "added_after_gate": [
+      "421ede36",
+      "6e5395f0",
+      "8981fbcc"
+     ],
+     "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置"
+    }
+   ],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 15,
+      "min": 0,
+      "label": "已知",
+      "value": 11
+     },
+     {
+      "id": "unknown",
+      "max": 15,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 17,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 7（只做完第一步）；或答 15（11+4，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:11},{id:unknown,value:?}]`、`max_value=17`。**已知**：最终合计 18；两根比较条可表达的候选状态为 11 与 7（两人各自的数量，均在 bars.max=15 与 max_value=17 之内）。**未知**：未知条正式表示「另一个人的数量」还是「两人合计」，以及提交时是否要求表征与 `answer` 一致——这两点未核验前，不能据「18 > 上限」断言表征侧失效",
+     "competing_explanations": "两条错误假设：①只做第一步得 7；②方向反得 15（11+4）。注意 15 同时是 `bars.max`，因此在**若未知条表示个人数量**的配置下，15 既可能是「方向反」也可能是「拖到上限」，**这两种解释当前无法区分**——不是已证的缺陷污染，而是需要靠真实提交契约才能分开的边界。裸滑杆值不足以归因，故本条的 `cannot_distinguish` 一并登记",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小青 11 张，小雨比小青少 4 张，两个人数一数一共几张」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 7（只做完第一步）；或答 15（11+4，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:11},{id:unknown,value:?}]`、`max_value=17`。**已知**：最终合计 18；两根比较条可表达的候选状态为 11 与 7（两人各自的数量，均在 bars.max=15 与 max_value=17 之内）。**未知**：未知条正式表示「另一个人的数量」还是「两人合计」，以及提交时是否要求表征与 `answer` 一致——这两点未核验前，不能据「18 > 上限」断言表征侧失效",
+     "competing_explanations": "两条错误假设：①只做第一步得 7；②方向反得 15（11+4）。注意 15 同时是 `bars.max`，因此在**若未知条表示个人数量**的配置下，15 既可能是「方向反」也可能是「拖到上限」，**这两种解释当前无法区分**——不是已证的缺陷污染，而是需要靠真实提交契约才能分开的边界。裸滑杆值不足以归因，故本条的 `cannot_distinguish` 一并登记",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小青 11 张，小雨比小青少 4 张，两个人数一数一共几张」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 7（只做完第一步）；或答 15（11+4，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:11},{id:unknown,value:?}]`、`max_value=17`。**已知**：最终合计 18；两根比较条可表达的候选状态为 11 与 7（两人各自的数量，均在 bars.max=15 与 max_value=17 之内）。**未知**：未知条正式表示「另一个人的数量」还是「两人合计」，以及提交时是否要求表征与 `answer` 一致——这两点未核验前，不能据「18 > 上限」断言表征侧失效",
+     "competing_explanations": "两条错误假设：①只做第一步得 7；②方向反得 15（11+4）。注意 15 同时是 `bars.max`，因此在**若未知条表示个人数量**的配置下，15 既可能是「方向反」也可能是「拖到上限」，**这两种解释当前无法区分**——不是已证的缺陷污染，而是需要靠真实提交契约才能分开的边界。裸滑杆值不足以归因，故本条的 `cannot_distinguish` 一并登记",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小青 11 张，小雨比小青少 4 张，两个人数一数一共几张」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小青有11张贴纸，小雨比小青少4张。两个人一共有多少张贴纸？",
+   "input_binding": {
+    "audit_input_sha256": "ee4adce7c3a9c86b2b6d16869b1ee3604dddeb3433fce437b9e12b2aba734df0",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "6e5395f0-def7-4060-a501-044d8e9a3764",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「小明有9本故事书，小红比小明多3本。两个人一共有多少本」",
+   "target_object": "两人合计 = 9 + (9 + 3) = 21",
+   "derivation": {
+    "read": "两步：先求较大方（9+3=12），再求合计（9+12=21）",
+    "expr": "9 + (9 + 3)"
+   },
+   "config_role": "`bars=[base(max=12,value=9), unknown(max=12,unknown)]`、`max_value=14`。**静态事实**：上限 12 与 14 都小于最终合计 21；`bars.max=12` 恰好等于中间结果（小红 12 本）。两根比较条可表达的候选状态是 9 与 12（两人各自的数量），均在范围内。未知条的角色**尚未核验**",
+   "computed": 21,
+   "applicable_conditions": "**命中 DEF-D2，登记为线索（待定向核验）**：最终合计 21 大于单条上限；`bars.max=12` 与中间结果数值相同，这一巧合值得单独核验（若未知条表示个人数量，12 就是合理值；若表示合计，则它会误导）。**当前不据上限小于合计判定任务不可完成**，也不主张界面在奖励半成品——「只做第一步会得 12」只是待验证的假设，需在真实提交契约下用 9/12 摆条并提交才能确认。数学结论成立（21），判 MATCH",
+   "stated_answer": "21",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": "线索：最终答案 21 > 单条可摆放上限 14（不代表任务不可完成，需核验未知条应表示哪个量）",
+   "known_defects": [
+    {
+     "id": "DEF-D2",
+     "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+     "kind": "unreachable_signal",
+     "evidence_tier": "needs_runtime",
+     "confirmed": false,
+     "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+     "static_fact": "三题的最终合计（18 / 21 / 19）都大于任一单条上限；三题的**个人数量**却都在范围内（见下表）。",
+     "inference": "**没有**。当前检测器 `detect_unreachable()` 只比较「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，也不知道题目是否要求单独展示合计。所以它给出的是线索，不是可完成性结论。",
+     "detector_limits": "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非「答案条的上限」，因此会漏报——反例：答案条上限 5、另一无关条上限 100、答案 10，该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。",
+     "not_claimed": "**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励半成品」**。上一版这两句与同一份报告里「只能靠数字输入框答对」互相矛盾——两者不能作为同一已证结论并存。而且判分读 `response.answer`，与滑杆能否摆出无关。",
+     "role_hypothesis": [
+      {
+       "rvid": "421ede36",
+       "person_a": 11,
+       "person_b": 7,
+       "answer": 18,
+       "bar_caps": [
+        15,
+        15
+       ],
+       "max_value": 17,
+       "bars_can_show": "11 与 7（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "6e5395f0",
+       "person_a": 9,
+       "person_b": 12,
+       "answer": 21,
+       "bar_caps": [
+        12,
+        12
+       ],
+       "max_value": 14,
+       "bars_can_show": "9 与 12（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "8981fbcc",
+       "person_a": 8,
+       "person_b": 11,
+       "answer": 19,
+       "bar_caps": [
+        11,
+        11
+       ],
+       "max_value": 13,
+       "bars_can_show": "8 与 11（两人各自的数量）",
+       "both_within_range": true
+      }
+     ],
+     "verification_plan": [
+      "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+      "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+      "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+      "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里各承担什么，是否要求一致"
+     ],
+     "impact": "在①②未完成前，**只能说「单条上限不足以表示最终合计」这一静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。",
+     "if_confirmed": "若契约确实要求未知条为合计、或提交被真实阻断，再走内容侧新版本整改；且**不能只把 `max` 改成比答案大就算修好**——那会同时制造新的答案泄露。",
+     "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
+     "added_after_gate": [
+      "421ede36",
+      "6e5395f0",
+      "8981fbcc"
+     ],
+     "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置"
+    }
+   ],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 12,
+      "min": 0,
+      "label": "已知",
+      "value": 9
+     },
+     {
+      "id": "unknown",
+      "max": 12,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 14,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 12（只做第一步；是否被界面强化尚待核验）；或答 6（9−3，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`、`max_value=14`。**已知**：最终合计 21；两根比较条可表达的候选状态为 9 与 12（两人各自的数量），均在范围内。`bars.max=12` 与中间结果同值，这个巧合**本身是静态事实**，但它是否造成误导取决于未知条角色，**该角色未核验**",
+     "competing_explanations": "两条错误假设：①只做第一步得 12；②方向反得 6（9−3）。在「未知条表示个人数量」的假设下，12 是合理表征值、与「只做一半」在表征上**无法区分**（两者都摆 12）——这是需要登记的区分力边界。但是否构成「界面奖励半成品」，须先确认未知条角色与提交契约，**当前不作此结论**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算小红有几本，再把两个人的加在一起」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 12（只做第一步；是否被界面强化尚待核验）；或答 6（9−3，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`、`max_value=14`。**已知**：最终合计 21；两根比较条可表达的候选状态为 9 与 12（两人各自的数量），均在范围内。`bars.max=12` 与中间结果同值，这个巧合**本身是静态事实**，但它是否造成误导取决于未知条角色，**该角色未核验**",
+     "competing_explanations": "两条错误假设：①只做第一步得 12；②方向反得 6（9−3）。在「未知条表示个人数量」的假设下，12 是合理表征值、与「只做一半」在表征上**无法区分**（两者都摆 12）——这是需要登记的区分力边界。但是否构成「界面奖励半成品」，须先确认未知条角色与提交契约，**当前不作此结论**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算小红有几本，再把两个人的加在一起」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 12（只做第一步；是否被界面强化尚待核验）；或答 6（9−3，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`、`max_value=14`。**已知**：最终合计 21；两根比较条可表达的候选状态为 9 与 12（两人各自的数量），均在范围内。`bars.max=12` 与中间结果同值，这个巧合**本身是静态事实**，但它是否造成误导取决于未知条角色，**该角色未核验**",
+     "competing_explanations": "两条错误假设：①只做第一步得 12；②方向反得 6（9−3）。在「未知条表示个人数量」的假设下，12 是合理表征值、与「只做一半」在表征上**无法区分**（两者都摆 12）——这是需要登记的区分力边界。但是否构成「界面奖励半成品」，须先确认未知条角色与提交契约，**当前不作此结论**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算小红有几本，再把两个人的加在一起」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小明有9本故事书，小红比小明多3本。两个人一共有多少本故事书？",
+   "input_binding": {
+    "audit_input_sha256": "39a6e42679e692aa2641ab380657b8122c5693c2da13d9f19474a9b94522bfb7",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "8981fbcc-5b92-44b6-ab89-6b8ef0e715fd",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「小兰有8颗糖，小杰比小兰多3颗。两个人一共有多少颗糖」",
+   "target_object": "两人合计 = 8 + (8 + 3) = 19",
+   "derivation": {
+    "read": "与 6e5395f0 同构（已知较小方 + 差，求合计），第一步 8+3=11、第二步 8+11=19",
+    "expr": "8 + (8 + 3)"
+   },
+   "config_role": "`bars=[base(max=11,value=8), unknown(max=11,unknown)]`、`max_value=13`。**静态事实**：上限 11 与 13 都小于最终合计 19；`bars.max=11` 恰好等于中间结果（小杰 11 颗），与 6e5395f0 数值结构同类。两根比较条可表达的候选状态是 8 与 11（两人各自的数量），均在范围内。未知条的角色**尚未核验**",
+   "computed": 19,
+   "applicable_conditions": "**命中 DEF-D2，登记为线索（待定向核验）**：最终合计 19 大于单条上限，`bars.max` 与中间结果同值——这两点是与 6e5395f0 共有的静态事实，但「模板与题意不匹配」是从这两个数值推出的**假设**，不是已证结论：若未知条按设计表示另一个人的数量，两根条就是够用的。**当前不判定不可完成、不判定表征容器容量不足**；数学结论成立（19），判 MATCH",
+   "stated_answer": "19",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": "线索：最终答案 19 > 单条可摆放上限 13（不代表任务不可完成，需核验未知条应表示哪个量）",
+   "known_defects": [
+    {
+     "id": "DEF-D2",
+     "title": "legacy:bar-model 最终合计大于单条上限（线索，非可完成性判定）",
+     "kind": "unreachable_signal",
+     "evidence_tier": "needs_runtime",
+     "confirmed": false,
+     "evidence": "`content.answer` > 所有 `bars[].max`（3 题逐一核对）",
+     "static_fact": "三题的最终合计（18 / 21 / 19）都大于任一单条上限；三题的**个人数量**却都在范围内（见下表）。",
+     "inference": "**没有**。当前检测器 `detect_unreachable()` 只比较「最终答案 > 所有上限」，它不读「哪根条代表哪个量」，也不知道题目是否要求单独展示合计。所以它给出的是线索，不是可完成性结论。",
+     "detector_limits": "`detect_unreachable()` 是**线索检测器**，不是任务可完成性判定器。两个具体缺陷：① 不读条的角色语义，无法区分「未知条 = 合计」与「未知条 = 另一个人的数量」；② 取 `max(所有上限)` 而非「答案条的上限」，因此会漏报——反例：答案条上限 5、另一无关条上限 100、答案 10，该函数取最大值 100 后判定「可达」，实际答案条摆不出 10。",
+     "not_claimed": "**不主张「永远拿不到分」**，也**不主张「界面在系统性奖励半成品」**。上一版这两句与同一份报告里「只能靠数字输入框答对」互相矛盾——两者不能作为同一已证结论并存。而且判分读 `response.answer`，与滑杆能否摆出无关。",
+     "role_hypothesis": [
+      {
+       "rvid": "421ede36",
+       "person_a": 11,
+       "person_b": 7,
+       "answer": 18,
+       "bar_caps": [
+        15,
+        15
+       ],
+       "max_value": 17,
+       "bars_can_show": "11 与 7（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "6e5395f0",
+       "person_a": 9,
+       "person_b": 12,
+       "answer": 21,
+       "bar_caps": [
+        12,
+        12
+       ],
+       "max_value": 14,
+       "bars_can_show": "9 与 12（两人各自的数量）",
+       "both_within_range": true
+      },
+      {
+       "rvid": "8981fbcc",
+       "person_a": 8,
+       "person_b": 11,
+       "answer": 19,
+       "bar_caps": [
+        11,
+        11
+       ],
+       "max_value": 13,
+       "bars_can_show": "8 与 11（两人各自的数量）",
+       "both_within_range": true
+      }
+     ],
+     "verification_plan": [
+      "① 表征对象：确认未知条在本题型里被要求表示「另一个人的数量」还是「两人合计」——查内容侧任务契约与 `relationship` 语义",
+      "② 正确候选：分别用 11/7、9/12、8/11 摆条并提交，应判对（若契约要求表征提交的是两人各自数量）；随后在数字框提交 18/21/19",
+      "③ 半成品负例：分别用 7/12/11 提交，应判错——否则才是「奖励半成品」",
+      "④ 提交关联：确认 `representation` 与 `response.answer` 在判分里各承担什么，是否要求一致"
+     ],
+     "impact": "在①②未完成前，**只能说「单条上限不足以表示最终合计」这一静态事实**。若核验证明未知条只需表示个人数量，则本条目应降级为「条形角色标签不清楚」的可用性问题，而不是可达性缺陷。",
+     "if_confirmed": "若契约确实要求未知条为合计、或提交被真实阻断，再走内容侧新版本整改；且**不能只把 `max` 改成比答案大就算修好**——那会同时制造新的答案泄露。",
+     "math_answers_unaffected": "18 / 21 / 19 三个数学答案本身无需修改。",
+     "added_after_gate": [
+      "421ede36",
+      "6e5395f0",
+      "8981fbcc"
+     ],
+     "status": "**已登记线索，待定向核验**；不按当前检测器结论改 Published 配置"
+    }
+   ],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 11,
+      "min": 0,
+      "label": "已知",
+      "value": 8
+     },
+     {
+      "id": "unknown",
+      "max": 11,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 13,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 11（只做第一步；是否为界面所强化尚待核验）；或答 5（8−3，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:8},{id:unknown,value:?}]`、`max_value=13`。**已知**：最终合计 19；两根比较条可表达的候选状态为 8 与 11（两人各自的数量），均在范围内。`bars.max=11` 与中间结果同值（静态事实）。未知条角色**未核验**",
+     "competing_explanations": "两条错误假设：①只做第一步得 11；②方向反得 5（8−3）。与 6e5395f0 同：11 既是中间结果也是上限，「只做一半」与「正确表示个人数量」在表征上**无法区分**。三条 DEF-D2 的共性只是「最终合计大于单条上限」这一数值关系，**不能据此推出模板与题意不匹配**——那需要先确认未知条角色",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算小杰有几颗，再算两人合起来」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 11（只做第一步；是否为界面所强化尚待核验）；或答 5（8−3，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:8},{id:unknown,value:?}]`、`max_value=13`。**已知**：最终合计 19；两根比较条可表达的候选状态为 8 与 11（两人各自的数量），均在范围内。`bars.max=11` 与中间结果同值（静态事实）。未知条角色**未核验**",
+     "competing_explanations": "两条错误假设：①只做第一步得 11；②方向反得 5（8−3）。与 6e5395f0 同：11 既是中间结果也是上限，「只做一半」与「正确表示个人数量」在表征上**无法区分**。三条 DEF-D2 的共性只是「最终合计大于单条上限」这一数值关系，**不能据此推出模板与题意不匹配**——那需要先确认未知条角色",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算小杰有几颗，再算两人合起来」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 11（只做第一步；是否为界面所强化尚待核验）；或答 5（8−3，方向反）",
+     "observable_evidence": "`bars=[{id:base,value:8},{id:unknown,value:?}]`、`max_value=13`。**已知**：最终合计 19；两根比较条可表达的候选状态为 8 与 11（两人各自的数量），均在范围内。`bars.max=11` 与中间结果同值（静态事实）。未知条角色**未核验**",
+     "competing_explanations": "两条错误假设：①只做第一步得 11；②方向反得 5（8−3）。与 6e5395f0 同：11 既是中间结果也是上限，「只做一半」与「正确表示个人数量」在表征上**无法区分**。三条 DEF-D2 的共性只是「最终合计大于单条上限」这一数值关系，**不能据此推出模板与题意不匹配**——那需要先确认未知条角色",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算小杰有几颗，再算两人合起来」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小兰有8颗糖，小杰比小兰多3颗。两个人一共有多少颗糖？",
+   "input_binding": {
+    "audit_input_sha256": "5605e4c1117138ff419cb269fb28135bf20e43f30647fe89096d3457b646d43e",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "2dd5be20-77ea-400c-aa68-4702ecae705b",
+   "renderer": "legacy:direct",
+   "relation": "difference",
+   "relation_rule": "题面出现「比…多 / 比…少 / 相差 / 多几」且**所问就是差量本身**",
+   "source_kind": "stem_only",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「姐姐有13颗珠子，比弟弟多5颗。小明说『弟弟有18颗珠子』」→ 13 是较大方、5 是差量、18 是被检验的断言",
+   "target_object": "判断值：1=断言正确，0=断言错误。本题应为 **0**",
+   "derivation": {
+    "read": "这是**判断题**：断言「弟弟有18颗」对不对。弟弟 = 13 − 5 = 8（较小方，已知较大方与差）≠ 18 → 断言错 → 答 0",
+    "expr": "int((13 - 5) == 18)"
+   },
+   "config_role": "`kind=number`，`visual` 不存在（纯数字输入框）；**没有任何配置参与**，题面是唯一信息源",
+   "computed": 0,
+   "applicable_conditions": "**这是本批第三个必须写明的例外（EX-R3）**：答案 0 在「正确填1、错误填0」的约定下表示「断言错误」。但 0 也可以被读成「弟弟有 0 颗」「数量是 0」，**单看提交值分不开这两种读法**。上一批 fea38e2d 的教训就是「值域看着怪 ≠ 算错」，这里同理，只是方向相反：**值对 ≠ 理解对**。判 MATCH 只表示「按题面的 1/0 约定算对了」，不表示孩子把 0 当成了「错误」这个语义。另：本题与 3ea61fc9（姐姐13、比弟弟多5、问弟弟几颗）是**同一题面的两种问法**——一个问数、一个问对错。这种配对是本批唯一可用于「同一关系不同表征」的对照",
+   "stated_answer": "0",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": null,
+   "q05_error_models": [
+    {
+     "code": "check",
+     "pattern": "check"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "check",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 1（直接采信断言 18，不去验算）；或算出 18（把「比弟弟多5」做成 13+5）后再判 1",
+     "observable_evidence": "**判分字段只有 `TaskResponse.answer`（字符串）**；`representation` 在这个 schema 下不参与提交门禁。`answer='0'` 为正解（断言错误）。`interaction_events` 里只有 `answer_changed` 事件，**不带输入值**，所以无法还原输入历史。本题的 0 与「数量为 0」在提交值上同形",
+     "competing_explanations": "⚠ `answer='0'` 的两种可能：①算出弟弟=8、判断言 18 错、填 0；②误以为「弟弟有 0 颗」、填 0。**提交值完全相同，交互事件里也没有可用于区分的字段**。这是本批第二个「证据本身失效」的情形（第一个是 c07482bb 的滑杆）。区别在于：c07482bb 是配置泄露，本条是**题型设计缺少区分字段**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算算弟弟到底几颗，再和小明说的 18 比一比」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 1（直接采信断言 18，不去验算）；或算出 18（把「比弟弟多5」做成 13+5）后再判 1",
+     "observable_evidence": "**判分字段只有 `TaskResponse.answer`（字符串）**；`representation` 在这个 schema 下不参与提交门禁。`answer='0'` 为正解（断言错误）。`interaction_events` 里只有 `answer_changed` 事件，**不带输入值**，所以无法还原输入历史。本题的 0 与「数量为 0」在提交值上同形",
+     "competing_explanations": "⚠ `answer='0'` 的两种可能：①算出弟弟=8、判断言 18 错、填 0；②误以为「弟弟有 0 颗」、填 0。**提交值完全相同，交互事件里也没有可用于区分的字段**。这是本批第二个「证据本身失效」的情形（第一个是 c07482bb 的滑杆）。区别在于：c07482bb 是配置泄露，本条是**题型设计缺少区分字段**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算算弟弟到底几颗，再和小明说的 18 比一比」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "答 1（直接采信断言 18，不去验算）；或算出 18（把「比弟弟多5」做成 13+5）后再判 1",
+     "observable_evidence": "**判分字段只有 `TaskResponse.answer`（字符串）**；`representation` 在这个 schema 下不参与提交门禁。`answer='0'` 为正解（断言错误）。`interaction_events` 里只有 `answer_changed` 事件，**不带输入值**，所以无法还原输入历史。本题的 0 与「数量为 0」在提交值上同形",
+     "competing_explanations": "⚠ `answer='0'` 的两种可能：①算出弟弟=8、判断言 18 错、填 0；②误以为「弟弟有 0 颗」、填 0。**提交值完全相同，交互事件里也没有可用于区分的字段**。这是本批第二个「证据本身失效」的情形（第一个是 c07482bb 的滑杆）。区别在于：c07482bb 是配置泄露，本条是**题型设计缺少区分字段**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先算算弟弟到底几颗，再和小明说的 18 比一比」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "姐姐有13颗珠子，比弟弟多5颗。小明说“弟弟有18颗珠子”。请检查：正确填1，错误填0。",
+   "input_binding": {
+    "audit_input_sha256": "f191d4c41949be9bf704e975a33865c84917df6faac0005b52b92893ab993551",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "3ea61fc9-850f-4b59-987d-1a58fe00087f",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「姐姐有13颗珠子，比弟弟多5颗」→ 已知**较大方**13、差量 5；所求是**较小方**",
+   "target_object": "弟弟的量（较小方）= 13 − 5",
+   "derivation": {
+    "read": "「比弟弟多5」说的是姐姐相对弟弟的关系。已知较大求较小 → 减。这是本题的关键：语言里「多」出现，但运算要减",
+    "expr": "13 - 5"
+   },
+   "config_role": "`bars=[base(max=18,value=13), unknown(max=18,unknown)]`、`max_value=20`。`base.value=13` 与题面一致；`unknown.max=18` ≠ 答案 8，**不泄露**",
+   "computed": 8,
+   "applicable_conditions": "**与 2dd5be20 构成对照对**：同一题面（姐姐13、多5），一个求数值（8）、一个求断言对错（0）。这是本批唯一「同关系不同表征」的合格对照——两条都做对，才能说孩子既会算 8、又知道 18 是错的。只做对一条时，不能推出另一条也会。注意 `bars` 里**没有第三根「差条」**：本题的 understood 结构是「大条−小条=差」，但 UI 只给两根条（已知+未知），差 5 只在题面里、不在条上——孩子要自己在脑中补第三根条。这是 renderer 表达力不足，不是题错",
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 18,
+      "min": 0,
+      "label": "已知",
+      "value": 13
+     },
+     {
+      "id": "unknown",
+      "max": 18,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 20,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "13+5=18（「多」直接做加法）；或答 5（把差量当答案）",
+     "observable_evidence": "`bars=[{id:base,value:13},{id:unknown,value:8}]` 为正解形态。`unknown.max=18`，**拖到底得 18 ≠ 8**，所以本题的滑杆不泄露答案",
+     "competing_explanations": "`unknown.value=18` 与「做了 13+5（方向反）」**相容**。比 c07482bb 可用之处在于：本题拖到底得到的是 18（错值），所以「拖到底」与「方向反」在这一题上**指向同一个值**，仍不能区分；但它至少**排除了「拖到底就蒙对」**这一条。**注意：这不构成对孩子的归因**，只缩小了相容假设的范围",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「姐姐比弟弟多 5 颗，弟弟的条该比姐姐的条短还是长」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "13+5=18（「多」直接做加法）；或答 5（把差量当答案）",
+     "observable_evidence": "`bars=[{id:base,value:13},{id:unknown,value:8}]` 为正解形态。`unknown.max=18`，**拖到底得 18 ≠ 8**，所以本题的滑杆不泄露答案",
+     "competing_explanations": "`unknown.value=18` 与「做了 13+5（方向反）」**相容**。比 c07482bb 可用之处在于：本题拖到底得到的是 18（错值），所以「拖到底」与「方向反」在这一题上**指向同一个值**，仍不能区分；但它至少**排除了「拖到底就蒙对」**这一条。**注意：这不构成对孩子的归因**，只缩小了相容假设的范围",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「姐姐比弟弟多 5 颗，弟弟的条该比姐姐的条短还是长」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "13+5=18（「多」直接做加法）；或答 5（把差量当答案）",
+     "observable_evidence": "`bars=[{id:base,value:13},{id:unknown,value:8}]` 为正解形态。`unknown.max=18`，**拖到底得 18 ≠ 8**，所以本题的滑杆不泄露答案",
+     "competing_explanations": "`unknown.value=18` 与「做了 13+5（方向反）」**相容**。比 c07482bb 可用之处在于：本题拖到底得到的是 18（错值），所以「拖到底」与「方向反」在这一题上**指向同一个值**，仍不能区分；但它至少**排除了「拖到底就蒙对」**这一条。**注意：这不构成对孩子的归因**，只缩小了相容假设的范围",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「姐姐比弟弟多 5 颗，弟弟的条该比姐姐的条短还是长」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "姐姐有13颗珠子，比弟弟多5颗。弟弟有多少颗珠子？",
+   "input_binding": {
+    "audit_input_sha256": "521e49f06bc5e9f2183e291e343d96f5cd9e889dcbf3eda2309eb466b0c7578b",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "7f22076d-e47d-46e4-a822-0528a90a451a",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「小安的棋子比小林少6颗。小林有14颗棋子」→ 已知较大方 14、差量 6；所求是较小方",
+   "target_object": "小安的量（较小方）= 14 − 6",
+   "derivation": {
+    "read": "**语言顺序与角色相反**：「比…少」的主语（小安）是较小的那一方，但句子把主语放前面、把已知的较大方放后面。孩子要先分清「谁比谁少」，再选减法",
+    "expr": "14 - 6"
+   },
+   "config_role": "`bars=[base(max=20,value=14), unknown(max=20,unknown)]`、`max_value=22`；`unknown.max=20` ≠ 8，不泄露",
+   "computed": 8,
+   "applicable_conditions": "与 3ea61fc9 的**关键差别是语序**：3ea61fc9 是「[已知者]比[未知者]多」（已知者在前）；本条是「[未知者]比[已知者]少」（未知者在前）。**这是本批唯一一对「同运算、不同语序」的题**，也是最有价值的对照：孩子若只会一种语序，两条会出现一错一对的分离。但注意——配对的是「语序」，不是「数值」，所以它检验的是语言解析，不是计算",
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 20,
+      "min": 0,
+      "label": "已知",
+      "value": 14
+     },
+     {
+      "id": "unknown",
+      "max": 20,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 22,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "14+6=20（把「少」读成「多」）；或答 14（忽略差量）",
+     "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:8}]` 为正解。`unknown.max=20`，拖到底得 20 ≠ 8",
+     "competing_explanations": "`unknown.value=20` → 做了 14+6（方向反）；`unknown.value=14` → 直接抄已知量。两种错法**值不同**，可分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安比小林少 6 颗，小安那条比 14 长还是短」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "14+6=20（把「少」读成「多」）；或答 14（忽略差量）",
+     "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:8}]` 为正解。`unknown.max=20`，拖到底得 20 ≠ 8",
+     "competing_explanations": "`unknown.value=20` → 做了 14+6（方向反）；`unknown.value=14` → 直接抄已知量。两种错法**值不同**，可分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安比小林少 6 颗，小安那条比 14 长还是短」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "14+6=20（把「少」读成「多」）；或答 14（忽略差量）",
+     "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:8}]` 为正解。`unknown.max=20`，拖到底得 20 ≠ 8",
+     "competing_explanations": "`unknown.value=20` → 做了 14+6（方向反）；`unknown.value=14` → 直接抄已知量。两种错法**值不同**，可分开",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安比小林少 6 颗，小安那条比 14 长还是短」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小安的棋子比小林少6颗。小林有14颗棋子。小安有多少颗棋子？",
+   "input_binding": {
+    "audit_input_sha256": "6df0ddcf1d05905f2683c0cb8d165ba312605a3a1f770c17732b55e863852d42",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "8612589b-80dd-4ac7-8658-c241b8d45153",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「哥哥有12个贝壳，比妹妹多5个」",
+   "target_object": "妹妹的量 = 12 − 5",
+   "derivation": {
+    "read": "与 3ea61fc9 **同语序同结构**（已知者在前、比未知者多），数值不同（12/5 vs 13/5）",
+    "expr": "12 - 5"
+   },
+   "config_role": "`bars=[base(max=17,value=12), unknown(max=17,unknown)]`、`max_value=19`；`unknown.max=17` ≠ 7，不泄露。**`bars` 只有两格（已知/未知），差量 5 不在条上**——「比…多5」这个关系没有被 visual 承载，孩子要自己在脑中补第三根条",
+   "computed": 7,
+   "applicable_conditions": "本条 `ability_id=app_strat`（策略选择），3ea61fc9 是 app_rel（关系理解）——**标签不同但题目结构完全相同**。两条一起做对只说明「12−5 与 13−5 都会算」，不能说「既掌握了关系又掌握了策略」：那是把同一份能力证据记了两遍。本批明确声明：**能力标签的差异不在本批证据范围内**",
+   "stated_answer": "7",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 17,
+      "min": 0,
+      "label": "已知",
+      "value": 12
+     },
+     {
+      "id": "unknown",
+      "max": 17,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 19,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "12+5=17（方向反）；或答 12",
+     "observable_evidence": "`bars=[{id:base,value:12},{id:unknown,value:7}]` 为正解。`unknown.max=17`，拖到底得 17 ≠ 7",
+     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案。两种错法值不同，可分开这两个假设（**可分开假设 ≠ 可归因**：仍只说明与该假设相容）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「妹妹比哥哥少 5 个，妹妹那条该短 5 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "12+5=17（方向反）；或答 12",
+     "observable_evidence": "`bars=[{id:base,value:12},{id:unknown,value:7}]` 为正解。`unknown.max=17`，拖到底得 17 ≠ 7",
+     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案。两种错法值不同，可分开这两个假设（**可分开假设 ≠ 可归因**：仍只说明与该假设相容）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「妹妹比哥哥少 5 个，妹妹那条该短 5 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "12+5=17（方向反）；或答 12",
+     "observable_evidence": "`bars=[{id:base,value:12},{id:unknown,value:7}]` 为正解。`unknown.max=17`，拖到底得 17 ≠ 7",
+     "competing_explanations": "`unknown.value=17` → 12+5（方向反）；`unknown.value=5` → 把差量当答案。两种错法值不同，可分开这两个假设（**可分开假设 ≠ 可归因**：仍只说明与该假设相容）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「妹妹比哥哥少 5 个，妹妹那条该短 5 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "哥哥有12个贝壳，比妹妹多5个。妹妹有多少个贝壳？",
+   "input_binding": {
+    "audit_input_sha256": "5094099c4ffad7cce75c32b14536ca1eaf6062b997fac3c1a0a1b4bbf35fbb80",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "ed97b114-6599-4cd3-ad0e-ca1c3509ed57",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「小芸比小康少5颗星星。小康有14颗星星」",
+   "target_object": "小芸的量 = 14 − 5",
+   "derivation": {
+    "read": "与 7f22076d **同语序**（未知者在前、比已知者少），差量同为 5、已知量同为 14 → 数值也相同",
+    "expr": "14 - 5"
+   },
+   "config_role": "`bars=[base(max=19,value=14), unknown(max=19,unknown)]`、`max_value=21`；`unknown.max=19` ≠ 9，不泄露",
+   "computed": 9,
+   "applicable_conditions": "**与 7f22076d 完全同值同语序（14−6 vs 14−5 差一个数）**——两条是「差量 6」与「差量 5」的最小对。严格说这不是重复题（差量不同），但也**不是有意义的对照**：差值差 1 不能区分「会算」与「理解」。本条真正可说的是：与 7f22076d 一起，两条都做对至少排除了「14−6 恰好蒙对」这一种偶然",
+   "stated_answer": "9",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 19,
+      "min": 0,
+      "label": "已知",
+      "value": 14
+     },
+     {
+      "id": "unknown",
+      "max": 19,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 21,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "14+5=19（方向反）；或答 5",
+     "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:9}]` 为正解。`unknown.max=19`，拖到底得 19 ≠ 9",
+     "competing_explanations": "`unknown.value=19` → 14+5（方向反）。**注意与 7f22076d 的错法同形**（都是 `base+差量`），两条的错法值分别是 19 与 20——这是「同一错法不同数值」的对照，可用于确认方向错是稳定模式而非偶发",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小芸比小康少 5 颗，从小康那条往回收 5 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "14+5=19（方向反）；或答 5",
+     "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:9}]` 为正解。`unknown.max=19`，拖到底得 19 ≠ 9",
+     "competing_explanations": "`unknown.value=19` → 14+5（方向反）。**注意与 7f22076d 的错法同形**（都是 `base+差量`），两条的错法值分别是 19 与 20——这是「同一错法不同数值」的对照，可用于确认方向错是稳定模式而非偶发",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小芸比小康少 5 颗，从小康那条往回收 5 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "14+5=19（方向反）；或答 5",
+     "observable_evidence": "`bars=[{id:base,value:14},{id:unknown,value:9}]` 为正解。`unknown.max=19`，拖到底得 19 ≠ 9",
+     "competing_explanations": "`unknown.value=19` → 14+5（方向反）。**注意与 7f22076d 的错法同形**（都是 `base+差量`），两条的错法值分别是 19 与 20——这是「同一错法不同数值」的对照，可用于确认方向错是稳定模式而非偶发",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小芸比小康少 5 颗，从小康那条往回收 5 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小芸比小康少5颗星星。小康有14颗星星。小芸有多少颗？",
+   "input_binding": {
+    "audit_input_sha256": "1fa8cfd6cb90452085b997e6f478599e9f16e1cde7161a6775985cf1431cd3c1",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "c07482bb-8a60-4b18-b3c1-25532a77a339",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "答案副本",
+   "known_role_note": "配置/上限里出现的数与答案相等——**不可作为独立推导依据**，按复审要求单独标出",
+   "input_basis": "题面「小杰有7张卡片，小宁比小杰多4张」→ 已知较小方 7、差量 4；所求是较大方",
+   "target_object": "小宁的量（较大方）= 7 + 4",
+   "derivation": {
+    "read": "已知较小方与差量求较大方 → 加。**注意「多」在这里要加**，与 3ea61fc9 的「多要减」相反——差别在于「谁是已知方」：已知较小方时「多」是加到未知方上",
+    "expr": "7 + 4"
+   },
+   "config_role": "⚠ **`bars=[base(max=11,value=7), unknown(max=11,unknown)]`——两根条的滑杆上限 11 **恰好等于答案 11**。这不是旁证，是**答案副本**：孩子把未知条拖到最右端就得到正确答案，不需要知道 7+4。",
+   "computed": 11,
+   "applicable_conditions": "⚠ **本题按题意推导 MATCH，但配置层有缺陷（DEF-D1）**：`unknown.max`（以及 `base.max`）== 答案 11。滑杆的上限由 config 给定、在界面上**可见**（拖到底是 11），所以「把条拖满」这个动作等价于「拿到答案」。对比 V2 bar-model：`parseBarModelConfig` 有「`maxBlocks >= solved + 1`」守卫，V1 legacy **没有这层守卫**。结论：**数学结论成立，UI 泄露答案**。`known_role` 标为「答案副本」正是为此——本题的配置**不能**作为任何独立依据，甚至要把它当作一个不利证据",
+   "stated_answer": "11",
+   "verdict": "MATCH",
+   "visual_leak": [
+    "bars[base].max",
+    "bars[unknown].max"
+   ],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D1",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
+     "kind": "ui_answer_leak",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
+     "added_after_gate": [
+      "8b121389",
+      "c88410f2",
+      "e5c13ef5",
+      "04f97cb8"
+     ],
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
+    }
+   ],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 11,
+      "min": 0,
+      "label": "已知",
+      "value": 7
+     },
+     {
+      "id": "unknown",
+      "max": 11,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 13,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到最右得 11（正确但无推导过程，不可观测）；或 7−4=3（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:?},{id:unknown,value:?}]`。期望是 `base.value=7`、`unknown.value=11`。**但 `unknown.max=11`**，所以 `value=11` 有两种来源：算出 7+4，或把滑杆拖到底（DEF-D1）",
+     "competing_explanations": "⚠ **本题的 `competing` 不是「别的想法」，而是硬件级歧义**：`unknown.value=11` 完全无法区分「算对了」与「拖到底了」。这是本批唯一一处**证据本身失效**的情形，不是「区分力待验证」，是**不可验证**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小宁比小杰多 4 张，未知条该比已知条长多少」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到最右得 11（正确但无推导过程，不可观测）；或 7−4=3（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:?},{id:unknown,value:?}]`。期望是 `base.value=7`、`unknown.value=11`。**但 `unknown.max=11`**，所以 `value=11` 有两种来源：算出 7+4，或把滑杆拖到底（DEF-D1）",
+     "competing_explanations": "⚠ **本题的 `competing` 不是「别的想法」，而是硬件级歧义**：`unknown.value=11` 完全无法区分「算对了」与「拖到底了」。这是本批唯一一处**证据本身失效**的情形，不是「区分力待验证」，是**不可验证**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小宁比小杰多 4 张，未知条该比已知条长多少」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到最右得 11（正确但无推导过程，不可观测）；或 7−4=3（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:?},{id:unknown,value:?}]`。期望是 `base.value=7`、`unknown.value=11`。**但 `unknown.max=11`**，所以 `value=11` 有两种来源：算出 7+4，或把滑杆拖到底（DEF-D1）",
+     "competing_explanations": "⚠ **本题的 `competing` 不是「别的想法」，而是硬件级歧义**：`unknown.value=11` 完全无法区分「算对了」与「拖到底了」。这是本批唯一一处**证据本身失效**的情形，不是「区分力待验证」，是**不可验证**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小宁比小杰多 4 张，未知条该比已知条长多少」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小杰有7张卡片，小宁比小杰多4张。小宁有多少张卡片？",
+   "input_binding": {
+    "audit_input_sha256": "a80b043546621d46b0d2572e1aa4b7632e01e5f95e3ebd70785620745260e2e5",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "8b121389-2d87-4ea2-aef1-0a626e5464de",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "答案副本",
+   "known_role_note": "配置/上限里出现的数与答案相等——**不可作为独立推导依据**，按复审要求单独标出",
+   "input_basis": "题面「小雨有6本书，小安比小雨多4本」→ 已知较小方 6、差量 4；所求是较大方",
+   "target_object": "小安的书数（较大方）= 6 + 4",
+   "derivation": {
+    "read": "已知较小方与差量求较大方 → 加（6+4）。与 c07482bb 同结构，数值不同",
+    "expr": "6 + 4"
+   },
+   "config_role": "⚠ `visual.bars=[base(max=10,value=6), unknown(max=10,unknown)]`、`max_value=12`。**bars.max=10 恰好等于答案 10**，max_value=12 = 10+2 —— 两条上限都不构成「留出正确余量」",
+   "computed": 10,
+   "applicable_conditions": "⚠ **命中 DEF-D1（滑杆上限 == 答案）**：把未知条拖到最右端就得到 10，与算出 6+4 在表征上不可区分。与 c07482bb、c88410f2、e5c13ef5、04f97cb8 同属一族（已知较小方+差求较大方）。**本族 5 条的 `bars.max` 全部等于答案，不是偶发配错**——这是该模板的默认行为：上限按「答案 + 0」而非「答案 + 余量」生成。数学结论成立（10），判 MATCH",
+   "stated_answer": "10",
+   "verdict": "MATCH",
+   "visual_leak": [
+    "bars[base].max",
+    "bars[unknown].max"
+   ],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D1",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
+     "kind": "ui_answer_leak",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
+     "added_after_gate": [
+      "8b121389",
+      "c88410f2",
+      "e5c13ef5",
+      "04f97cb8"
+     ],
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
+    }
+   ],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 10,
+      "min": 0,
+      "label": "已知",
+      "value": 6
+     },
+     {
+      "id": "unknown",
+      "max": 10,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 12,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 10（正确但无过程）；或 6−4=2（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:6},{id:unknown,value:?}]`；正解 `unknown.value=10`。**`unknown.max=10`** —— 构造上的答案上界，所以 `unknown.value=10` 天然可达且是最右端",
+     "competing_explanations": "⚠ `unknown.value=10` 有两种来源，且**在表征上完全同形**：①算 6+4 后摆到 10；②直接把条拖到最右端。由于 max 恰为 10，「拖到底」与「摆对」是**同一个状态**。这不是区分力弱，是**两种来源在状态空间上重合**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安的书比小雨多 4 本，未知条要比已知条长出 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 10（正确但无过程）；或 6−4=2（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:6},{id:unknown,value:?}]`；正解 `unknown.value=10`。**`unknown.max=10`** —— 构造上的答案上界，所以 `unknown.value=10` 天然可达且是最右端",
+     "competing_explanations": "⚠ `unknown.value=10` 有两种来源，且**在表征上完全同形**：①算 6+4 后摆到 10；②直接把条拖到最右端。由于 max 恰为 10，「拖到底」与「摆对」是**同一个状态**。这不是区分力弱，是**两种来源在状态空间上重合**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安的书比小雨多 4 本，未知条要比已知条长出 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 10（正确但无过程）；或 6−4=2（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:6},{id:unknown,value:?}]`；正解 `unknown.value=10`。**`unknown.max=10`** —— 构造上的答案上界，所以 `unknown.value=10` 天然可达且是最右端",
+     "competing_explanations": "⚠ `unknown.value=10` 有两种来源，且**在表征上完全同形**：①算 6+4 后摆到 10；②直接把条拖到最右端。由于 max 恰为 10，「拖到底」与「摆对」是**同一个状态**。这不是区分力弱，是**两种来源在状态空间上重合**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安的书比小雨多 4 本，未知条要比已知条长出 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小雨有6本书，小安比小雨多4本。小安有多少本书？",
+   "input_binding": {
+    "audit_input_sha256": "cd60f2161a83bd936a9b48c0498bb00ab7a23bd66681d8edadda3ad4b35c0dc4",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "c88410f2-f810-47b4-8ae4-cc218b140a88",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "答案副本",
+   "known_role_note": "配置/上限里出现的数与答案相等——**不可作为独立推导依据**，按复审要求单独标出",
+   "input_basis": "题面「小雨今天走了9千步，小安比小雨多走4千步」→ 已知较小方 9、差量 4；所求是较大方",
+   "target_object": "小安的步数（较大方，单位千步）= 9 + 4",
+   "derivation": {
+    "read": "同 8b121389 结构（已知较小方+差求较大方），本条唯一不同是**单位是「千步」**——数字 9 与 4 的语义是「9 千步」「4 千步」，不是 9 与 4 个步。所求 13 的单位也应是千步",
+    "expr": "9 + 4"
+   },
+   "config_role": "⚠ `bars=[base(max=13,value=9), unknown(max=13,unknown)]`、`max_value=15`。**bars.max=13 == 答案 13**（DEF-D1）",
+   "computed": 13,
+   "applicable_conditions": "⚠ **命中 DEF-D1（滑杆上限 == 答案）**，与同族五条一致。本条额外值得记的是**单位问题**：`visual` 里没有任何字段表达「千步」这个单位，滑杆只标 0..13，所以孩子在界面上看到的 13 与题面的「13 千步」在表征层没有连接。这不是错误（答案数值对），但属于**单位语义在 renderer 层丢失**，登记为观察项，不计入缺陷（因为没有可对照的正确做法）",
+   "stated_answer": "13",
+   "verdict": "MATCH",
+   "visual_leak": [
+    "bars[base].max",
+    "bars[unknown].max"
+   ],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D1",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
+     "kind": "ui_answer_leak",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
+     "added_after_gate": [
+      "8b121389",
+      "c88410f2",
+      "e5c13ef5",
+      "04f97cb8"
+     ],
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
+    }
+   ],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 13,
+      "min": 0,
+      "label": "已知",
+      "value": 9
+     },
+     {
+      "id": "unknown",
+      "max": 13,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 15,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 13；或 9−4=5（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`；正解 13，`unknown.max=13` —— 同 DEF-D1 形态",
+     "competing_explanations": "⚠ 同 8b121389：max==答案 → 拖到底即满分，无法归因。另注：`visual` 无单位字段，所以 `unknown.value=13` 与题面「13 千步」在表征层无连接，**单位语义丢失**（登记为观察项）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安比小雨多走 4 千步，未知条要多出 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 13；或 9−4=5（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`；正解 13，`unknown.max=13` —— 同 DEF-D1 形态",
+     "competing_explanations": "⚠ 同 8b121389：max==答案 → 拖到底即满分，无法归因。另注：`visual` 无单位字段，所以 `unknown.value=13` 与题面「13 千步」在表征层无连接，**单位语义丢失**（登记为观察项）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安比小雨多走 4 千步，未知条要多出 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 13；或 9−4=5（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:9},{id:unknown,value:?}]`；正解 13，`unknown.max=13` —— 同 DEF-D1 形态",
+     "competing_explanations": "⚠ 同 8b121389：max==答案 → 拖到底即满分，无法归因。另注：`visual` 无单位字段，所以 `unknown.value=13` 与题面「13 千步」在表征层无连接，**单位语义丢失**（登记为观察项）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小安比小雨多走 4 千步，未知条要多出 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小雨今天走了9千步，小安比小雨多走4千步。小安今天走了多少千步？",
+   "input_binding": {
+    "audit_input_sha256": "7f235947b79a3e990579b322c5e0bf25dd9ccd0eea96975119d3588772cbac9b",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "e5c13ef5-daa1-46c4-a545-a40f38ba1e79",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "答案副本",
+   "known_role_note": "配置/上限里出现的数与答案相等——**不可作为独立推导依据**，按复审要求单独标出",
+   "input_basis": "题面「小李有7本故事书，小美比小李多4本」→ 已知较小方 7、差量 4",
+   "target_object": "小美的书数 = 7 + 4",
+   "derivation": {
+    "read": "同族结构（已知较小方+差求较大方）→ 7+4",
+    "expr": "7 + 4"
+   },
+   "config_role": "⚠ `bars=[base(max=11,value=7), unknown(max=11,unknown)]`、`max_value=13`。**bars.max=11 == 答案 11**（DEF-D1）。`visual` 只有两根条（已知 7 / 未知），**不记录「比…多 4」这个差量关系**——差 4 只在题面里，条上无处表达，所以 visual 的角色是「两个数的容器」，**不是「关系模型」**",
+   "computed": 11,
+   "applicable_conditions": "⚠ **命中 DEF-D1：bars.max = 11 = 答案**，拖到底即满分。另：**与 c07482bb 的数值完全相同（7 与 4）、答案也相同（11）**，只换了人和物品名。两条的 `visual` 逐字段一致。这意味着：**两条的 Q05 证据不可区分**，不能当成两份独立证据；且两条都受 DEF-D1 影响，「拖到底」在两条上都会得到满分。这是本批第二次出现「同值同结构只换名词」的重复对（第一次是 eaa828b3/cfc971b4）",
+   "stated_answer": "11",
+   "verdict": "MATCH",
+   "visual_leak": [
+    "bars[base].max",
+    "bars[unknown].max"
+   ],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D1",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
+     "kind": "ui_answer_leak",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
+     "added_after_gate": [
+      "8b121389",
+      "c88410f2",
+      "e5c13ef5",
+      "04f97cb8"
+     ],
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
+    }
+   ],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 11,
+      "min": 0,
+      "label": "已知",
+      "value": 7
+     },
+     {
+      "id": "unknown",
+      "max": 11,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 13,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 11；或 7−4=3（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11`。**与 c07482bb 的 visual 逐字段相同**（除无 ui_revision）",
+     "competing_explanations": "⚠ 同族。**本条与 c07482bb 的状态空间完全相同**（7→11、max=11），所以两条的 representation 在任何一次作答中都同形——既不能互相区分，也不能互相补证。若把它们当成两份证据，等于把同一份证据数了两次",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小美的书比小李多 4 本，未知条要多 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 11；或 7−4=3（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11`。**与 c07482bb 的 visual 逐字段相同**（除无 ui_revision）",
+     "competing_explanations": "⚠ 同族。**本条与 c07482bb 的状态空间完全相同**（7→11、max=11），所以两条的 representation 在任何一次作答中都同形——既不能互相区分，也不能互相补证。若把它们当成两份证据，等于把同一份证据数了两次",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小美的书比小李多 4 本，未知条要多 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 11；或 7−4=3（方向反）",
+     "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11`。**与 c07482bb 的 visual 逐字段相同**（除无 ui_revision）",
+     "competing_explanations": "⚠ 同族。**本条与 c07482bb 的状态空间完全相同**（7→11、max=11），所以两条的 representation 在任何一次作答中都同形——既不能互相区分，也不能互相补证。若把它们当成两份证据，等于把同一份证据数了两次",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小美的书比小李多 4 本，未知条要多 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小李有7本故事书，小美比小李多4本。小美有多少本故事书？",
+   "input_binding": {
+    "audit_input_sha256": "6c3f4971b807590a3029b42897c4a387cc627e3a588fff5040d22914bbcc312e",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "04f97cb8-b918-4836-bf06-c39d8613fe0e",
+   "renderer": "legacy:bar-model",
+   "relation": "larger_smaller",
+   "relation_rule": "题面出现「比…多 / 比…少」但**所问是较大或较小的那一方**（不是差量）",
+   "source_kind": "stem_plus_visual",
+   "known_role": "答案副本",
+   "known_role_note": "配置/上限里出现的数与答案相等——**不可作为独立推导依据**，按复审要求单独标出",
+   "input_basis": "题面「小冬有7张卡片，小冬比小夏少4张」→ 已知较小方 7、差量 4；所求是较大方（小夏）",
+   "target_object": "小夏的卡片数（较大方）= 7 + 4",
+   "derivation": {
+    "read": "**语序与 c07482bb 相反**：c07482bb 是「甲比乙多」，本条是「甲比乙少」。但**所求都在同一侧**——c07482bb 求「比小杰多」的偏大者，本条求「小冬比之少」的偏大者。所以两条虽然措辞相反，**运算与角色相同**（都是 7+4=11），这是本批一对**「措辞相反但语义同侧」**的对照",
+    "expr": "7 + 4"
+   },
+   "config_role": "⚠ `bars=[base(max=11,value=7), unknown(max=11,unknown)]`、`max_value=13`。**bars.max=11 == 答案 11**（DEF-D1）。**本题的 visual 与 c07482bb 逐字段相同**——两条的「比…少 / 比…多」全靠题面文字区分，visual 里没有任何字段表达关系方向，所以它无法承载语序对照，只能承载两个数",
+   "computed": 11,
+   "applicable_conditions": "⚠ **命中 DEF-D1（bars.max = 11 = 答案，拖到底即满分）**；本条的价值在语序对照：与 c07482bb（7+4，措辞「比…多」）相比，本条（7+4，措辞「比…少」）**数值与答案完全相同**，但孩子需要理解「小冬比小夏少」意味着「小夏更多」。两条都做对，才说明「多/少」的**指向**被理解，而不只是「看到多就加」。**但两条都受 DEF-D1 影响**——拖到底都得 11，所以这个对照**在现有 UI 下失效**：即使孩子不理解语序，拖到底也能两条全对。这是 DEF-D1 对教学诊断的实质损害",
+   "stated_answer": "11",
+   "verdict": "MATCH",
+   "visual_leak": [
+    "bars[base].max",
+    "bars[unknown].max"
+   ],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D1",
+     "title": "legacy:bar-model 滑杆上限等于答案（配置事实）",
+     "kind": "ui_answer_leak",
+     "evidence_tier": "static_fact → inference",
+     "confirmed": false,
+     "evidence": "`ui_schema.visual.bars[].max` == `content.answer`（5 题逐一核对）；V1 legacy 渲染路径无 `maxBlocks >= solved+1` 守卫（对比 `barModelV2.ts::parseBarModelConfig` 有该守卫）",
+     "static_fact": "5 题的 `bars[].max` 与 `content.answer` 数值相等；`BarModel.tsx` 滑杆 `max={Math.max(min + 1, barMax)}`，所以最右端恰好是答案值。",
+     "inference": "未知条拖到最右端时，表征里的 `unknown.value` 等于答案。**但这是否构成「直接得分」，取决于提交与判分契约**，不是静态配置能单独决定的。",
+     "not_claimed": "**不主张「只拖到底即满分」**。V1 仍有独立的数字答案输入框（`TaskRenderer.tsx::ManipulativeRenderer` 同时渲染 `AnswerComposer`），判分读的是 `response.answer`（`learning.py` 中 `content.answer` 与 `response.answer` 比较），`representation` 不参与判分。因此更准确的说法是：**表征层的答案泄露风险**，而不是「分数白送」。",
+     "impact": "存在**目标值提示风险**：滑杆最右端即答案，孩子可以不推理就把未知条摆到正确长度；因此 `representation` 作为「是否理解比较关系」的证据时区分力弱。**这不等于判分必然出错**，但确实使过程证据的可信度下降。",
+     "needs_runtime": "真实提交一次「未知条拖到底 + 数字答案填错」的组合，观察判分是否仍为 `correct=false`；本批**未做**该实验，故 `confirmed=false`。",
+     "added_after_gate": [
+      "8b121389",
+      "c88410f2",
+      "e5c13ef5",
+      "04f97cb8"
+     ],
+     "status": "已登记风险；本轮不改组件（只读范围），待内容侧评估 max 与提示设计"
+    }
+   ],
+   "ui_visual_seen": {
+    "bars": [
+     {
+      "id": "base",
+      "max": 11,
+      "min": 0,
+      "label": "已知",
+      "value": 7
+     },
+     {
+      "id": "unknown",
+      "max": 11,
+      "min": 0,
+      "label": "未知",
+      "unknown": true
+     }
+    ],
+    "type": "bar-model",
+    "max_value": 13,
+    "relationship": "compare"
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "math_lang",
+     "pattern": "math_lang"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 11；或 7−4=3（把「少」直接做减法）",
+     "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11` —— 同 DEF-D1 形态",
+     "competing_explanations": "⚠ 同族缺陷。**本条与 c07482bb 的语序相反但数值全同**（本条「小冬比小夏少」，c07482bb「小宁比小杰多」），本来是一对很好的语序对照，但两条都拖到底得 11 → **对照被 DEF-D1 破坏**。这是本批最能说明「配置缺陷会毁掉教学设计」的实例：题目本身设计得当，UI 让它失效",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小冬比小夏少 4 张，那谁更多？多的那条要多 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "math_lang",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 11；或 7−4=3（把「少」直接做减法）",
+     "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11` —— 同 DEF-D1 形态",
+     "competing_explanations": "⚠ 同族缺陷。**本条与 c07482bb 的语序相反但数值全同**（本条「小冬比小夏少」，c07482bb「小宁比小杰多」），本来是一对很好的语序对照，但两条都拖到底得 11 → **对照被 DEF-D1 破坏**。这是本批最能说明「配置缺陷会毁掉教学设计」的实例：题目本身设计得当，UI 让它失效",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小冬比小夏少 4 张，那谁更多？多的那条要多 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "拖到底得 11；或 7−4=3（把「少」直接做减法）",
+     "observable_evidence": "`bars=[{id:base,value:7},{id:unknown,value:?}]`；正解 11，`unknown.max=11` —— 同 DEF-D1 形态",
+     "competing_explanations": "⚠ 同族缺陷。**本条与 c07482bb 的语序相反但数值全同**（本条「小冬比小夏少」，c07482bb「小宁比小杰多」），本来是一对很好的语序对照，但两条都拖到底得 11 → **对照被 DEF-D1 破坏**。这是本批最能说明「配置缺陷会毁掉教学设计」的实例：题目本身设计得当，UI 让它失效",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「小冬比小夏少 4 张，那谁更多？多的那条要多 4 格」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小冬有7张卡片，小冬比小夏少4张。小夏有多少张卡片？",
+   "input_binding": {
+    "audit_input_sha256": "96bc9a29279ea4d02f6255373d66f74b9b82c27c6f04a9ecd234957a42e60d2a",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "76d49907-c092-4822-b0ea-344850970da0",
+   "renderer": "legacy:number-line",
+   "relation": "continuous",
+   "relation_rule": "同一对象经历**两次以上先后变化**（又来/又走、上来/下去、放进/吃掉），所求是变化后的状态",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「原来有8辆车，又开来5辆，后来开走4辆」→ 起点 8，两次变化 +5、−4",
+   "target_object": "最终车辆数 = 8 + 5 − 4",
+   "derivation": {
+    "read": "**同一对象的两次先后变化**，所求是变化后的状态。顺序要紧：先 +5 再 −4，不能合并成 −4 再 +5 吗？数值上可交换（8+5−4 = 8−4+5），但题面语义顺序是「先来后走」，中间状态 13 有实际意义",
+    "expr": "8 + 5 - 4"
+   },
+   "config_role": "`visual={type:number-line, min:0, max:14, start:8, step:1}`。**`start=8` 与题面起点一致**，这是数轴唯一承载的题意；`max=14` ≥ 中间态 13，允许跳到 13 再退回 9，**不构成答案副本**（9 ≠ 14）",
+   "computed": 9,
+   "applicable_conditions": "数轴能表达两次跳步（+5、−4），**这是本批 renderer 与题意匹配得最好的一条**。但要注意：`visual` 里**没有记录**「跳了几次、每次几格」的期望值，所以 representation 只能证明「跳到了 9」，不能证明「跳了 +5 再 −4」——跳到 9 也可能是一次 +1（从 8 到 9）。这一点使 Q05 侧仍不可观测，见 KNOWN_DEFECTS",
+   "stated_answer": "9",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D4",
+     "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
+     "kind": "interaction_gap",
+     "evidence_tier": "static_fact",
+     "confirmed": false,
+     "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+     "static_fact": "`jumps` 字段真实存在且会被序列化；`visual` 里没有「期望怎么跳」的声明。",
+     "not_claimed": "**不主张「不记录跳步」**——上一版这个标题是错的，因为 `jumps` 字段明确存在。准确的表述是「**没有声明期望跳步序列**」，属于「有字段无口径」。",
+     "four_things_separated": {
+      "能否操作": "可以（数轴上可连续跳步）",
+      "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+      "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+      "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）"
+     },
+     "inference": "因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；但这**不等于**过程信息不存在——它存在但未被使用。",
+     "impact": "连续变化类的**过程证据未被判分使用**；若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，而不是改记录结构。",
+     "status": "已登记风险；`jumps` 字段存在但未被判分使用，与上一批 ruler 的 `structure.error`（有精确靶）不同"
+    }
+   ],
+   "ui_visual_seen": {
+    "max": 14,
+    "min": 0,
+    "step": 1,
+    "type": "number-line",
+    "start": 8
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13 忘记减 4；或 8+5+4=17（把「开走」当加）",
+     "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]` 或 `[-4,5]`。**`current=9` 是唯一判分依据**，`jumps` 不参与判分",
+     "competing_explanations": "`current=9` 也可能来自 `jumps=[1]`（从 8 跳 1 格）——结果对、过程完全错。**这是 DEF-D4 的直接后果**：终点相同则过程不可分",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先开来了几辆，后来开走了几辆，数轴上走过哪两段」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13 忘记减 4；或 8+5+4=17（把「开走」当加）",
+     "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]` 或 `[-4,5]`。**`current=9` 是唯一判分依据**，`jumps` 不参与判分",
+     "competing_explanations": "`current=9` 也可能来自 `jumps=[1]`（从 8 跳 1 格）——结果对、过程完全错。**这是 DEF-D4 的直接后果**：终点相同则过程不可分",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先开来了几辆，后来开走了几辆，数轴上走过哪两段」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13 忘记减 4；或 8+5+4=17（把「开走」当加）",
+     "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]` 或 `[-4,5]`。**`current=9` 是唯一判分依据**，`jumps` 不参与判分",
+     "competing_explanations": "`current=9` 也可能来自 `jumps=[1]`（从 8 跳 1 格）——结果对、过程完全错。**这是 DEF-D4 的直接后果**：终点相同则过程不可分",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「先开来了几辆，后来开走了几辆，数轴上走过哪两段」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "停车场原来有8辆车，又开来5辆，后来开走4辆。现在停车场有多少辆车？",
+   "input_binding": {
+    "audit_input_sha256": "87d921a57383db0ad9f38bdbd0e8024061244d6d5c25ef3112b2f8ff071ed41f",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "bb376fbd-06c8-4604-91c9-4cc195567a49",
+   "renderer": "legacy:number-line",
+   "relation": "continuous",
+   "relation_rule": "同一对象经历**两次以上先后变化**（又来/又走、上来/下去、放进/吃掉），所求是变化后的状态",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「原来有9个人，第一站上来6人，第二站下去4人」",
+   "target_object": "最终人数 = 9 + 6 − 4",
+   "derivation": {
+    "read": "两次变化（+6、−4），所求是变化后的状态；**两站在题面里是有序的**，中间态 15 可被孩子先算出来",
+    "expr": "9 + 6 - 4"
+   },
+   "config_role": "`visual={min:0, max:16, start:9}`、`ui_revision=v1.1`。`start=9` 与题面一致；`max=16` ≥ 中间态 15、且 ≠ 答案 11，**不泄露**",
+   "computed": 11,
+   "applicable_conditions": "与 76d49907、552b39e3 同一结构（起点 + 两次变化）。三条的差别是数值与场景，**结构不变**。三条一起做对，能说明「这套两次变化的算法稳定」，但**不能**说明「换了场景仍能识别出这是两次变化」——后者的前提是场景变了而题面措辞也变了，本批三条的措辞几乎一样（都是「原来有…，又…，后来…」），连措辞都没换。这是本批一个诚实的限制",
+   "stated_answer": "11",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D4",
+     "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
+     "kind": "interaction_gap",
+     "evidence_tier": "static_fact",
+     "confirmed": false,
+     "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+     "static_fact": "`jumps` 字段真实存在且会被序列化；`visual` 里没有「期望怎么跳」的声明。",
+     "not_claimed": "**不主张「不记录跳步」**——上一版这个标题是错的，因为 `jumps` 字段明确存在。准确的表述是「**没有声明期望跳步序列**」，属于「有字段无口径」。",
+     "four_things_separated": {
+      "能否操作": "可以（数轴上可连续跳步）",
+      "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+      "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+      "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）"
+     },
+     "inference": "因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；但这**不等于**过程信息不存在——它存在但未被使用。",
+     "impact": "连续变化类的**过程证据未被判分使用**；若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，而不是改记录结构。",
+     "status": "已登记风险；`jumps` 字段存在但未被判分使用，与上一批 ruler 的 `structure.error`（有精确靶）不同"
+    }
+   ],
+   "ui_visual_seen": {
+    "max": 16,
+    "min": 0,
+    "step": 1,
+    "type": "number-line",
+    "start": 9
+   },
+   "q05_error_models": [
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9+6+4=19（「下去」当加）；或 9+6=15（漏第二步）",
+     "observable_evidence": "`current=9+6-4=11`；`jumps` 应为 `[6,-4]`。中间态 15 在 max=16 内可达，所以 `jumps=[6,-4]` 与 `[11]` 都停在 11",
+     "competing_explanations": "同上——`[11]` 一次跳到与 `[6,-4]` 两步在终态上无差。另：`[6,4]`（把「下去」当加）会停在 19，超出 max=16 → 物理上跳不到，孩子会被迫回头，**这个约束反而帮了忙**：19 不可达意味着错误路径会被界面挡住",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「车上先上来 6 个人，再下去 4 个人，人数怎么变」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9+6+4=19（「下去」当加）；或 9+6=15（漏第二步）",
+     "observable_evidence": "`current=9+6-4=11`；`jumps` 应为 `[6,-4]`。中间态 15 在 max=16 内可达，所以 `jumps=[6,-4]` 与 `[11]` 都停在 11",
+     "competing_explanations": "同上——`[11]` 一次跳到与 `[6,-4]` 两步在终态上无差。另：`[6,4]`（把「下去」当加）会停在 19，超出 max=16 → 物理上跳不到，孩子会被迫回头，**这个约束反而帮了忙**：19 不可达意味着错误路径会被界面挡住",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「车上先上来 6 个人，再下去 4 个人，人数怎么变」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9+6+4=19（「下去」当加）；或 9+6=15（漏第二步）",
+     "observable_evidence": "`current=9+6-4=11`；`jumps` 应为 `[6,-4]`。中间态 15 在 max=16 内可达，所以 `jumps=[6,-4]` 与 `[11]` 都停在 11",
+     "competing_explanations": "同上——`[11]` 一次跳到与 `[6,-4]` 两步在终态上无差。另：`[6,4]`（把「下去」当加）会停在 19，超出 max=16 → 物理上跳不到，孩子会被迫回头，**这个约束反而帮了忙**：19 不可达意味着错误路径会被界面挡住",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「车上先上来 6 个人，再下去 4 个人，人数怎么变」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "公交车上原来有9个人，到第一站上来6人，到第二站下去4人。现在车上有多少人？",
+   "input_binding": {
+    "audit_input_sha256": "09b7b855191859a9591f5a9a09a4de3b685ee3257b3a652732da16e36634ebf0",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "552b39e3-7127-4c2d-a506-628259bb08c7",
+   "renderer": "legacy:number-line",
+   "relation": "continuous",
+   "relation_rule": "同一对象经历**两次以上先后变化**（又来/又走、上来/下去、放进/吃掉），所求是变化后的状态",
+   "source_kind": "stem_plus_visual",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「原来有8本新书，老师又放上5本，后来同学借走4本」",
+   "target_object": "最终本数 = 8 + 5 − 4",
+   "derivation": {
+    "read": "与 76d49907 **数值完全相同**（8、+5、−4），只换了场景名词（车辆→书）与措辞（开来/开走 → 放上/借走）",
+    "expr": "8 + 5 - 4"
+   },
+   "config_role": "`visual={min:0, max:14, start:8}`——**与 76d49907 的 visual 逐字段相同**（本批唯一一对完全同配置的题）。`start=8` 与题面起点一致；`max=14` 允许先跳到中间态 13 再退回 9。**`visual` 不记录跳步序列**，只给起点与量程——跳了几次、每次几格，由 `NumberLineRepresentation.jumps` 在运行时记录，但**判分不看 jumps**",
+   "computed": 9,
+   "applicable_conditions": "**本条 `ability_id=app_transfer`，而且它是本批唯一「同值同结构、只换场景」的配对**（配 76d49907）。这一点比 8f603745 强：8f603745 找不到配对，而本条与 76d49907 构成合格的「换情境」对照。但**仍不足**以证明迁移：两条的措辞结构相同（都是「原来…，又…，后来…」），只是名词换了。真正的迁移要措辞也变（例如「先放入5本，后取出4本，原来书架另有8本」），本批没有这样的题。登记为：transfer 有**弱对照**，不能升级为「迁移已验证」",
+   "stated_answer": "9",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [
+    {
+     "id": "DEF-D4",
+     "title": "legacy:number-line 未声明期望跳步序列（有字段、无口径）",
+     "kind": "interaction_gap",
+     "evidence_tier": "static_fact",
+     "confirmed": false,
+     "evidence": "`NumberLineRepresentation` **有** `jumps: number[]` 字段；`visual` 侧只给 `min/max/start`，**没有期望跳步序列**",
+     "static_fact": "`jumps` 字段真实存在且会被序列化；`visual` 里没有「期望怎么跳」的声明。",
+     "not_claimed": "**不主张「不记录跳步」**——上一版这个标题是错的，因为 `jumps` 字段明确存在。准确的表述是「**没有声明期望跳步序列**」，属于「有字段无口径」。",
+     "four_things_separated": {
+      "能否操作": "可以（数轴上可连续跳步）",
+      "有没有记录": "**有**（`jumps` 数组；`[7,7,7]` 与 `[21]` 是不同的记录）",
+      "有没有校验": "**没有**（判分只比 `answer`，不比 `jumps`）",
+      "有没有进入能力证据": "**没有**（`jumps` 不参与判分与能力证据）"
+     },
+     "inference": "因为「没有校验」，所以「跳到 9」可来自不同跳法而判分相同；但这**不等于**过程信息不存在——它存在但未被使用。",
+     "impact": "连续变化类的**过程证据未被判分使用**；若要让跳步进入能力证据，需要先补「期望跳步序列」的口径，而不是改记录结构。",
+     "status": "已登记风险；`jumps` 字段存在但未被判分使用，与上一批 ruler 的 `structure.error`（有精确靶）不同"
+    }
+   ],
+   "ui_visual_seen": {
+    "max": 14,
+    "min": 0,
+    "step": 1,
+    "type": "number-line",
+    "start": 8
+   },
+   "q05_error_models": [
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13；或 8+5+4=17",
+     "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]`。**与 76d49907 的 visual 逐字段相同**，所以两条的 representation 形态完全一致，只有题面文字不同",
+     "competing_explanations": "**这一条的竞争解释与前一条同形**，而这恰是「换情境」对照的价值：若孩子在 76d49907 上 `jumps=[5,-4]`、在本条上 `jumps=[9]`，则说明场景换了过程就丢了——这是可观测的迁移失败信号。**但只有两条都留下 jumps 才可判，而判分不看 jumps**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「书架上的书先放上后借走，数轴上走过哪两段」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13；或 8+5+4=17",
+     "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]`。**与 76d49907 的 visual 逐字段相同**，所以两条的 representation 形态完全一致，只有题面文字不同",
+     "competing_explanations": "**这一条的竞争解释与前一条同形**，而这恰是「换情境」对照的价值：若孩子在 76d49907 上 `jumps=[5,-4]`、在本条上 `jumps=[9]`，则说明场景换了过程就丢了——这是可观测的迁移失败信号。**但只有两条都留下 jumps 才可判，而判分不看 jumps**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「书架上的书先放上后借走，数轴上走过哪两段」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "8+5=13；或 8+5+4=17",
+     "observable_evidence": "`current=8+5-4=9`；`jumps` 应为 `[5,-4]`。**与 76d49907 的 visual 逐字段相同**，所以两条的 representation 形态完全一致，只有题面文字不同",
+     "competing_explanations": "**这一条的竞争解释与前一条同形**，而这恰是「换情境」对照的价值：若孩子在 76d49907 上 `jumps=[5,-4]`、在本条上 `jumps=[9]`，则说明场景换了过程就丢了——这是可观测的迁移失败信号。**但只有两条都留下 jumps 才可判，而判分不看 jumps**",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「书架上的书先放上后借走，数轴上走过哪两段」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "书架上原来有8本新书，老师又放上5本，后来同学借走4本。现在书架上有多少本书？",
+   "input_binding": {
+    "audit_input_sha256": "33a1dae104c5a35b020c352007cd04e78f461055e464c6bd9d45125ab97fe8b7",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "3706473c-8f57-45a5-b01a-d6470d826321",
+   "renderer": "legacy:direct",
+   "relation": "conditional",
+   "relation_rule": "题面给了**用不上的信息**（别的物品、别的数量、别的类别），或要求**从多个条件里选**出与问题相关的那几个",
+   "source_kind": "stem_only",
+   "known_role": "已知部分",
+   "known_role_note": "题面给出的是整体的一个组成部分，所求是整体或另一部分",
+   "input_basis": "题面「6个苹果、2个梨，还有4支铅笔。苹果和梨一共有多少个」",
+   "target_object": "苹果 + 梨 = 6 + 2（**不含 4**）",
+   "derivation": {
+    "read": "**三个量、两类物品**。「铅笔」与问题无关，必须排除。所求只在苹果与梨之间合并",
+    "expr": "6 + 2"
+   },
+   "config_role": "`kind=number`，纯数字输入框，`visual` 不存在；题面是唯一信息源",
+   "computed": 8,
+   "applicable_conditions": "**本批最干净的条件筛选题**：无关项是一个**不同类别的物品**（铅笔不属于水果），类别边界清楚。对比 6857ba8d（橘子/苹果）与 623b7f19（贴纸/练习册），三条的无关项都是「不同类别」，**没有一条是「同类别但用不上」**（例如「3 个红苹果、2 个绿苹果，问红苹果和梨一共几个」这种）。那才是更难的条件筛选。登记为覆盖不足，扩样时补",
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": null,
+   "q05_error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "calc",
+     "pattern": "calc"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "6+2+4=12（把铅笔也算上，未做条件筛选）",
+     "observable_evidence": "只有 `answer`。正解 `'8'`。**注意 8 也可能来自 6+2 或别的组合**——本题的 8 不可分解来源",
+     "competing_explanations": "`answer='8'` 是正解，但 8 这个值本身**没有唯一分解**：6+2=8、8−0=8、（若把梨当 2、铅笔当 0）也是 8。所以「答对 8」不能证明做了正确的条件筛选——只能证明没把 4 算进去。这是本题作为条件筛选题的**根本弱点**：干扰项 4 加进去是 12，减出去是 8，但答 8 也可能是「只加了苹果」（漏了梨）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「题目问的是水果，桌子上的铅笔要不要算」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "6+2+4=12（把铅笔也算上，未做条件筛选）",
+     "observable_evidence": "只有 `answer`。正解 `'8'`。**注意 8 也可能来自 6+2 或别的组合**——本题的 8 不可分解来源",
+     "competing_explanations": "`answer='8'` 是正解，但 8 这个值本身**没有唯一分解**：6+2=8、8−0=8、（若把梨当 2、铅笔当 0）也是 8。所以「答对 8」不能证明做了正确的条件筛选——只能证明没把 4 算进去。这是本题作为条件筛选题的**根本弱点**：干扰项 4 加进去是 12，减出去是 8，但答 8 也可能是「只加了苹果」（漏了梨）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「题目问的是水果，桌子上的铅笔要不要算」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "calc",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "6+2+4=12（把铅笔也算上，未做条件筛选）",
+     "observable_evidence": "只有 `answer`。正解 `'8'`。**注意 8 也可能来自 6+2 或别的组合**——本题的 8 不可分解来源",
+     "competing_explanations": "`answer='8'` 是正解，但 8 这个值本身**没有唯一分解**：6+2=8、8−0=8、（若把梨当 2、铅笔当 0）也是 8。所以「答对 8」不能证明做了正确的条件筛选——只能证明没把 4 算进去。这是本题作为条件筛选题的**根本弱点**：干扰项 4 加进去是 12，减出去是 8，但答 8 也可能是「只加了苹果」（漏了梨）",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「题目问的是水果，桌子上的铅笔要不要算」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "桌上有6个苹果、2个梨，还有4支铅笔。苹果和梨一共有多少个？",
+   "input_binding": {
+    "audit_input_sha256": "3fb4231064a5e45033b046074b77fbd7552a771711c0a8d1cd3fc6eba3fc02c7",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "6857ba8d-9130-4da3-97ad-267e06e87e97",
+   "renderer": "legacy:direct",
+   "relation": "conditional",
+   "relation_rule": "题面给了**用不上的信息**（别的物品、别的数量、别的类别），或要求**从多个条件里选**出与问题相关的那几个",
+   "source_kind": "stem_only",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「篮子里原来有12个橘子，吃掉4个，又放进3个苹果。还剩多少个橘子」",
+   "target_object": "橘子剩余 = 12 − 4（**不含 +3**）",
+   "derivation": {
+    "read": "**两个陷阱叠在一起**：①「又放进3个」是**苹果**不是橘子，不计入；②所问限定为「橘子」。所以只做 12−4",
+    "expr": "12 - 4"
+   },
+   "config_role": "`kind=number`，无 visual；题面唯一信息源",
+   "computed": 8,
+   "applicable_conditions": "**本条的条件筛选比 3706473c 难一层**：3706473c 的无关项在问题之外（问水果、铅笔在旁边），本条的无关项**混在操作序列里**（「又放进3个苹果」是夹在「吃掉4个」和「还剩」之间的一次动作）。孩子要同时做两件事：识别「放进的不是橘子」、识别「所问是橘子」。这两件事在题面里**没有分开写**。这是本批条件筛选类里**唯一带动作干扰**的题，价值高于 3706473c / 623b7f19 / af2cb0d1",
+   "stated_answer": "8",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": null,
+   "q05_error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "12−4+3=11（把苹果算进橘子）；或 12+3−4 但答橘子（同值巧合，需注意 11 也可能来自这个错序——两种错法同值，不可分）",
+     "observable_evidence": "只有 `answer`。正解 `'8'`（12−4）。**11 = 12−4+3 是主要错法**，但 11 也可能来自 12+3−4 （同值不同序）",
+     "competing_explanations": "`answer='11'` 有两种错法同值：①把苹果算进橘子（12−4+3）；②先加后减但答橘子（12+3−4，数值巧合相同）。**两种错法的数学含义完全不同**（①是条件筛选失败、②是只要有「放进来」就加），但提交值都是 11。这是本批唯一「两种错法同值」的题——如果要分开，需要额外要求写过程，当前题型做不到",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「放进来的是苹果，篮子里问的是橘子，苹果算不算橘子的数」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "12−4+3=11（把苹果算进橘子）；或 12+3−4 但答橘子（同值巧合，需注意 11 也可能来自这个错序——两种错法同值，不可分）",
+     "observable_evidence": "只有 `answer`。正解 `'8'`（12−4）。**11 = 12−4+3 是主要错法**，但 11 也可能来自 12+3−4 （同值不同序）",
+     "competing_explanations": "`answer='11'` 有两种错法同值：①把苹果算进橘子（12−4+3）；②先加后减但答橘子（12+3−4，数值巧合相同）。**两种错法的数学含义完全不同**（①是条件筛选失败、②是只要有「放进来」就加），但提交值都是 11。这是本批唯一「两种错法同值」的题——如果要分开，需要额外要求写过程，当前题型做不到",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「放进来的是苹果，篮子里问的是橘子，苹果算不算橘子的数」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "12−4+3=11（把苹果算进橘子）；或 12+3−4 但答橘子（同值巧合，需注意 11 也可能来自这个错序——两种错法同值，不可分）",
+     "observable_evidence": "只有 `answer`。正解 `'8'`（12−4）。**11 = 12−4+3 是主要错法**，但 11 也可能来自 12+3−4 （同值不同序）",
+     "competing_explanations": "`answer='11'` 有两种错法同值：①把苹果算进橘子（12−4+3）；②先加后减但答橘子（12+3−4，数值巧合相同）。**两种错法的数学含义完全不同**（①是条件筛选失败、②是只要有「放进来」就加），但提交值都是 11。这是本批唯一「两种错法同值」的题——如果要分开，需要额外要求写过程，当前题型做不到",
+     "cannot_distinguish": "【未登记】本题未显式声明现有字段不能区分什么",
+     "neutral_feedback": "说「放进来的是苹果，篮子里问的是橘子，苹果算不算橘子的数」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "篮子里原来有12个橘子，吃掉4个，又放进3个苹果。篮子里还剩多少个橘子？",
+   "input_binding": {
+    "audit_input_sha256": "8eee0166e0c637d8f4dfe781fe7db923789a737cb12c0537875fd807163319a7",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "76ce803c-cdf8-46c1-85f7-d5207bdca060",
+   "renderer": "legacy:direct",
+   "relation": "conditional",
+   "relation_rule": "题面给了**用不上的信息**（别的物品、别的数量、别的类别），或要求**从多个条件里选**出与问题相关的那几个",
+   "source_kind": "stem_only",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「盒子里有10颗糖，又放进5颗，后来吃掉3颗。旁边还有4块饼干。现在盒子里有多少颗糖」",
+   "target_object": "糖数 = 10 + 5 − 3（**不含 4**）",
+   "derivation": {
+    "read": "**连续变化 + 条件筛选叠加**：两次变化（+5、−3）都是糖，「4块饼干」是无关项。所求是变化后的糖数",
+    "expr": "10 + 5 - 3"
+   },
+   "config_role": "`kind=number`，无 visual",
+   "computed": 12,
+   "applicable_conditions": "**本条同时属于「连续变化」与「条件筛选」两类**。本批按 `relation` 单一归类为 conditional，因为它的难点在排除饼干（4 与答案 12 差得远，排除后 10+5−3=12；若不排除则会算成 16 或 12+4）。**必须注明这种单选归类是简化**：把复合题塞进单一类别，会低估它的难度。五类关系的题数分布因此不能当成「难度分布」看",
+   "stated_answer": "12",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": null,
+   "q05_error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "10+5−3+4=16（把饼干算进糖）；或 10+5=15（漏掉吃掉）",
+     "observable_evidence": "只有 `answer`（本题**没有** `representation`，也没有除终值外的过程字段）。正解 `'12'`（10+5−3）。`10+5−3+4=16` 与 `10+5=15` 都是不同值，所以**若**孩子提交这些值，它们与特定假设相容",
+     "competing_explanations": "`answer='16'` 与「把 4 块饼干也算进糖」**相容**；`answer='15'` 与「漏掉『吃掉 3 颗』这一步」**相容**；`answer='8'` 与「把加法做成减法」相容。**以上都只是相容，不是归因**：本题只存终值，同一个终值可以来自不同算法，现有字段无法判定孩子用了哪一种。",
+     "cannot_distinguish": "只有终值时，任何「他一定是这样算的」都不成立；可说的是「这个值与假设 H 相容」，不可说的是「他用了 H」。",
+     "neutral_feedback": "说「饼干也在旁边，但问的是糖，饼干要不要数」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "10+5−3+4=16（把饼干算进糖）；或 10+5=15（漏掉吃掉）",
+     "observable_evidence": "只有 `answer`（本题**没有** `representation`，也没有除终值外的过程字段）。正解 `'12'`（10+5−3）。`10+5−3+4=16` 与 `10+5=15` 都是不同值，所以**若**孩子提交这些值，它们与特定假设相容",
+     "competing_explanations": "`answer='16'` 与「把 4 块饼干也算进糖」**相容**；`answer='15'` 与「漏掉『吃掉 3 颗』这一步」**相容**；`answer='8'` 与「把加法做成减法」相容。**以上都只是相容，不是归因**：本题只存终值，同一个终值可以来自不同算法，现有字段无法判定孩子用了哪一种。",
+     "cannot_distinguish": "只有终值时，任何「他一定是这样算的」都不成立；可说的是「这个值与假设 H 相容」，不可说的是「他用了 H」。",
+     "neutral_feedback": "说「饼干也在旁边，但问的是糖，饼干要不要数」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "10+5−3+4=16（把饼干算进糖）；或 10+5=15（漏掉吃掉）",
+     "observable_evidence": "只有 `answer`（本题**没有** `representation`，也没有除终值外的过程字段）。正解 `'12'`（10+5−3）。`10+5−3+4=16` 与 `10+5=15` 都是不同值，所以**若**孩子提交这些值，它们与特定假设相容",
+     "competing_explanations": "`answer='16'` 与「把 4 块饼干也算进糖」**相容**；`answer='15'` 与「漏掉『吃掉 3 颗』这一步」**相容**；`answer='8'` 与「把加法做成减法」相容。**以上都只是相容，不是归因**：本题只存终值，同一个终值可以来自不同算法，现有字段无法判定孩子用了哪一种。",
+     "cannot_distinguish": "只有终值时，任何「他一定是这样算的」都不成立；可说的是「这个值与假设 H 相容」，不可说的是「他用了 H」。",
+     "neutral_feedback": "说「饼干也在旁边，但问的是糖，饼干要不要数」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "盒子里有10颗糖，又放进5颗，后来吃掉3颗。旁边还有4块饼干。现在盒子里有多少颗糖？",
+   "input_binding": {
+    "audit_input_sha256": "3f887bd05fc44c1eb29f7b411714846fdaf262f3d5e44d20bf4722c4446b3db0",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  },
+  {
+   "rvid": "623b7f19-47ba-467f-bad7-2b87bc4a5401",
+   "renderer": "legacy:direct",
+   "relation": "conditional",
+   "relation_rule": "题面给了**用不上的信息**（别的物品、别的数量、别的类别），或要求**从多个条件里选**出与问题相关的那几个",
+   "source_kind": "stem_only",
+   "known_role": "已知整体",
+   "known_role_note": "题面给出的是整体量（或较大/起点量），所求是从中分出/变化后的量",
+   "input_basis": "题面「小芳有9张贴纸，送给小美3张。她的书包里还有2本练习册。小芳还剩几张贴纸」",
+   "target_object": "剩余贴纸 = 9 − 3",
+   "derivation": {
+    "read": "无关项「2本练习册」出现在**动作句之后**，且与贴纸无关；所求是送完后的贴纸数",
+    "expr": "9 - 3"
+   },
+   "config_role": "`kind=number`，无 visual",
+   "computed": 6,
+   "applicable_conditions": "与 3706473c **同构**（无关项是另一个类别的物品、紧跟在相关句后面）。两条的差别只在位置：3706473c 的无关项在问句前、本题在动作句后。这个差别**太细**，不足以构成独立的难度层。诚实地说：本批 conditional 类 4 条里，3706473c 与 623b7f19 实质是同一难度；6857ba8d（动作干扰）与 76ce803c（复合）才是真正的增量",
+   "stated_answer": "6",
+   "verdict": "MATCH",
+   "visual_leak": [],
+   "unreachable_signal": null,
+   "known_defects": [],
+   "ui_visual_seen": null,
+   "q05_error_models": [
+    {
+     "code": "reading",
+     "pattern": "reading"
+    },
+    {
+     "code": "modeling",
+     "pattern": "modeling"
+    },
+    {
+     "code": "strategy",
+     "pattern": "strategy"
+    }
+   ],
+   "q05_candidates": [
+    {
+     "code": "reading",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9−3+2=8（把练习册当贴纸）；或 9−3−2=4",
+     "observable_evidence": "只有 `answer`（无过程字段）。正解 `'6'`（9−3）。`8 = 9−3+2`、`4 = 9−3−2` 都是不同值",
+     "competing_explanations": "`answer='8'` 与「把 2 本练习册也当成贴纸（加进去了）」相容；`answer='4'` 与「把练习册当成贴纸且方向反了（减两次）」相容。两者终值不同，**故可区分这两个假设**；但都不能从终值推出「孩子实际这样想」——只能说明与该假设相容。",
+     "cannot_distinguish": "终值不同 → 可区分「相容的假设集合」；终值相同 → 不可区分具体算法。二者不要混说。",
+     "neutral_feedback": "说「书包里那 2 本练习册，和贴纸是不是一回事」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "modeling",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9−3+2=8（把练习册当贴纸）；或 9−3−2=4",
+     "observable_evidence": "只有 `answer`（无过程字段）。正解 `'6'`（9−3）。`8 = 9−3+2`、`4 = 9−3−2` 都是不同值",
+     "competing_explanations": "`answer='8'` 与「把 2 本练习册也当成贴纸（加进去了）」相容；`answer='4'` 与「把练习册当成贴纸且方向反了（减两次）」相容。两者终值不同，**故可区分这两个假设**；但都不能从终值推出「孩子实际这样想」——只能说明与该假设相容。",
+     "cannot_distinguish": "终值不同 → 可区分「相容的假设集合」；终值相同 → 不可区分具体算法。二者不要混说。",
+     "neutral_feedback": "说「书包里那 2 本练习册，和贴纸是不是一回事」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    },
+    {
+     "code": "strategy",
+     "status": "同质占位候选，区分力尚待验证",
+     "hypothesis": "9−3+2=8（把练习册当贴纸）；或 9−3−2=4",
+     "observable_evidence": "只有 `answer`（无过程字段）。正解 `'6'`（9−3）。`8 = 9−3+2`、`4 = 9−3−2` 都是不同值",
+     "competing_explanations": "`answer='8'` 与「把 2 本练习册也当成贴纸（加进去了）」相容；`answer='4'` 与「把练习册当成贴纸且方向反了（减两次）」相容。两者终值不同，**故可区分这两个假设**；但都不能从终值推出「孩子实际这样想」——只能说明与该假设相容。",
+     "cannot_distinguish": "终值不同 → 可区分「相容的假设集合」；终值相同 → 不可区分具体算法。二者不要混说。",
+     "neutral_feedback": "说「书包里那 2 本练习册，和贴纸是不是一回事」",
+     "evidence_fields_from": "见 q03_batch3.py::Q05_EVIDENCE 头部注释",
+     "not_concluded": "本条不主张该错法一定被孩子使用，也不主张它对应某种认知缺陷；上列痕迹只是「若成立应当看到什么」，不是「已经看到」"
+    }
+   ],
+   "stem": "小芳有9张贴纸，送给小美3张。她的书包里还有2本练习册。小芳还剩几张贴纸？",
+   "input_binding": {
+    "audit_input_sha256": "254dd5bdf163a2e2ef4b5cf8f573e110337e8e4be02ef70275685fce89d019b2",
+    "manifest_snapshot": "cee1afdabf232f0f8ddaa4f49bd6f33fbe8779b0a963c53e2fc5c406bd4535aa",
+    "drift": false
+   }
+  }
+ ]
+}

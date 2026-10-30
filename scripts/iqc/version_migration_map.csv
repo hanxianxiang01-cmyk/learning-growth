@@ -1,0 +1,15 @@
+old_rvid,new_rvid,fix_type,change,note
+e02a5afe-f9ef-47a3-b0af-9f79d884a038,bb376fbd-06c8-4604-91c9-4cc195567a49,axis_max_fix,visual.max 13→16,
+a7fc3314-72c6-4b58-998d-fa0111cd86fd,76d49907-c092-4822-b0ea-344850970da0,axis_max_fix,visual.max 11→14,
+05a2649f-0f90-442c-aeeb-370545a7dc7b,552b39e3-7127-4c2d-a506-628259bb08c7,axis_max_fix,visual.max 11→14,
+55810dda-4636-4150-8c31-ff81af70c8f8,6446cda3-e53b-496d-9f8d-c1f758d2f743,shape_name_neutralize,shapes[].name→卡N,
+95d79265-76d9-4625-bf83-3cb90d4fab5c,b0e607c7-add5-4372-9671-78ec108282fd,shape_name_neutralize,shapes[].name→卡N,
+985156bc-c033-4911-8e92-46c984f7cb65,3f97f749-deb5-4bf7-a14b-c2eb1b71c89f,shape_name_neutralize,shapes[].name→卡N,
+125e7a06-5376-44ef-86f1-bceaa14505b2,31554b60-52f5-4f51-86ee-04aea3d09c08,shape_name_neutralize,shapes[].name→卡N,
+2bbbc87a-db80-462a-83da-7027a4bbca93,4821e8a3-dadd-4dcb-8660-f0d1fb9ad465,shape_name_neutralize,shapes[].name→卡N,
+68f68512-5167-4d30-8f31-a082e12a0244,905207e0-0ef5-4d1c-bb6a-2aa71f6adfe3,shape_name_neutralize,shapes[].name→卡N,
+7a168c3c-0342-43b4-9651-445b54e82375,e3c2ebe4-57eb-4811-8b5f-80b67aa199dd,shape_name_neutralize,shapes[].name→卡N,
+86672e3b-3678-4874-8d7c-5f588c8bb398,fb895a6f-12c0-4d1d-987e-ffab90d31989,shape_name_neutralize,shapes[].name→卡N,
+df5c3a8b-1119-4624-ae7e-4997f9a9eef9,c2050d65-f7e8-4a6a-983e-978712174a84,shape_name_neutralize,shapes[].name→卡N,
+8eb5de92-d04b-4d0a-abc5-eb2e58375fcd,e0a2a067-175b-480d-a614-e326212923f7,fe1455_jump_constraint,"config +jump_constraint{5,right,3}",FE-1455 解禁版：E2E 三态+双皮肤+证据语义终核后 published（13 号映射，基线 224→225）
+1ab893bf-b293-41bb-8514-310a8b832c3e,5bceb172-2b67-4421-99b2-175ec05b94e9,start_fix,visual.start 3→0（max=23 不变）,Rev.B §二批准：双皮肤E2E 0→7→14→21 无反向修正+判对后 published（14 号映射）

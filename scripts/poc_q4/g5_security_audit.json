@@ -1,0 +1,15 @@
+{
+ "gate": "G5 数据与版本安全审计",
+ "snapshot_immutable": {
+  "frozen": "453c295c0e4b7536",
+  "now": "453c295c0e4b7536",
+  "identical": true
+ },
+ "production_writes": 0,
+ "notes": [
+  "PoC 全程只读现行基线 JSONL（未连 DB、未调用产品 Judge、无 DML）",
+  "输入数据=匿名题目内容（题干/配置/提示），0 真实 child_id、0 Attempt/Evidence、0 生产凭据",
+  "修订候选（G4）=草案文档，未建新 resource_version、未改任何 RVID",
+  "G2 评估身份披露在案：会话 agent 自审，同模型自证风险未消除，外部 provider 接入后须同 harness 重跑"
+ ]
+}
