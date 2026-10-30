@@ -7,11 +7,9 @@ import { TaskRenderer } from "@/src/features/task-renderer";
 import { useLearningSession } from "@/src/features/learning/useLearningSession";
 
 export function MathLearningScreen({
-  childId,
   sessionId,
   abilityId
 }: {
-  childId: string;
   sessionId: string;
   abilityId?: string;
 }) {
@@ -24,18 +22,17 @@ export function MathLearningScreen({
     retry,
     loadTask,
     snapshot
-  } = useLearningSession({ childId, sessionId, abilityId });
+  } = useLearningSession({ sessionId, abilityId });
 
   useEffect(() => {
     if (state.status === "completed") {
       const timer = setTimeout(() => {
-        router.push(
-          `/child/math/result/${sessionId}?child_id=${encodeURIComponent(childId)}`
-        );
+        // V1.4：不再把 child_id 拼进 URL（身份在 Cookie 里）
+        router.push(`/child/math/result/${sessionId}`);
       }, 550);
       return () => clearTimeout(timer);
     }
-  }, [state.status, router, sessionId, childId]);
+  }, [state.status, router, sessionId]);
 
   const task = state.task;
 
@@ -45,7 +42,7 @@ export function MathLearningScreen({
         <header className="learning-topbar">
           <button
             className="back-button"
-            onClick={() => router.push(`/child/math?child_id=${encodeURIComponent(childId)}`)}
+            onClick={() => router.push("/child/math")}
           >
             ←
           </button>

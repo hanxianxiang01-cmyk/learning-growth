@@ -1,10 +1,14 @@
-"""成长报告路由（对齐 OpenAPI /v1/reports/monthly）。"""
+"""成长报告路由（对齐 OpenAPI /v1/reports/monthly）。
+
+游客模式（V1.4）：报告是个人数据，child_id 必须等于会话身份，否则 404。
+"""
 import uuid
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import GuestContext, assert_owns_child, require_guest
 from app.core.database import get_db
 from app.services.growth import get_or_create_monthly_report
 
@@ -15,9 +19,12 @@ router = APIRouter(prefix="/reports", tags=["growth"])
 async def monthly(
     child_id: uuid.UUID = Query(...),
     month: str = Query(..., pattern=r"^\d{4}-\d{2}$"),
+    guest: GuestContext = Depends(require_guest),
     db: AsyncSession = Depends(get_db),
 ):
     """月度成长报告（对齐 OpenAPI，month 格式 YYYY-MM）。"""
+    await assert_owns_child(db, guest_child_id=guest.child_id, target_child_id=child_id)
+
     year, mon = int(month[:4]), int(month[5:7])
     period_start = date(year, mon, 1)
     # 下月第一天作为开区间结束

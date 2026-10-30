@@ -59,13 +59,14 @@ function buildFallbackResult(
   };
 }
 
-export function MathResultScreen({
-  childId,
-  sessionId
-}: {
-  childId: string;
-  sessionId: string;
-}) {
+/**
+ * 结果页。
+ *
+ * V1.4 游客模式：childId 不再是入参（URL 已不带身份）。正式记录走
+ * `GET /v1/learning/sessions/{id}/result`，服务端会校验该 session 属于当前游客；
+ * 降级快照里的 child_id 直接取快照自己记录的值（本机产生的，无需外部告知）。
+ */
+export function MathResultScreen({ sessionId }: { sessionId: string }) {
   const api = useMemo(() => getLearningApi(), []);
   const [result, setResult] = useState<SessionResult | null>(null);
   const [status, setStatus] = useState<ResultStatus>("loading");
@@ -83,7 +84,7 @@ export function MathResultScreen({
       const snapshot = loadSessionSnapshot(sessionId);
 
       if (snapshot) {
-        setResult(buildFallbackResult(snapshot, childId));
+        setResult(buildFallbackResult(snapshot, snapshot.childId));
         setStatus("fallback");
         setErrorMessage(
           "正式学习记录暂时没有加载成功，下面先显示本机保存的临时记录。"
@@ -98,7 +99,7 @@ export function MathResultScreen({
         );
       }
     }
-  }, [api, childId, sessionId]);
+  }, [api, sessionId]);
 
   useEffect(() => {
     void load();
@@ -132,9 +133,7 @@ export function MathResultScreen({
 
   const recommendation = result.next_recommendation;
 
-  const nextHref =
-    recommendation?.href ??
-    `/child/math?child_id=${encodeURIComponent(childId)}`;
+  const nextHref = recommendation?.href ?? "/child/math";
 
   return (
     <main className="page-shell">
@@ -199,7 +198,7 @@ export function MathResultScreen({
 
         <a
           className="text-link centered-link"
-          href={`/child/math/growth?child_id=${encodeURIComponent(childId)}`}
+          href="/child/math/growth"
         >
           查看完整成长地图 →
         </a>

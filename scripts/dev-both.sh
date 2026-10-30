@@ -15,8 +15,13 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-NODE="/Users/hanxianxiang/.workbuddy/binaries/node/versions/22.22.2-3/bin/node"
+# node 版本号会随环境升级变化（10-29 实测 22.22.2-3 已被 22.22.2-6 取代，
+# 硬编码版本号导致 rc=127）。改为解析 current 指针文件，不再写死版本。
+NODE_VERSIONS="/Users/hanxianxiang/.workbuddy/binaries/node/versions"
+NODE_VERSION="$(cat "$NODE_VERSIONS/current")"
+NODE="$NODE_VERSIONS/$NODE_VERSION/bin/node"
 PY="/Users/hanxianxiang/.workbuddy/binaries/python/envs/learning-engine/bin/python"
+[ -x "$NODE" ] || { echo "找不到 node：$NODE"; exit 2; }
 
 # 数据库连接（脱敏占位，实际值请用环境变量覆盖）
 : "${DATABASE_URL:?请设置 DATABASE_URL 环境变量}"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { getLearningApi } from "@/src/lib/api";
 import { LearningApiError } from "@/src/lib/api/http";
 import { isTaskResponseReady } from "@/src/features/task-renderer";
@@ -30,7 +30,8 @@ export function useLearningSession({
   sessionId,
   abilityId
 }: {
-  childId: string;
+  /** V1.4：可选。不传时由 hook 自己从会话取（`/v1/guest/me`）。 */
+  childId?: string;
   sessionId: string;
   abilityId?: string;
 }) {
@@ -41,9 +42,34 @@ export function useLearningSession({
   );
   const startedAt = useRef(Date.now());
   const loadingRef = useRef(false);
+
+  // V1.4 游客模式：身份来自服务端会话，不在 URL 里。
+  // 用 state 而不是 ref，因为 loadTask 必须在拿到 id 之后才能跑
+  //（没有 id 就发请求 → 服务端 401 → 用户看到「这一步暂时没有完成」，
+  //  而他其实什么都没做错）。
+  const [resolvedChildId, setResolvedChildId] = useState<string | null>(
+    childId ?? null
+  );
+
+  useEffect(() => {
+    if (resolvedChildId) return;
+    let alive = true;
+    api
+      .getGuest()
+      .then(g => {
+        if (alive) setResolvedChildId(g.child_id);
+      })
+      .catch(err => {
+        if (alive) dispatch({ type: "ERROR", message: humanizeError(err) });
+      });
+    return () => {
+      alive = false;
+    };
+  }, [api, resolvedChildId]);
+
   const stats = useRef<SessionSnapshot>(
     loadSessionSnapshot(sessionId) ?? {
-      childId,
+      childId: resolvedChildId ?? "",
       sessionId,
       startedAt: Date.now(),
       tasksCompleted: 0,
@@ -54,6 +80,13 @@ export function useLearningSession({
     }
   );
 
+  // 身份后到时把 stats 里占位的空 id 补上，避免快照里存一个空 childId
+  useEffect(() => {
+    if (resolvedChildId && !stats.current.childId) {
+      stats.current.childId = resolvedChildId;
+    }
+  }, [resolvedChildId]);
+
   const persist = useCallback(() => {
     saveSessionSnapshot(stats.current);
   }, []);
@@ -61,11 +94,13 @@ export function useLearningSession({
   const loadTask = useCallback(async () => {
     // 防重入：首屏 StrictMode 双跑 / 连续点「下一题」时，避免同一道题生成多个 task_instance。
     if (loadingRef.current) return;
+    // 身份还没解析出来：不发请求，等 resolvedChildId 到位后 effect 会再触发
+    if (!resolvedChildId) return;
     loadingRef.current = true;
     dispatch({ type: "LOAD_TASK" });
     try {
       const task = await api.getNextTask({
-        child_id: childId,
+        child_id: resolvedChildId,
         session_id: sessionId,
         subject: "math",
         requested_minutes: 15,
@@ -79,7 +114,7 @@ export function useLearningSession({
     } finally {
       loadingRef.current = false;
     }
-  }, [api, childId, sessionId, abilityId, persist]);
+  }, [api, resolvedChildId, sessionId, abilityId, persist]);
 
   useEffect(() => {
     if (state.status === "idle") void loadTask();
