@@ -59,6 +59,13 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npm run child:build
+      # === 临时探针（仅用于验证聚合门禁的失败传播，验证后整个分支删除）===
+      # 只让 healing 失败，exploration-lab 保持成功，以证明"部分皮肤失败"也能判 failure。
+      - name: PROBE - fail healing build on purpose
+        if: matrix.skin == 'healing'
+        run: |
+          echo "::error::PROBE 故意让 healing 构建失败，用于验证 child-build 聚合门禁"
+          exit 1
 
   child-build:
     needs: child-build-matrix
