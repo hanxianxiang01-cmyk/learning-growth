@@ -3,6 +3,7 @@ import type {
   ApiErrorBody,
   AttemptRequest,
   AttemptResult,
+  GuestQuota,
   HintResponse,
   LearnerProfile,
   LearningApi,
@@ -44,6 +45,10 @@ export class HttpLearningApi implements LearningApi {
   ): Promise<T> {
     const res = await fetch(`${this.baseUrl}${path}`, {
       ...init,
+      // V1.4 游客模式：身份在 HttpOnly Cookie 里，JS 拿不到也不需要拿。
+      // credentials:"include" 让浏览器跨端口（3000→8000）也带上该 Cookie；
+      // 服务端 CORS 已开 allow_credentials，两者必须同时成立才生效。
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         ...(init?.headers ?? {})
@@ -56,15 +61,53 @@ export class HttpLearningApi implements LearningApi {
       try {
         body = await res.json();
       } catch {}
-      throw new LearningApiError(
-        body.message ?? `Learning Engine request failed (${res.status})`,
-        res.status,
-        body.code,
-        body.detail
-      );
+      // FastAPI 把 dict 型 detail 包在 {"detail": {...}} 里，业务码（LE-4291 等）
+      // 在 detail.code。不解包则 body.code 恒 undefined，humanizeError 的分支
+      // 匹配永远不命中（死分支，10-29 核对证据链时发现）。
+      const inner =
+        body.detail && typeof body.detail === "object"
+          ? (body.detail as ApiErrorBody)
+          : undefined;
+      const code = body.code ?? inner?.code;
+      const message =
+        body.message ??
+        inner?.message ??
+        `Learning Engine request failed (${res.status})`;
+      // 401 = 游客会话失效（过期/被清）。这不是「加载失败」，而是「需要重新入学」，
+      // 上层据此重新 bootstrap，而不是把裸错误丢给儿童看。
+      throw new LearningApiError(message, res.status, code, body.detail);
     }
 
     return (await res.json()) as T;
+  }
+
+  /** 进入学习首页：有会话则复用，没有就新建一个游客（幂等）。 */
+  bootstrapGuest() {
+    return this.request<{
+      child_id: string;
+      is_new: boolean;
+      expires_at: string;
+      retention_days: number;
+      quota: GuestQuota;
+    }>("/v1/guest/bootstrap", { method: "POST" });
+  }
+
+  /** 当前游客身份 + 配额。用它替代原来的 ?child_id= 取身份。 */
+  getGuest() {
+    return this.request<{
+      child_id: string;
+      expires_at: string;
+      retention_days: number;
+      quota: GuestQuota;
+    }>("/v1/guest/me");
+  }
+
+  /** 刷新保留期。只应在真实学习活动后调用，不要挂在页面挂载上。 */
+  touchGuest() {
+    return this.request<{ child_id: string; expires_at: string | null }>(
+      "/v1/guest/heartbeat",
+      { method: "POST" }
+    );
   }
 
   getProfile(childId: string) {

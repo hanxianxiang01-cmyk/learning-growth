@@ -367,3 +367,15 @@ class AudioAsset(Base):
     consent_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("consent_record.consent_id"), nullable=False)
     retention_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+# 游客模式（V1.4 P1/P2）：全部为新增表，上面 18 张基线表一行未改。
+# 重新导出到本命名空间，使 `from app.models import GuestSession` 与既有 import 风格一致。
+from app.models.guest import (  # noqa: E402
+    GuestCleanupRun,
+    GuestDailyQuota,
+    GuestIdentity,
+    GuestSession,
+)
+
+__all_guest__ = ("GuestIdentity", "GuestSession", "GuestDailyQuota", "GuestCleanupRun")

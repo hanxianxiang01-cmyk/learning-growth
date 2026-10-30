@@ -8,16 +8,51 @@ import {
   resolveAbilityId,
   type ChallengeKind
 } from "@/src/lib/challengeMapping";
-import type { AbilityState, LearnerProfile } from "@/src/lib/api/contracts";
+import type {
+  AbilityState,
+  GuestQuota,
+  LearnerProfile
+} from "@/src/lib/api/contracts";
 import {
   GrowthEntryCard,
   MathTaskCard,
   TodayGoalCard
 } from "@/src/components";
+import type { LearningApi } from "@/src/lib/api/contracts";
 
-export function MathHomeScreen({ childId }: { childId: string }) {
+/**
+ * bootstrap 去重（10-29 实测修复）：dev 环境 React StrictMode 会双挂载，
+ * 两次 effect 都在第一次的 Cookie 到达前发出 bootstrap → 每次开页多造一个
+ * 孤儿游客（库中成对出现、时间戳差几十毫秒）。模块级 in-flight Promise 让
+ * 同一次页面加载内的重复挂载复用同一个请求；失败时清空以便重试。
+ * 刷新页面会重新执行模块 → 新 Promise，但此时已有 Cookie，服务端复用会话。
+ */
+let bootstrapInFlight: ReturnType<LearningApi["bootstrapGuest"]> | null = null;
+function bootstrapOnce(api: LearningApi) {
+  if (!bootstrapInFlight) {
+    bootstrapInFlight = api.bootstrapGuest().catch(err => {
+      bootstrapInFlight = null;
+      throw err;
+    });
+  }
+  return bootstrapInFlight;
+}
+
+/**
+ * 学习首页。
+ *
+ * V1.4 游客模式：**不再从 URL 取 childId**。
+ * 原实现 `searchParams.child_id ?? config.defaultChildId` 有三个问题：
+ *   1. 所有人共用同一个 …0001（数据全混在一起）；
+ *   2. 改一个 query 参数就能看别人的数据；
+ *   3. 该 id 在治理脚本里被标记为「真实孩子」，游客流量会污染它。
+ * 现在身份由服务端签发（HttpOnly Cookie），本组件先 bootstrap 再取回自己的 id。
+ */
+export function MathHomeScreen() {
   const api = getLearningApi();
   const router = useRouter();
+  const [childId, setChildId] = useState<string | null>(null);
+  const [quota, setQuota] = useState<GuestQuota | null>(null);
   const [profile, setProfile] = useState<LearnerProfile | null>(null);
   const [abilities, setAbilities] = useState<AbilityState[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,17 +60,36 @@ export function MathHomeScreen({ childId }: { childId: string }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([api.getProfile(childId), api.getAbilities(childId)])
-      .then(([p, a]) => {
+    let alive = true;
+    // 先 bootstrap 拿身份，再并行取画像与能力。
+    // 不能反过来：没有会话时 getProfile 会 401，那会让首屏闪一下错误。
+    // 用 bootstrapOnce：StrictMode 双挂载不再各发一次（见模块顶部说明）。
+    bootstrapOnce(api)
+      .then(async guest => {
+        if (!alive) return;
+        setChildId(guest.child_id);
+        setQuota(guest.quota);
+        const [p, a] = await Promise.all([
+          api.getProfile(guest.child_id),
+          api.getAbilities(guest.child_id)
+        ]);
+        if (!alive) return;
         setProfile(p);
         setAbilities(a);
       })
-      .catch(err => setError(err instanceof Error ? err.message : "加载失败"))
-      .finally(() => setLoading(false));
-  }, [api, childId]);
+      .catch(err => {
+        if (alive) setError(err instanceof Error ? err.message : "加载失败");
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [api]);
 
   const start = async (challenge: ChallengeKind) => {
-    // FE-1428：challenge 即卡片 kind；能力解析走 challengeMapping（关键词优先，app_* 兜底）
+    if (!childId) return;
     setStarting(true);
     setError(null);
     try {
@@ -45,13 +99,14 @@ export function MathHomeScreen({ childId }: { childId: string }) {
         requested_minutes: 15
       });
       const abilityId = resolveAbilityId(challenge, abilities);
-      const params = new URLSearchParams({
-        child_id: childId
-      });
+      // 不再把 child_id 拼进 URL——身份在 Cookie 里，URL 里带 id 只是把
+      // 「身份可以被写在地址栏里」这件事又请回来了。
+      const params = new URLSearchParams();
       if (abilityId) params.set("ability_id", abilityId);
       if (challenge) params.set("challenge", challenge);
+      const qs = params.toString();
       router.push(
-        `/child/math/session/${session.session_id}?${params.toString()}`
+        `/child/math/session/${session.session_id}${qs ? `?${qs}` : ""}`
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "创建学习会话失败");
@@ -79,6 +134,15 @@ export function MathHomeScreen({ childId }: { childId: string }) {
         </header>
 
         {error && <div className="error-banner">{error}</div>}
+
+        {/* 每日额度（方案第五章：达到上限时显示清晰提示，同时仍可查看已有记录） */}
+        {quota && (
+          <div className="quota-banner" data-testid="guest-quota">
+            {quota.exhausted
+              ? `今天的 ${quota.limit} 道题已经完成啦，明天再来吧`
+              : `今天还可以练 ${quota.remaining} 道题`}
+          </div>
+        )}
 
         <TodayGoalCard
           title={
@@ -111,7 +175,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
                 goal={card.goal}
                 minutes={card.minutes}
                 difficulty={card.difficulty}
-                loading={starting}
+                loading={starting || quota?.exhausted === true}
                 onStart={() => start(card.kind)}
               />
             ))}
@@ -123,7 +187,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
             profile?.observations?.[0] ??
             "最近正在积累「数量关系」和「检查验证」的学习证据"
           }
-          href={`/child/math/growth?child_id=${encodeURIComponent(childId)}`}
+          href="/child/math/growth"
         />
       </div>
     </main>
