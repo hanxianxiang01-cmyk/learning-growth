@@ -38,6 +38,32 @@
 - 分支未合入 `main`；
 - PR 未创建（本机无 `gh`，需在远端平台手工建）。
 
+### 状态增量三（2026-10-30 收尾，纠正上一条）
+
+上一条写的「PR 未创建」，**是错的**——从未查过远端 PR 列表就下了结论。
+实际：**本 PR（#87）2026-10-14 就已存在**，当时是 DRAFT 且 `mergeable_state=dirty`
+（落后 main 53 提交，`learning.py` 冲突）。因为没查，把「本机无 `gh`」错当成了
+「PR 不存在」。
+
+本轮已做的事：
+
+1. **拆出游客模式独立 PR #137**（`feat/FE-1435-guest-mode`，cherry-pick 自 `84c8909`），
+   CI 5/5 绿，**已 squash 合并为 `2b3b99d`**。顺序有硬依赖：V6 只带前端适配，
+   分支内无任何后端 guest 实现，游客模式必须先落 main。
+2. **本分支两次合 main**：`943cc96`（1 处冲突，`learning.py` 取 main 的 FE-1453/1454
+   正式实现，`test_selection_fairness.py` 随 `_pick_fair` 退场）；
+   `41d0a42`（14 处前端冲突取 V6 侧，逐项核对无关键调用丢失）。
+3. 合并后验证：pytest 201（= main 基线）、tsc 0 错、build 11 路由、V6 门禁 38/38×2。
+
+**一个没跑成的事**：合并后的真实数据 e2e 未复跑成功——不是代码问题，
+是 `iqc-database-url` 为只读账号，`bootstrap` 写 `guardian` 被拒（500），
+浏览器把它报成 CORS 错。事后对账 10/10、22 表零漂移、`published=225` 未动。
+
+**合并暴露的缺口**：V6 首页拿到 `g.quota` 但未展示（main 版有「今日剩余 N 题」），
+移植遗漏，非视觉回归，单独立项。
+
+详见同目录 `REVIEW_2026-10-30.md` §9。
+
 复审报告见同目录 `REVIEW_2026-10-30.md`；复核脚本见 `scripts/iqc/v6_review/`
 （`run_real_flow.sh` 一条命令复跑真实数据链路，`renderer_visual.mjs` +
 `image_diff.mjs` 复跑视觉回归）。
