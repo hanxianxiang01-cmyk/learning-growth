@@ -53,6 +53,9 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npm run child:build
+      - name: PROBE - fail healing build on purpose
+        if: matrix.skin == 'healing'
+        run: exit 1
 
   child-build:
     needs: child-build-matrix
