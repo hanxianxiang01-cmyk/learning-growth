@@ -159,8 +159,8 @@
 [data-child-ui-version="v6"] .v6-skeleton-stack i:last-child { width:60%; }
 [data-child-ui-version="v6"] .v6-secondary-link { min-height:48px; display:inline-flex; align-items:center; justify-content:center; gap:10px; color:var(--v6-action); text-decoration:none; font-size:16px; font-weight:700; }
 [data-child-ui-version="v6"] .v6-inline-error { padding:15px 20px; margin:0 0 20px; border:1px solid #d7b882; border-radius:16px; background:var(--v6-review-bg); color:var(--v6-review); }
-/* 每日配额：一行轻量提示，不改变首页版式；耗尽时转为提示色。 */
-[data-child-ui-version="v6"] .v6-home-quota { margin:0 0 18px; padding:11px 17px; border-radius:14px; background:var(--cm-surface); border:1px solid var(--cm-border); color:var(--cm-text-2); font-size:15px; line-height:1.6; }
+/* 每日配额：一颗自适应宽度的提示胶囊，不占满整行、不改变首页版式；耗尽时转为提示色。 */
+[data-child-ui-version="v6"] .v6-home-quota { display:inline-flex; align-items:center; margin:0 0 18px; padding:9px 17px; border-radius:999px; background:var(--cm-surface); border:1px solid var(--cm-border); color:var(--cm-text-2); font-size:15px; line-height:1.5; }
 [data-child-ui-version="v6"] .v6-home-quota.is-exhausted { border-color:#d7b882; background:var(--v6-review-bg); color:var(--v6-review); }
 /* Growth map: scenic layout, truthful levels, no prerequisite locking. */
 [data-child-ui-version="v6"] .v6-growth-heading { margin:34px 0 28px; }
