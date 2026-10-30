@@ -1,0 +1,806 @@
+{
+  "generatedAt": "2026-10-30T06:48:00.426Z",
+  "base": "http://127.0.0.1:3103",
+  "fixtures": [
+    {
+      "renderer": "object-counter",
+      "rvid": "77b35d05-f75d-48a6-a01a-fc681c69b455"
+    },
+    {
+      "renderer": "bar-model",
+      "rvid": "98bb0ca7-74dc-4c24-aba0-abe0e4a37c2c"
+    },
+    {
+      "renderer": "number-line",
+      "rvid": "e0a2a067-175b-480d-a614-e326212923f7"
+    },
+    {
+      "renderer": "number-input",
+      "rvid": "e0d22830-7ce7-4581-b1cd-db9ba2f3a8c5"
+    },
+    {
+      "renderer": "column-arithmetic",
+      "rvid": "183c028f-fdc6-4fe1-8c6b-b55c111f906d"
+    },
+    {
+      "renderer": "place-value",
+      "rvid": "46701fae-6086-4b14-adcb-b6ef10fbde60"
+    },
+    {
+      "renderer": "ten-frame",
+      "rvid": "fea38e2d-225e-44b7-9e02-f09803405b8d"
+    },
+    {
+      "renderer": "array-board",
+      "rvid": "5d41bfd4-bc9b-4c54-b454-2413041fa1bf"
+    },
+    {
+      "renderer": "grouping-board",
+      "rvid": "9e8db37a-a695-4b0f-8927-05f63923250e"
+    },
+    {
+      "renderer": "formula-board",
+      "rvid": "6a66010c-3b59-4322-8717-b841402f17ad"
+    },
+    {
+      "renderer": "estimation-canvas",
+      "rvid": "cd7f008d-9637-4960-a4df-03684cce3e5a"
+    },
+    {
+      "renderer": "shape-gallery",
+      "rvid": "b0e607c7-add5-4372-9671-78ec108282fd"
+    },
+    {
+      "renderer": "shape-canvas",
+      "rvid": "853ef450-101e-4b65-94f7-5ef4fba81717"
+    },
+    {
+      "renderer": "sorting-board",
+      "rvid": "6cf420db-b161-491a-99bd-5d08807bec66"
+    },
+    {
+      "renderer": "direction-grid",
+      "rvid": "ee4d223b-614b-4e96-9299-87ed992b1c26"
+    },
+    {
+      "renderer": "ruler",
+      "rvid": "1f23c045-615a-451a-9090-61c3d5d55013"
+    },
+    {
+      "renderer": "clock",
+      "rvid": "814b32f1-a3ac-4d7c-9ae2-6c39fbd6c84f"
+    },
+    {
+      "renderer": "money-board",
+      "rvid": "5ee230c4-a9e3-4b24-8bb6-657571cced5f"
+    },
+    {
+      "renderer": "pattern-board",
+      "rvid": "088d0469-b111-4dfd-9541-2df7154b206e"
+    }
+  ],
+  "tokensBySkin": {
+    "exploration-lab": {
+      "cmApp": "#edf8ff",
+      "cmPrimary": "#0a6972",
+      "v6Action": "#0a6972",
+      "v6Theme": "#337ac3"
+    },
+    "healing": {
+      "cmApp": "#fcfaf1",
+      "cmPrimary": "#0a6972",
+      "v6Action": "#0a6972",
+      "v6Theme": "#2b6e55"
+    }
+  },
+  "checks": [
+    {
+      "id": "Vobject-counter",
+      "label": "exploration-lab/object-counter 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x550"
+    },
+    {
+      "id": "Vobject-counterb",
+      "label": "exploration-lab/object-counter 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vobject-counterc",
+      "label": "exploration-lab/object-counter 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vbar-model",
+      "label": "exploration-lab/bar-model 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x665"
+    },
+    {
+      "id": "Vbar-modelb",
+      "label": "exploration-lab/bar-model 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vbar-modelc",
+      "label": "exploration-lab/bar-model 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vnumber-line",
+      "label": "exploration-lab/number-line 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x566"
+    },
+    {
+      "id": "Vnumber-lineb",
+      "label": "exploration-lab/number-line 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vnumber-linec",
+      "label": "exploration-lab/number-line 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vnumber-input",
+      "label": "exploration-lab/number-input 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x729"
+    },
+    {
+      "id": "Vnumber-inputb",
+      "label": "exploration-lab/number-input 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vnumber-inputc",
+      "label": "exploration-lab/number-input 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vcolumn-arithmetic",
+      "label": "exploration-lab/column-arithmetic 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x624"
+    },
+    {
+      "id": "Vcolumn-arithmeticb",
+      "label": "exploration-lab/column-arithmetic 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vcolumn-arithmeticc",
+      "label": "exploration-lab/column-arithmetic 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vplace-value",
+      "label": "exploration-lab/place-value 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x526"
+    },
+    {
+      "id": "Vplace-valueb",
+      "label": "exploration-lab/place-value 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vplace-valuec",
+      "label": "exploration-lab/place-value 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vten-frame",
+      "label": "exploration-lab/ten-frame 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x555"
+    },
+    {
+      "id": "Vten-frameb",
+      "label": "exploration-lab/ten-frame 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vten-framec",
+      "label": "exploration-lab/ten-frame 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Varray-board",
+      "label": "exploration-lab/array-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x657"
+    },
+    {
+      "id": "Varray-boardb",
+      "label": "exploration-lab/array-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Varray-boardc",
+      "label": "exploration-lab/array-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vgrouping-board",
+      "label": "exploration-lab/grouping-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x481"
+    },
+    {
+      "id": "Vgrouping-boardb",
+      "label": "exploration-lab/grouping-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vgrouping-boardc",
+      "label": "exploration-lab/grouping-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vformula-board",
+      "label": "exploration-lab/formula-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x433"
+    },
+    {
+      "id": "Vformula-boardb",
+      "label": "exploration-lab/formula-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vformula-boardc",
+      "label": "exploration-lab/formula-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vestimation-canvas",
+      "label": "exploration-lab/estimation-canvas 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x806"
+    },
+    {
+      "id": "Vestimation-canvasb",
+      "label": "exploration-lab/estimation-canvas 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vestimation-canvasc",
+      "label": "exploration-lab/estimation-canvas 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vshape-gallery",
+      "label": "exploration-lab/shape-gallery 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x617"
+    },
+    {
+      "id": "Vshape-galleryb",
+      "label": "exploration-lab/shape-gallery 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vshape-galleryc",
+      "label": "exploration-lab/shape-gallery 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vshape-canvas",
+      "label": "exploration-lab/shape-canvas 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x713"
+    },
+    {
+      "id": "Vshape-canvasb",
+      "label": "exploration-lab/shape-canvas 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vshape-canvasc",
+      "label": "exploration-lab/shape-canvas 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vsorting-board",
+      "label": "exploration-lab/sorting-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x525"
+    },
+    {
+      "id": "Vsorting-boardb",
+      "label": "exploration-lab/sorting-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vsorting-boardc",
+      "label": "exploration-lab/sorting-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vdirection-grid",
+      "label": "exploration-lab/direction-grid 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x890"
+    },
+    {
+      "id": "Vdirection-gridb",
+      "label": "exploration-lab/direction-grid 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vdirection-gridc",
+      "label": "exploration-lab/direction-grid 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vruler",
+      "label": "exploration-lab/ruler 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x643"
+    },
+    {
+      "id": "Vrulerb",
+      "label": "exploration-lab/ruler 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vrulerc",
+      "label": "exploration-lab/ruler 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vclock",
+      "label": "exploration-lab/clock 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x764"
+    },
+    {
+      "id": "Vclockb",
+      "label": "exploration-lab/clock 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vclockc",
+      "label": "exploration-lab/clock 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vmoney-board",
+      "label": "exploration-lab/money-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x683"
+    },
+    {
+      "id": "Vmoney-boardb",
+      "label": "exploration-lab/money-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vmoney-boardc",
+      "label": "exploration-lab/money-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vpattern-board",
+      "label": "exploration-lab/pattern-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x588"
+    },
+    {
+      "id": "Vpattern-boardb",
+      "label": "exploration-lab/pattern-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vpattern-boardc",
+      "label": "exploration-lab/pattern-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "VEexploration-lab",
+      "label": "exploration-lab 无页面级 JS 异常",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "id": "Vobject-counter",
+      "label": "healing/object-counter 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x550"
+    },
+    {
+      "id": "Vobject-counterb",
+      "label": "healing/object-counter 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vobject-counterc",
+      "label": "healing/object-counter 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vbar-model",
+      "label": "healing/bar-model 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x665"
+    },
+    {
+      "id": "Vbar-modelb",
+      "label": "healing/bar-model 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vbar-modelc",
+      "label": "healing/bar-model 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vnumber-line",
+      "label": "healing/number-line 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x566"
+    },
+    {
+      "id": "Vnumber-lineb",
+      "label": "healing/number-line 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vnumber-linec",
+      "label": "healing/number-line 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vnumber-input",
+      "label": "healing/number-input 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x729"
+    },
+    {
+      "id": "Vnumber-inputb",
+      "label": "healing/number-input 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vnumber-inputc",
+      "label": "healing/number-input 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vcolumn-arithmetic",
+      "label": "healing/column-arithmetic 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x624"
+    },
+    {
+      "id": "Vcolumn-arithmeticb",
+      "label": "healing/column-arithmetic 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vcolumn-arithmeticc",
+      "label": "healing/column-arithmetic 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vplace-value",
+      "label": "healing/place-value 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x526"
+    },
+    {
+      "id": "Vplace-valueb",
+      "label": "healing/place-value 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vplace-valuec",
+      "label": "healing/place-value 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vten-frame",
+      "label": "healing/ten-frame 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x555"
+    },
+    {
+      "id": "Vten-frameb",
+      "label": "healing/ten-frame 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vten-framec",
+      "label": "healing/ten-frame 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Varray-board",
+      "label": "healing/array-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x657"
+    },
+    {
+      "id": "Varray-boardb",
+      "label": "healing/array-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Varray-boardc",
+      "label": "healing/array-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vgrouping-board",
+      "label": "healing/grouping-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x481"
+    },
+    {
+      "id": "Vgrouping-boardb",
+      "label": "healing/grouping-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vgrouping-boardc",
+      "label": "healing/grouping-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vformula-board",
+      "label": "healing/formula-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x433"
+    },
+    {
+      "id": "Vformula-boardb",
+      "label": "healing/formula-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vformula-boardc",
+      "label": "healing/formula-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vestimation-canvas",
+      "label": "healing/estimation-canvas 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x806"
+    },
+    {
+      "id": "Vestimation-canvasb",
+      "label": "healing/estimation-canvas 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vestimation-canvasc",
+      "label": "healing/estimation-canvas 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vshape-gallery",
+      "label": "healing/shape-gallery 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x617"
+    },
+    {
+      "id": "Vshape-galleryb",
+      "label": "healing/shape-gallery 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vshape-galleryc",
+      "label": "healing/shape-gallery 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vshape-canvas",
+      "label": "healing/shape-canvas 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x713"
+    },
+    {
+      "id": "Vshape-canvasb",
+      "label": "healing/shape-canvas 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vshape-canvasc",
+      "label": "healing/shape-canvas 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vsorting-board",
+      "label": "healing/sorting-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x525"
+    },
+    {
+      "id": "Vsorting-boardb",
+      "label": "healing/sorting-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vsorting-boardc",
+      "label": "healing/sorting-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vdirection-grid",
+      "label": "healing/direction-grid 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x890"
+    },
+    {
+      "id": "Vdirection-gridb",
+      "label": "healing/direction-grid 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vdirection-gridc",
+      "label": "healing/direction-grid 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vruler",
+      "label": "healing/ruler 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x643"
+    },
+    {
+      "id": "Vrulerb",
+      "label": "healing/ruler 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vrulerc",
+      "label": "healing/ruler 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vclock",
+      "label": "healing/clock 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x764"
+    },
+    {
+      "id": "Vclockb",
+      "label": "healing/clock 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vclockc",
+      "label": "healing/clock 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vmoney-board",
+      "label": "healing/money-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x683"
+    },
+    {
+      "id": "Vmoney-boardb",
+      "label": "healing/money-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vmoney-boardc",
+      "label": "healing/money-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "Vpattern-board",
+      "label": "healing/pattern-board 渲染出现且可见",
+      "ok": true,
+      "detail": "1098x588"
+    },
+    {
+      "id": "Vpattern-boardb",
+      "label": "healing/pattern-board 未降级为占位",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "Vpattern-boardc",
+      "label": "healing/pattern-board 无横向溢出",
+      "ok": true,
+      "detail": "overflow=0px"
+    },
+    {
+      "id": "VEhealing",
+      "label": "healing 无页面级 JS 异常",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "id": "V04",
+      "label": "两套皮肤的应用色确实不同",
+      "ok": true,
+      "detail": "app #edf8ff vs #fcfaf1; theme #337ac3 vs #2b6e55"
+    },
+    {
+      "id": "V05",
+      "label": "V6 主行动色为统一 token（两皮肤一致，设计口径）",
+      "ok": true,
+      "detail": "#0a6972 vs #0a6972"
+    }
+  ]
+}

@@ -1,0 +1,808 @@
+{
+  "generatedAt": "2026-10-30T06:48:22.072Z",
+  "a": "/Users/hanxianxiang/Downloads/学习/儿童学习成长系统/v6-worktree/output/v6_review/visual",
+  "b": "/Users/hanxianxiang/Downloads/学习/儿童学习成长系统/v6-worktree/output/v6_review/visual-head",
+  "rows": [
+    {
+      "skin": "exploration-lab",
+      "renderer": "array-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 724,
+      "totalPixels": 819568,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "bar-model",
+      "sameSize": true,
+      "width": 1132,
+      "height": 732,
+      "totalPixels": 828624,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "clock",
+      "sameSize": true,
+      "width": 1132,
+      "height": 831,
+      "totalPixels": 940692,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "column-arithmetic",
+      "sameSize": true,
+      "width": 1132,
+      "height": 691,
+      "totalPixels": 782212,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "direction-grid",
+      "sameSize": true,
+      "width": 1132,
+      "height": 957,
+      "totalPixels": 1083324,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "estimation-canvas",
+      "sameSize": true,
+      "width": 1132,
+      "height": 873,
+      "totalPixels": 988236,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "formula-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 499,
+      "totalPixels": 564868,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "grouping-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 548,
+      "totalPixels": 620336,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "money-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 750,
+      "totalPixels": 849000,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "number-input",
+      "sameSize": true,
+      "width": 1132,
+      "height": 795,
+      "totalPixels": 899940,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "number-line",
+      "sameSize": true,
+      "width": 1132,
+      "height": 633,
+      "totalPixels": 716556,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "object-counter",
+      "sameSize": true,
+      "width": 1132,
+      "height": 616,
+      "totalPixels": 697312,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "pattern-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 655,
+      "totalPixels": 741460,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "place-value",
+      "sameSize": true,
+      "width": 1132,
+      "height": 592,
+      "totalPixels": 670144,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "ruler",
+      "sameSize": true,
+      "width": 1132,
+      "height": 710,
+      "totalPixels": 803720,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "shape-canvas",
+      "sameSize": true,
+      "width": 1132,
+      "height": 780,
+      "totalPixels": 882960,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "shape-gallery",
+      "sameSize": true,
+      "width": 1132,
+      "height": 685,
+      "totalPixels": 775420,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "sorting-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 592,
+      "totalPixels": 670144,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "exploration-lab",
+      "renderer": "ten-frame",
+      "sameSize": true,
+      "width": 1132,
+      "height": 623,
+      "totalPixels": 705236,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "array-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 724,
+      "totalPixels": 819568,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "bar-model",
+      "sameSize": true,
+      "width": 1132,
+      "height": 732,
+      "totalPixels": 828624,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "clock",
+      "sameSize": true,
+      "width": 1132,
+      "height": 831,
+      "totalPixels": 940692,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "column-arithmetic",
+      "sameSize": true,
+      "width": 1132,
+      "height": 691,
+      "totalPixels": 782212,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "direction-grid",
+      "sameSize": true,
+      "width": 1132,
+      "height": 957,
+      "totalPixels": 1083324,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "estimation-canvas",
+      "sameSize": true,
+      "width": 1132,
+      "height": 873,
+      "totalPixels": 988236,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "formula-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 499,
+      "totalPixels": 564868,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "grouping-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 548,
+      "totalPixels": 620336,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "money-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 750,
+      "totalPixels": 849000,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "number-input",
+      "sameSize": true,
+      "width": 1132,
+      "height": 795,
+      "totalPixels": 899940,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "number-line",
+      "sameSize": true,
+      "width": 1132,
+      "height": 633,
+      "totalPixels": 716556,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "object-counter",
+      "sameSize": true,
+      "width": 1132,
+      "height": 616,
+      "totalPixels": 697312,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "pattern-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 655,
+      "totalPixels": 741460,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "place-value",
+      "sameSize": true,
+      "width": 1132,
+      "height": 592,
+      "totalPixels": 670144,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "ruler",
+      "sameSize": true,
+      "width": 1132,
+      "height": 710,
+      "totalPixels": 803720,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "shape-canvas",
+      "sameSize": true,
+      "width": 1132,
+      "height": 780,
+      "totalPixels": 882960,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "shape-gallery",
+      "sameSize": true,
+      "width": 1132,
+      "height": 685,
+      "totalPixels": 775420,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "sorting-board",
+      "sameSize": true,
+      "width": 1132,
+      "height": 592,
+      "totalPixels": 670144,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    },
+    {
+      "skin": "healing",
+      "renderer": "ten-frame",
+      "sameSize": true,
+      "width": 1132,
+      "height": 623,
+      "totalPixels": 705236,
+      "diffPixels": 0,
+      "maxDelta": 0,
+      "bbox": null
+    }
+  ],
+  "checks": [
+    {
+      "label": "exploration-lab/array-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x724"
+    },
+    {
+      "label": "exploration-lab/array-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/bar-model 尺寸一致",
+      "ok": true,
+      "detail": "1132x732"
+    },
+    {
+      "label": "exploration-lab/bar-model 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/clock 尺寸一致",
+      "ok": true,
+      "detail": "1132x831"
+    },
+    {
+      "label": "exploration-lab/clock 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/column-arithmetic 尺寸一致",
+      "ok": true,
+      "detail": "1132x691"
+    },
+    {
+      "label": "exploration-lab/column-arithmetic 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/direction-grid 尺寸一致",
+      "ok": true,
+      "detail": "1132x957"
+    },
+    {
+      "label": "exploration-lab/direction-grid 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/estimation-canvas 尺寸一致",
+      "ok": true,
+      "detail": "1132x873"
+    },
+    {
+      "label": "exploration-lab/estimation-canvas 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/formula-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x499"
+    },
+    {
+      "label": "exploration-lab/formula-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/grouping-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x548"
+    },
+    {
+      "label": "exploration-lab/grouping-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/money-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x750"
+    },
+    {
+      "label": "exploration-lab/money-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/number-input 尺寸一致",
+      "ok": true,
+      "detail": "1132x795"
+    },
+    {
+      "label": "exploration-lab/number-input 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/number-line 尺寸一致",
+      "ok": true,
+      "detail": "1132x633"
+    },
+    {
+      "label": "exploration-lab/number-line 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/object-counter 尺寸一致",
+      "ok": true,
+      "detail": "1132x616"
+    },
+    {
+      "label": "exploration-lab/object-counter 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/pattern-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x655"
+    },
+    {
+      "label": "exploration-lab/pattern-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/place-value 尺寸一致",
+      "ok": true,
+      "detail": "1132x592"
+    },
+    {
+      "label": "exploration-lab/place-value 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/ruler 尺寸一致",
+      "ok": true,
+      "detail": "1132x710"
+    },
+    {
+      "label": "exploration-lab/ruler 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/shape-canvas 尺寸一致",
+      "ok": true,
+      "detail": "1132x780"
+    },
+    {
+      "label": "exploration-lab/shape-canvas 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/shape-gallery 尺寸一致",
+      "ok": true,
+      "detail": "1132x685"
+    },
+    {
+      "label": "exploration-lab/shape-gallery 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/sorting-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x592"
+    },
+    {
+      "label": "exploration-lab/sorting-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "exploration-lab/ten-frame 尺寸一致",
+      "ok": true,
+      "detail": "1132x623"
+    },
+    {
+      "label": "exploration-lab/ten-frame 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/array-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x724"
+    },
+    {
+      "label": "healing/array-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/bar-model 尺寸一致",
+      "ok": true,
+      "detail": "1132x732"
+    },
+    {
+      "label": "healing/bar-model 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/clock 尺寸一致",
+      "ok": true,
+      "detail": "1132x831"
+    },
+    {
+      "label": "healing/clock 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/column-arithmetic 尺寸一致",
+      "ok": true,
+      "detail": "1132x691"
+    },
+    {
+      "label": "healing/column-arithmetic 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/direction-grid 尺寸一致",
+      "ok": true,
+      "detail": "1132x957"
+    },
+    {
+      "label": "healing/direction-grid 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/estimation-canvas 尺寸一致",
+      "ok": true,
+      "detail": "1132x873"
+    },
+    {
+      "label": "healing/estimation-canvas 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/formula-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x499"
+    },
+    {
+      "label": "healing/formula-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/grouping-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x548"
+    },
+    {
+      "label": "healing/grouping-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/money-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x750"
+    },
+    {
+      "label": "healing/money-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/number-input 尺寸一致",
+      "ok": true,
+      "detail": "1132x795"
+    },
+    {
+      "label": "healing/number-input 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/number-line 尺寸一致",
+      "ok": true,
+      "detail": "1132x633"
+    },
+    {
+      "label": "healing/number-line 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/object-counter 尺寸一致",
+      "ok": true,
+      "detail": "1132x616"
+    },
+    {
+      "label": "healing/object-counter 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/pattern-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x655"
+    },
+    {
+      "label": "healing/pattern-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/place-value 尺寸一致",
+      "ok": true,
+      "detail": "1132x592"
+    },
+    {
+      "label": "healing/place-value 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/ruler 尺寸一致",
+      "ok": true,
+      "detail": "1132x710"
+    },
+    {
+      "label": "healing/ruler 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/shape-canvas 尺寸一致",
+      "ok": true,
+      "detail": "1132x780"
+    },
+    {
+      "label": "healing/shape-canvas 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/shape-gallery 尺寸一致",
+      "ok": true,
+      "detail": "1132x685"
+    },
+    {
+      "label": "healing/shape-gallery 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/sorting-board 尺寸一致",
+      "ok": true,
+      "detail": "1132x592"
+    },
+    {
+      "label": "healing/sorting-board 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    },
+    {
+      "label": "healing/ten-frame 尺寸一致",
+      "ok": true,
+      "detail": "1132x623"
+    },
+    {
+      "label": "healing/ten-frame 像素无差异",
+      "ok": true,
+      "detail": "0/变化"
+    }
+  ],
+  "result": "PASS"
+}

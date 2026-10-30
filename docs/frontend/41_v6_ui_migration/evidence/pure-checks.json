@@ -1,0 +1,162 @@
+{
+  "scope": "pure module unit tests + pure TS semantic check; excludes React/hooks/browser/API/DB",
+  "compiler": "5.8.3",
+  "compiler_source": "external inspection compiler",
+  "at": "2026-10-11T07:21:59.443Z",
+  "pass": 38,
+  "fail": 0,
+  "results": [
+    {
+      "name": "repository gold config accepted",
+      "status": "PASS"
+    },
+    {
+      "name": "15 minute config rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "object-shaped time remains rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "swap self-loop still rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "initial board has no fabricated answer or history",
+      "status": "PASS"
+    },
+    {
+      "name": "wrong hour is legal and not blocked by readiness",
+      "status": "PASS"
+    },
+    {
+      "name": "wrong minute is legal and remains submitted scalar 390",
+      "status": "PASS"
+    },
+    {
+      "name": "correct result is canonical scalar 360",
+      "status": "PASS"
+    },
+    {
+      "name": "hand-swap diagnosis unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "minute mutation rejects five-minute input",
+      "status": "PASS"
+    },
+    {
+      "name": "hour mutation rejects out-of-range values",
+      "status": "PASS"
+    },
+    {
+      "name": "same-value action adds no history",
+      "status": "PASS"
+    },
+    {
+      "name": "pointer jitter below 7px stays a selection",
+      "status": "PASS"
+    },
+    {
+      "name": "pointer drag starts at threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "center dead-zone produces no update",
+      "status": "PASS"
+    },
+    {
+      "name": "invalid pointer values cannot enter state",
+      "status": "PASS"
+    },
+    {
+      "name": "hour geometry accounts for half-hour offset",
+      "status": "PASS"
+    },
+    {
+      "name": "minute geometry only emits 0 or 30 for 360 angles",
+      "status": "PASS"
+    },
+    {
+      "name": "keyboard bounds do not wrap through illegal times",
+      "status": "PASS"
+    },
+    {
+      "name": "keyboard Home and End semantics",
+      "status": "PASS"
+    },
+    {
+      "name": "unhandled keys cannot change answer",
+      "status": "PASS"
+    },
+    {
+      "name": "undo reverses one commit rather than resets all",
+      "status": "PASS"
+    },
+    {
+      "name": "reset restores original state and clears history",
+      "status": "PASS"
+    },
+    {
+      "name": "empty V2 response not ready",
+      "status": "PASS"
+    },
+    {
+      "name": "answer without V2 workspace not ready",
+      "status": "PASS"
+    },
+    {
+      "name": "RETRY preserves answer workspace and events",
+      "status": "PASS"
+    },
+    {
+      "name": "server wrong result increments attempt once and enables hints",
+      "status": "PASS"
+    },
+    {
+      "name": "transport error does not consume next attempt number",
+      "status": "PASS"
+    },
+    {
+      "name": "hint uses server text and preserves response",
+      "status": "PASS"
+    },
+    {
+      "name": "new task clears prior attempt and hint state",
+      "status": "PASS"
+    },
+    {
+      "name": "V2 payload uses original envelope and UUID",
+      "status": "PASS"
+    },
+    {
+      "name": "same submission derives same id; retry attempt gets a new id",
+      "status": "PASS"
+    },
+    {
+      "name": "stable request retransmission keeps answer envelope unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "event vocabulary and workspace bindings preserved",
+      "status": "PASS"
+    },
+    {
+      "name": "flag defaults to legacy and rejects unknown values",
+      "status": "PASS"
+    },
+    {
+      "name": "both repository skin IDs have V6 tokens; primary is shared",
+      "status": "PASS"
+    },
+    {
+      "name": "blocked browser cache cannot turn acknowledged response into error",
+      "status": "PASS"
+    },
+    {
+      "name": "pure-module TypeScript semantic check (explicit limited scope)",
+      "status": "PASS"
+    }
+  ]
+}

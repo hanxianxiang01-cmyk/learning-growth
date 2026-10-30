@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { LearningChrome, LearningScenery } from "@/src/components/ui-v6/LearningChrome";
+import { LearningFeedback } from "@/src/components/ui-v6/LearningFeedback";
+import { TaskPresentationBoundary } from "@/src/components/ui-v6/TaskPresentationBoundary";
 import { useRouter } from "next/navigation";
 import { CoachPanel, ProgressDots } from "@/src/components";
 import { TaskRenderer } from "@/src/features/task-renderer";
 import { useLearningSession } from "@/src/features/learning/useLearningSession";
+import { getLearningApi } from "@/src/lib/api";
 
 export function MathLearningScreen({
   sessionId,
@@ -14,6 +19,17 @@ export function MathLearningScreen({
   abilityId?: string;
 }) {
   const router = useRouter();
+  const { uiVersion } = useChildUi();
+  // V1.4 游客模式（从主分支移植）：身份经 getGuest（Cookie）解析，不在 URL 里。
+  const [childId, setChildId] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    getLearningApi()
+      .getGuest()
+      .then(g => { if (alive) setChildId(g.child_id); })
+      .catch(() => { if (alive) setChildId(null); });
+    return () => { alive = false; };
+  }, []);
   const {
     state,
     setResponse,
@@ -21,13 +37,14 @@ export function MathLearningScreen({
     requestHint,
     retry,
     loadTask,
+    retryFailedOperation,
+    pendingSubmission,
     snapshot
   } = useLearningSession({ sessionId, abilityId });
 
   useEffect(() => {
     if (state.status === "completed") {
       const timer = setTimeout(() => {
-        // V1.4：不再把 child_id 拼进 URL（身份在 Cookie 里）
         router.push(`/child/math/result/${sessionId}`);
       }, 550);
       return () => clearTimeout(timer);
@@ -35,6 +52,28 @@ export function MathLearningScreen({
   }, [state.status, router, sessionId]);
 
   const task = state.task;
+
+  if (uiVersion === "v6") {
+    const locked = ["submitting", "hint_loading", "hint_available", "hint_active", "retry", "correct", "completed"].includes(state.status) || pendingSubmission;
+    return <main className="page-shell v6-learning" data-testid="v6-learning-screen">
+      <LearningScenery />
+      <div className="v6-learning-container">
+        <LearningChrome childId={childId ?? ""} completed={snapshot.tasksCompleted} />
+        <div className="v6-learning-content">
+          {state.status === "loading_task" || state.status === "idle" ? (
+            <section className="surface-card loading-panel" role="status" aria-busy="true">正在准备下一项数学任务…</section>
+          ) : task ? (
+            <TaskPresentationBoundary key={`${task.task_instance_id}:${task.ui_schema.schema_version === "2.0" ? task.ui_schema.ui_revision : "v1"}`} onReload={loadTask}>
+              <div className="v6-task-content" aria-busy={state.status === "submitting"}>
+                <TaskRenderer task={task} response={state.response} disabled={locked} hintAction={state.hint?.ui_action} onResponseChange={setResponse} onSubmit={submit} />
+              </div>
+            </TaskPresentationBoundary>
+          ) : null}
+          <LearningFeedback state={state} onHint={requestHint} onRetry={retry} onNext={loadTask} onRecover={retryFailedOperation} />
+        </div>
+      </div>
+    </main>;
+  }
 
   return (
     <main className="page-shell">
@@ -56,7 +95,7 @@ export function MathLearningScreen({
           />
         </header>
 
-        {state.error && <div className="error-banner">{state.error}</div>}
+        {state.error && <div className="error-banner">{state.error}<button type="button" onClick={retryFailedOperation}>重新尝试</button></div>}
 
         {state.status === "loading_task" || !task ? (
           <div className="surface-card loading-panel">正在准备下一项数学任务…</div>
@@ -64,9 +103,10 @@ export function MathLearningScreen({
           <div className="learning-layout">
             <div className="learning-main">
               <TaskRenderer
+                key={task.task_instance_id}
                 task={task}
                 response={state.response}
-                disabled={state.status === "submitting"}
+                disabled={state.status === "submitting" || pendingSubmission}
                 hintAction={state.hint?.ui_action}
                 onResponseChange={setResponse}
                 onSubmit={submit}

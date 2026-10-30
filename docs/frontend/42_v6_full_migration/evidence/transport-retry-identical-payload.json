@@ -1,0 +1,208 @@
+[
+  {
+    "task_instance_id": "20000000-0000-0000-0000-000000000016",
+    "attempt_no": 1,
+    "submission_id": "cea21d91-f2e4-d43a-2760-e1eeeac73ab6",
+    "response": {
+      "schema_version": "2.0",
+      "ui_revision": "v6-dev-16-clock",
+      "type": "clock",
+      "workspaces": [
+        {
+          "workspace_id": "main",
+          "data": {
+            "h": 4,
+            "m": 0,
+            "time_text": "4:00",
+            "adjust_history": [
+              [
+                "hour",
+                3,
+                4
+              ]
+            ],
+            "answer": 240,
+            "structure": {
+              "status": "FAIL",
+              "error": "wrong_time",
+              "delta_minutes": -120
+            },
+            "evidence": {
+              "evidence_id": "ev-clock-20000000-0000-0000-0000-000000000016-1",
+              "renderer_id": "clock",
+              "task_instance_id": "20000000-0000-0000-0000-000000000016",
+              "workspace_id": "main",
+              "attempt_no": 1,
+              "final_state": "SUBMITTED",
+              "event_count": 1,
+              "interaction_count": 1,
+              "correction_count": 0,
+              "retry_count": 0,
+              "events": [
+                {
+                  "event_id": "evt-1791729541914-531a39a2d881f8",
+                  "event_type": "CLOCK_HOUR_SET",
+                  "occurred_at": "2026-10-11T14:39:01.914Z",
+                  "task_instance_id": "20000000-0000-0000-0000-000000000016",
+                  "renderer_id": "clock",
+                  "capability_id": "set_time",
+                  "target_id": "main",
+                  "payload": {
+                    "from": 3,
+                    "to": 4
+                  }
+                }
+              ],
+              "state_snapshot": {
+                "h": 4,
+                "m": 0,
+                "time_text": "4:00",
+                "adjust_history": [
+                  [
+                    "hour",
+                    3,
+                    4
+                  ]
+                ],
+                "answer": "240",
+                "structure": {
+                  "status": "FAIL",
+                  "error": "wrong_time",
+                  "delta_minutes": -120
+                }
+              }
+            },
+            "evaluation": {
+              "evaluator_id": "clock.generic",
+              "status": "NOT_EVALUATED",
+              "answer": "240",
+              "evidence_id": "ev-clock-20000000-0000-0000-0000-000000000016-1"
+            },
+            "runtime_status": "SUBMITTED"
+          }
+        }
+      ],
+      "answer": {
+        "value": 240
+      },
+      "interaction_events": [
+        {
+          "event_id": "evt-1791729541914-531a39a2d881f8",
+          "event_type": "CLOCK_HOUR_SET",
+          "occurred_at": "2026-10-11T14:39:01.914Z",
+          "task_instance_id": "20000000-0000-0000-0000-000000000016",
+          "renderer_id": "clock",
+          "capability_id": "set_time",
+          "target_id": "main",
+          "payload": {
+            "from": 3,
+            "to": 4
+          }
+        }
+      ]
+    }
+  },
+  {
+    "task_instance_id": "20000000-0000-0000-0000-000000000016",
+    "attempt_no": 1,
+    "submission_id": "cea21d91-f2e4-d43a-2760-e1eeeac73ab6",
+    "response": {
+      "schema_version": "2.0",
+      "ui_revision": "v6-dev-16-clock",
+      "type": "clock",
+      "workspaces": [
+        {
+          "workspace_id": "main",
+          "data": {
+            "h": 4,
+            "m": 0,
+            "time_text": "4:00",
+            "adjust_history": [
+              [
+                "hour",
+                3,
+                4
+              ]
+            ],
+            "answer": 240,
+            "structure": {
+              "status": "FAIL",
+              "error": "wrong_time",
+              "delta_minutes": -120
+            },
+            "evidence": {
+              "evidence_id": "ev-clock-20000000-0000-0000-0000-000000000016-1",
+              "renderer_id": "clock",
+              "task_instance_id": "20000000-0000-0000-0000-000000000016",
+              "workspace_id": "main",
+              "attempt_no": 1,
+              "final_state": "SUBMITTED",
+              "event_count": 1,
+              "interaction_count": 1,
+              "correction_count": 0,
+              "retry_count": 0,
+              "events": [
+                {
+                  "event_id": "evt-1791729541914-531a39a2d881f8",
+                  "event_type": "CLOCK_HOUR_SET",
+                  "occurred_at": "2026-10-11T14:39:01.914Z",
+                  "task_instance_id": "20000000-0000-0000-0000-000000000016",
+                  "renderer_id": "clock",
+                  "capability_id": "set_time",
+                  "target_id": "main",
+                  "payload": {
+                    "from": 3,
+                    "to": 4
+                  }
+                }
+              ],
+              "state_snapshot": {
+                "h": 4,
+                "m": 0,
+                "time_text": "4:00",
+                "adjust_history": [
+                  [
+                    "hour",
+                    3,
+                    4
+                  ]
+                ],
+                "answer": "240",
+                "structure": {
+                  "status": "FAIL",
+                  "error": "wrong_time",
+                  "delta_minutes": -120
+                }
+              }
+            },
+            "evaluation": {
+              "evaluator_id": "clock.generic",
+              "status": "NOT_EVALUATED",
+              "answer": "240",
+              "evidence_id": "ev-clock-20000000-0000-0000-0000-000000000016-1"
+            },
+            "runtime_status": "SUBMITTED"
+          }
+        }
+      ],
+      "answer": {
+        "value": 240
+      },
+      "interaction_events": [
+        {
+          "event_id": "evt-1791729541914-531a39a2d881f8",
+          "event_type": "CLOCK_HOUR_SET",
+          "occurred_at": "2026-10-11T14:39:01.914Z",
+          "task_instance_id": "20000000-0000-0000-0000-000000000016",
+          "renderer_id": "clock",
+          "capability_id": "set_time",
+          "target_id": "main",
+          "payload": {
+            "from": 3,
+            "to": 4
+          }
+        }
+      ]
+    }
+  }
+]

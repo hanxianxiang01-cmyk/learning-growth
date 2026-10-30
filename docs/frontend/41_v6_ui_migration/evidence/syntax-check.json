@@ -1,0 +1,123 @@
+{
+  "scope": "syntax/transpile only; excludes React/Next semantic typecheck",
+  "compiler": "5.8.3",
+  "passed": 23,
+  "total": 23,
+  "checks": [
+    {
+      "file": "apps/child-web/app/child/math/session/[sessionId]/page.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/app/dev/ui-kit/page.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/app/layout.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/components/learning/MathQuestionCard.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/components/renderers/ClockV2.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/config.ts",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/features/learning/machine.ts",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/features/learning/useLearningSession.ts",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/TaskRenderer.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/lib/runtime/sessionStore.ts",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/screens/MathLearningScreen.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/theme/ChildSkinProvider.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/app/dev/v6-clock/page.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/components/ui-v6/ChildIcon.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/components/ui-v6/ClockV6.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/components/ui-v6/LearningChrome.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/components/ui-v6/LearningFeedback.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/components/ui-v6/TaskPresentationBoundary.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/components/ui-v6/V6SliceGallery.tsx",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/taskResponse.ts",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/features/ui-v6/clockInput.ts",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/theme/uiVersion.ts",
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "file": "apps/child-web/src/theme/v6Tokens.ts",
+      "status": "PASS",
+      "errors": []
+    }
+  ]
+}

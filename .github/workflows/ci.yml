@@ -25,21 +25,41 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: apps/child-web/package.json
-      - run: npm install
+          cache-dependency-path: package-lock.json
+      - run: npm ci
       - run: npm run child:typecheck
+      - name: V6 pure-module and full migration inventory checks
+        run: npm run child:v6:check
 
-  child-build:
+  # 两套皮肤各构建一次。job 名不能直接叫 child-build：matrix 会把 check 名
+  # 变成 "child-build (exploration-lab)"，而仓库 ruleset protect-main 要求的
+  # context 是精确的 "child-build" —— 对不上就永远 blocked。
+  # 故矩阵 job 用 child-build-matrix 承载，再由下面的 child-build 汇总成一个
+  # 具名检查点（两条 skin 任一失败，汇总 job 不跑，required check 不满足）。
+  child-build-matrix:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        skin: [exploration-lab, healing]
+    env:
+      NEXT_PUBLIC_CHILD_UI_VERSION: v6
+      NEXT_PUBLIC_CHILD_MATH_SKIN: ${{ matrix.skin }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: apps/child-web/package.json
-      - run: npm install
+          cache-dependency-path: package-lock.json
+      - run: npm ci
       - run: npm run child:build
+
+  child-build:
+    needs: child-build-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Both skins built
+        run: echo "exploration-lab 与 healing 两套皮肤构建均已通过（见 child-build-matrix）"
 
   backend-tests:
     runs-on: ubuntu-latest
@@ -59,3 +79,30 @@ jobs:
           pip install -e ".[dev]"
       - name: Run pytest (pure unit tests, no DB required)
         run: PYTHONPATH=. python -m pytest tests/ -q
+
+  v6-ui-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm --workspace @learning/child-web exec -- playwright install --with-deps chromium
+      - name: Start V6 preview (no live backend, no seeding)
+        run: |
+          npm run child:v6:preview > /tmp/v6-dev.log 2>&1 &
+          for i in $(seq 1 90); do
+            if curl --fail --silent http://127.0.0.1:3100/dev/v6 > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/v6-dev.log
+          exit 1
+      - run: npm run child:v6:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v6-gallery-browser-results
+          path: apps/child-web/test-results-v6

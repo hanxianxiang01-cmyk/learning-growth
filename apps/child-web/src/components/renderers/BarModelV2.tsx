@@ -1,5 +1,9 @@
 "use client";
 
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { RendererFrame } from "@/src/components/ui-v6/RendererFrame";
+
+
 /**
  * bar-model V2 组件（FE-1418 R02）。runtime 装配对齐 TenFrameV2：
  * rendererWorkspaceReducer（undo/history 内建）+ buildRendererEvent（UPPER_SNAKE）。
@@ -47,6 +51,7 @@ export function BarModelV2({
   onResponseChange,
   onSubmit
 }: Props) {
+  const { uiVersion } = useChildUi();
   const workspace = schema.workspaces[0];
   const config = useMemo(
     () => (workspace ? parseBarModelConfig(workspace.config as Record<string, unknown>) : null),
@@ -88,7 +93,7 @@ export function BarModelV2({
   ]);
 
   if (!config || !workspace) {
-    return <div className="surface-card unsupported-task">条形模型题配置不完整。</div>;
+    return <div className="surface-card unsupported-task" role="alert">{uiVersion === "v6" ? "这道题暂时没准备好，请返回任务页再试一次。" : "条形模型题配置不完整。"}</div>;
   }
 
   const emit = (eventType: string, capability: string, payload: Record<string, string | number | boolean | null>) =>
@@ -124,11 +129,14 @@ export function BarModelV2({
   const renderBar = (bar: BarId) => {
     const value = state.bars[bar];
     const isAnswer = bar === config.answerBar;
+    // FE-1443 溢出修复：条长=value/maxBlocks 等比（轨道内），方块 flex 均分——
+    // 原固定 36px×18 格撑破 1fr 轨道、挤出 ± 控件列。
+    const widthPct = `${Math.max(2, Math.round((value / config.maxBlocks) * 100))}%`;
     return (
       <div className={`bm-bar-row ${isAnswer ? "answer" : "known"}`} key={bar} data-testid={`bm-row-${bar}`}>
         <span className="bm-bar-label">{BAR_LABELS[bar](config)}</span>
         <div className="bm-bar-track">
-          <div className="bm-bar-blocks" data-testid={`bm-bar-${bar}`}>
+          <div className="bm-bar-blocks" data-testid={`bm-bar-${bar}`} style={{ width: widthPct }}>
             {Array.from({ length: value }, (_, i) => (
               <span key={i} className="bm-block" />
             ))}
@@ -158,6 +166,24 @@ export function BarModelV2({
       </div>
     );
   };
+
+  if (uiVersion === "v6") {
+    return <RendererFrame rendererId="bar-model" title="用条形图表示数量" instruction="按题目给出的数量摆方格，再想一想各条之间的关系。"
+      actions={<div className="workspace-actions">
+          <button type="button" data-testid="bm-undo" disabled={disabled || runtime.history.length === 0} onClick={undo}>
+            撤销
+          </button>
+          <button type="button" data-testid="bm-reset" disabled={disabled} onClick={reset}>
+            重置
+          </button>
+        </div>}
+      testId="bar-model-v2" className="manipulative-card bar-model-v2"
+      submitTestId="bm-submit" submitDisabled={disabled || verdict.status === "EMPTY"} locked={disabled} onSubmit={onSubmit} summary={undefined}>
+      <div className="bm-bars" data-testid="bm-bars">
+        {(["a", "b", "c"] as BarId[]).map(renderBar)}
+      </div>
+    </RendererFrame>;
+  }
 
   return (
     <div className="manipulative-card bar-model-v2" data-testid="bar-model-v2">

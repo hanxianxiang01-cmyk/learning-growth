@@ -45,8 +45,8 @@ export class HttpLearningApi implements LearningApi {
   ): Promise<T> {
     const res = await fetch(`${this.baseUrl}${path}`, {
       ...init,
-      // V1.4 游客模式：身份在 HttpOnly Cookie 里，JS 拿不到也不需要拿。
-      // credentials:"include" 让浏览器跨端口（3000→8000）也带上该 Cookie；
+      // V1.4 游客模式（从主分支移植）：身份在 HttpOnly Cookie 里，JS 拿不到也不需要拿。
+      // credentials:"include" 让浏览器跨端口（3102→8000）也带上该 Cookie；
       // 服务端 CORS 已开 allow_credentials，两者必须同时成立才生效。
       credentials: "include",
       headers: {
@@ -63,7 +63,7 @@ export class HttpLearningApi implements LearningApi {
       } catch {}
       // FastAPI 把 dict 型 detail 包在 {"detail": {...}} 里，业务码（LE-4291 等）
       // 在 detail.code。不解包则 body.code 恒 undefined，humanizeError 的分支
-      // 匹配永远不命中（死分支，10-29 核对证据链时发现）。
+      // 匹配永远不命中（死分支，10-29 核对证据链时发现）。与主分支同源修复。
       const inner =
         body.detail && typeof body.detail === "object"
           ? (body.detail as ApiErrorBody)

@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./ui-v6.css";
 import { ChildSkinProvider } from "@/src/theme/ChildSkinProvider";
 import { config } from "@/src/config";
 
@@ -15,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body>
-        <ChildSkinProvider skin={config.childMathSkin}>
+        <ChildSkinProvider skin={config.childMathSkin} uiVersion={config.childUiVersion}>
           {children}
         </ChildSkinProvider>
       </body>

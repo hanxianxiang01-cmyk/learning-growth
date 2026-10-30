@@ -488,7 +488,7 @@ function hintUiAction(task: MockTask, level: number): WorkspaceUiAction | null {
 
 export class MockLearningApi implements LearningApi {
   /**
-   * Mock 模式的游客身份。
+   * Mock 模式的游客身份（从主分支移植）。
    *
    * 与真实后端的行为差：真实后端在 HttpOnly Cookie 里签发高熵 token；mock
    * 没有服务端，只能用一个进程内常量。**这不是「游客模式在 mock 下也安全」**，
@@ -755,7 +755,7 @@ function wait(ms = 180) {
 }
 
 /**
- * Mock 的配额快照。
+ * 配额快照（从主分支移植）。
  *
  * 刻意不做「用满即可见上限」的模拟：mock 没有服务端计数，任何本地模拟都会
  * 让人误以为「限额在 mock 下验证过」。真实限额只能在后端 + 真实请求上验收。

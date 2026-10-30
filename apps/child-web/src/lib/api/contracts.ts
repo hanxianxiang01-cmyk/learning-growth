@@ -483,7 +483,7 @@ export type ApiErrorBody = {
   detail?: unknown;
 };
 
-/** 每日配额状态（V1.4 方案第五章：达到上限时显示清晰提示）。 */
+/** 每日配额状态（V1.4 方案第五章：达到上限时显示清晰提示）。从主分支移植。 */
 export type GuestQuota = {
   date: string;
   timezone: string;

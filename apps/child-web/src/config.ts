@@ -1,6 +1,8 @@
 import type { ChildMathSkin } from "@/src/theme/skins";
 
 export const config = {
+  // V6 is the delivery default. Set legacy explicitly and restart/rebuild to roll back.
+  childUiVersion: (process.env.NEXT_PUBLIC_CHILD_UI_VERSION === "legacy" ? "legacy" : "v6") as "legacy" | "v6",
   apiMode:
     process.env.NEXT_PUBLIC_LEARNING_API_MODE === "http" ? "http" : "mock",
   apiBaseUrl:
@@ -18,7 +20,7 @@ export const config = {
     "/v1/learning/sessions/{session_id}/result",
 
   /**
-   * V1.4 游客模式：**刻意移除了 defaultChildId**。
+   * V1.4 游客模式（从主分支移植）：**刻意移除了 defaultChildId**。
    *
    * 原实现 `NEXT_PUBLIC_DEFAULT_CHILD_ID ?? "00000000-…-0001"` 是
    * 《V1.4 纯游客模式设计方案》2.1 明令禁止的「固定的公共游客 ID」：
@@ -29,10 +31,6 @@ export const config = {
    * 现在身份一律由服务端在 POST /v1/guest/bootstrap 时用
    * gen_random_uuid() 生成，通过 HttpOnly Cookie 下发给浏览器，
    * 前端不再有任何「默认身份」可以回退。
-   *
-   * 若某个部署确实需要固定身份（如单机演示），
-   * 请用 POST /v1/guest/qa-session 显式取得 QA 会话，
-   * 而不是把默认 id 请回前端配置。
    */
 
   childMathSkin:

@@ -43,26 +43,7 @@ import type {
   V2TaskUiSchema
 } from "@/src/lib/api/contracts";
 
-export function createEmptyTaskResponse(): TaskResponse {
-  return { schema_version: "1.0", answer: "", interaction_events: [] };
-}
-
-export function isTaskResponseReady(
-  response: TaskResponse,
-  task?: TaskInstance
-) {
-  const hasAnswer = String(response.answer ?? "").trim().length > 0;
-  if (!hasAnswer) return false;
-
-  if (task?.ui_schema.schema_version === "2.0") {
-    return Array.isArray(response.v2_workspaces) && response.v2_workspaces.length > 0;
-  }
-
-  if (task?.ui_schema.response_schema.representation_required) {
-    return Boolean(response.representation);
-  }
-  return true;
-}
+export { createEmptyTaskResponse, isTaskResponseReady } from "./taskResponse";
 
 type CommonRendererProps = {
   task: TaskInstance;
@@ -492,8 +473,7 @@ function V2Renderer(props: CommonRendererProps & { schema: V2TaskUiSchema }) {
   return (
     <div className="surface-card unsupported-task" data-testid="planned-renderer">
       <strong>这个学习工具还在开发中</strong>
-      <p className="muted">当前 Renderer 已注册，但尚未开放下发。</p>
-      <small className="renderer-debug">Renderer: {rendererId}</small>
+      <p className="muted">这项学习工具暂时没有准备好，请返回任务后再试。</p>
     </div>
   );
 }
@@ -508,8 +488,7 @@ export function TaskRenderer(props: CommonRendererProps) {
       return (
         <div className="surface-card unsupported-task" data-testid="planned-renderer">
           <strong>这个学习工具还在开发中</strong>
-          <p className="muted">当前 Renderer 已注册，但尚未开放下发。</p>
-          <small className="renderer-debug">Renderer: {rendererId}</small>
+          <p className="muted">这项学习工具暂时没有准备好，请返回任务后再试。</p>
         </div>
       );
     }
@@ -534,7 +513,6 @@ export function TaskRenderer(props: CommonRendererProps) {
     <div className="surface-card unsupported-task">
       <strong>这道题暂时需要新的学习工具</strong>
       <p className="muted">题目已经保留，不会丢失。请稍后再试。</p>
-      <small className="renderer-debug">Renderer: {descriptor.renderer_id}</small>
     </div>
   );
 }

@@ -1,0 +1,866 @@
+{
+  "scope": "Frozen backend, shared packages, OpenAPI, frozen baseline, API adapters/contracts, original mathematical TS modules, version, lockfile and original CSS/skin definitions",
+  "files": 143,
+  "identical": 143,
+  "changed": [],
+  "checks": [
+    {
+      "file": "package-lock.json",
+      "original_sha256": "be261e3c5b7ba5a882aa2ca1e88c6ecc8dd4d540cc28331edc4b492006a9e3bf",
+      "current_sha256": "be261e3c5b7ba5a882aa2ca1e88c6ecc8dd4d540cc28331edc4b492006a9e3bf",
+      "identical": true
+    },
+    {
+      "file": "VERSION",
+      "original_sha256": "78b591400c56b7b67b8cb3b2b8a8e65e9093897f02ce0878e6b5405c68620fa7",
+      "current_sha256": "78b591400c56b7b67b8cb3b2b8a8e65e9093897f02ce0878e6b5405c68620fa7",
+      "identical": true
+    },
+    {
+      "file": "openapi/README.md",
+      "original_sha256": "900f6c28e4047611f986c6c57bc54e92d1383a906e736abb08cb3c9798e420e5",
+      "current_sha256": "900f6c28e4047611f986c6c57bc54e92d1383a906e736abb08cb3c9798e420e5",
+      "identical": true
+    },
+    {
+      "file": "baselines/README.md",
+      "original_sha256": "44bf83f6a7f0045ec693ee0ad6f473b02e3a5d3e65b3bcd1470e918206df5e57",
+      "current_sha256": "44bf83f6a7f0045ec693ee0ad6f473b02e3a5d3e65b3bcd1470e918206df5e57",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/README.md",
+      "original_sha256": "adde85c621d1f1a1eb9eba499f50a4fee9c158900eebe9dfad94630f0862e777",
+      "current_sha256": "adde85c621d1f1a1eb9eba499f50a4fee9c158900eebe9dfad94630f0862e777",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/alembic.ini",
+      "original_sha256": "72f81ef30ae6d3554ad34f8542ff7cbc0c55ab41eeb7a1d8fd0e5c0cbe7d31f2",
+      "current_sha256": "72f81ef30ae6d3554ad34f8542ff7cbc0c55ab41eeb7a1d8fd0e5c0cbe7d31f2",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/openapi.yaml",
+      "original_sha256": "a6a571d1dc493861f9b6d134fcd03349b329e29ea2dffe96350bed68888d4a36",
+      "current_sha256": "a6a571d1dc493861f9b6d134fcd03349b329e29ea2dffe96350bed68888d4a36",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/pyproject.toml",
+      "original_sha256": "33492fe035734b82295be1f8af11e7f521352834819b9004f96f0fa6b742b029",
+      "current_sha256": "33492fe035734b82295be1f8af11e7f521352834819b9004f96f0fa6b742b029",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/.env.example",
+      "original_sha256": "c5beb6ee98535e79eeb1071a6a18f09b9a2c7ce1b13fb7e294d4f120871da0f3",
+      "current_sha256": "c5beb6ee98535e79eeb1071a6a18f09b9a2c7ce1b13fb7e294d4f120871da0f3",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/__init__.py",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/main.py",
+      "original_sha256": "a66e6a2ea460ec959885a2886ce82483b1530c73a1e6351f6d710c9afd4d1631",
+      "current_sha256": "a66e6a2ea460ec959885a2886ce82483b1530c73a1e6351f6d710c9afd4d1631",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/deeptutor_mcp_tools.py",
+      "original_sha256": "0b1fd788a70b319348762beca09ec33a6df0fa590dc131cb261e7781bd6d13db",
+      "current_sha256": "0b1fd788a70b319348762beca09ec33a6df0fa590dc131cb261e7781bd6d13db",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_growth.py",
+      "original_sha256": "a01d0ed459e4734b42c05d1900d9b95e0a7d7bdbe2f57e0b8b533a7f71d278d1",
+      "current_sha256": "a01d0ed459e4734b42c05d1900d9b95e0a7d7bdbe2f57e0b8b533a7f71d278d1",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_v2_slice.py",
+      "original_sha256": "d7ff54e1d710bc0dfc454c0b63a307e5b74891b53b6b58425b8c49653f530a20",
+      "current_sha256": "d7ff54e1d710bc0dfc454c0b63a307e5b74891b53b6b58425b8c49653f530a20",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_session_result.py",
+      "original_sha256": "595c02524913ccb9a222dafaf64564640ad857f8088292e4440ce0e2abf41a6b",
+      "current_sha256": "595c02524913ccb9a222dafaf64564640ad857f8088292e4440ce0e2abf41a6b",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_mastery.py",
+      "original_sha256": "b28d36925e86478796d9aed2a0fa016720b419f03b84c2309c71ff9d26599fd5",
+      "current_sha256": "b28d36925e86478796d9aed2a0fa016720b419f03b84c2309c71ff9d26599fd5",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_diagnosis_hint.py",
+      "original_sha256": "a89ed925839468b620c644eb9c86c71539c1d06cbe23c015f1edaca99daac45b",
+      "current_sha256": "a89ed925839468b620c644eb9c86c71539c1d06cbe23c015f1edaca99daac45b",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_v2_gold_resources.py",
+      "original_sha256": "8e7d3391068420f8c6aa76f4db25d0d7dbb9f3e1492aa0b64b681c5db5431fb4",
+      "current_sha256": "8e7d3391068420f8c6aa76f4db25d0d7dbb9f3e1492aa0b64b681c5db5431fb4",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_submission_id.py",
+      "original_sha256": "14ff44301fa22a3869d8e73bdfd30cddf24591d45e2e92f9df615c026fc8cece",
+      "current_sha256": "14ff44301fa22a3869d8e73bdfd30cddf24591d45e2e92f9df615c026fc8cece",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_qa_pin.py",
+      "original_sha256": "d461c04e20343d6a5f9634f3ec24e227c9bb1f782e6054e9b2f84a77a9a689a6",
+      "current_sha256": "d461c04e20343d6a5f9634f3ec24e227c9bb1f782e6054e9b2f84a77a9a689a6",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_v2_contracts.py",
+      "original_sha256": "1c73d1942f0059dbd0b24012c0680b70e43c7a8aa49985a6fc641d334f0b6982",
+      "current_sha256": "1c73d1942f0059dbd0b24012c0680b70e43c7a8aa49985a6fc641d334f0b6982",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/tests/test_renderer_protocol.py",
+      "original_sha256": "7a328e63831a9b2bbcc1433789211f4af53ee9cd586d825810fff90952dc515a",
+      "current_sha256": "7a328e63831a9b2bbcc1433789211f4af53ee9cd586d825810fff90952dc515a",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/prod_seed_155.py",
+      "original_sha256": "8a877946d27cffc1579df7e87b1cd6afb02d048462e8b5b7a081cb700864ab18",
+      "current_sha256": "8a877946d27cffc1579df7e87b1cd6afb02d048462e8b5b7a081cb700864ab18",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/ci_gate.sh",
+      "original_sha256": "b709d44193cc610c5987b3bc826f367a83bdc03bdd31ae08f507200b2ee587a4",
+      "current_sha256": "b709d44193cc610c5987b3bc826f367a83bdc03bdd31ae08f507200b2ee587a4",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/validate_openapi.py",
+      "original_sha256": "291ccf19b253c831214c98b60a5b4f218189c0dcd623d667b6710d4377157a63",
+      "current_sha256": "291ccf19b253c831214c98b60a5b4f218189c0dcd623d667b6710d4377157a63",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/backfill_context_family.py",
+      "original_sha256": "d5800efc8ddee2486c2cfa52a19982c982d2eb4fb4a188a4ad5183d27eb454d3",
+      "current_sha256": "d5800efc8ddee2486c2cfa52a19982c982d2eb4fb4a188a4ad5183d27eb454d3",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/migrate_submission_id.py",
+      "original_sha256": "8544600fa34dba8d5f471f821ed6e61a21ea65f4b48869de0e6323222d3c44ae",
+      "current_sha256": "8544600fa34dba8d5f471f821ed6e61a21ea65f4b48869de0e6323222d3c44ae",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/qa_sample_e2e.py",
+      "original_sha256": "988a1f941e44d23082b0ab9cf700cf68672bce1b7a17083fc1ed33b4a46b2dea",
+      "current_sha256": "988a1f941e44d23082b0ab9cf700cf68672bce1b7a17083fc1ed33b4a46b2dea",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/acceptance_sprint2.py",
+      "original_sha256": "d1a2be0d9950322e0059733c8db79267d78d9b206eabca5657e62a435cc93a0a",
+      "current_sha256": "d1a2be0d9950322e0059733c8db79267d78d9b206eabca5657e62a435cc93a0a",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/convert_question_bank.py",
+      "original_sha256": "a980a4c4352031b8bccb1791fb6a81bae8edac848f3eeee3628385ee93de093a",
+      "current_sha256": "a980a4c4352031b8bccb1791fb6a81bae8edac848f3eeee3628385ee93de093a",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/seed_content.py",
+      "original_sha256": "7aeb38ae62534ed3c2be16835b52280e6ff96b3cba83fef10cbf3b609986bc56",
+      "current_sha256": "7aeb38ae62534ed3c2be16835b52280e6ff96b3cba83fef10cbf3b609986bc56",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/qa_sample_ingest.py",
+      "original_sha256": "c05687d5b8b8991a4941a2baaaa0daacecfafd4b23d8c616b98f3460463c1ba6",
+      "current_sha256": "c05687d5b8b8991a4941a2baaaa0daacecfafd4b23d8c616b98f3460463c1ba6",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/convert_trial155.py",
+      "original_sha256": "01daf6a2bcab74af883b40b99cdce00a81c3665a77258c98491faf14ed2e907c",
+      "current_sha256": "01daf6a2bcab74af883b40b99cdce00a81c3665a77258c98491faf14ed2e907c",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/validate_ddl.py",
+      "original_sha256": "c85ed085b7c3ef7eafbf589a9e5f69549eb68471b8066a6de4dd8473d57b72c6",
+      "current_sha256": "c85ed085b7c3ef7eafbf589a9e5f69549eb68471b8066a6de4dd8473d57b72c6",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/scripts/seed_demo.py",
+      "original_sha256": "d9b8f9eb827cfb271fd72cf3a1831f28d5678e2bb1c4084785776f9acbcd3266",
+      "current_sha256": "d9b8f9eb827cfb271fd72cf3a1831f28d5678e2bb1c4084785776f9acbcd3266",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/migrations/script.py.mako",
+      "original_sha256": "2e00ecf9c13b0c9aa0da34b9788f97f210cb38792db0c4bd09bdba86b26d6031",
+      "current_sha256": "2e00ecf9c13b0c9aa0da34b9788f97f210cb38792db0c4bd09bdba86b26d6031",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/migrations/env.py",
+      "original_sha256": "786640e041f073f92c738afbd6117f917e48eaeb140d62544cfd29b2c5b23c29",
+      "current_sha256": "786640e041f073f92c738afbd6117f917e48eaeb140d62544cfd29b2c5b23c29",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/models/__init__.py",
+      "original_sha256": "ba8ca36218eb27831172037c07b1dee9f64b91145f5734151b1c750defae1073",
+      "current_sha256": "ba8ca36218eb27831172037c07b1dee9f64b91145f5734151b1c750defae1073",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/schemas/__init__.py",
+      "original_sha256": "6b0b065c53746de5367f11da2f6f8eedb2ff416642a91d70012881120c2e6abf",
+      "current_sha256": "6b0b065c53746de5367f11da2f6f8eedb2ff416642a91d70012881120c2e6abf",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/content/__init__.py",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/content/ability_seed.py",
+      "original_sha256": "10cebf385c8dc9be325684070ec728bc3ed4f4079188938c1f7bb3723c732299",
+      "current_sha256": "10cebf385c8dc9be325684070ec728bc3ed4f4079188938c1f7bb3723c732299",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/content/renderer_protocol.py",
+      "original_sha256": "7fd17e697e3a67f9eb4f5894828952dcf6a35efd56846a7bd5cd1af8418493d7",
+      "current_sha256": "7fd17e697e3a67f9eb4f5894828952dcf6a35efd56846a7bd5cd1af8418493d7",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/content/resource_seed_v2.py",
+      "original_sha256": "8c47de3d82235b6b35a27f4f91173ff8bc39ab64565cb328dae953560678e87a",
+      "current_sha256": "8c47de3d82235b6b35a27f4f91173ff8bc39ab64565cb328dae953560678e87a",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/content/context_family.py",
+      "original_sha256": "53ec9fd7c6ad42c0983c47696c8e6836f231439f90141bee8f1c37b28638d82b",
+      "current_sha256": "53ec9fd7c6ad42c0983c47696c8e6836f231439f90141bee8f1c37b28638d82b",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/content/resource_seed.py",
+      "original_sha256": "0bcf02a3fab815f6958b1c79b25022a24e04348a05497d841c6bbd881eedd6bb",
+      "current_sha256": "0bcf02a3fab815f6958b1c79b25022a24e04348a05497d841c6bbd881eedd6bb",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/content/context_family_map.py",
+      "original_sha256": "d9a14110158f74f4e3229be9f41932892f81e8b992ee1745b408dacd22884f1e",
+      "current_sha256": "d9a14110158f74f4e3229be9f41932892f81e8b992ee1745b408dacd22884f1e",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/core/database.py",
+      "original_sha256": "1bd525677041e658fb1f9472274333fa7d1333bd72d5bed53db44e32a19fd630",
+      "current_sha256": "1bd525677041e658fb1f9472274333fa7d1333bd72d5bed53db44e32a19fd630",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/core/__init__.py",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/core/logging.py",
+      "original_sha256": "f23729d2da9d2cf7123df9c443d9eff93be2d4b6e19f70faf496e7ecfda818ad",
+      "current_sha256": "f23729d2da9d2cf7123df9c443d9eff93be2d4b6e19f70faf496e7ecfda818ad",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/core/education_rules.py",
+      "original_sha256": "c6f5c13d8350a4e5d200c588a74eeeed2c2fd16c09a4595161785f48d0d1aec0",
+      "current_sha256": "c6f5c13d8350a4e5d200c588a74eeeed2c2fd16c09a4595161785f48d0d1aec0",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/core/config.py",
+      "original_sha256": "b61d3fcac7368f02398a9b6f84a6996c1eea7a23f7fef787c03408541b7b5efb",
+      "current_sha256": "b61d3fcac7368f02398a9b6f84a6996c1eea7a23f7fef787c03408541b7b5efb",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/core/qa.py",
+      "original_sha256": "bfa1f7ac4efc2476a59c606f5384475f2d563aa57cba2441aa213cee68521d8d",
+      "current_sha256": "bfa1f7ac4efc2476a59c606f5384475f2d563aa57cba2441aa213cee68521d8d",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/curriculum.py",
+      "original_sha256": "49c442a3e9b5d6d9feb78c5b8dd2fc7bdd6d8ae4433b1012191d38e8d3e582ac",
+      "current_sha256": "49c442a3e9b5d6d9feb78c5b8dd2fc7bdd6d8ae4433b1012191d38e8d3e582ac",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/profile.py",
+      "original_sha256": "0cf44e9f5f2513a5f97f1c8f6bccfcba0e33b03faf528d9cf361deba26f29fc5",
+      "current_sha256": "0cf44e9f5f2513a5f97f1c8f6bccfcba0e33b03faf528d9cf361deba26f29fc5",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/content.py",
+      "original_sha256": "8dd11e40e674dffe578cb01e2785623ff9dbcf7d376d89f98b9855d9e35d40ae",
+      "current_sha256": "8dd11e40e674dffe578cb01e2785623ff9dbcf7d376d89f98b9855d9e35d40ae",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/__init__.py",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/health.py",
+      "original_sha256": "8db795e1ccf0027b99282922f7f57fd2dfc83fdb0e4c4b52303726a04c7ddb1b",
+      "current_sha256": "8db795e1ccf0027b99282922f7f57fd2dfc83fdb0e4c4b52303726a04c7ddb1b",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/hint.py",
+      "original_sha256": "91af6b4b220700fc34bc1c03470343d572a44b638b243b75106794aea6c7c2eb",
+      "current_sha256": "91af6b4b220700fc34bc1c03470343d572a44b638b243b75106794aea6c7c2eb",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/growth.py",
+      "original_sha256": "a1d75c78b3f8b569803328392dc472fe5388cc6e823c5d15c68537a3ce6e6d84",
+      "current_sha256": "a1d75c78b3f8b569803328392dc472fe5388cc6e823c5d15c68537a3ce6e6d84",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/diagnosis.py",
+      "original_sha256": "8e7091a3f63dde3a4fa5046798a4f26dba1b355d1d790f92a010c41aa12f14c5",
+      "current_sha256": "8e7091a3f63dde3a4fa5046798a4f26dba1b355d1d790f92a010c41aa12f14c5",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/mastery.py",
+      "original_sha256": "7e6990444f857b2f4517286d52783322bcec39793da3a34639a26f7dfd4dfa75",
+      "current_sha256": "7e6990444f857b2f4517286d52783322bcec39793da3a34639a26f7dfd4dfa75",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/planning.py",
+      "original_sha256": "73a4dcba26a7021847f5740ef41825c468b6d54c65932910d8f22a9f21470e1b",
+      "current_sha256": "73a4dcba26a7021847f5740ef41825c468b6d54c65932910d8f22a9f21470e1b",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/routes.py",
+      "original_sha256": "19ca62292000200a4d3272350b56851297023ee1f24ba4603a27a8610cb9665d",
+      "current_sha256": "19ca62292000200a4d3272350b56851297023ee1f24ba4603a27a8610cb9665d",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/api/learning.py",
+      "original_sha256": "6592166fbbb4dccc47179339a7cc76688b86f1eb366c8e5782aa39df2d4f25b6",
+      "current_sha256": "6592166fbbb4dccc47179339a7cc76688b86f1eb366c8e5782aa39df2d4f25b6",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/curriculum.py",
+      "original_sha256": "f85137a53f42f3f53d8a799db155ac3e88cdec1618aa732d9bd013eb2d4f44a6",
+      "current_sha256": "f85137a53f42f3f53d8a799db155ac3e88cdec1618aa732d9bd013eb2d4f44a6",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/profile.py",
+      "original_sha256": "c3430482ff7a95f2264a82a57f9c3ff538200abf2128d0c7d40a2f4819e581fe",
+      "current_sha256": "c3430482ff7a95f2264a82a57f9c3ff538200abf2128d0c7d40a2f4819e581fe",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/__init__.py",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/hint.py",
+      "original_sha256": "459f8673bb0e8fee88dde50963e3cb65ed2993cf0aec33f996b5260f929db197",
+      "current_sha256": "459f8673bb0e8fee88dde50963e3cb65ed2993cf0aec33f996b5260f929db197",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/growth.py",
+      "original_sha256": "70b01bf2cbb57ea02181f56a00de4e7b183ee7ce213ffbed1b54de69a200246f",
+      "current_sha256": "70b01bf2cbb57ea02181f56a00de4e7b183ee7ce213ffbed1b54de69a200246f",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/diagnosis.py",
+      "original_sha256": "aa8c78e31fbfcae71d16573054a6a7364d963c2dbc62ecdb560e63e2f6b6a5a4",
+      "current_sha256": "aa8c78e31fbfcae71d16573054a6a7364d963c2dbc62ecdb560e63e2f6b6a5a4",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/mastery.py",
+      "original_sha256": "bdc2d61d6e429a1f374250991017ec0a454b0094291370fbb7b870dc9f9ce8ed",
+      "current_sha256": "bdc2d61d6e429a1f374250991017ec0a454b0094291370fbb7b870dc9f9ce8ed",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/mastery_db.py",
+      "original_sha256": "b35354c3e44213c6d40f597dc5ed399109e5e1c9f3add1b80140ffeacd975abf",
+      "current_sha256": "b35354c3e44213c6d40f597dc5ed399109e5e1c9f3add1b80140ffeacd975abf",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/fitband.py",
+      "original_sha256": "fdf422098bce9038b5a39f2f4f14e34a0b1a0b070977dd59ed0200407c7f0f37",
+      "current_sha256": "fdf422098bce9038b5a39f2f4f14e34a0b1a0b070977dd59ed0200407c7f0f37",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/planning.py",
+      "original_sha256": "d1ec2423996fe11ee7fea3b2da605278cc1fc2881d36857c017d8a4742cc1128",
+      "current_sha256": "d1ec2423996fe11ee7fea3b2da605278cc1fc2881d36857c017d8a4742cc1128",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/repository.py",
+      "original_sha256": "182a8ec0ccf50ff73a4d96c385be62a47430149778270769412cbf0cfc87d366",
+      "current_sha256": "182a8ec0ccf50ff73a4d96c385be62a47430149778270769412cbf0cfc87d366",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/learning.py",
+      "original_sha256": "0fc7f971902f62ab7ca5230815c7289543afe2ede89c9c4bd135bfd2a27bd1d4",
+      "current_sha256": "0fc7f971902f62ab7ca5230815c7289543afe2ede89c9c4bd135bfd2a27bd1d4",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/session_result.py",
+      "original_sha256": "89d68c5ef88f955c80c517dea1cc5872b93d8d557f2948756768b5a23f04aeae",
+      "current_sha256": "89d68c5ef88f955c80c517dea1cc5872b93d8d557f2948756768b5a23f04aeae",
+      "identical": true
+    },
+    {
+      "file": "apps/learning-api/app/services/turn_service.py",
+      "original_sha256": "55d641f14633f082d20d61960c301b0041d4b27d3d02d3de20591a72540cbb56",
+      "current_sha256": "55d641f14633f082d20d61960c301b0041d4b27d3d02d3de20591a72540cbb56",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/app/globals.css",
+      "original_sha256": "a0e83a088bf0d3f669f73e4779686477277d7011ad7db9f25238a4f4473fab76",
+      "current_sha256": "a0e83a088bf0d3f669f73e4779686477277d7011ad7db9f25238a4f4473fab76",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/theme/skins.ts",
+      "original_sha256": "9308782bdcc565b9faa6dc9d4444c35d0b34c55bf159d345aedefcc8f3ff3275",
+      "current_sha256": "9308782bdcc565b9faa6dc9d4444c35d0b34c55bf159d345aedefcc8f3ff3275",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/moneyBoardV2.ts",
+      "original_sha256": "e4d279906b7e1f4c6926d977c720184326c7f22a14b8133eab7040f093aa556e",
+      "current_sha256": "e4d279906b7e1f4c6926d977c720184326c7f22a14b8133eab7040f093aa556e",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/barModelV2.ts",
+      "original_sha256": "f8b34c9900a04535f672184ed000820e8e9966244d5d78c0c465fb9dc4d5c18a",
+      "current_sha256": "f8b34c9900a04535f672184ed000820e8e9966244d5d78c0c465fb9dc4d5c18a",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/rendererContract.ts",
+      "original_sha256": "9ffc309e5bb3ce251d2d239d2172e894a10f67726301a8a31a636bb07dfa7bfd",
+      "current_sha256": "9ffc309e5bb3ce251d2d239d2172e894a10f67726301a8a31a636bb07dfa7bfd",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/shapeCanvasV2.ts",
+      "original_sha256": "235982f4affa8a49cfd7bdfdc274b9ae35ba15c279338bebf9dad3eddc45a556",
+      "current_sha256": "235982f4affa8a49cfd7bdfdc274b9ae35ba15c279338bebf9dad3eddc45a556",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/estimationCanvasV2.ts",
+      "original_sha256": "02413f6e8a2ac97ef7622ca74db5941648255924c92081ceb41d01d73324b96b",
+      "current_sha256": "02413f6e8a2ac97ef7622ca74db5941648255924c92081ceb41d01d73324b96b",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/diagnosisAdapter.ts",
+      "original_sha256": "648efbd140fc7f1b8c5d1b728b098fe0e02b4bab1ebe53b09b0ed7ee3920ab97",
+      "current_sha256": "648efbd140fc7f1b8c5d1b728b098fe0e02b4bab1ebe53b09b0ed7ee3920ab97",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/formulaBoardV2.ts",
+      "original_sha256": "04a76ceab3599d106b7524ccaf1d0e08135c05bf5cbcf76977cc3f625afcf777",
+      "current_sha256": "04a76ceab3599d106b7524ccaf1d0e08135c05bf5cbcf76977cc3f625afcf777",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/rendererRegistry.ts",
+      "original_sha256": "f9ed1a14d44b8e59dc0a695c9dc8364775614fee532dcaa04517e7cda3556085",
+      "current_sha256": "f9ed1a14d44b8e59dc0a695c9dc8364775614fee532dcaa04517e7cda3556085",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/shapeGalleryV2.ts",
+      "original_sha256": "74c5a885e3dfb56a0fce24bee31d5fb47e6e840029bec582a687ca54c1da8f05",
+      "current_sha256": "74c5a885e3dfb56a0fce24bee31d5fb47e6e840029bec582a687ca54c1da8f05",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/clockV2.ts",
+      "original_sha256": "788ffc22689eeee23b9236da332970bdf46e08c2127ba4c9768283545b349225",
+      "current_sha256": "788ffc22689eeee23b9236da332970bdf46e08c2127ba4c9768283545b349225",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/nextTaskAdapter.ts",
+      "original_sha256": "ae1aaed4226396ea3ba6424d9f74aaf2eb669334d8e7694656e296c93e9d1426",
+      "current_sha256": "ae1aaed4226396ea3ba6424d9f74aaf2eb669334d8e7694656e296c93e9d1426",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/groupingBoardV2.ts",
+      "original_sha256": "f5d56e60c563c5a6b36be5e1ff0439b8bf1f46f0e68263a1b58208069b12823c",
+      "current_sha256": "f5d56e60c563c5a6b36be5e1ff0439b8bf1f46f0e68263a1b58208069b12823c",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/tenFrameV2.ts",
+      "original_sha256": "f1ece1afa14e8cdacc60215aa37a07e1655818429f491538878a9bc7d5ba9987",
+      "current_sha256": "f1ece1afa14e8cdacc60215aa37a07e1655818429f491538878a9bc7d5ba9987",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/placeValueV2.ts",
+      "original_sha256": "daebac5aca3137503011add84896364daad99c730f8695153a2b4d018a10bc6f",
+      "current_sha256": "daebac5aca3137503011add84896364daad99c730f8695153a2b4d018a10bc6f",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/objectCounterV2.ts",
+      "original_sha256": "ea2d8b4aab8da4ac944c96ef8705db2915781acff1e4277a41a29cf5fb3a7309",
+      "current_sha256": "ea2d8b4aab8da4ac944c96ef8705db2915781acff1e4277a41a29cf5fb3a7309",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/rendererRuntime.ts",
+      "original_sha256": "d0513557df7ebfabb57337ec070eb5f5aa41a3f5fd9fd94d3de33a98f05245e9",
+      "current_sha256": "d0513557df7ebfabb57337ec070eb5f5aa41a3f5fd9fd94d3de33a98f05245e9",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/arrayBoardV2.ts",
+      "original_sha256": "970a37da88ffeaf748942f457f21b9460c1c12cd26c644778f77689b05828b3d",
+      "current_sha256": "970a37da88ffeaf748942f457f21b9460c1c12cd26c644778f77689b05828b3d",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/numberLineV2.ts",
+      "original_sha256": "8e0ca72dd0dc1d5a0d3869d7710d77294f664ad3437d3328b51dbe7b4c8e42a5",
+      "current_sha256": "8e0ca72dd0dc1d5a0d3869d7710d77294f664ad3437d3328b51dbe7b4c8e42a5",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/directionGridV2.ts",
+      "original_sha256": "dd77e7d4bd16eceb2113f3187d2161b50fd686dc1bdec987e1de438d748211db",
+      "current_sha256": "dd77e7d4bd16eceb2113f3187d2161b50fd686dc1bdec987e1de438d748211db",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/patternBoardV2.ts",
+      "original_sha256": "b52c44702410b600b98b5e25838102e725eb49b7c4430f412cbd0dda621fdac3",
+      "current_sha256": "b52c44702410b600b98b5e25838102e725eb49b7c4430f412cbd0dda621fdac3",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/index.ts",
+      "original_sha256": "1799162a7f1bfc474663c13c157868d3d5f87e6b252b7732bb8d4341e86d17f9",
+      "current_sha256": "1799162a7f1bfc474663c13c157868d3d5f87e6b252b7732bb8d4341e86d17f9",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/rulerV2.ts",
+      "original_sha256": "cbdfa6870e816155a1e6e12d2563ca12be943eea8c3f9dc507bd48b857948049",
+      "current_sha256": "cbdfa6870e816155a1e6e12d2563ca12be943eea8c3f9dc507bd48b857948049",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/evaluatorRegistry.ts",
+      "original_sha256": "c137ee511695ce9087a737e1deb3b09d68d155902a3b543dc5d04ed838f4b250",
+      "current_sha256": "c137ee511695ce9087a737e1deb3b09d68d155902a3b543dc5d04ed838f4b250",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/sortingBoardV2.ts",
+      "original_sha256": "2382b453efd29d4c828b292914a8bfa58646dbddaf582487a5038b755b23e33a",
+      "current_sha256": "2382b453efd29d4c828b292914a8bfa58646dbddaf582487a5038b755b23e33a",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/features/task-renderer/columnArithmetic.ts",
+      "original_sha256": "1adeff24725a9aa078b98d82d3efe5a981701e1ce7d030c2c786b02238e8205f",
+      "current_sha256": "1adeff24725a9aa078b98d82d3efe5a981701e1ce7d030c2c786b02238e8205f",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/sessionResultNormalizer.ts",
+      "original_sha256": "412cced6202843c50dc01b6e47f08783f59ff805baa2902dc93713108f0692c8",
+      "current_sha256": "412cced6202843c50dc01b6e47f08783f59ff805baa2902dc93713108f0692c8",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/contracts.ts",
+      "original_sha256": "45faa445b578b2a9ab9e56550a7f89a46202261e2f1995bcc26c403448b948aa",
+      "current_sha256": "45faa445b578b2a9ab9e56550a7f89a46202261e2f1995bcc26c403448b948aa",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/attemptResultNormalizer.ts",
+      "original_sha256": "de7a0beed3a053f7f21f3283ec7171258dd2a6b2dd987177fbfc8131fbe0661b",
+      "current_sha256": "de7a0beed3a053f7f21f3283ec7171258dd2a6b2dd987177fbfc8131fbe0661b",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/v2AttemptAdapter.ts",
+      "original_sha256": "5da0cc5cdf664669138beba47e399393ca1a251db870afa91bf16100ab4394de",
+      "current_sha256": "5da0cc5cdf664669138beba47e399393ca1a251db870afa91bf16100ab4394de",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/mock.ts",
+      "original_sha256": "4c2bd212f7e5fe376b37931451f605954db90d5a56a6dbe75ef6649600a06712",
+      "current_sha256": "4c2bd212f7e5fe376b37931451f605954db90d5a56a6dbe75ef6649600a06712",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/hintNormalizer.ts",
+      "original_sha256": "2d82f51889813f86636094c787150af4e803c7a7b0c1a6feba68b4e134b625d9",
+      "current_sha256": "2d82f51889813f86636094c787150af4e803c7a7b0c1a6feba68b4e134b625d9",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/index.ts",
+      "original_sha256": "17dbd45aee133b7d869b6de05fbc0cdb81a7c7f2bdd579693c24fcbf1a72af91",
+      "current_sha256": "17dbd45aee133b7d869b6de05fbc0cdb81a7c7f2bdd579693c24fcbf1a72af91",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/http.ts",
+      "original_sha256": "e9edff4c22816978cd86b6ce606ceb5bdf34451dd9dad9063ddd68002671c261",
+      "current_sha256": "e9edff4c22816978cd86b6ce606ceb5bdf34451dd9dad9063ddd68002671c261",
+      "identical": true
+    },
+    {
+      "file": "apps/child-web/src/lib/api/taskUiSchemaNormalizer.ts",
+      "original_sha256": "717325552c26769d4d8151bec0d112cfc63510e99e9e97ce4f3cab192c8d7a18",
+      "current_sha256": "717325552c26769d4d8151bec0d112cfc63510e99e9e97ce4f3cab192c8d7a18",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/README_ARCH_REVIEW_V1.3.1.md",
+      "original_sha256": "ee5833215f15a8e8e7ffd78271a4efc79e051f92ca9f88692ed60d03529f711a",
+      "current_sha256": "ee5833215f15a8e8e7ffd78271a4efc79e051f92ca9f88692ed60d03529f711a",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/HISTORICAL_DOCS_SUPERSEDED_V1.3.1.md",
+      "original_sha256": "b7efc204f919aaac69b200ba2f35ff7f5848c39cb92b9875b515622c8d6f7caa",
+      "current_sha256": "b7efc204f919aaac69b200ba2f35ff7f5848c39cb92b9875b515622c8d6f7caa",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/01_schema_postgresql_v1.3.1.sql",
+      "original_sha256": "a9f77e0313a913ef60f2e05d53381ec0f17e3ac04a379158fc78967f88525963",
+      "current_sha256": "a9f77e0313a913ef60f2e05d53381ec0f17e3ac04a379158fc78967f88525963",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/child_learning_system_V2.0_dev_frozen_baseline_V1.3.1.docx",
+      "original_sha256": "f37ce6c32e27fd15de7601125f48fdde30e96d62cd1446481a3e3c76dbf1d6e7",
+      "current_sha256": "f37ce6c32e27fd15de7601125f48fdde30e96d62cd1446481a3e3c76dbf1d6e7",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/README_FROZEN_CHANGES_V1.3.1.md",
+      "original_sha256": "f8ca10b1e27fedfd2d75ecaff1a2eb34b1e81a985caec855e42f305f2c893441",
+      "current_sha256": "f8ca10b1e27fedfd2d75ecaff1a2eb34b1e81a985caec855e42f305f2c893441",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/05_Sprint_Backlog_v1.3.1.xlsx",
+      "original_sha256": "84c79ac5f7ae9c5377a0a7e1420bcc5939f1b736f3f21292842da2b15bfa491e",
+      "current_sha256": "84c79ac5f7ae9c5377a0a7e1420bcc5939f1b736f3f21292842da2b15bfa491e",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/ADR-0001_DeepTutor_SPI_Gate_V1.3.1.md",
+      "original_sha256": "984b049ea0ce3c34022ea56fd2dc5fd97cee425de432a2325029b97eac39313e",
+      "current_sha256": "984b049ea0ce3c34022ea56fd2dc5fd97cee425de432a2325029b97eac39313e",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/SHA256SUMS",
+      "original_sha256": "7d0901e78bfbd6362f7f39a7d668f7090d1f3e7eb12b88a0c7ba1044b2498ff6",
+      "current_sha256": "7d0901e78bfbd6362f7f39a7d668f7090d1f3e7eb12b88a0c7ba1044b2498ff6",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/02_openapi_v1.3.1.yaml",
+      "original_sha256": "0aa30a418aed30b07213620c6af951f902289bf64a86e03037a687f3dde34e8d",
+      "current_sha256": "0aa30a418aed30b07213620c6af951f902289bf64a86e03037a687f3dde34e8d",
+      "identical": true
+    },
+    {
+      "file": "baselines/learning-core-v1.3.1/06_validate_backlog_summary_cache.py",
+      "original_sha256": "6177f75250c6eee76a97ca96b24b40f5390570ec74233fdff6140afb83ef60e6",
+      "current_sha256": "6177f75250c6eee76a97ca96b24b40f5390570ec74233fdff6140afb83ef60e6",
+      "identical": true
+    },
+    {
+      "file": "packages/math-ui/README.md",
+      "original_sha256": "5f609e883efbe3f0d4d77c227528cd79464ae0da1cdc85afc34cf79f41c2c7c8",
+      "current_sha256": "5f609e883efbe3f0d4d77c227528cd79464ae0da1cdc85afc34cf79f41c2c7c8",
+      "identical": true
+    },
+    {
+      "file": "packages/math-ui/package.json",
+      "original_sha256": "2b018d0d028b6650dd0847680e903e8abbf710970b11ea5fb41aad71dc098480",
+      "current_sha256": "2b018d0d028b6650dd0847680e903e8abbf710970b11ea5fb41aad71dc098480",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/README.md",
+      "original_sha256": "7765fbef69d9c26676ef1369dff3bbb38a584951954226e03778539405eda370",
+      "current_sha256": "7765fbef69d9c26676ef1369dff3bbb38a584951954226e03778539405eda370",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/package.json",
+      "original_sha256": "24c455a74449a3b28ab1d37e66272d995874ab124072ac1870f52effda19cde4",
+      "current_sha256": "24c455a74449a3b28ab1d37e66272d995874ab124072ac1870f52effda19cde4",
+      "identical": true
+    },
+    {
+      "file": "packages/skin-runtime/README.md",
+      "original_sha256": "0d2e354f666f7acd25ebcd60c0c8cfb11784b70b537c1edbd5521fa694de5315",
+      "current_sha256": "0d2e354f666f7acd25ebcd60c0c8cfb11784b70b537c1edbd5521fa694de5315",
+      "identical": true
+    },
+    {
+      "file": "packages/skin-runtime/package.json",
+      "original_sha256": "f2a6ef1ae93f63bccca2d2b8c238c53cfc1019d03d57811236ea2dc72f360603",
+      "current_sha256": "f2a6ef1ae93f63bccca2d2b8c238c53cfc1019d03d57811236ea2dc72f360603",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/schemas/task-ui-schema-v2.schema.json",
+      "original_sha256": "7731bd4731bf90901658e2e79f88dbdf6c0fa7e705017a8db6a57a23a61d0c62",
+      "current_sha256": "7731bd4731bf90901658e2e79f88dbdf6c0fa7e705017a8db6a57a23a61d0c62",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/schemas/math-response-v2.schema.json",
+      "original_sha256": "058c8059eb09b3c691623ef28735f87995e5a2e919fe3ade5f48abe93e20eb10",
+      "current_sha256": "058c8059eb09b3c691623ef28735f87995e5a2e919fe3ade5f48abe93e20eb10",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/contracts/__init__.py",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/contracts/validate.py",
+      "original_sha256": "c25476ba3a261e5cd446a5fa6f126828a1f977816c69290ff702dea7f9dad83f",
+      "current_sha256": "c25476ba3a261e5cd446a5fa6f126828a1f977816c69290ff702dea7f9dad83f",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/examples/b5-column-arithmetic-attempt.json",
+      "original_sha256": "3cdcd42aec46f6ffa973d54fee15189b0bb997666bccda160f787d1d1d458c7e",
+      "current_sha256": "3cdcd42aec46f6ffa973d54fee15189b0bb997666bccda160f787d1d1d458c7e",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/samples/ui_schema/f6_valid.json",
+      "original_sha256": "630ca0149d8328503dea31b3844d408732feac098dc52ffdde14ab66790e14de",
+      "current_sha256": "630ca0149d8328503dea31b3844d408732feac098dc52ffdde14ab66790e14de",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/samples/ui_schema/illegal_renderer_alias.json",
+      "original_sha256": "1d20a1002bd0761a64ad9d17c6f5f475c80dab5412e934994d60a58941acb1a9",
+      "current_sha256": "1d20a1002bd0761a64ad9d17c6f5f475c80dab5412e934994d60a58941acb1a9",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/samples/ui_schema/a5_valid.json",
+      "original_sha256": "0cdeed5da0d4dbed1268d9d263db2500d19a55730e7428aa827855216f3b8918",
+      "current_sha256": "0cdeed5da0d4dbed1268d9d263db2500d19a55730e7428aa827855216f3b8918",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/samples/ui_schema/b5_valid.json",
+      "original_sha256": "5e38570aed40c6bd464519627196a785f1add2cba1e1ee6e0a6edae45b3906e9",
+      "current_sha256": "5e38570aed40c6bd464519627196a785f1add2cba1e1ee6e0a6edae45b3906e9",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/samples/ui_schema/e4_valid.json",
+      "original_sha256": "4379352afa0921cc35a341e5f038c452ca329e1ed61736a58306c4fa543f2c3c",
+      "current_sha256": "4379352afa0921cc35a341e5f038c452ca329e1ed61736a58306c4fa543f2c3c",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/samples/ui_schema/d5_valid.json",
+      "original_sha256": "6edde1b4320d836de39fc7b5a8c8c8e6d6c80d6f3a27471588477e8e80efb0fd",
+      "current_sha256": "6edde1b4320d836de39fc7b5a8c8c8e6d6c80d6f3a27471588477e8e80efb0fd",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/samples/response/illegal_client_selfgraded.json",
+      "original_sha256": "42936cf8318a35196e0b06dbc253e6d2aeeec6feb35b05972f32d25212f11190",
+      "current_sha256": "42936cf8318a35196e0b06dbc253e6d2aeeec6feb35b05972f32d25212f11190",
+      "identical": true
+    },
+    {
+      "file": "packages/contracts/samples/response/e4_valid.json",
+      "original_sha256": "72d82f85525fe7eccbf83333e9077461637db4e994123274aab314e83a38d648",
+      "current_sha256": "72d82f85525fe7eccbf83333e9077461637db4e994123274aab314e83a38d648",
+      "identical": true
+    }
+  ]
+}

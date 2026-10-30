@@ -29,6 +29,11 @@ Major.Minor.Patch
 
 后续开发中的变更先记录在此，正式发版时移动到对应版本号下。
 
+## Fix（FE-1442+1443：生产选题公平性修复 + bar-model 溢出修复，2026-10-10）
+
+> **FE-1442（P0，负责人裁决 A 签发）**：真实 child 头名常胜根因=`order_by(difficulty, created_at)` 取头 + session 排除跨 session 不保留——155 新题入库后仍永不出头。实现=两层决策不变 + 带内 P0 未见→P1 低曝光久未发→P2 显式 RECENT_FALLBACK + 同层有界 sha256 哈希决胜（零全表 random）；`task_instance` 聚合历史（零迁移）；RECENT_WINDOW=20；`strategy_policy` 溯源（selection_policy=v1.4-fe1442/selection_reason/requested_band/selected_difficulty）。**SEL-04 首跑 FAIL 抓出实现 bug**（band_pool_all 误带 exclude 致"全被排除"误判"带空"跨带——修复=题目重复≠带空铁律显式化 SESSION_POOL_EXHAUSTED）。BAND_FALLBACK 保留但显式记因（约束1/3），Mastery 真难度已核（约束2：assigned_difficulty=真实资源难度，现状即合规）。回归=SEL 矩阵 12/12（真实 RDS 跨 18 session：唯一 9/9、counts 全=2 max-min=0）+ 后端 111 + Gate8 8/8 + r02 定点 9/9（全量轮 1 失败=用户同库实练时序噪声）+ **真实 child dry-run 9/10 T155 与实练 3/3 命中**（症状消失实证）。裁剪在案：无 request_id 幂等/无 advisory lock/SEL-08·09·10 NOT RUN 不宣称跨设备并发安全。docs/41 四件套。
+> **FE-1443（用户实玩发现）**：bar-model 18 格（5+13）×36px 固定方块撑破 `1fr` grid 轨道，± 控件列被挤出可视区（"+"点不到）。修=条长 `value/maxBlocks` 等比缩放（轨道内 %宽+flex 均分方块），长度对比语义保留且更精确；tsc 0 错、r02 9/9。教训入册：**交付批题量（max_blocks=20）第一次压出金题时代未暴露的 CSS 容量假设**——Renderer 验收应含 max config 渲染冒烟。
+
 ## Feat（FE-1441 Trial-155 正式入库=FE-1439 ⑤ 收官：155 题 published + qa_staged 退役 + 金题优先排序锁——V1.4 题库线闭环，2026-10-10）
 
 > 用户授权后执行：`prod_seed_155.py` 全量 155 入库（title `[T155] <qid>` 幂等、ability 按批复 final_app_id 覆盖 **25 条改判生效**、is_transfer→transfer_distance=1 喂 #7 证据链）；qa_staged 25 条→`qa_retired`（通道关闭、历史证据保留=软删纪律）；RDS published=225、catalog=175。

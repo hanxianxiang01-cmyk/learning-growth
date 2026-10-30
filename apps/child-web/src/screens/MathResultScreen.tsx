@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getLearningApi } from "@/src/lib/api";
 import type { SessionResult } from "@/src/lib/api/contracts";
 import {
@@ -59,28 +59,37 @@ function buildFallbackResult(
   };
 }
 
-/**
- * 结果页。
- *
- * V1.4 游客模式：childId 不再是入参（URL 已不带身份）。正式记录走
- * `GET /v1/learning/sessions/{id}/result`，服务端会校验该 session 属于当前游客；
- * 降级快照里的 child_id 直接取快照自己记录的值（本机产生的，无需外部告知）。
- */
-export function MathResultScreen({ sessionId }: { sessionId: string }) {
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { ResultView } from "@/src/components/ui-v6/ResultView";
+
+export function MathResultScreen({
+  sessionId
+}: {
+  sessionId: string;
+}) {
+  const { uiVersion } = useChildUi();
   const api = useMemo(() => getLearningApi(), []);
   const [result, setResult] = useState<SessionResult | null>(null);
   const [status, setStatus] = useState<ResultStatus>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // V1.4 游客模式（从主分支移植）：身份经 getGuest（Cookie）解析；
+  // fallback 用 snapshot.childId；result 本身也带 child_id 可反查。
+  const [childId, setChildId] = useState<string | null>(null);
+
+  const loadSequence = useRef(0);
 
   const load = useCallback(async () => {
+    const sequence = ++loadSequence.current;
     setStatus("loading");
     setErrorMessage(null);
 
     try {
       const data = await api.getSessionResult(sessionId);
+      if (sequence !== loadSequence.current) return;
       setResult(data);
       setStatus("success");
     } catch (error) {
+      if (sequence !== loadSequence.current) return;
       const snapshot = loadSessionSnapshot(sessionId);
 
       if (snapshot) {
@@ -102,8 +111,19 @@ export function MathResultScreen({ sessionId }: { sessionId: string }) {
   }, [api, sessionId]);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    let alive = true;
+    api
+      .getGuest()
+      .then(g => { if (alive) setChildId(g.child_id); })
+      .catch(() => { if (alive) setChildId(null); })
+      .finally(() => { if (alive) void load(); });
+    return () => { alive = false; loadSequence.current += 1; };
+  }, [api, load]);
+
+  const resolvedChildId = childId ?? result?.child_id ?? "";
+
+  if (uiVersion === "v6") return <ResultView childId={resolvedChildId} result={result} status={status}
+    errorMessage={errorMessage} onReload={load} />;
 
   if (status === "loading") {
     return (

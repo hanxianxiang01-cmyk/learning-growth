@@ -10,6 +10,8 @@
  */
 
 import { useEffect, useMemo, useReducer, useRef } from "react";
+import { useChildUi } from "@/src/theme/ChildSkinProvider";
+import { ClockV6 } from "@/src/components/ui-v6/ClockV6";
 import type { TaskResponse, V2TaskUiSchema } from "@/src/lib/api/contracts";
 import {
   applySetHour,
@@ -37,7 +39,12 @@ function faceAngle(value: number, mod: number): number {
   return ((value % mod) / mod) * 360;
 }
 
-export function ClockV2({
+export function ClockV2(props: Props) {
+  const { uiVersion } = useChildUi();
+  return uiVersion === "v6" ? <ClockV6 {...props} /> : <ClockV2Legacy {...props} />;
+}
+
+function ClockV2Legacy({
   taskInstanceId,
   schema,
   response,

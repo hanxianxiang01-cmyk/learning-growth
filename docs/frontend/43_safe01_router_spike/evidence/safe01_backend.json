@@ -1,0 +1,28 @@
+{
+  "schema": "safe01-backend-authority/1",
+  "scope": "real submit_attempt() with mocked db and record_attempt, not SQL write",
+  "cases": [
+    {
+      "name": "forged_correct_but_wrong_answer",
+      "server_correct": false,
+      "client_claim": "CORRECT",
+      "raw_response_forwarded_for_attempt_storage": true
+    },
+    {
+      "name": "forged_incorrect_but_right_answer",
+      "server_correct": true,
+      "client_claim": "INCORRECT",
+      "raw_response_forwarded_for_attempt_storage": true
+    },
+    {
+      "name": "forged_expected_mismatch",
+      "server_correct": false,
+      "client_claim": "CORRECT",
+      "raw_response_forwarded_for_attempt_storage": true
+    }
+  ],
+  "pass": 3,
+  "real_db_tested": false,
+  "raw_response_reaches_record_attempt": true,
+  "final_grade_uses_db_resource_answer": true
+}
