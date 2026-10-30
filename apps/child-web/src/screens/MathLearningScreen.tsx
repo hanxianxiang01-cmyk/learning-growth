@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
 import { LearningChrome, LearningScenery } from "@/src/components/ui-v6/LearningChrome";
 import { LearningFeedback } from "@/src/components/ui-v6/LearningFeedback";
@@ -9,18 +9,27 @@ import { useRouter } from "next/navigation";
 import { CoachPanel, ProgressDots } from "@/src/components";
 import { TaskRenderer } from "@/src/features/task-renderer";
 import { useLearningSession } from "@/src/features/learning/useLearningSession";
+import { getLearningApi } from "@/src/lib/api";
 
 export function MathLearningScreen({
-  childId,
   sessionId,
   abilityId
 }: {
-  childId: string;
   sessionId: string;
   abilityId?: string;
 }) {
   const router = useRouter();
   const { uiVersion } = useChildUi();
+  // V1.4 游客模式（从主分支移植）：身份经 getGuest（Cookie）解析，不在 URL 里。
+  const [childId, setChildId] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    getLearningApi()
+      .getGuest()
+      .then(g => { if (alive) setChildId(g.child_id); })
+      .catch(() => { if (alive) setChildId(null); });
+    return () => { alive = false; };
+  }, []);
   const {
     state,
     setResponse,
@@ -31,18 +40,16 @@ export function MathLearningScreen({
     retryFailedOperation,
     pendingSubmission,
     snapshot
-  } = useLearningSession({ childId, sessionId, abilityId });
+  } = useLearningSession({ sessionId, abilityId });
 
   useEffect(() => {
     if (state.status === "completed") {
       const timer = setTimeout(() => {
-        router.push(
-          `/child/math/result/${sessionId}?child_id=${encodeURIComponent(childId)}`
-        );
+        router.push(`/child/math/result/${sessionId}`);
       }, 550);
       return () => clearTimeout(timer);
     }
-  }, [state.status, router, sessionId, childId]);
+  }, [state.status, router, sessionId]);
 
   const task = state.task;
 
@@ -51,7 +58,7 @@ export function MathLearningScreen({
     return <main className="page-shell v6-learning" data-testid="v6-learning-screen">
       <LearningScenery />
       <div className="v6-learning-container">
-        <LearningChrome childId={childId} completed={snapshot.tasksCompleted} />
+        <LearningChrome childId={childId ?? ""} completed={snapshot.tasksCompleted} />
         <div className="v6-learning-content">
           {state.status === "loading_task" || state.status === "idle" ? (
             <section className="surface-card loading-panel" role="status" aria-busy="true">正在准备下一项数学任务…</section>
@@ -74,7 +81,7 @@ export function MathLearningScreen({
         <header className="learning-topbar">
           <button
             className="back-button"
-            onClick={() => router.push(`/child/math?child_id=${encodeURIComponent(childId)}`)}
+            onClick={() => router.push("/child/math")}
           >
             ←
           </button>

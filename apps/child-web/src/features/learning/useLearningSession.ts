@@ -18,7 +18,8 @@ function humanizeError(err: unknown) {
 }
 
 export function useLearningSession({ childId, sessionId, abilityId }: {
-  childId: string; sessionId: string; abilityId?: string;
+  /** V1.4 游客模式（从主分支移植）：可选。不传时由 hook 自己从会话取（/v1/guest/me）。 */
+  childId?: string; sessionId: string; abilityId?: string;
 }) {
   const api = useMemo(() => getLearningApi(), []);
   const [state, dispatch] = useReducer(learningReducer, initialLearningState);
@@ -29,24 +30,42 @@ export function useLearningSession({ childId, sessionId, abilityId }: {
   // Never apply a newly edited answer to the same attempt_no.
   const pending = useRef<{ request: AttemptRequest; task: TaskInstance } | null>(null);
   const acknowledged = useRef(new Set<string>());
+  // V1.4 游客模式（从主分支移植）：身份来自服务端会话，不在 URL 里。
+  // 用 state 而不是 ref，因为 loadTask 必须在拿到 id 之后才能跑
+  //（没有 id 就发请求 → 服务端 401 → 用户看到「这一步暂时没有完成」，
+  //  而他其实什么都没做错）。
+  const [resolvedChildId, setResolvedChildId] = useState<string | null>(childId ?? null);
+
+  useEffect(() => {
+    if (resolvedChildId) return;
+    let alive = true;
+    api
+      .getGuest()
+      .then(g => { if (alive) setResolvedChildId(g.child_id); })
+      .catch(err => { if (alive) dispatch({ type: "ERROR", message: humanizeError(err) }); });
+    return () => { alive = false; };
+  }, [api, resolvedChildId]);
+
   const stats = useRef<SessionSnapshot>({
-    childId, sessionId, startedAt: Date.now(), tasksCompleted: 0, correctTasks: 0,
+    childId: resolvedChildId ?? "", sessionId, startedAt: Date.now(), tasksCompleted: 0, correctTasks: 0,
     totalAttempts: 0, hintsUsed: [], diagnosisCodes: []
   });
   // Read browser-only cache after hydration. The server and first client render agree.
   useEffect(() => {
     const saved = loadSessionSnapshot(sessionId);
-    if (saved?.childId === childId && saved.sessionId === sessionId) stats.current = saved;
-  }, [childId, sessionId]);
+    if (saved?.childId === resolvedChildId && saved.sessionId === sessionId) stats.current = saved;
+  }, [resolvedChildId, sessionId]);
   const persist = useCallback(() => { saveSessionSnapshot(stats.current); }, []);
 
   const loadTask = useCallback(async () => {
     if (loadingRef.current || submittingRef.current || hintingRef.current || pending.current) return;
+    // 没有身份就不发请求（否则 401 假失败）。
+    if (!resolvedChildId) return;
     loadingRef.current = true;
     setFailureStage(null);
     dispatch({ type: "LOAD_TASK" });
     try {
-      const task = await api.getNextTask({ child_id: childId, session_id: sessionId, subject: "math", requested_minutes: 15, ability_id: abilityId });
+      const task = await api.getNextTask({ child_id: resolvedChildId, session_id: sessionId, subject: "math", requested_minutes: 15, ability_id: abilityId });
       startedAt.current = Date.now();
       stats.current.lastAbilityId = task.ability_id;
       persist();
@@ -55,7 +74,7 @@ export function useLearningSession({ childId, sessionId, abilityId }: {
       setFailureStage("load");
       dispatch({ type: "ERROR", message: humanizeError(err) });
     } finally { loadingRef.current = false; }
-  }, [api, childId, sessionId, abilityId, persist]);
+  }, [api, resolvedChildId, sessionId, abilityId, persist]);
 
   useEffect(() => { if (state.status === "idle") void loadTask(); }, [state.status, loadTask]);
 

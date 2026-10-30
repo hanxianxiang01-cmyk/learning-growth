@@ -63,10 +63,8 @@ import { useChildUi } from "@/src/theme/ChildSkinProvider";
 import { ResultView } from "@/src/components/ui-v6/ResultView";
 
 export function MathResultScreen({
-  childId,
   sessionId
 }: {
-  childId: string;
   sessionId: string;
 }) {
   const { uiVersion } = useChildUi();
@@ -74,6 +72,9 @@ export function MathResultScreen({
   const [result, setResult] = useState<SessionResult | null>(null);
   const [status, setStatus] = useState<ResultStatus>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // V1.4 游客模式（从主分支移植）：身份经 getGuest（Cookie）解析；
+  // fallback 用 snapshot.childId；result 本身也带 child_id 可反查。
+  const [childId, setChildId] = useState<string | null>(null);
 
   const loadSequence = useRef(0);
 
@@ -92,7 +93,7 @@ export function MathResultScreen({
       const snapshot = loadSessionSnapshot(sessionId);
 
       if (snapshot) {
-        setResult(buildFallbackResult(snapshot, childId));
+        setResult(buildFallbackResult(snapshot, snapshot.childId));
         setStatus("fallback");
         setErrorMessage(
           "正式学习记录暂时没有加载成功，下面先显示本机保存的临时记录。"
@@ -107,14 +108,21 @@ export function MathResultScreen({
         );
       }
     }
-  }, [api, childId, sessionId]);
+  }, [api, sessionId]);
 
   useEffect(() => {
-    void load();
-    return () => { loadSequence.current += 1; };
-  }, [load]);
+    let alive = true;
+    api
+      .getGuest()
+      .then(g => { if (alive) setChildId(g.child_id); })
+      .catch(() => { if (alive) setChildId(null); })
+      .finally(() => { if (alive) void load(); });
+    return () => { alive = false; loadSequence.current += 1; };
+  }, [api, load]);
 
-  if (uiVersion === "v6") return <ResultView childId={childId} result={result} status={status}
+  const resolvedChildId = childId ?? result?.child_id ?? "";
+
+  if (uiVersion === "v6") return <ResultView childId={resolvedChildId} result={result} status={status}
     errorMessage={errorMessage} onReload={load} />;
 
   if (status === "loading") {
@@ -145,9 +153,7 @@ export function MathResultScreen({
 
   const recommendation = result.next_recommendation;
 
-  const nextHref =
-    recommendation?.href ??
-    `/child/math?child_id=${encodeURIComponent(childId)}`;
+  const nextHref = recommendation?.href ?? "/child/math";
 
   return (
     <main className="page-shell">
@@ -212,7 +218,7 @@ export function MathResultScreen({
 
         <a
           className="text-link centered-link"
-          href={`/child/math/growth?child_id=${encodeURIComponent(childId)}`}
+          href="/child/math/growth"
         >
           查看完整成长地图 →
         </a>

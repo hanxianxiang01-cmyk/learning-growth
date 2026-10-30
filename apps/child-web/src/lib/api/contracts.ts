@@ -477,7 +477,34 @@ export type ApiErrorBody = {
   detail?: unknown;
 };
 
+/** 每日配额状态（V1.4 方案第五章：达到上限时显示清晰提示）。从主分支移植。 */
+export type GuestQuota = {
+  date: string;
+  timezone: string;
+  limit: number;
+  used: number;
+  remaining: number;
+  exhausted: boolean;
+};
+
 export type LearningApi = {
+  /** 进入首页：有会话复用，没有就新建游客（幂等）。 */
+  bootstrapGuest(): Promise<{
+    child_id: string;
+    is_new: boolean;
+    expires_at: string;
+    retention_days: number;
+    quota: GuestQuota;
+  }>;
+  /** 当前游客身份 + 配额。 */
+  getGuest(): Promise<{
+    child_id: string;
+    expires_at: string;
+    retention_days: number;
+    quota: GuestQuota;
+  }>;
+  /** 刷新数据保留期（真实学习活动后调用）。 */
+  touchGuest(): Promise<{ child_id: string; expires_at: string | null }>;
   getProfile(childId: string): Promise<LearnerProfile>;
   getAbilities(childId: string): Promise<AbilityState[]>;
   createSession(input: {

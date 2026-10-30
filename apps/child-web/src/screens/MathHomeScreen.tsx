@@ -17,8 +17,27 @@ import {
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
 import { HomeView } from "@/src/components/ui-v6/HomeView";
+import type { LearningApi } from "@/src/lib/api/contracts";
 
-export function MathHomeScreen({ childId }: { childId: string }) {
+/**
+ * bootstrap 去重（10-29 实测修复）：dev 环境 React StrictMode 会双挂载，
+ * 两次 effect 都在第一次的 Cookie 到达前发出 bootstrap → 每次开页多造一个
+ * 孤儿游客（库中成对出现、时间戳差几十毫秒）。模块级 in-flight Promise 让
+ * 同一次页面加载内的重复挂载复用同一个请求；失败时清空以便重试。
+ * 刷新页面会重新执行模块 → 新 Promise，但此时已有 Cookie，服务端复用会话。
+ */
+let bootstrapInFlight: ReturnType<LearningApi["bootstrapGuest"]> | null = null;
+function bootstrapOnce(api: LearningApi) {
+  if (!bootstrapInFlight) {
+    bootstrapInFlight = api.bootstrapGuest().catch(err => {
+      bootstrapInFlight = null;
+      throw err;
+    });
+  }
+  return bootstrapInFlight;
+}
+
+export function MathHomeScreen() {
   const { uiVersion } = useChildUi();
   const startLock = useRef(false);
   const [reload, setReload] = useState(0);
@@ -29,6 +48,10 @@ export function MathHomeScreen({ childId }: { childId: string }) {
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // V1.4 游客模式（从主分支移植）：身份由 bootstrap 现场签发。
+  // 用 state 而非 ref 存 childId——没有 id 就发请求会 401，
+  // 用户看到「这一步暂时没有完成」但他什么都没做错。
+  const [childId, setChildId] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -36,15 +59,25 @@ export function MathHomeScreen({ childId }: { childId: string }) {
     setError(null);
     setProfile(null);
     setAbilities([]);
-    Promise.all([api.getProfile(childId), api.getAbilities(childId)])
-      .then(([p, a]) => { if (active) { setProfile(p); setAbilities(a); } })
+    bootstrapOnce(api)
+      .then(g => {
+        if (!active) return null;
+        setChildId(g.child_id);
+        return Promise.all([api.getProfile(g.child_id), api.getAbilities(g.child_id)]);
+      })
+      .then(res => {
+        if (!active || !res) return;
+        const [p, a] = res;
+        setProfile(p);
+        setAbilities(a);
+      })
       .catch(err => { if (active) setError(err instanceof Error ? err.message : "加载失败"); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, [api, childId, reload]);
+  }, [api, reload]);
 
   const start = async (challenge: ChallengeKind) => {
-    if (startLock.current || loading) return;
+    if (startLock.current || loading || !childId) return;
     startLock.current = true;
     // FE-1428：challenge 即卡片 kind；能力解析走 challengeMapping（关键词优先，app_* 兜底）
     setStarting(true);
@@ -56,9 +89,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
         requested_minutes: 15
       });
       const abilityId = resolveAbilityId(challenge, abilities);
-      const params = new URLSearchParams({
-        child_id: childId
-      });
+      const params = new URLSearchParams();
       if (abilityId) params.set("ability_id", abilityId);
       if (challenge) params.set("challenge", challenge);
       router.push(
@@ -76,6 +107,25 @@ export function MathHomeScreen({ childId }: { childId: string }) {
     abilities.find(a =>
       a.ability_id === developingId || a.name === developingId
     ) ?? profile?.active_abilities?.[0] ?? abilities[0];
+
+  // 游客身份还没签发（bootstrap 进行中或失败）：先给加载/错误面板。
+  // 没有 id 就渲染会把 null 传进链接与请求，产生 401 假失败。
+  if (!childId) {
+    return (
+      <main className="page-shell">
+        <div className="page-container">
+          {error ? (
+            <div className="error-banner">
+              {error}
+              <button type="button" onClick={() => setReload(n => n + 1)}>重新加载</button>
+            </div>
+          ) : (
+            <div className="surface-card loading-panel">正在准备入学…</div>
+          )}
+        </div>
+      </main>
+    );
+  }
 
   if (uiVersion === "v6") return <HomeView childId={childId} profile={profile} abilities={abilities}
     loading={loading} starting={starting} error={error} onStart={start} onReload={() => setReload(n => n + 1)} />;
@@ -140,7 +190,7 @@ export function MathHomeScreen({ childId }: { childId: string }) {
             profile?.observations?.[0] ??
             "最近正在积累「数量关系」和「检查验证」的学习证据"
           }
-          href={`/child/math/growth?child_id=${encodeURIComponent(childId)}`}
+          href="/child/math/growth"
         />
       </div>
     </main>

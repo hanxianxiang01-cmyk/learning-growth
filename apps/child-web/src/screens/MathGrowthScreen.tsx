@@ -10,23 +10,47 @@ import { GrowthMap } from "@/src/components/ui-v6/GrowthMap";
 import { PageFrame, PageState } from "@/src/components/ui-v6/PageFrame";
 import { ChildIcon } from "@/src/components/ui-v6/ChildIcon";
 
-export function MathGrowthScreen({ childId }: { childId: string }) {
+export function MathGrowthScreen() {
   const { uiVersion } = useChildUi();
   const [error, setError] = useState(false);
   const [reload, setReload] = useState(0);
   const api = getLearningApi();
   const [abilities, setAbilities] = useState<AbilityState[]>([]);
   const [loading, setLoading] = useState(true);
+  // V1.4 游客模式（从主分支移植）：身份经 getGuest（Cookie）解析。
+  const [childId, setChildId] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
     setLoading(true); setError(false); setAbilities([]);
-    api.getAbilities(childId)
-      .then(data => { if (active) setAbilities(data); })
+    api.getGuest()
+      .then(g => {
+        if (!active) return null;
+        setChildId(g.child_id);
+        return api.getAbilities(g.child_id);
+      })
+      .then(data => { if (active && data) setAbilities(data); })
       .catch(() => { if (active) setError(true); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, [api, childId, reload]);
+  }, [api, reload]);
+
+  if (!childId) {
+    return (
+      <main className="page-shell">
+        <div className="page-container">
+          {error ? (
+            <div className="surface-card" role="alert">
+              成长记录暂时没有加载成功。
+              <button type="button" onClick={() => setReload(n => n + 1)}>重新加载</button>
+            </div>
+          ) : (
+            <div className="surface-card loading-panel">正在读取成长记录…</div>
+          )}
+        </div>
+      </main>
+    );
+  }
 
   if (uiVersion === "v6") return <PageFrame childId={childId} active="growth">
     <header className="v6-growth-heading"><span className="v6-eyebrow"><ChildIcon name="map" />我的成长记录</span><h1>数学成长地图</h1><p>看看自己会了什么，也看看下一步可以怎么探索。</p></header>

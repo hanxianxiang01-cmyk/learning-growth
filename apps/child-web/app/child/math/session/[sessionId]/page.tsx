@@ -1,18 +1,17 @@
 import { MathLearningScreen } from "@/src/screens/MathLearningScreen";
-import { config } from "@/src/config";
 
 export default function Page({
   params,
   searchParams
 }: {
   params: { sessionId: string };
-  searchParams: { child_id?: string; ability_id?: string };
+  searchParams: { ability_id?: string };
 }) {
-  const childId = searchParams.child_id ?? config.defaultChildId;
+  // V1.4 游客模式（从主分支移植）：childId 由屏幕层经 getGuest 解析，
+  // 页面只传 sessionId / abilityId。key 用 sessionId 保证换会话重挂载。
   return (
     <MathLearningScreen
-      key={`${childId}:${params.sessionId}`}
-      childId={childId}
+      key={params.sessionId}
       sessionId={params.sessionId}
       abilityId={searchParams.ability_id}
     />

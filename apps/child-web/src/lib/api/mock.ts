@@ -487,6 +487,45 @@ function hintUiAction(task: MockTask, level: number): WorkspaceUiAction | null {
 }
 
 export class MockLearningApi implements LearningApi {
+  /**
+   * Mock 模式的游客身份（从主分支移植）。
+   *
+   * 与真实后端的行为差：真实后端在 HttpOnly Cookie 里签发高熵 token；mock
+   * 没有服务端，只能用一个进程内常量。**这不是「游客模式在 mock 下也安全」**，
+   * 而是「mock 只用于离线联调，不承载真实数据」。写清楚这一点，避免有人
+   * 拿 mock 的结论去证明隔离能力。
+   */
+  private mockGuestId = "00000000-0000-0000-0000-000000000001";
+
+  async bootstrapGuest() {
+    await wait();
+    return {
+      child_id: this.mockGuestId,
+      is_new: false,
+      expires_at: new Date(Date.now() + 7 * 86400_000).toISOString(),
+      retention_days: 7,
+      quota: mockQuota(0)
+    };
+  }
+
+  async getGuest() {
+    await wait();
+    return {
+      child_id: this.mockGuestId,
+      expires_at: new Date(Date.now() + 7 * 86400_000).toISOString(),
+      retention_days: 7,
+      quota: mockQuota(0)
+    };
+  }
+
+  async touchGuest() {
+    await wait();
+    return {
+      child_id: this.mockGuestId,
+      expires_at: new Date(Date.now() + 7 * 86400_000).toISOString()
+    };
+  }
+
   async getProfile(childId: string): Promise<LearnerProfile> {
     await wait();
     return {
@@ -713,4 +752,22 @@ export class MockLearningApi implements LearningApi {
 
 function wait(ms = 180) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * 配额快照（从主分支移植）。
+ *
+ * 刻意不做「用满即可见上限」的模拟：mock 没有服务端计数，任何本地模拟都会
+ * 让人误以为「限额在 mock 下验证过」。真实限额只能在后端 + 真实请求上验收。
+ */
+function mockQuota(used: number) {
+  const limit = 30;
+  return {
+    date: new Date().toISOString().slice(0, 10),
+    timezone: "Asia/Shanghai",
+    limit,
+    used,
+    remaining: Math.max(0, limit - used),
+    exhausted: used >= limit
+  };
 }
