@@ -31,7 +31,12 @@ jobs:
       - name: V6 pure-module and full migration inventory checks
         run: npm run child:v6:check
 
-  child-build:
+  # 两套皮肤各构建一次。job 名不能直接叫 child-build：matrix 会把 check 名
+  # 变成 "child-build (exploration-lab)"，而仓库 ruleset protect-main 要求的
+  # context 是精确的 "child-build" —— 对不上就永远 blocked。
+  # 故矩阵 job 用 child-build-matrix 承载，再由下面的 child-build 汇总成一个
+  # 具名检查点（两条 skin 任一失败，汇总 job 不跑，required check 不满足）。
+  child-build-matrix:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,6 +53,13 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npm run child:build
+
+  child-build:
+    needs: child-build-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Both skins built
+        run: echo "exploration-lab 与 healing 两套皮肤构建均已通过（见 child-build-matrix）"
 
   backend-tests:
     runs-on: ubuntu-latest
