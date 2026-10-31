@@ -45,12 +45,11 @@ export function HomeView({ childId, profile, abilities, quota, loading, starting
           <div className="v6-task-list">{CHALLENGE_CARDS.map((card, i) => <button type="button" key={card.kind} className="v6-task-entry"
             data-testid={`v6-home-${card.kind}`} disabled={disabled} onClick={() => onStart(card.kind)}>
             <span className={`v6-task-icon v6-task-icon--${i}`}><ChildIcon name={i === 0 ? "plus" : i === 1 ? "layers" : i === 2 ? "search" : i === 3 ? "flag" : "compass"} /></span>
-            <span className="v6-task-entry-copy"><strong>{card.title}</strong><small>{card.goal}</small></span><span className="v6-task-estimate">约 {card.minutes} 分钟</span><ChildIcon name="arrow" />
+            <span className="v6-task-entry-copy"><span className="v6-task-title-row"><strong>{card.title}</strong><span className="v6-task-estimate">约 {card.minutes} 分钟</span></span><small>{card.goal}</small></span><ChildIcon name="arrow" />
           </button>)}</div>
         </section>
       </div>
-      <a className="v6-map-entry" href={`/child/math/growth?child_id=${encodeURIComponent(childId)}`}><span className="v6-map-entry-icon"><ChildIcon name="map" /></span>
-        <span><strong>我的成长地图</strong><small>看看七项能力的当前表现，了解自己的成长。</small></span><ChildIcon name="arrow" /></a>
+      {/* 「我的成长地图」入口在页头导航里已有，底部不再重复一张同功能大卡。 */}
       </>}
   </PageFrame>;
 }
