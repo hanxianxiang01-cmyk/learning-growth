@@ -44,7 +44,7 @@ export function NumberLine() {
       <div className="manipulative-heading">
         <div>
           <strong>数轴跳一跳</strong>
-          <span>先找起点，再点一个数字完成一次跳步。</span>
+          <span>先找起点，再点一个数字完成一次跳步。数轴可以左右滑动。</span>
         </div>
         <div className="workspace-actions">
           <button type="button" disabled={!can("undo")} onClick={undo}>撤销</button>

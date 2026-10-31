@@ -17,6 +17,17 @@
 [data-child-ui-version="v6"] .v6-learning-header nav a { min-height:48px; display:flex; align-items:center; padding:9px 17px; border:1px solid var(--v6-edge); border-radius:16px; background:var(--cm-surface); color:var(--cm-text); text-decoration:none; font-size:16px; }
 [data-child-ui-version="v6"] .v6-learning-content { max-width:960px; margin:0 auto; display:grid; gap:20px; }
 [data-child-ui-version="v6"] .v6-task-content { min-width:0; display:grid; gap:18px; }
+/* 任何一道题都不能把整页撑宽。grid/flex 子项的自动最小尺寸默认按内容算，所以一道
+   min-width:620px 的数轴就能把 366px 的列撑到 680px：题干卡、数轴卡、提交按钮一起
+   越过右边界，再被 .v6-page 的 overflow-x:clip 直接切掉——孩子看到的是一页残缺内容，
+   连横滑都做不到。min-width:0 让固定宽度的内容在各自容器内滚动，而不是顶破版面。 */
+[data-child-ui-version="v6"] .v6-learning-content>*,
+[data-child-ui-version="v6"] .v6-task-content>*,
+[data-child-ui-version="v6"] .v6-task-content .surface-card,
+[data-child-ui-version="v6"] .v6-task-content .manipulative-card { min-width:0; }
+/* 会被横向滚动的内容给出手势提示，否则孩子只会以为右边的内容丢了。 */
+[data-child-ui-version="v6"] .number-line-board,
+[data-child-ui-version="v6"] .v6-number-line-scroll { overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; }
 [data-child-ui-version="v6"] .math-question-card { padding:24px 30px; background:var(--cm-surface); }
 [data-child-ui-version="v6"] .math-question-card .question-text { margin:0; font-size:25px; font-weight:750; line-height:1.55; overflow-wrap:anywhere; }
 [data-child-ui-version="v6"] .v6-task-content .manipulative-card { background:var(--cm-surface); background-image:none; }
