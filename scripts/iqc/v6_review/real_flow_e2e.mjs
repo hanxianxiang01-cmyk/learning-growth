@@ -62,9 +62,24 @@ const browser = await chromium.launch({ executablePath: EXEC });
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
 const page = await ctx.newPage();
 
+/**
+ * API 的边界是 `/v1/` 命名空间，不是域名。
+ * 生产验收时 `--api` 与 `--base` 同域（同源反代），只按域名前缀过滤会把 Next 的
+ * RSC 预取请求（`/child/math/session/...?_rsc=…`，导航中会被浏览器主动 abort）
+ * 记成「API 请求失败」，让 C11 变成假失败。收窄到 `/v1/` 后才既不看漏真失败、也不误报。
+ */
+const isApiUrl = (url) => {
+  if (!url.startsWith(API)) return false;
+  try {
+    return new URL(url).pathname.startsWith("/v1/");
+  } catch {
+    return false;
+  }
+};
+
 page.on("response", async r => {
   const url = r.url();
-  if (!url.startsWith(API)) return;
+  if (!isApiUrl(url)) return;
   let body = null;
   try { body = await r.json(); } catch { /* 非 JSON 响应不解析 */ }
   const rec = { method: r.request().method(), path: url.slice(API.length), status: r.status(), body };
@@ -73,13 +88,13 @@ page.on("response", async r => {
 });
 page.on("request", r => {
   const url = r.url();
-  if (!url.startsWith(API) || r.method() !== "POST") return;
+  if (!isApiUrl(url) || r.method() !== "POST") return;
   let payload = null;
   try { payload = JSON.parse(r.postData() ?? "null"); } catch { payload = r.postData(); }
   sent.push({ path: url.slice(API.length), payload });
 });
 page.on("requestfailed", r => {
-  if (r.url().startsWith(API)) problems.push({ method: r.method(), path: r.url().slice(API.length), status: "failed" });
+  if (isApiUrl(r.url())) problems.push({ method: r.method(), path: r.url().slice(API.length), status: "failed" });
 });
 
 const count = re => api.filter(x => x.method === "POST" && re.test(x.path)).length;
