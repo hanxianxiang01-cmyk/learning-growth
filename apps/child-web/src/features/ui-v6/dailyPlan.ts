@@ -1,5 +1,9 @@
 import type { AbilityState, LearnerProfile } from "@/src/lib/api/contracts";
-import { SESSION_TASK_GOAL } from "@/src/lib/learningRules";
+// 这里刻意用相对路径而不是 `@/src/...` 别名：本文件要能被
+// `node --experimental-strip-types` 直接跑（见文件末尾的说明），而 node 不认识
+// tsconfig 里的 paths 别名。用别名时脚本一进来就 ERR_MODULE_NOT_FOUND，
+// 判据等于从来没跑过。
+import { SESSION_TASK_GOAL } from "../../lib/learningRules";
 
 /**
  * 今日学习安排：**按已有学习证据**决定练什么、练几题。

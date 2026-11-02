@@ -16,6 +16,10 @@ jobs:
       - run: npm run governance:check
       - run: npm run branch:check
       - run: npm run release:check
+      # 今日安排 / 休息提醒是纯函数，不需要装依赖或构建 Next。
+      # 它守着两条产品规则：计划题数与后端 SESSION_TASK_GOAL 同源、提醒不拦人。
+      # 放在 governance 里而不是 child-typecheck，是因为它只读文本 + 跑纯函数。
+      - run: npm run rules:check
 
   child-typecheck:
     runs-on: ubuntu-latest

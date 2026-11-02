@@ -11,16 +11,43 @@
  *
  * 退出码：0 全过 / 1 有 FAIL / 2 输入缺失（模块加载不到）。
  */
+import { existsSync } from "node:fs";
+import { registerHooks } from "node:module";
 import { readFileSync } from "node:fs";
-import { planToday, MINUTES_PER_TASK, TASK_GOAL } from "../apps/child-web/src/features/ui-v6/dailyPlan.ts";
-import {
-  BREAK_MINUTES,
-  BREAK_TASKS,
-  freshState,
-  markNudged,
-  recordTask,
-  shouldNudge
-} from "../apps/child-web/src/features/learning/breakReminder.ts";
+import { fileURLToPath } from "node:url";
+
+// node 的 ESM 解析要求显式扩展名，而 TS 源码里写的是 `../../lib/learningRules`（无扩展名）。
+// 少了这一层，脚本一进来就 ERR_MODULE_NOT_FOUND —— 判据等于从来没跑过（本文件此前就是这样：
+// 文件在仓库里、注释里也写着会跑，实际谁都跑不起来）。这里只补「无扩展名时试 .ts」，不做别名映射。
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    try {
+      return nextResolve(specifier, context);
+    } catch (err) {
+      if (specifier.startsWith(".") && context.parentURL) {
+        const base = new URL(specifier, context.parentURL).href;
+        for (const suffix of [".ts", "/index.ts"]) {
+          const candidate = base + suffix;
+          if (existsSync(fileURLToPath(candidate))) return nextResolve(candidate, context);
+        }
+      }
+      throw err;
+    }
+  }
+});
+
+// 静态 import 会在上面的 hook 生效之前就被解析，所以这里必须用动态 import。
+// 加载不到就说明「判据没跑起来」，按 rc=2 报，不能混进 rc=1（那代表「跑过且有 FAIL」）。
+let dailyPlan, breakReminder;
+try {
+  dailyPlan = await import("../apps/child-web/src/features/ui-v6/dailyPlan.ts");
+  breakReminder = await import("../apps/child-web/src/features/learning/breakReminder.ts");
+} catch (err) {
+  console.error(`✗ 被测模块加载不到，判据没跑起来：${err.message}`);
+  process.exit(2);
+}
+const { planToday, MINUTES_PER_TASK, TASK_GOAL } = dailyPlan;
+const { BREAK_MINUTES, BREAK_TASKS, freshState, markNudged, recordTask, shouldNudge } = breakReminder;
 
 const results = [];
 const rec = (name, ok, detail = "") => {
@@ -124,6 +151,15 @@ const t0 = new Date(2026, 10, 1, 9, 0, 0).getTime();
 
 let s = freshState(t0);
 rec("刚开始学习时不该提醒", shouldNudge(s, t0 + 60_000).show === false);
+
+// 阈值本身是产品选择（几题算「一段」），判据钉的是机制而不是那个数字，所以下面
+// 都用 BREAK_TASKS 自己算期望值。正因如此，把阈值改成 2 这种「做两题就弹」也自洽通过，
+// 实测确认过（变异 BREAK_TASKS=3 → 16/16 全绿）。补一条下限，挡住「提醒退化成打断」。
+rec(
+  "休息阈值不能退化成做一两题就弹（下限 3 题）",
+  BREAK_TASKS >= 3,
+  `BREAK_TASKS=${BREAK_TASKS}`
+);
 
 for (let i = 0; i < BREAK_TASKS - 1; i++) s = recordTask(s, t0);
 rec(
