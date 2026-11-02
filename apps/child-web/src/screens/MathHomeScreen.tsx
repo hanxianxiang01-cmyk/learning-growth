@@ -142,11 +142,9 @@ export function MathHomeScreen() {
             <span className="muted">今天也来完成一个数学小任务</span>
             <h1>今天的数学任务</h1>
           </div>
-          <div className="header-chip">
-            {/* FE-1446：grade 口径兼容——库里存中文全称（"一年级"），mock/契约示例是数字（"2"）；
-              原拼接对前者产出"一年级年级数学"。剥掉尾缀"年级"再拼。 */}
-          {`${(profile?.grade ?? "2").replace(/年级$/, "")}年级数学`}
-          </div>
+          {/* 原来这里有一个「X年级数学」胶囊。题库没有年级字段、选题也不按年级过滤，
+              这个年级只是把 child.grade（游客写死"一年级"）显示出来，不构成任何事实。
+              与 v6 首页一致：整个产品不再宣称年级。 */}
         </header>
 
         {error && <div className="error-banner">{error}</div>}
