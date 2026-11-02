@@ -21,7 +21,7 @@ from fastapi import HTTPException
 
 from app.api.deps import assert_owns_child
 from app.services.guest import hash_token, new_token
-from app.services.guest_quota import quota_date_for
+from app.services.guest_activity import activity_date_for
 
 QA_CHILD = uuid.UUID("00000000-0000-0000-0000-000000000099")
 REAL_CHILD = uuid.UUID("00000000-0000-0000-0000-000000000001")
@@ -33,7 +33,7 @@ def test_quota_date_uses_fixed_server_timezone():
     """固定时区：同一时刻在不同客户端时区下必须得到同一个 quota_date。"""
     # 2026-10-29 15:30 UTC = 2026-10-29 23:30 北京时间（同一天）
     moment = datetime(2026, 10, 29, 15, 30, tzinfo=timezone.utc)
-    assert quota_date_for(moment, tz_name="Asia/Shanghai").isoformat() == "2026-10-29"
+    assert activity_date_for(moment, tz_name="Asia/Shanghai").isoformat() == "2026-10-29"
 
 
 def test_quota_date_crosses_day_at_server_midnight():
@@ -43,9 +43,9 @@ def test_quota_date_crosses_day_at_server_midnight():
     北京时间 0:00~8:00 的学习会被算进前一天，孩子的「今天」就错位了。
     """
     moment = datetime(2026, 10, 29, 16, 0, tzinfo=timezone.utc)
-    assert quota_date_for(moment, tz_name="Asia/Shanghai").isoformat() == "2026-10-30"
+    assert activity_date_for(moment, tz_name="Asia/Shanghai").isoformat() == "2026-10-30"
     # 同一时刻按 UTC 划分仍是 10-29 —— 证明时区参数真的起作用，不是恒等变换
-    assert quota_date_for(moment, tz_name="UTC").isoformat() == "2026-10-29"
+    assert activity_date_for(moment, tz_name="UTC").isoformat() == "2026-10-29"
 
 
 def test_quota_date_rejects_naive_datetime():
@@ -54,7 +54,7 @@ def test_quota_date_rejects_naive_datetime():
     猜错的后果是把跨日边界算错一天，且没人会发现——静默错误比报错危险。
     """
     with pytest.raises(ValueError):
-        quota_date_for(datetime(2026, 10, 29, 23, 30), tz_name="Asia/Shanghai")
+        activity_date_for(datetime(2026, 10, 29, 23, 30), tz_name="Asia/Shanghai")
 
 
 def test_quota_uses_iana_zone_object_not_fixed_offset():

@@ -21,6 +21,10 @@ export function findAbility(node: AbilityNode, abilities: AbilityState[]): Abili
   // Only explicit canonical/legacy IDs: a vague name match must not borrow another ability's data.
   return abilities.find(a => a.ability_id === node.id) ?? abilities.find(a => node.aliases.includes(a.ability_id));
 }
+/** 空态只有一句话。以前这里并存「待了解 / 尚待了解 / 暂无记录 / 暂无数据」四种说法，
+ *  同一件事说成四种，孩子会以为是四种不同的失败（V1.4 设计 G-02）。 */
+export const UNEXPLORED_TAG = "尚待探索";
+
 export function presentAbility(ability?: AbilityState) {
   const hasLevel = !!ability && Number.isFinite(ability.level) && ability.level >= 0;
   const hasCount = !!ability && Number.isInteger(ability.evidence_count) && ability.evidence_count >= 0;
@@ -28,10 +32,17 @@ export function presentAbility(ability?: AbilityState) {
   const trend = ["up", "stable", "watch", "down_review"].includes(ability?.trend ?? "")
     ? ability?.trend : undefined;
   const base = getAbilityStatusPresentation(trend);
+  // 「已探索」= 有可核验的学习证据。它不是等级、不是完成百分比，也不按练习次数推。
+  // count 为 null（服务端没返回这一项）与 0（返回了但没有证据）都算未探索，
+  // 但计数本身要保留差异：把 null 说成「0 条」是替服务端编数据。
+  const explored = count !== null && count > 0;
   return {
-    level: hasLevel ? `L${ability!.level}` : "待了解", count,
-    status: !ability || count === null ? "尚待了解" : count === 0 ? "暂无记录" : base.label,
-    description: !ability || count === null ? "有了更多学习记录后，再回来看看。" : count === 0 ? "这里暂时还没有可查看的学习记录。" : base.description,
-    stable: count !== null && count > 0 && ability?.trend === "stable"
+    level: explored && hasLevel ? `L${ability!.level}` : "",
+    count,
+    status: explored ? base.label : UNEXPLORED_TAG,
+    tag: explored ? base.label : UNEXPLORED_TAG,
+    description: explored ? base.description : "这一项还没有学习记录。开始第一个小任务后，这里会慢慢有内容。",
+    stable: explored && ability?.trend === "stable",
+    explored
   };
 }

@@ -40,7 +40,7 @@ export function useLearningSession({ childId, sessionId, abilityId }: {
     if (resolvedChildId) return;
     let alive = true;
     api
-      .getGuest()
+      .ensureGuest()
       .then(g => { if (alive) setResolvedChildId(g.child_id); })
       .catch(err => { if (alive) dispatch({ type: "ERROR", message: humanizeError(err) }); });
     return () => { alive = false; };

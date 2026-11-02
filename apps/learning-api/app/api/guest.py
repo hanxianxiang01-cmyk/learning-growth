@@ -27,7 +27,7 @@ from app.services.guest import (
     touch_activity,
 )
 from app.services.guest_cleanup import list_recent_runs, run_cleanup
-from app.services.guest_quota import usage_summary
+from app.services.guest_activity import activity_summary
 
 router = APIRouter(prefix="/guest", tags=["guest"])
 
@@ -53,7 +53,7 @@ async def bootstrap(
         "last_activity_at": identity.last_activity_at.isoformat(),
         "expires_at": identity.expires_at.isoformat(),
         "retention_days": get_settings().guest_retention_days,
-        "quota": await usage_summary(db, child_id=guest.child_id),
+        "activity": await activity_summary(db, child_id=guest.child_id),
     }
 
 
@@ -62,7 +62,7 @@ async def me(
     guest: GuestContext = Depends(require_guest),
     db: AsyncSession = Depends(get_db),
 ):
-    """当前游客身份 + 配额。前端用它替代原来的 ?child_id= 取身份。"""
+    """当前游客身份 + 今日活动摘要。前端用它替代原来的 ?child_id= 取身份。"""
     identity = await get_identity(db, child_id=guest.child_id)
     if identity is None:
         raise HTTPException(status_code=401, detail="游客会话无效或已过期")
@@ -72,7 +72,7 @@ async def me(
         "last_activity_at": identity.last_activity_at.isoformat(),
         "expires_at": identity.expires_at.isoformat(),
         "retention_days": get_settings().guest_retention_days,
-        "quota": await usage_summary(db, child_id=guest.child_id),
+        "activity": await activity_summary(db, child_id=guest.child_id),
     }
 
 

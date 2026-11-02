@@ -24,6 +24,13 @@ export interface ChallengeCardDef {
   icon: string;
   title: string;
   goal: string;
+  /**
+   * 首页 3+2 磁贴上的短名称与短说明（V1.4 移动端设计）。
+   * 磁贴只有 105 宽，`title` 里的「挑战」后缀会把名称挤成两行，
+   * 长句 goal 更放不下——所以磁贴专用一套短文案，内测展示台仍用 title/goal。
+   */
+  tileTitle: string;
+  tileGoal: string;
   minutes: number;
   difficulty: 1 | 2 | 3 | 4 | 5;
   /** 名称关键词（在后端/mock 能力列表里解析真实 ability_id） */
@@ -38,6 +45,8 @@ export const CHALLENGE_CARDS: ChallengeCardDef[] = [
     icon: "🔢",
     title: "数量关系挑战",
     goal: "通过摆一摆、画一画理解题目关系",
+    tileTitle: "数量关系",
+    tileGoal: "发现数量的联系",
     minutes: 8,
     difficulty: 2,
     keywords: ["数量关系"],
@@ -48,6 +57,8 @@ export const CHALLENGE_CARDS: ChallengeCardDef[] = [
     icon: "📊",
     title: "建模表征挑战",
     goal: "用线段图、阵列、估算把题目画出来",
+    tileTitle: "建模表征",
+    tileGoal: "用图、表等表达",
     minutes: 8,
     difficulty: 2,
     keywords: ["建模表征", "建模"],
@@ -58,6 +69,8 @@ export const CHALLENGE_CARDS: ChallengeCardDef[] = [
     icon: "🔍",
     title: "读题理解挑战",
     goal: "读清题目问的是什么、位值与排序",
+    tileTitle: "读题理解",
+    tileGoal: "读清题意与信息",
     minutes: 6,
     difficulty: 1,
     keywords: ["读题理解", "读题"],
@@ -68,6 +81,8 @@ export const CHALLENGE_CARDS: ChallengeCardDef[] = [
     icon: "🧾",
     title: "条件识别挑战",
     goal: "找出竖式、图形里的关键条件",
+    tileTitle: "条件识别",
+    tileGoal: "找出关键条件",
     minutes: 6,
     difficulty: 2,
     keywords: ["条件识别", "条件"],
@@ -78,6 +93,8 @@ export const CHALLENGE_CARDS: ChallengeCardDef[] = [
     icon: "🧩",
     title: "策略挑战",
     goal: "尝试用不同方法解决同一个问题",
+    tileTitle: "策略挑战",
+    tileGoal: "尝试不同方法",
     minutes: 6,
     difficulty: 2,
     keywords: ["策略"],
