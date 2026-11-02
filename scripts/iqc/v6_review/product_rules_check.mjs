@@ -146,10 +146,18 @@ rec("R6 首页 1366×768 仍是一屏", homeFit.h <= homeFit.vh + 1, `内容 ${h
   rec("R9b 磁贴名称与设计一致（不带「挑战」后缀，也不改名）", JSON.stringify(gotNames) === JSON.stringify(wantNames), gotNames.join("/"));
 }
 
-// 年级写「二年级」不是「2年级」：数字直出读起来像期号。
+// 产品不宣称年级。
+// 上一版 R10 断言的是「必须写二年级、不能写 2年级」——但它只在 mock 数据（grade="2"）下成立。
+// 真实库里 child.grade 存的是中文全称（游客还被写死成「一年级」），
+// 拼出来是「一年级年级数学」；而题库根本没有年级字段、选题也不按年级过滤。
+// 所以正确的判据不是「写对年级」，而是「不要宣称年级」——这一条与数据形态无关，
+// 同时用 R10b 钉住「整行没被删掉」，避免空集假绿。
 {
-  const t = await home.locator("body").innerText();
-  rec("R10 年级用中文数字（二年级，不是 2年级）", /二年级数学/.test(t) && !/\d年级数学/.test(t), (t.match(/.{0,3}年级数学/) ?? ["(无)"])[0]);
+  const body = await home.locator("body").innerText();
+  const note = await home.locator(".v6-home-record-note").innerText();
+  const hit = body.match(/.{0,6}年级.{0,6}/);
+  rec("R10 首页不宣称年级（页面无「X年级数学」）", !/年级数学/.test(body), hit ? hit[0] : "(无)");
+  rec("R10b 学习时长提示仍在（不是把整行删掉）", /建议每次学习/.test(note), note.replace(/\s+/g, " ").slice(0, 40));
 }
 
 await home.screenshot({ path: path.join(OUT, "home-1366.png") });

@@ -7,8 +7,6 @@ import { planToday } from "@/src/features/ui-v6/dailyPlan";
 import { ChildIcon } from "./ChildIcon";
 import { HeroArt, PageFrame, PageState } from "./PageFrame";
 
-const GRADE_CN: Record<string, string> = { "1": "一", "2": "二", "3": "三", "4": "四", "5": "五", "6": "六" };
-
 export function HomeView({ childId, profile, abilities, activity, loading, starting, error, onStart, onReload }: {
   childId: string; profile: LearnerProfile | null; abilities: AbilityState[];
   activity: GuestActivity | null;
@@ -72,8 +70,9 @@ export function HomeView({ childId, profile, abilities, activity, loading, start
               })}</div>
             </>}
           {/* 真实作答数只作记录：它说明「今天动过手」，不代表掌握程度。 */}
+          {/* 不再显示年级：题库没有年级字段、选题也不按年级过滤，宣称一个年级
+              等于对家长做了一个系统并不支持的事实陈述。设计包 V1.4 也没有这句。 */}
           <p className="v6-home-record-note" data-testid="v6-home-answered">
-            {profile?.grade ? `${GRADE_CN[String(profile.grade)] ?? String(profile.grade)}年级数学 · ` : ""}
             {activity && activity.answered_today > 0 ? `今天已经答了 ${activity.answered_today} 道题 · ` : ""}
             建议每次学习 10–15 分钟
           </p>
