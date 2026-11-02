@@ -113,7 +113,7 @@ export function MathResultScreen({
   useEffect(() => {
     let alive = true;
     api
-      .getGuest()
+      .ensureGuest()
       .then(g => { if (alive) setChildId(g.child_id); })
       .catch(() => { if (alive) setChildId(null); })
       .finally(() => { if (alive) void load(); });

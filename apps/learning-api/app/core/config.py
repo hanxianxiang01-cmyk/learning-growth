@@ -45,10 +45,18 @@ class Settings(BaseSettings):
     # 表现为「每次刷新都变新游客」。生产 HTTPS 部署时置 true。
     guest_cookie_secure: bool = False
 
-    # 每日题数上限（方案 1.2 / 第五章「每天最多 30 道题」）。
-    guest_daily_task_limit: int = 30
+    # 每日题数**不再设上限**（2026-11-01 产品决策：取消每日 30 题硬限制）。
+    # 学习量改由「本轮任务」决定，孩子想多练一会儿不再被 429 挡住。
+    # 注意：这里不要重新引入 daily limit —— 防滥用靠下面的频率限流 +
+    # submission_id 幂等 + 台账主键去重，而不是靠限制孩子一天能学多少。
 
-    # 每日配额与保留期换算的**固定时区**（方案第五章「每日计数的统计时区应固定」）。
+    # 接口限流（滑动窗口，按 child_id 计）。阈值是「防脚本刷接口」的量级，
+    # 不是学习量限制：正常作答 1 分钟到不了 20 次提交，孩子不会撞到。
+    submit_rate_limit_per_minute: int = 20
+    next_task_rate_limit_per_minute: int = 40
+
+    # 活动统计与保留期换算的**固定时区**（原「每日计数」口径，现只用于
+    # 「今天做了几道题」这类真实作答数展示，不再参与准入判断）。
     # 用 IANA 名称而非 offset，夏令时地区也不会漂。
     guest_quota_timezone: str = "Asia/Shanghai"
 

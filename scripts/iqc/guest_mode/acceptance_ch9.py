@@ -10,7 +10,7 @@
   1 无需注册登录即可开始学习
   2 每位游客拥有独立且有效的身份
   3 服务端验证身份并隔离个人学习数据
-  4 每日 30 题限制真实生效
+  4 每日题数硬限制已取消（2026-11-01 产品决策），接口限流仍在
   5 7 天数据保存与清理机制真实运行
   6 游客会话过期或失效后不能访问旧数据
   7 原有学习流程回归通过
@@ -22,7 +22,7 @@
     DATABASE_URL=postgresql+psycopg://user:CHANGE_ME@HOST:PORT/DB \
     ~/.workbuddy/binaries/python/envs/learning-engine/bin/python scripts/iqc/guest_mode/acceptance_ch9.py
 可选：
-    IQC_QUOTA_LIMIT=3      # 先用小配额验证链路（默认 30，即方案真实值）
+    IQC_SUBMIT_RATE_LIMIT=200  # 提交频率上限（默认 200，让 35 连击不被限流打断）
     IQC_CLEANUP_INTERVAL=5 # lifespan 清理循环间隔秒（默认 5，便于观察到真实运行）
 """
 from __future__ import annotations
@@ -63,10 +63,14 @@ def main() -> int:
         print("[rc=2] 未设 DATABASE_URL（凭据只走环境变量，不落文件）")
         return 2
 
-    quota_limit = int(os.environ.get("IQC_QUOTA_LIMIT", "30"))
+    submit_rate_limit = int(os.environ.get("IQC_SUBMIT_RATE_LIMIT", "200"))
     interval = int(os.environ.get("IQC_CLEANUP_INTERVAL", "5"))
     # 必须在 import app 之前设，Settings 在 import 期就实例化
-    os.environ["GUEST_DAILY_TASK_LIMIT"] = str(quota_limit)
+    # 每日题数上限已取消，这里只把频率限流阈值调高，够 35 连击跑完
+    os.environ["SUBMIT_RATE_LIMIT_PER_MINUTE"] = str(submit_rate_limit)
+    # 取题也要调高：35 连击要 35 次 next_task，默认 40/分 会被前面的用例挤爆，
+    # 那会在「验证没有每日上限」的地方报出一个假 429（假失败盖住真结论）。
+    os.environ["NEXT_TASK_RATE_LIMIT_PER_MINUTE"] = str(submit_rate_limit)
     os.environ["GUEST_CLEANUP_INTERVAL_SECONDS"] = str(interval)
     os.environ["GUEST_RETENTION_DAYS"] = "7"
     os.environ["SELECTION_TRACE_ENABLED"] = "true"
@@ -79,14 +83,13 @@ def main() -> int:
     from app.core.config import get_settings
     from app.core.database import AsyncSessionLocal
     from app.main import app
-    from app.services import guest_quota
     from app.services.guest_cleanup import purge_one_guest, run_cleanup
     from sqlalchemy import text
 
     get_settings.cache_clear()
     st = get_settings()
     banner("配置（本轮验收实际生效值）")
-    print(f"  guest_daily_task_limit      = {st.guest_daily_task_limit}")
+    print(f"  submit/next_task 限流            = {st.submit_rate_limit_per_minute}/{st.next_task_rate_limit_per_minute}（每日题数上限已取消）")
     print(f"  guest_retention_days        = {st.guest_retention_days}")
     print(f"  guest_quota_timezone        = {st.guest_quota_timezone}")
     print(f"  guest_cookie_secure         = {st.guest_cookie_secure}（本地 http 必须 False）")
@@ -122,7 +125,7 @@ def main() -> int:
     print("\n验收前计数:", json.dumps(counts_before, ensure_ascii=False))
 
     def _quota_used(child_id: str) -> int:
-        """A 当日已计入配额的题数（guest_daily_quota 行数，主键幂等）。"""
+        """A 当日真实作答过的题数（guest_daily_quota 行数，主键幂等）。"""
         import psycopg
         u = os.environ["DATABASE_URL"].replace("postgresql+psycopg://", "postgresql://")
         with psycopg.connect(u, autocommit=True) as cc, cc.cursor() as cu:
@@ -232,17 +235,15 @@ def main() -> int:
                 rec("3.9 A 自己仍能读自己的 session（隔离未误伤本人）",
                     rOwn.status_code == 200, f"status={rOwn.status_code}")
 
-            banner(f"验收 4：每日 {quota_limit} 题限制真实生效")
-            # **不清台账**：3.3 节替 A 提交的那一题（tidA）应当继续算数——
-            # 它正是 4.4 需要的「已计过账的老题」。清掉会让 4.4 变成假验证
-            # （拿一道没计过账的题去测「老题放行」，配额本就该拒它）。
-            # 4.1 改为断言「累计达到上限」，而不是「本循环成功 N 题」。
+            banner("验收 4：每日题数硬限制已取消，接口限流仍在")
+            # 2026-11-01 产品决策：取消「每天最多 30 道题」。判据随之反转——
+            # 以前是「第 31 题必须被 429」，现在是「连续 35 题一次都不许被 429」。
+            # 只反转一半（既不看旧上限、也不验新行为）会让这一段永远绿，等于没验。
             used_before = _quota_used(str(gidA))
             print(f"        循环前 A 已计入 {used_before} 题（来自 3.3 节）")
             used = 0
-            denied = None
-            # 复用 A 的 session，连续取题+提交直到被拒
-            for i in range(quota_limit + 3):
+            blocked = None
+            for i in range(35):
                 rTi = client.post("/v1/learning/tasks/next", json={"session_id": sidA, "subject": "math"})
                 if rTi.status_code != 200:
                     print(f"        第 {i+1} 次取题失败 status={rTi.status_code} {rTi.text[:120]}")
@@ -254,7 +255,7 @@ def main() -> int:
                 rS2 = client.post("/v1/learning/attempts",
                                   json={"task_instance_id": tid, "attempt_no": 1, "response": {}})
                 if rS2.status_code == 429:
-                    denied = rS2
+                    blocked = rS2
                     print(f"        第 {i+1} 次提交被拒 429，本循环成功 {used} 题")
                     break
                 if rS2.status_code != 200:
@@ -262,32 +263,47 @@ def main() -> int:
                     break
                 used += 1
             total_used = used_before + used
-            rec(f"4.1 累计恰好 {quota_limit} 题后触发 429（不多不少）",
-                total_used == quota_limit and denied is not None,
-                f"循环前 {used_before} + 本循环 {used} = {total_used}（上限 {quota_limit}），"
-                f"429={'已触发' if denied else '未触发'}")
-            if denied is not None:
-                d = denied.json()
-                det = d.get("detail", {})
-                rec("4.2 429 带业务码 LE-4291（前端可据此显示提示）",
-                    isinstance(det, dict) and det.get("code") == "LE-4291",
-                    f"detail={str(det)[:200]}")
-                rec("4.3 429 响应含配额摘要（used/limit，可解释）",
-                    isinstance(det, dict) and "quota" in det,
-                    f"quota={str(det.get('quota'))[:160]}")
-                # 4.5 文案里的题数必须与配置同源（曾硬编码「30」，配额改小就说谎）
-                q = det.get("quota") or {}
-                msg = det.get("message", "")
-                rec("4.5 429 提示语中的题数 == quota.limit（文案与配置同源）",
-                    str(q.get("limit")) in msg, f"message={msg!r} limit={q.get('limit')}")
+            rec("4.1 连续 35 题提交，一次都没有被「今天够了」挡住（旧上限 30 已取消）",
+                blocked is None and used >= 30,
+                f"循环前 {used_before} + 本循环 {used} = {total_used}，"
+                f"429={'出现了（不该有）' if blocked else '未出现'}")
+            rec("4.2 真实作答数照常累加（台账只记数量，不判准入）",
+                total_used == used_before + used and used > 0,
+                f"guest_daily_quota 行数 = {total_used}")
+            rec("4.3 第 31 题之后的提交不再带 LE-4291（该业务码已从服务端移除）",
+                blocked is None,
+                "blocked=None" if blocked is None else f"detail={blocked.text[:160]}")
 
-            # 同一题重试不应被配额误拒（判定顺序：先看是不是老题）
+            # 4.4 限流接线：把 limiter 打成必抛，提交必须返回 429 + LE-4292。
+            # 不这样做的话，「限流还在」只是我们对代码的印象，不是观察到的事实。
+            from app.api import learning as _learning_api
+            from app.services import rate_limit as _rl
+
+            origin = _rl.check
+
+            def _always_limited(**_kw):
+                raise _rl.RateLimited(30)
+
+            _rl.check = _always_limited
+            try:
+                rTi = client.post("/v1/learning/tasks/next", json={"session_id": sidA, "subject": "math"})
+                tidX = rTi.json().get("task_instance_id") if rTi.status_code == 200 else None
+                rLimited = client.post("/v1/learning/attempts",
+                                       json={"task_instance_id": tidX, "attempt_no": 1, "response": {}})
+            finally:
+                _rl.check = origin
+            det = (rLimited.json().get("detail") or {}) if rLimited.status_code == 429 else {}
+            rec("4.4 接口限流仍生效：超频返回 429 + LE-4292（不是配额码）",
+                rLimited.status_code == 429 and isinstance(det, dict) and det.get("code") == "LE-4292",
+                f"status={rLimited.status_code} detail={str(det)[:160]}")
+
+            # 限流恢复后同一题重试必须正常（限流是「等一会儿」，不是封禁）
             if tidA:
                 rRetry = client.post("/v1/learning/attempts",
                                      json={"task_instance_id": tidA, "attempt_no": 9, "response": {}})
-                rec("4.4 已满配额时，重做「已计过的老题」不被 429 误拒",
+                rec("4.5 限流窗口过后重试照常放行（限流不等于封禁）",
                     rRetry.status_code != 429,
-                    f"status={rRetry.status_code}（老题应放行或走判分，不是配额拒绝）")
+                    f"status={rRetry.status_code}")
 
             banner("验收 5：7 天数据保存与清理机制真实运行")
             # lifespan 的清理循环应已按 interval 跑过（guest_cleanup_run 有行）

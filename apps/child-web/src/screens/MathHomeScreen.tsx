@@ -8,7 +8,7 @@ import {
   resolveAbilityId,
   type ChallengeKind
 } from "@/src/lib/challengeMapping";
-import type { AbilityState, GuestQuota, LearnerProfile } from "@/src/lib/api/contracts";
+import type { AbilityState, GuestActivity, LearnerProfile } from "@/src/lib/api/contracts";
 import {
   GrowthEntryCard,
   MathTaskCard,
@@ -52,9 +52,9 @@ export function MathHomeScreen() {
   // 用 state 而非 ref 存 childId——没有 id 就发请求会 401，
   // 用户看到「这一步暂时没有完成」但他什么都没做错。
   const [childId, setChildId] = useState<string | null>(null);
-  // V1.4 每日配额：bootstrap 一次就带回来了，之前只取了 child_id 丢掉 quota，
-  // 导致 V6 首页看不到"今日剩余 N 题"。产品规则是每日 30 题，孩子需要看见。
-  const [quota, setQuota] = useState<GuestQuota | null>(null);
+  // 今日活动摘要：bootstrap 一次就带回来了。只用于展示「今天已经答了几道」，
+  // 不参与任何准入判断（每日 30 题上限已于 2026-11-01 取消）。
+  const [activity, setActivity] = useState<GuestActivity | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -66,7 +66,7 @@ export function MathHomeScreen() {
       .then(g => {
         if (!active) return null;
         setChildId(g.child_id);
-        setQuota(g.quota);
+        setActivity(g.activity);
         return Promise.all([api.getProfile(g.child_id), api.getAbilities(g.child_id)]);
       })
       .then(res => {
@@ -131,7 +131,7 @@ export function MathHomeScreen() {
     );
   }
 
-  if (uiVersion === "v6") return <HomeView childId={childId} profile={profile} abilities={abilities} quota={quota}
+  if (uiVersion === "v6") return <HomeView childId={childId} profile={profile} abilities={abilities} activity={activity}
     loading={loading} starting={starting} error={error} onStart={start} onReload={() => setReload(n => n + 1)} />;
 
   return (

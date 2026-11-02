@@ -14,6 +14,7 @@ import type {
   TaskResponse,
   WorkspaceUiAction
 } from "./contracts";
+import { SESSION_TASK_GOAL } from "@/src/lib/learningRules";
 
 type MockTask = TaskInstance & {
   __answer: string;
@@ -448,8 +449,8 @@ const sessionStats = new Map<string, MockSessionStats>();
 const taskInstanceMeta = new Map<string, { task: MockTask; sessionId: string }>();
 const attemptMeta = new Map<string, { task: MockTask; sessionId: string }>();
 
-// 一次 session 的目标任务数（与后端 SESSION_TASK_GOAL 对齐）
-const SESSION_TASK_GOAL = 3;
+// 一次 session 的目标任务数：来自 src/lib/learningRules.ts，与后端同源，别在这里另写一份
+
 
 function uuid() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -497,6 +498,42 @@ export class MockLearningApi implements LearningApi {
    */
   private mockGuestId = "00000000-0000-0000-0000-000000000001";
 
+  /**
+   * 「今天真实作答了几道」的 mock 版。
+   *
+   * 为什么不写死 0：写死 0 会让「今天已经答了 N 道」这条文案在 mock 下永远不渲染，
+   * 判据只能验「展示位存在」，看不出渲染分支到底通不通。用按题去重、按天重置的
+   * 台账（与后端 guest_daily_quota 同语义）才有得验。
+   * 注意 mock 只用于离线联调，它证明不了服务端计数正确——那由 pytest 与验收脚本负责。
+   */
+  private static ANSWERED_KEY = "iqc:mock-answered";
+
+  private answeredToday(): number {
+    if (typeof window === "undefined") return 0;
+    try {
+      const raw = window.localStorage.getItem(MockLearningApi.ANSWERED_KEY);
+      if (!raw) return 0;
+      const saved = JSON.parse(raw) as { date: string; taskIds: string[] };
+      return saved.date === new Date().toISOString().slice(0, 10) ? saved.taskIds.length : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  private recordAnswered(taskInstanceId: string): void {
+    if (typeof window === "undefined") return;
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      const raw = window.localStorage.getItem(MockLearningApi.ANSWERED_KEY);
+      const saved = raw ? (JSON.parse(raw) as { date: string; taskIds: string[] }) : null;
+      const taskIds = saved && saved.date === today ? saved.taskIds : [];
+      if (!taskIds.includes(taskInstanceId)) taskIds.push(taskInstanceId);
+      window.localStorage.setItem(MockLearningApi.ANSWERED_KEY, JSON.stringify({ date: today, taskIds }));
+    } catch {
+      // 隐私模式写不进去：计数退化，但不该把学习页搞崩
+    }
+  }
+
   async bootstrapGuest() {
     await wait();
     return {
@@ -504,7 +541,7 @@ export class MockLearningApi implements LearningApi {
       is_new: false,
       expires_at: new Date(Date.now() + 7 * 86400_000).toISOString(),
       retention_days: 7,
-      quota: mockQuota(0)
+      activity: mockActivity(this.answeredToday())
     };
   }
 
@@ -514,8 +551,13 @@ export class MockLearningApi implements LearningApi {
       child_id: this.mockGuestId,
       expires_at: new Date(Date.now() + 7 * 86400_000).toISOString(),
       retention_days: 7,
-      quota: mockQuota(0)
+      activity: mockActivity(this.answeredToday())
     };
+  }
+
+  /** mock 里永远有身份，与 http 实现同样的契约：没有会话就签发。 */
+  async ensureGuest() {
+    return this.getGuest();
   }
 
   async touchGuest() {
@@ -601,6 +643,8 @@ export class MockLearningApi implements LearningApi {
 
   async submitAttempt(input: AttemptRequest): Promise<AttemptResult> {
     await wait();
+    // 与后端同口径：判分这一下才计一题，取题不计
+    this.recordAnswered(input.task_instance_id);
     const meta = taskInstanceMeta.get(input.task_instance_id) ?? { task: taskBank[0], sessionId: "" };
     const stats = sessionStats.get(meta.sessionId);
 
@@ -755,19 +799,15 @@ function wait(ms = 180) {
 }
 
 /**
- * 配额快照（从主分支移植）。
+ * 今日活动摘要（mock 版）。
  *
- * 刻意不做「用满即可见上限」的模拟：mock 没有服务端计数，任何本地模拟都会
- * 让人误以为「限额在 mock 下验证过」。真实限额只能在后端 + 真实请求上验收。
+ * mock 没有服务端台账，`answered_today` 只是一个静态值，不参与任何判断——
+ * 每日题数上限已在 2026-11-01 取消，这里也不再模拟「快用完了」。
  */
-function mockQuota(used: number) {
-  const limit = 30;
+function mockActivity(used: number) {
   return {
     date: new Date().toISOString().slice(0, 10),
     timezone: "Asia/Shanghai",
-    limit,
-    used,
-    remaining: Math.max(0, limit - used),
-    exhausted: used >= limit
+    answered_today: used
   };
 }

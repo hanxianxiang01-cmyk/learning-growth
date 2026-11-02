@@ -483,14 +483,18 @@ export type ApiErrorBody = {
   detail?: unknown;
 };
 
-/** 每日配额状态（V1.4 方案第五章：达到上限时显示清晰提示）。从主分支移植。 */
-export type GuestQuota = {
+/**
+ * 今日学习活动摘要。
+ *
+ * 注意这里**没有** limit / remaining / exhausted：2026-11-01 产品决策取消了
+ * 「每天最多 30 道题」，服务端不再有配额这个概念。留一个 `remaining: 999999`
+ * 之类的字段会让下一个人以为上限还在、只是很大——所以类型上就不给它位置。
+ * 「今天做了几道」只是真实记录，不是掌握程度。
+ */
+export type GuestActivity = {
   date: string;
   timezone: string;
-  limit: number;
-  used: number;
-  remaining: number;
-  exhausted: boolean;
+  answered_today: number;
 };
 
 export type LearningApi = {
@@ -500,14 +504,25 @@ export type LearningApi = {
     is_new: boolean;
     expires_at: string;
     retention_days: number;
-    quota: GuestQuota;
+    activity: GuestActivity;
   }>;
   /** 当前游客身份 + 配额。 */
   getGuest(): Promise<{
     child_id: string;
     expires_at: string;
     retention_days: number;
-    quota: GuestQuota;
+    activity: GuestActivity;
+  }>;
+  /**
+   * 内页身份：有会话就用，没有就现场签发一个。
+   * 内页可以被直接打开（书签、分享链接、Cookie 过了保留期），只调 getGuest 会 401，
+   * 页面就只剩一张错误卡——孩子什么都没做错，不该看到「加载失败」。
+   */
+  ensureGuest(): Promise<{
+    child_id: string;
+    expires_at: string;
+    retention_days: number;
+    activity: GuestActivity;
   }>;
   /** 刷新数据保留期（真实学习活动后调用）。 */
   touchGuest(): Promise<{ child_id: string; expires_at: string | null }>;

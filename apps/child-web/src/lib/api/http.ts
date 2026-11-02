@@ -3,7 +3,7 @@ import type {
   ApiErrorBody,
   AttemptRequest,
   AttemptResult,
-  GuestQuota,
+  GuestActivity,
   HintResponse,
   LearnerProfile,
   LearningApi,
@@ -32,6 +32,15 @@ export class LearningApiError extends Error {
 type RawTaskInstance = Omit<TaskInstance, "ui_schema"> & {
   ui_schema: unknown;
 };
+
+type GuestIdentity = Awaited<ReturnType<LearningApi["getGuest"]>>;
+
+/**
+ * ensureGuest 的去重闸门（模块级）。
+ * StrictMode 双挂载会让两个 effect 同时走到「没有会话」，各自发一次 bootstrap，
+ * 于是同一次打开页面造出两个游客（库里成对出现、时间戳差几十毫秒）。首页当初就栽过。
+ */
+let ensureGuestInFlight: Promise<GuestIdentity> | null = null;
 
 export class HttpLearningApi implements LearningApi {
   constructor(
@@ -88,18 +97,47 @@ export class HttpLearningApi implements LearningApi {
       is_new: boolean;
       expires_at: string;
       retention_days: number;
-      quota: GuestQuota;
+      activity: GuestActivity;
     }>("/v1/guest/bootstrap", { method: "POST" });
   }
 
-  /** 当前游客身份 + 配额。用它替代原来的 ?child_id= 取身份。 */
+  /** 当前游客身份 + 今日活动摘要。用它替代原来的 ?child_id= 取身份。 */
   getGuest() {
     return this.request<{
       child_id: string;
       expires_at: string;
       retention_days: number;
-      quota: GuestQuota;
+      activity: GuestActivity;
     }>("/v1/guest/me");
+  }
+
+  /**
+   * 内页身份：有会话就用，没有就现场签发。
+   * 内页可以被直接打开（书签、分享链接、Cookie 过了 7 天保留期、清过缓存），
+   * 此时 `/v1/guest/me` 是 401。以前内页只调 getGuest，结果是孩子看到一张错误卡；
+   * 401 不是「加载失败」，而是「还没有身份」，补一次 bootstrap 就好。
+   * 401/404 之外的错误仍然抛出（网络断开、5xx 不该被遮成「重新入学」）。
+   */
+  ensureGuest(): Promise<GuestIdentity> {
+    if (ensureGuestInFlight) return ensureGuestInFlight;
+    const run = this.getGuest().catch(err => {
+      if (err instanceof LearningApiError && (err.status === 401 || err.status === 404)) {
+        return this.bootstrapGuest().then(b => ({
+          child_id: b.child_id,
+          expires_at: b.expires_at,
+          retention_days: b.retention_days,
+          activity: b.activity
+        }));
+      }
+      throw err;
+    });
+    // 只拦「同一瞬间」的重复调用：落在 inflight 期间复用，落定后清空，
+    // 这样以后 Cookie 真过期了还能重新签发一次（缓存成永久身份才是新 bug）。
+    ensureGuestInFlight = run.then(
+      v => { ensureGuestInFlight = null; return v; },
+      e => { ensureGuestInFlight = null; throw e; }
+    );
+    return ensureGuestInFlight;
   }
 
   /** 刷新保留期。只应在真实学习活动后调用，不要挂在页面挂载上。 */

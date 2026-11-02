@@ -21,7 +21,7 @@ from app.api.deps import GuestContext, assert_owns_child, require_guest
 from app.core.config import get_settings
 from app.core.database import get_db
 from app.core.qa import is_qa_child
-from app.services import guest_quota
+from app.services import guest_activity, rate_limit
 from app.services.guest import touch_activity
 from app.services.learning import (
     assign_next_task,
@@ -34,6 +34,26 @@ from app.services.session_result import get_session_result
 from app.services.turn_service import SubmissionConflict
 
 router = APIRouter(prefix="/learning", tags=["learning"])
+
+
+def _enforce_rate_limit(bucket: str, child_id, limit: int) -> None:
+    """接口频率限流（LE-4292）。**不是学习量限制**——等几十秒就能继续。
+
+    与已取消的每日 30 题（LE-4291）区别写在 services/rate_limit.py 顶部：
+    孩子学得多不是滥用，脚本一秒打 200 次才是。
+    """
+    try:
+        rate_limit.check(bucket=bucket, key=str(child_id), limit=limit)
+    except rate_limit.RateLimited as exc:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "code": "LE-4292",
+                "message": "操作有点快，等一会儿再继续。",
+                "retry_after_seconds": exc.retry_after_seconds,
+            },
+            headers={"Retry-After": str(exc.retry_after_seconds)},
+        )
 
 
 @router.get("/selection-trace")
@@ -146,6 +166,10 @@ async def next_task(
     游客模式：child_id 用会话身份；session 必须属于当前游客，否则 404——
     否则改一个 session_id 就能往别人的会话里塞题。
     """
+    # 防脚本刷取题。放在归属校验之前：无效 session_id 的暴力枚举也该被限流。
+    _enforce_rate_limit(
+        "next_task", guest.child_id, get_settings().next_task_rate_limit_per_minute
+    )
     claimed = payload.get("child_id")
     if claimed:
         try:
@@ -163,7 +187,7 @@ async def next_task(
     # 归属：session 必须属于当前游客（docstring 承诺过，10-29 验收 3.4 抓到没实现）。
     # 不校验的后果：改一个 session_id 就能往别人的会话里塞题——task_instance 会
     # 落成 (session_id=别人的, child_id=自己的)，污染对方会话的 completed_count，
-    # 且绕开对方配额不计数。404 而非 403：不泄露「该 session 存在但不是你的」。
+    # 且把别人的会话记录搅乱。404 而非 403：不泄露「该 session 存在但不是你的」。
     try:
         session_uuid = uuid.UUID(str(payload["session_id"]))
     except (KeyError, ValueError):
@@ -200,10 +224,14 @@ async def submit(
     游客模式三件事（方案 3.2 + 第五章）：
     1. **归属**：先确认 task 属于当前游客，否则 404（改 task_instance_id 不能
        往别人会话里写答案，也不能借此判分别人的题）。
-    2. **配额**：超过当日上限 → 429（LE-4291）。判定顺序是「先看是不是老题」，
-       避免第 30 题的重试被误拒（详见 services/guest_quota.is_over_limit）。
+    2. **防滥用**：频率限流（LE-4292）。**没有每日题数上限**——2026-11-01 产品
+       决策取消「每天最多 30 道」，孩子多练一会儿不会被 429 拦。真正防重复的是
+       submission_id 幂等 + 台账主键 (child_id, task_instance_id) 去重。
     3. **活动刷新**：成功提交后刷新保留期（方案 4.1 的 last_activity_at）。
     """
+    _enforce_rate_limit(
+        "submit", guest.child_id, get_settings().submit_rate_limit_per_minute
+    )
     task_instance_id = payload["task_instance_id"]
     claimed = payload.get("child_id")
     if claimed:
@@ -224,22 +252,6 @@ async def submit(
         raise HTTPException(status_code=404, detail="task_instance 不存在")
     await assert_owns_child(db, guest_child_id=guest.child_id, target_child_id=owner)
 
-    # 配额：超限 429（方案第五章「达到上限时，显示清晰提示」）
-    if await guest_quota.is_over_limit(
-        db, child_id=guest.child_id, task_instance_id=task_uuid
-    ):
-        usage = await guest_quota.usage_summary(db, child_id=guest.child_id)
-        # 提示语里的题数必须与 usage["limit"] 同源（配置 guest_daily_task_limit）。
-        # 曾经硬编码「30」：配置改成 15 时文案会说谎（形态 40：文案与数据不同源）。
-        raise HTTPException(
-            status_code=429,
-            detail={
-                "code": "LE-4291",
-                "message": f"今天已经完成 {usage['limit']} 道题啦，明天再来吧",
-                "quota": usage,
-            },
-        )
-
     try:
         sub_raw = payload.get("submission_id")
         submission_id = uuid.UUID(str(sub_raw)) if sub_raw else None
@@ -259,8 +271,8 @@ async def submit(
         raise HTTPException(status_code=404, detail=str(e))
 
     # 只有真的判分了才算「一次有效学习活动」：重复提交/幂等重放不刷新保留期，
-    # 也不重复计题（台账主键保证）。
-    await guest_quota.record_task_consumed(
+    # 也不重复计题（台账主键保证）。这里只记「今天做了几道」，不判准入。
+    await guest_activity.record_task_consumed(
         db, child_id=guest.child_id, task_instance_id=task_uuid
     )
     await touch_activity(db, child_id=guest.child_id)
@@ -287,7 +299,7 @@ async def _session_owner(db: AsyncSession, session_id: uuid.UUID) -> uuid.UUID |
     10-29 验收 3.4 发现 next_task 缺这道校验（docstring 承诺了但没实现）：
     不校验则任何登录游客可往他人会话塞题，落成
     task_instance(session_id=别人的, child_id=自己的)，污染对方会话统计
-    且绕开对方配额。与 _task_owner 同源同语义。
+    且能往别人的会话里写。与 _task_owner 同源同语义。
     """
     from app.models import LearningSession
 

@@ -5,6 +5,7 @@ import { useChildUi } from "@/src/theme/ChildSkinProvider";
 import { LearningChrome, LearningScenery } from "@/src/components/ui-v6/LearningChrome";
 import { LearningFeedback } from "@/src/components/ui-v6/LearningFeedback";
 import { TaskPresentationBoundary } from "@/src/components/ui-v6/TaskPresentationBoundary";
+import { BreakNudge } from "@/src/components/ui-v6/BreakNudge";
 import { useRouter } from "next/navigation";
 import { CoachPanel, ProgressDots } from "@/src/components";
 import { TaskRenderer } from "@/src/features/task-renderer";
@@ -25,7 +26,7 @@ export function MathLearningScreen({
   useEffect(() => {
     let alive = true;
     getLearningApi()
-      .getGuest()
+      .ensureGuest()
       .then(g => { if (alive) setChildId(g.child_id); })
       .catch(() => { if (alive) setChildId(null); });
     return () => { alive = false; };
@@ -60,6 +61,14 @@ export function MathLearningScreen({
       <div className="v6-learning-container">
         <LearningChrome childId={childId ?? ""} completed={snapshot.tasksCompleted} />
         <div className="v6-learning-content">
+          {/*
+            连续学久了给一句提醒，不禁止继续：想继续就点「我还不累」。
+            放在内容流最前面而不是 <main> 下：fixed 浮层在 390 宽下正好盖住
+            「提交我的答案」，孩子必须先点掉提醒才能交作业——那是变相的禁止。
+            走流里就没有任何遮挡；放最前面是因为换题时页面回到顶部，第一眼就能看到，
+            放在提交按钮之后则要滚过去才会发现，等于没提醒。宽屏由 CSS 改回 fixed 浮条。
+          */}
+          <BreakNudge taskId={task?.task_instance_id} onRest={() => router.push("/child/math")} />
           {state.status === "loading_task" || state.status === "idle" ? (
             <section className="surface-card loading-panel" role="status" aria-busy="true">正在准备下一项数学任务…</section>
           ) : task ? (

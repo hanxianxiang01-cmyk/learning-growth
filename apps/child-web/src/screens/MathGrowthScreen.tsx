@@ -6,7 +6,7 @@ import { getLearningApi } from "@/src/lib/api";
 import type { AbilityState } from "@/src/lib/api/contracts";
 
 import { useChildUi } from "@/src/theme/ChildSkinProvider";
-import { GrowthMap } from "@/src/components/ui-v6/GrowthMap";
+import { GrowthMap, GrowthSummary } from "@/src/components/ui-v6/GrowthMap";
 import { PageFrame, PageState } from "@/src/components/ui-v6/PageFrame";
 import { ChildIcon } from "@/src/components/ui-v6/ChildIcon";
 
@@ -23,7 +23,7 @@ export function MathGrowthScreen() {
   useEffect(() => {
     let active = true;
     setLoading(true); setError(false); setAbilities([]);
-    api.getGuest()
+    api.ensureGuest()
       .then(g => {
         if (!active) return null;
         setChildId(g.child_id);
@@ -53,7 +53,11 @@ export function MathGrowthScreen() {
   }
 
   if (uiVersion === "v6") return <PageFrame childId={childId} active="growth">
-    <header className="v6-growth-heading"><span className="v6-eyebrow"><ChildIcon name="map" />我的成长记录</span><h1>数学成长地图</h1><p>看看自己会了什么，也看看下一步可以怎么探索。</p></header>
+    <header className="v6-growth-heading">
+      <div className="v6-growth-heading-copy"><span className="v6-eyebrow"><ChildIcon name="map" />我的成长记录</span><h1>数学成长地图</h1><p>看看自己会了什么，也看看下一步可以怎么探索。</p></div>
+      {/* 加载中/失败都不挂摘要：那时 0/7 不是「没有记录」，是「还不知道」。 */}
+      {!loading && !error && <GrowthSummary abilities={abilities} />}
+    </header>
     {loading ? <PageState loading title="正在读取成长记录" text="每一项能力，都有自己的成长节奏。" /> :
       error ? <PageState title="成长记录暂时没加载成功" text="这不会改变已有记录，请稍后重新试试。" onRetry={() => setReload(n => n + 1)} childId={childId} /> :
       <GrowthMap abilities={abilities} childId={childId} />}

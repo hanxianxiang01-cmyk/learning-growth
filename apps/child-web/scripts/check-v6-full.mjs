@@ -51,8 +51,12 @@ test('fixture workspace IDs and response metadata exist without a live seed',()=
   }
 });
 test('canonical seven-node order, no phantom forty-two live abilities',()=>assert.deepEqual(Array.from(ability.ABILITY_NODES,n=>n.id),['app_rel','app_check','app_rd','app_transfer','app_model','app_cond','app_strat']));
-test('missing ability displays unknown rather than a fabricated zero level',()=>{const p=ability.presentAbility();assert.equal(p.level,'待了解');assert.equal(p.count,null);assert.equal(p.stable,false);});
-test('zero evidence does not claim stable mastery even when API trend says stable',()=>{const p=ability.presentAbility({level:2,evidence_count:0,trend:'stable'});assert.equal(p.status,'暂无记录');assert.equal(p.stable,false);assert.equal(p.level,'L2');});
+// V1.4 起空态只留一句「尚待探索」（设计 G-02：此前 待了解/尚待了解/暂无记录/暂无数据 四套并存）。
+// 这里守的仍然是原意：未知就显示未知，不能编出一个 L0 等级。
+test('missing ability displays unknown rather than a fabricated zero level',()=>{const p=ability.presentAbility();assert.equal(p.level,'');assert.equal(p.count,null);assert.equal(p.stable,false);assert.equal(p.tag,'尚待探索');});
+// 有等级但零证据时，等级也不再显示：把 L2 摆在「尚无记录」旁边，
+// 就是设计 G-03 说的「不显示虚构成长结果」。trend=stable 同样不许冒充稳定。
+test('zero evidence does not claim stable mastery even when API trend says stable',()=>{const p=ability.presentAbility({level:2,evidence_count:0,trend:'stable'});assert.equal(p.status,'尚待探索');assert.equal(p.stable,false);assert.equal(p.level,'');});
 test('raw API level and evidence count are preserved',()=>{const p=ability.presentAbility({level:3,evidence_count:17,trend:'up'});assert.equal(p.level,'L3');assert.equal(p.count,17);});
 test('unknown trend fails soft without throwing or computing mastery',()=>assert.doesNotThrow(()=>ability.presentAbility({level:1,evidence_count:2,trend:'unexpected'})));
 test('canonical ID has priority over explicitly mapped legacy aliases',()=>{const legacy={ability_id:'REL',level:1},current={ability_id:'app_rel',level:3};assert.equal(ability.findAbility(ability.ABILITY_NODES[0],[legacy,current]),current);});
